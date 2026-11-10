@@ -206,3 +206,6 @@ De dashboardtaal is voorlopig Nederlands. Teksten worden vanaf de huidige fase i
 
 ### Structuur vertaalbestanden
 Vertaalteksten worden opgeslagen in meerdere JSON-bestanden per taal, opgesplitst per applicatieonderdeel (zoals dashboard, meldingen en instellingen). Dit houdt de bestanden overzichtelijk en maakt uitbreiding naar meerdere talen in fase 3 mogelijk.
+
+### Taalkeuze en ontbrekende vertalingen
+Engels is de standaardtaal en terugvaltaal. Nederlands is een optionele taalkeuze, gelijkwaardig aan andere toekomstige talen. Ontbreekt een vertaalwaarde in de geselecteerde taal, dan valt de applicatie terug op de Engelse vertaling. De vertaalbestanden blijven per taal en per applicatieonderdeel opgesplitst.
