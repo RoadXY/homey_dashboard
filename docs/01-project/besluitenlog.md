@@ -359,3 +359,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Correctie taalbeleid: Engels is de standaard- en terugvaltaal. Nederlands is een optionele keuzetaal, net als andere talen. Ontbrekende vertalingen vallen terug op Engels. De eerdere formulering dat Nederlands de standaardtaal zou zijn, is hiermee vervangen.
 
 - Nieuwe installatie: Engels wordt standaard geselecteerd als dashboardtaal.
+
+- Correctie op de eerdere beslissing over de standaardtaal bij nieuwe installatie: het dashboard detecteert de taalinstelling van Homey en gebruikt die als dashboardtaal als vertalingen beschikbaar zijn. Is de taal niet beschikbaar, dan wordt Engels gebruikt en krijgt de gebruiker een melding welke taal is gedetecteerd en dat deze niet beschikbaar is. Engels blijft de terugvaltaal voor ontbrekende vertalingen.
