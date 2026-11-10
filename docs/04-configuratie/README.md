@@ -125,3 +125,6 @@ In de huidige fase gebruikt de pictogramkiezer uitsluitend de namen/zoektermen z
 
 ### Dashboardtaal huidige fase
 De standaarddashboardtaal is Nederlands. Alle zichtbare dashboardteksten worden vanaf de huidige fase via JSON-vertaalbestanden beheerd, zodat uitbreiding naar meerdere talen in fase 3 mogelijk is zonder teksten uit de applicatiecode te hoeven halen.
+
+### Indeling JSON-vertaalbestanden
+Vertalingen worden per taal én per onderdeel opgesplitst in meerdere JSON-bestanden, bijvoorbeeld afzonderlijke bestanden voor dashboard, meldingen en instellingen. De dashboardtaal is in de huidige fase Nederlands; deze structuur bereidt uitbreiding naar meerdere talen in fase 3 voor.
