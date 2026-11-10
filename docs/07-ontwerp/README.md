@@ -75,3 +75,7 @@ De gebruiker kiest expliciet voor lang indrukken op de tijdkaart als verborgen m
 - Voorlopige navigatiecategorieën in de conceptmockup: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
 - Dit is uitsluitend een eerste layoutverkenning en nog niet door de gebruiker goedgekeurd. De getoonde voorbeeldinstellingen (zoals thema, helderheid, verversinterval, taal en schermoriëntatie) zijn niet automatisch functionele eisen of definitieve opties.
 - De definitieve inhoud en navigatiestructuur worden iteratief met de gebruiker vastgesteld voordat implementatie start.
+
+
+## Instellingenpagina – pagina Algemeen
+De gebruiker kiest ervoor om op de pagina Algemeen ook datum-, tijd- en verversingsinstellingen op te nemen, naast algemene informatie en dashboardstatus. De concrete keuzemogelijkheden en standaardwaarden moeten nog worden ontworpen.
