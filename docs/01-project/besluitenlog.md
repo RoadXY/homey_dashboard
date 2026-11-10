@@ -382,3 +382,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Per ruimte worden apparaten met geschikte temperatuurmetingen getoond; de gebruiker kiest de gewenste meetwaarde.
 - Geen aparte optie **Terug** in de lijst; navigeren gebeurt via het aanklikbare kruimelpad.
 - Lang kruimelpad: huidig niveau plus twee voorgaande niveaus zichtbaar; overige niveaus achter een aanklikbare **…**, waarmee ieder verborgen niveau bereikbaar is.
+
+- Weeronderdelen: vaste volgorde; gebruiker kan per onderdeel alleen de zichtbaarheid in- of uitschakelen. Geen drag-and-drop voor de volgorde. Dit vereenvoudigt een consistente weerkaart.
