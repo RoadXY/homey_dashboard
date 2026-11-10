@@ -156,3 +156,6 @@ De sensorselectie werkt zoals in de Homey mobiele app: eerst een kamer/ruimte se
 
 ### Terugnavigatie sensorselectie
 De sensorselectie bevat op ieder niveau een duidelijke optie **Terug** om naar het vorige niveau te gaan, bijvoorbeeld vanuit de sensorenlijst terug naar het overzicht van kamers/ruimtes.
+
+### Instelbare weergegevens
+Alle volgende onderdelen zijn afzonderlijk zichtbaar te maken of te verbergen: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
