@@ -149,3 +149,6 @@ Een handmatig gekozen dashboardtaal wordt persistent opgeslagen en blijft behoud
 
 ### Locatie taalinstelling
 De taalkeuze staat op de instellingenpagina **Algemeen**, bij de datum- en tijdinstellingen.
+
+### Live preview temperatuurtegels
+De voorbeeldweergave van de temperatuurtegels wordt direct bijgewerkt bij iedere wijziging aan naam, geselecteerde sensor of volgorde. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
