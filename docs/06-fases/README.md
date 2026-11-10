@@ -33,3 +33,6 @@ In fase 3 wordt een selectie vooraf ontworpen dashboardthema's toegevoegd. In fa
 
 ### Fase 3 – Meertaligheid en vertalingen
 Fase 3 omvat ondersteuning voor meerdere dashboardtalen. Vertalingen van dashboardteksten en relevante zoektermen worden in JSON-bestanden beheerd. Ook wordt de MDI-zoekfunctie uitgebreid met Nederlandse en Engelse termen en synoniemen. In de huidige fase gebruikt de zoekfunctie alleen de namen die door de MDI-website worden aangeleverd.
+
+### Voorbereiding meertaligheid in huidige fase
+De dashboardtaal is in de huidige fase Nederlands, maar alle zichtbare teksten worden al via JSON-vertaalbestanden beheerd. In fase 3 wordt dit uitgebreid naar meerdere talen en een instelbare dashboardtaal.
