@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 14
+# Besluitenlog – inventarisatierondes 1 t/m 15
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -135,12 +135,19 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Instellingenpagina is bereikbaar vanaf tablet, computer en telefoon, maar alleen na pincode/login.
 - Wijzigingen opslaan met expliciete knop ‘Opslaan’.
 
+## Ronde 15 – beheer, sessie en tests
+- Quick buttons moeten per knop kunnen worden ingesteld met keuze tussen een Homey Flow en directe apparaatbediening.
+- Meldingen beheren in fase 1: bestaande meldingen aan/uit kunnen zetten, de naam aanpassen en de prioriteit wijzigen. Het bewerken van onderliggende voorwaarden/meetwaarden is hiermee niet gekozen voor fase 1.
+- Bij niet-opgeslagen wijzigingen waarschuwt de beheerpagina wanneer de gebruiker de pagina probeert te verlaten.
+- PIN-sessie: eenmaal invoeren; automatisch uitloggen na een instelbare periode van inactiviteit.
+- Instellingenpagina biedt alleen een test voor de Homey-verbinding; geen afzonderlijke meldingstest afgesproken.
+
 ## Open punten
-- Ronde 15 is nog niet beantwoord.
 - Exacte selectie en presentatie van weergegevens.
 - Kamertemperaturen en selectie daarvan.
 - Detailuitwerking complexe meldingscondities en editor in fase 2.
-- Definitieve beveiligingsdetails: pincodebeleid, sessieduur, rate limiting en opslag van secrets.
+- Exacte manier waarop de gebruiker Flow of directe apparaatbediening per quick button configureert (velden/keuzelijst en validatie).
+- Definitieve beveiligingsdetails: pincodebeleid, sessieduur-instelling, rate limiting en opslag van secrets.
 - Definitieve JSON-schema's en categorie-indeling.
 - API-ondersteuning en haalbaarheid van refreshintervallen.
 - Mockups en functioneel ontwerp moeten nog worden gemaakt en expliciet goedgekeurd voordat implementatie start.
