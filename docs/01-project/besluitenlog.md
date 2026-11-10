@@ -202,3 +202,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Definitieve JSON-schema's en categorie-indeling.
 - API-ondersteuning en haalbaarheid van refreshintervallen.
 - Mockups en functioneel ontwerp moeten nog worden gemaakt en expliciet goedgekeurd voordat implementatie start.
+
+
+## Aanvullende mapping- en scopebesluiten (10 november 2026)
+- De nieuw aangemaakte Homey Logic-variabelen `temperatuur_gemiddeld_keuken` en `temperatuur_gemiddeld_woonkamer` zijn de beoogde bronnen voor de gemiddelde temperaturen van keuken en woonkamer. Type, eenheid, actuele waarden en bijwerklogica moeten nog technisch worden gecontroleerd.
+- Telefoonbatterijniveaus vervallen uit het dashboard.
+- Plantensensoren vervallen uit het dashboard.
+- Voor de quick buttons Q-Music en Rolluiken openen moeten nieuwe Homey Flows worden gemaakt die vanuit de Homey Dashboard-app/container aanroepbaar zijn. Er zijn nog geen Flows aangemaakt of gewijzigd; de exacte aanroepmethode en Flow-inhoud moeten eerst worden vastgesteld.
