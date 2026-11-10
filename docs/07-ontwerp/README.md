@@ -94,3 +94,6 @@ De pagina toont zes onderdelen: verbindingsstatus Homey Pro, verbindingsstatus d
 
 ### Datum- en tijdinstellingen
 Op de pagina Algemeen kan de gebruiker tijdnotatie, datumweergave en tijdzone instellen.
+
+### Standaardtijdzone
+De standaardtijdzone is `Europe/Amsterdam`, met automatische zomer- en wintertijd.
