@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 19
+# Besluitenlog – inventarisatierondes 1 t/m 20
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -61,8 +61,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 ## Ronde 8 – meldingsregels en gegevensmodel
 - Voorwaarden ondersteunen AND/OR en combinaties.
-- Drie ernstniveaus: kritiek, waarschuwing en info.
-- Sortering: ernst/prioriteit eerst, daarna tijdstip (definitief bevestigd in ronde 12).
+- Iedere melding heeft precies één van drie niveaus: kritiek, waarschuwing of info.
+- Sortering: niveau eerst, daarna tijdstip; nadere uitwerking bevestigd in ronde 20.
 - Tijdstip is het moment waarop de regel actief wordt.
 - JSON wordt opgesplitst in meerdere bestanden per categorie.
 - Structuur moet leesbaar/beheerbaar zijn en later geschikt zijn voor een WYSIWYG-editor.
@@ -71,7 +71,7 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
   - config/devices.json
   - config/notifications/{safety,climate,appliances,energy,other}.json
   - config/actions/{buttons,confirmations}.json
-- Elke melding krijgt een stabiele unieke ID, titel, ernstniveau, conditiegroep en presentatieopties.
+- Elke melding krijgt een stabiele unieke ID, titel, niveau, conditiegroep en presentatieopties.
 - Condities verwijzen naar Homey device-ID en capability, niet naar zichtbare apparaatnamen.
 - Schema-versie, validatie en begrijpelijke foutmeldingen zijn gewenst.
 
@@ -105,22 +105,21 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Kolomverhouding: 50/50.
 - Kamertemperaturen: uitgesteld.
 - Weericoon groot naast buitentemperatuur.
-- Oorspronkelijke keuze: geen scrollen; dashboard moet op één scherm passen.
+- Dashboardpagina blijft vast; alleen meldingenpaneel mag scrollen.
 - Hoofdscherm is display-only, behalve quick buttons.
 - Thema: donker.
 
 ## Ronde 12 – meldingenoverzicht
 - Alle actieve meldingen tonen; er is geen vast maximum.
 - Als er meer meldingen zijn dan passen, mag alleen het meldingenpaneel verticaal scrollen.
-- Prioriteit/ernst eerst, daarna tijdstip.
+- Sortering: niveau eerst, daarna activeringstijdstip; de precieze volgorde bij gelijke niveaus is later bevestigd.
 - Mediaspelers Sem en Bram verschijnen in hetzelfde meldingenoverzicht, als compacte meldingen. Als beide actief zijn, naast elkaar.
 - Homey offline: rode tekstmelding ‘Homey Offline’ bij de klok.
 - Weer toont ook gevoelstemperatuur, wind en neerslag; exacte selectie en presentatie later bepalen.
-- Verfijning ronde 11: dashboardpagina zelf blijft vast; alleen meldingenpaneel mag scrollen.
 
 ## Ronde 13 – meldingstijl en knopfeedback
 - Standaard meldingen: icoon per niveau, geen opvallende achtergrondkleur.
-- Kritieke meldingen zijn uitzondering: rode achtergrond en rode/contrasterende tekst; exacte toegankelijke vormgeving wordt bij mockups bepaald.
+- Kritieke meldingen zijn uitzondering: rode achtergrond en contrasterende tekst; exacte toegankelijke vormgeving wordt bij mockups bepaald.
 - Compacte melding: titel en actuele waarde. Complexe meldingen (bijv. ‘Raam ouders niet open’) vragen later nadere uitwerking.
 - Fase 2: instellingenpagina toont overzicht van beschikbare meldingen; potloodje opent specifieke WYSIWYG-editor voor die melding.
 - Editor moet meerdere voorwaarden en AND/OR-combinaties kunnen bewerken.
@@ -137,7 +136,7 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 ## Ronde 15 – beheer, sessie en tests
 - Quick buttons moeten per knop kunnen worden ingesteld met keuze tussen een Homey Flow en directe apparaatbediening.
-- Meldingen beheren in fase 1: bestaande meldingen aan/uit kunnen zetten, de naam aanpassen en de prioriteit wijzigen. Het bewerken van onderliggende voorwaarden/meetwaarden is hiermee niet gekozen voor fase 1.
+- Meldingen beheren in fase 1: bestaande meldingen aan/uit kunnen zetten, de naam aanpassen en het niveau wijzigen. Onderliggende voorwaarden/meetwaarden worden in fase 1 niet bewerkt via de beheerpagina.
 - Bij niet-opgeslagen wijzigingen waarschuwt de beheerpagina wanneer de gebruiker de pagina probeert te verlaten.
 - PIN-sessie: eenmaal invoeren; automatisch uitloggen na een instelbare periode van inactiviteit.
 - Instellingenpagina biedt alleen een test voor de Homey-verbinding; geen afzonderlijke meldingstest afgesproken.
@@ -160,7 +159,7 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Tijd wordt getoond in 24-uursnotatie; de notatie wordt later instelbaar via de instellingenpagina.
 - Datum wordt standaard voluit getoond, inclusief weekdag en maandnaam (bijv. ‘Dinsdag 10 november 2026’); de datumnotatie wordt later instelbaar.
 - De weekdag wordt duidelijk zichtbaar getoond; de presentatie ervan wordt later instelbaar.
-- Bij verlies van Homey-verbinding blijft de bestaande afgesproken status gelden: ‘Homey Offline’ bij de klok en laatst bekende waarden blijven staan. Dit punt wordt niet opnieuw als nieuw besluit behandeld.
+- Bij verlies van Homey-verbinding blijft de bestaande afgesproken status gelden: ‘Homey Offline’ bij de klok en laatst bekende waarden blijven staan.
 - Tijdstip van laatste update wordt alleen getoond bij waarden die als verouderd worden aangemerkt.
 
 ## Ronde 19 – quick button-feedback en bevestiging
@@ -169,6 +168,14 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Bij een mislukte actie verschijnt een algemene foutmelding bovenaan het dashboard.
 - Kritische acties gebruiken een grotere bevestigingsdialoog met een duidelijke omschrijving van de actie.
 - Om herhaald indrukken te voorkomen geldt naast blokkeren tijdens uitvoering ook een korte wachttijd na een geslaagde actie; de exacte duur moet nog worden bepaald.
+
+## Ronde 20 – prioriteit en levenscyclus meldingen
+- Elke melding krijgt precies één van drie niveaus: kritiek, waarschuwing of info. De eerdere interpretatie van vrij instelbare prioriteit is gecorrigeerd en vervalt.
+- Het niveau bepaalt de prioriteitsvolgorde: kritiek bovenaan, daarna waarschuwing en vervolgens info.
+- Binnen hetzelfde niveau wordt de nieuwste actieve melding eerst getoond.
+- Een melding toont een icoon, titel en actuele waarde.
+- Kritieke meldingen krijgen een rode achtergrond met contrasterende tekst.
+- Zodra de voorwaarde niet meer actief is, verdwijnt de melding direct uit beeld; er komt geen geschiedenisoverzicht of logboek voor beëindigde meldingen.
 
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
