@@ -48,3 +48,6 @@ Bij een nieuwe installatie wordt Engels automatisch als dashboardtaal geselectee
 
 ### Taalinstelling bij nieuwe installatie
 De dashboardtaal wordt bij de eerste installatie afgeleid van de taalinstelling van Homey. Als die taal wordt ondersteund, wordt deze geselecteerd. Anders wordt Engels gebruikt en krijgt de gebruiker een duidelijke melding over de gedetecteerde maar niet-beschikbare taal. Engels is tevens de terugvaltaal voor ontbrekende vertalingen binnen een taalbestand.
+
+### Taalkeuzelijst
+De keuzelijst bevat bovenaan Automatisch met de gedetecteerde Homey-taal in de naam (bijvoorbeeld **Automatisch (Nederlands)**). Verder worden alle talen getoond waarvoor ten minste een gedeeltelijke vertaling bestaat. Bij een niet-ondersteunde Homey-taal wordt Engels gebruikt en krijgt de gebruiker hierover een melding.
