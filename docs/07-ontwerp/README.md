@@ -63,3 +63,7 @@ De rechterzijde van het meldingenpaneel krijgt dezelfde binnenmarge als de linke
 
 ## Verfijning fade links van meldingen (10 november 2026)
 De gebruiker vraagt specifiek om de verticale overgang links van het meldingenpaneel (in de gemarkeerde cirkel) langzamer en over een grotere lengte te laten vervagen. Maak deze overgang langer uitgesmeerd en zachter, zodat de lijn vrijwel ongemerkt in de achtergrond verdwijnt. Overige onderdelen blijven gelijk.
+
+
+## Instellingen openen – verborgen bediening (10 november 2026)
+De gebruiker kiest expliciet voor lang indrukken op de tijdkaart als verborgen manier om de instellingen te openen. Er wordt geen tandwiel, instellingenicoon of zichtbare knop toegevoegd. De tijdkaart behoudt zijn bestaande uiterlijk. De gegenereerde variant met extra knop en vervormde labels/iconen is nadrukkelijk afgekeurd en wordt niet als referentie gebruikt.
