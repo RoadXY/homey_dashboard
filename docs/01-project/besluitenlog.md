@@ -391,3 +391,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Flow: selecteer een bestaande Flow uit een doorzoekbare lijst; de Flow blijft ook handmatig in Homey startbaar.
 - Apparaat: selecteer Homey-ruimte → apparaat → een door het apparaat ondersteunde actie.
 - Naam en MDI-pictogram zijn instelbaar voor beide typen; preview live; pictogrammen monochroom volgens actief thema.
+
+- Fase 3 thema's: naast de overige vooraf gedefinieerde thema's wordt een **Homey-stijl thema** toegevoegd, gebaseerd op de aangeleverde Homey-apparatenpagina (donkere antraciet/zwart-grijze basis, sobere grijze kaarten en blauwe accenten). Exacte visuele uitwerking volgt in fase 3.
