@@ -141,3 +141,6 @@ De navigatie bevat zes categorieën: Algemeen, Dashboard, Meldingen, Apparaten, 
 - Temperatuurtegels: kiezen welke kamers en sensoren zichtbaar zijn.
 - Weerweergave: kiezen welke weergegevens zichtbaar zijn.
 - Snelle actieknoppen: zichtbaarheid, volgorde en instellingen beheren.
+
+### Temperatuurtegels beheren
+Het dashboard heeft altijd vier temperatuurtegels. Per tegel kan een beschikbare Homey-temperatuursensor worden geselecteerd. Het aantal tegels blijft vast op vier.
