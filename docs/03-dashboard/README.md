@@ -8,7 +8,8 @@
 - Alleen het meldingenpaneel mag verticaal scrollen als er veel meldingen zijn.
 
 ## Linkerzijde
-- Grote klok met datum kleiner eronder.
+- Grote klok met tijd in 24-uursnotatie (standaard); tijdnotatie wordt later instelbaar.
+- Datum wordt standaard voluit getoond inclusief weekdag en maandnaam; datum- en weekdagpresentatie worden later instelbaar.
 - Weer met groot icoon naast buitentemperatuur.
 - Weersinformatie bevat gevoelstemperatuur, wind, neerslag, luchtvochtigheid en een korte weersomschrijving.
 - Weersomschrijving bestaat uit een weericoon met korte tekst.
@@ -17,7 +18,7 @@
 - Elke temperatuurtegel toont kamernaam, temperatuur en een klein temperatuur-icoon.
 - Temperatuurtegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
 - Bij een offline kamersensor blijft de tegel zichtbaar met de tekst ‘Geen gegevens’.
-- Een waarde ouder dan 15 minuten wordt als verouderd beschouwd; de precieze visuele aanduiding moet nog worden ontworpen.
+- Een waarde ouder dan 15 minuten wordt als verouderd beschouwd; alleen bij verouderde waarden wordt het tijdstip van laatste update getoond.
 
 ## Rechterzijde
 - Quick buttons en meldingen, uitgaande van de bestaande dashboardindeling.
