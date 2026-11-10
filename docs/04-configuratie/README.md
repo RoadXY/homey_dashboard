@@ -75,3 +75,5 @@ De instellingenpagina krijgt linksboven een duidelijke terugkeerknop met het lab
 In de navigatiekolom wordt de actieve pagina aangegeven met een subtiele lichtere achtergrond achter de geselecteerde optie.
 
 Elk navigatie-item krijgt een klein pictogram vóór de categorienaam.
+
+De instellingen-navigatie bevat de zes categorieën: **Algemeen**, **Dashboard**, **Meldingen**, **Apparaten**, **Homey** en **Systeem**.
