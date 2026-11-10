@@ -248,3 +248,6 @@ De preview rechts past zich direct aan iedere wijziging in de zichtbaarheid van 
 
 ### Quick actions – Flow- en apparaatactie
 De bewerkingsdialoog bevat twee expliciete, naast elkaar geplaatste keuzes: **Flow** en **Apparaat**. Flow: selecteer een bestaande Homey Flow via een doorzoekbare lijst. Apparaat: selecteer eerst een ruimte, dan een apparaat en daarna een door dat apparaat ondersteunde actie. Naam en pictogram zijn onafhankelijk van het actietype instelbaar. De actiepreview blijft monochroom; pictogramkleur en -grootte volgen het actieve thema. De live preview toont wijzigingen direct.
+
+### Homey-stijl thema (fase 3)
+Voeg in fase 3 een extra vooraf gedefinieerd thema toe: **Homey-stijl**. Visuele referentie is de door de gebruiker aangeleverde screenshot van de Homey-apparatenpagina. Richting: donkere antraciet/zwart-grijze achtergrond, sobere donkergrijze kaarten en blauwe accentkleur. Dit is een themavariant voor het bestaande Homey Dashboard; de dashboardstructuur en bediening blijven intact. Exacte kleurwaarden, contrasten, typografie en componentdetails worden bij de uitwerking van de thema's bepaald.
