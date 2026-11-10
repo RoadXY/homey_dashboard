@@ -144,3 +144,6 @@ De navigatie bevat zes categorieën: Algemeen, Dashboard, Meldingen, Apparaten, 
 
 ### Temperatuurtegels beheren
 Het dashboard heeft altijd vier temperatuurtegels. Per tegel kan een beschikbare Homey-temperatuursensor worden geselecteerd. Het aantal tegels blijft vast op vier.
+
+### Namen temperatuurtegels
+Per vaste temperatuurtegel zijn zowel de Homey-temperatuursensor als de weergegeven tegelnaam instelbaar.
