@@ -36,3 +36,6 @@ Fase 3 omvat ondersteuning voor meerdere dashboardtalen. Vertalingen van dashboa
 
 ### Voorbereiding meertaligheid in huidige fase
 De dashboardtaal is in de huidige fase Nederlands, maar alle zichtbare teksten worden al via JSON-vertaalbestanden beheerd. In fase 3 wordt dit uitgebreid naar meerdere talen en een instelbare dashboardtaal.
+
+### Indeling vertalingen
+In de huidige fase wordt Nederlands gebruikt. Vertalingen worden georganiseerd in meerdere JSON-bestanden per taal, opgesplitst per onderdeel van de applicatie. In fase 3 wordt ondersteuning voor meerdere talen toegevoegd.
