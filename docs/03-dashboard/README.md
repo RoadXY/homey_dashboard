@@ -35,7 +35,7 @@
 - Bij gelijke niveaus wordt de nieuwste actieve melding eerst getoond.
 - Melding verdwijnt direct zodra de onderliggende voorwaarde niet meer actief is; er is geen geschiedenisoverzicht voor beëindigde meldingen.
 - Activeringstijdstip wordt bijgehouden voor sortering.
-- Mediaspelers zijn meldingsachtige items, alleen zichtbaar wanneer actief; titel, artiest en afspeelstatus. Sem en Bram naast elkaar als beide actief zijn.
+- Mediaspelers zijn meldingsachtige items, alleen zichtbaar wanneer actief; titel, artiest en afspeelstatus. Sem en Bram naast elkaar als beide actief zijn. In het nieuwe dashboard is dit informatief en niet bedienbaar.
 
 ## Quick buttons
 Volgorde:
@@ -52,4 +52,4 @@ Knoppen tonen icoon en label. Statuskleuren zijn gebaseerd op werkelijke Homey-s
 Per knop kan in de instellingen worden gekozen tussen het starten van een Homey Flow en directe apparaatbediening.
 
 ## Functionele nulmeting
-De aangeleverde Home Assistant YAML (984 regels) en screenshot zijn de referentie. Bestaande meldingen, condities, knoppen en informatie moeten functioneel behouden blijven. Deze bron moet als projectbestand beschikbaar blijven en bij de port systematisch worden gemapt.
+De aangeleverde Home Assistant-YAML en screenshot zijn de referentie. De YAML bevat 983 regels, één view, twee secties en 55 kaarten; 43 kaarten hebben een zichtbaarheidvoorwaarde (waarvan twee mediaspelers). De volledige eerste inventarisatie van de kaarten en zichtbaarheidvoorwaarden staat in [Analyse functionele nulmeting](ha-baseline-analyse.md). Bestaande informatie en condities moeten behouden blijven. Homey-mapping is nog niet afgerond.
