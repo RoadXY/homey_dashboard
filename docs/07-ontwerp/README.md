@@ -82,3 +82,6 @@ De gebruiker kiest ervoor om op de pagina Algemeen ook datum-, tijd- en verversi
 
 ### Tijdweergave
 De gebruiker kiest voor beide tijdnotaties als instelbare opties: 24-uursnotatie en 12-uursnotatie (AM/PM). De concrete bediening (bijvoorbeeld keuzelijst of schakelaar) wordt later in de mockup bepaald.
+
+### Datumweergave
+Gekozen is voor de korte datumvariant, bijvoorbeeld `di. 10 nov. 2026`.
