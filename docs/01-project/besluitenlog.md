@@ -404,3 +404,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - Instellingen en meldingeditor zijn responsief voor circa 10-inch tablet en 15–16-inch laptop. Tablet vooral voor incidenteel/noodgebruik; laptop is de primaire beheeromgeving.
 - Op 30-inch schermen mag ongebruikte ruimte overblijven; inhoud hoeft niet volledig uit te rekken. De meldingeditor/Blockly-werkruimte schaalt en herschikt passend bij de viewport.
+
+- Scopecorrectie meldingen: fase 1 neemt bestaande Home Assistant-meldingskaarten/definities over als vast geprogrammeerde dashboardmeldingen om de werking naast Home Assistant te testen.
+- Alle HA-voorwaarden en combinaties worden in fase 1 exact behouden; geen zelfstandige vertaling, vereenvoudiging of wijziging.
+- Fase 1: eenvoudige meldingseigenschappen actief/inactief, naam en meldingsniveau zijn configureerbaar. Voorwaarden zijn nog niet via de dashboardinterface bewerkbaar.
+- Fase 2: Blockly, de volledige schermvullende voorwaardeneditor en het ontwerp van categorieën en blokkenbibliotheek. De concrete blokken worden pas in fase 2 bepaald.
