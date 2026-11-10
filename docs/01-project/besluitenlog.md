@@ -374,3 +374,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - Dashboardinstellingen: geen broodkruimelpad; alleen de huidige paginatitel. Bovenbalk: **← Back to dashboard** links, datum en tijd rechts; geen knop **Settings**.
 - Temperatuurtegels: preview als vaste 2×2-grid, zonder pictogrammen. Nummer 1–4 linksboven op previewtegels correspondeert met de configuratieregels; volgorde links-rechts, boven-beneden.
+
+- Temperatuurpreview: optie A — direct live bij iedere wijziging van naam, sensor of volgorde, ook vóór Opslaan.
