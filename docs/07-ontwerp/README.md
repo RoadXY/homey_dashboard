@@ -200,3 +200,6 @@ Toon alle beschikbare MDI-pictogrammen in één doorzoekbaar overzicht. Toon een
 
 ### MDI-zoekfunctie – huidige fase
 De pictogramkiezer doorzoekt de door de MDI-website aangeleverde namen. Nederlandse termen, Engelse vertalingen en synoniemen worden nog niet toegevoegd.
+
+### Taalbeheer huidige fase
+De dashboardtaal is voorlopig Nederlands. Teksten worden vanaf de huidige fase in JSON-vertaalbestanden beheerd; de daadwerkelijke keuze uit meerdere dashboardtalen volgt in fase 3.
