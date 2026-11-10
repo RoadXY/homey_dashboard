@@ -100,3 +100,6 @@ De standaardtijdzone is `Europe/Amsterdam`, met automatische zomer- en wintertij
 
 ### Weergave serverresources
 Opslag- en geheugengebruik worden tekstueel getoond, zonder grafische balken.
+
+### Serverwaarschuwingen
+Er worden op de pagina Algemeen geen waarschuwingen getoond. De serverstatussen blijven wel zichtbaar als tekstuele waarden.
