@@ -122,3 +122,6 @@ Voor het kiezen van een actieknoppictogram gebruikt de gebruiker één doorzoekb
 
 ### Zoeken MDI-pictogrammen en meertaligheid
 In de huidige fase gebruikt de pictogramkiezer uitsluitend de namen/zoektermen zoals de MDI-website deze aanlevert. Nederlandse zoektermen, Engelse vertalingen en synoniemen vallen buiten de huidige fase.
+
+### Dashboardtaal huidige fase
+De standaarddashboardtaal is Nederlands. Alle zichtbare dashboardteksten worden vanaf de huidige fase via JSON-vertaalbestanden beheerd, zodat uitbreiding naar meerdere talen in fase 3 mogelijk is zonder teksten uit de applicatiecode te hoeven halen.
