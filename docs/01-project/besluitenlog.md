@@ -423,3 +423,11 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De fase-1-dashboardlogica gebruikt hetzelfde voorwaardenmodel waar dat technisch verantwoord en één-op-één vertaalbaar is. Blockly-bewerking en de volledige visuele editor blijven fase-2-functionaliteit.
 - Niet-ondersteunde of niet eenduidig vertaalbare HA-voorwaarden worden expliciet gemarkeerd en aan de gebruiker voorgelegd. Er vindt geen stilzwijgende vereenvoudiging, wijziging of verlies van logica plaats.
 - Het voorwaardenmodel krijgt schema-versiebeheer en validatie, zodat het later veilig kan worden uitgebreid en door Blockly kan worden ingelezen.
+
+## Fase-indeling: eerst basisdashboard, zonder meldingen (11 november 2026)
+- De gebruiker kiest ervoor eerst een bruikbaar Homey-dashboard op te leveren zonder meldingen. De meldingeninventarisatie, import en het JSON-voorwaardenmodel worden voorbereid als afzonderlijk werk en blokkeren de eerste dashboardrelease niet.
+- **Fase 1A – Basisdashboard:** klok/datum, weer, vier temperatuurtegels, Homey/serverstatus en de acht goedgekeurde quick action buttons. Het meldingenpaneel wordt in deze eerste oplevering niet getoond.
+- De acht quick action buttons moeten in fase 1A niet alleen visueel aanwezig zijn, maar daadwerkelijk werken en de bijbehorende Homey-acties uitvoeren. Benodigde Homey-Flows moeten daarvoor worden voorbereid/aangemaakt na controle van de exacte actie en met behoud van de bestaande Homey-logica.
+- **Fase 1B – Meldingenvoorbereiding:** inventarisatie en mapping van de conditionele Home Assistant-kaarten, met behoud van de oorspronkelijke YAML en opslag in het versiebeheerde JSON-voorwaardenmodel. Meldingen worden pas later aan het dashboard toegevoegd.
+- **Fase 2:** meldingenbeheer en de visuele voorwaardeneditor met Blockly, voortbouwend op het JSON-voorwaardenmodel.
+- De eerder goedgekeurde hoofdschermindeling blijft het ontwerpuitgangspunt; het ontbreken van meldingen in fase 1A is een tijdelijke scopekeuze en geen nieuw visueel ontwerpbesluit.
