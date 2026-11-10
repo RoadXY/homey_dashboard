@@ -158,3 +158,6 @@ De sensorpicker volgt de volledige geneste Homey-ruimtestructuur zonder vaste ma
 
 ### Weerkaart – vaste volgorde en zichtbaarheid
 De volgorde van de acht weeronderdelen staat vast en is niet door de gebruiker te wijzigen. De gebruiker kan wel ieder onderdeel afzonderlijk in- of uitschakelen. Dit houdt de opbouw van de weerkaart voorspelbaar en vereenvoudigt de implementatie en vormgeving van de kaart.
+
+### Live preview weerkaart
+De preview van de weerkaart wordt direct bijgewerkt wanneer de gebruiker een van de acht weeronderdelen aan- of uitzet. De preview toont de conceptinstellingen vóór Opslaan; Opslaan bewaart de gekozen zichtbaarheid definitief.
