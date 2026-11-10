@@ -118,3 +118,6 @@ Bij het verlaten van de pagina met niet-opgeslagen wijzigingen verschijnt een be
 
 ### Indeling pagina Algemeen
 Alle instellingen en statusinformatie worden in één gecombineerd overzicht getoond; er komen geen afzonderlijke gegroepeerde blokken.
+
+### Presentatiestijl pagina Algemeen
+Combinatie van compacte lijst voor instellingen en compacte kaarten voor systeemstatusinformatie.
