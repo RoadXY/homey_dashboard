@@ -71,3 +71,5 @@ De pagina combineert twee presentatiestijlen: instellingen worden als compacte l
 De systeemstatuskaarten worden in één horizontale rij geplaatst, voor zover de beschikbare schermbreedte dit toelaat.
 
 De instellingenpagina krijgt linksboven een duidelijke terugkeerknop met het label **← Dashboard**.
+
+In de navigatiekolom wordt de actieve pagina aangegeven met een subtiele lichtere achtergrond achter de geselecteerde optie.
