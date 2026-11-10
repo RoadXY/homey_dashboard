@@ -182,3 +182,9 @@ In fase 2 wordt onderzocht en besloten hoe Homey meldingen aan het dashboard kan
 
 ### Responsieve instellingen- en meldingeditor
 De instellingen zijn bereikbaar vanaf tablet, laptop en desktop. De ontwerpdoelen zijn een tablet van circa 10 inch (voor incidenteel/noodgebruik) en laptops van 15–16 inch (primair gebruik). Op grotere schermen, zoals 30 inch, mag vrije ruimte overblijven; de interface hoeft niet uitgerekt te worden om de volledige breedte te vullen. De schermvullende meldingeditor en Blockly-werkruimte moeten zich aanpassen aan de beschikbare viewport en op tablet bruikbaar blijven, zonder de laptopervaring te benadelen.
+
+### Fase 1 – meldingen uit Home Assistant importeren
+In fase 1 bouwen we nog geen algemene visuele voorwaardeneditor en geen configureerbare blokkenbibliotheek. We nemen de bestaande meldingskaarten/definities uit de Home Assistant YAML over in de dashboardimplementatie als vast geprogrammeerde meldingen, zodat de gebruiker de werking van het dashboard naast Home Assistant kan testen. Alle bestaande HA-voorwaarden en hun combinaties worden exact behouden; er wordt niets zelfstandig aangepast of vereenvoudigd. De eenvoudige instellingen voor meldingen (actief/inactief, naam en meldingsniveau) blijven binnen de eerder afgesproken fase-1-scope. Bewerken van de voorwaarden via Blockly wordt uitgesteld tot fase 2.
+
+### Fase 2 – visuele voorwaardeneditor
+De Blockly-voorwaardeneditor, inclusief categorieën, blokkenbibliotheek en het opbouwen/bewerken van voorwaarden, wordt bewaard voor fase 2. De concrete blokcategorieën en beschikbare blokken worden pas in fase 2 ontworpen en vastgesteld.
