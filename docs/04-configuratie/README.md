@@ -152,3 +152,6 @@ De taalkeuze staat op de instellingenpagina **Algemeen**, bij de datum- en tijdi
 
 ### Live preview temperatuurtegels
 De voorbeeldweergave van de temperatuurtegels wordt direct bijgewerkt bij iedere wijziging aan naam, geselecteerde sensor of volgorde. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
+
+### Sensorselectie – geneste Homey-ruimtes en kruimelpad
+De sensorpicker volgt de volledige geneste Homey-ruimtestructuur zonder vaste maximale diepte. Bij selectie van een ruimte worden alleen apparaten getoond die een geschikte temperatuursensor aanbieden; per apparaat wordt de beschikbare temperatuurwaarde getoond en selecteerbaar gemaakt. Ruimte-iconen uit Homey worden niet overgenomen. Navigatie terug gebeurt uitsluitend via het aanklikbare kruimelpad; er staat geen aparte optie Terug tussen de ruimtes of apparaten. Bij lange paden worden het laatste niveau en de twee voorgaande niveaus getoond; tussenliggende niveaus worden achter een aanklikbare ellipsis (…) verborgen, waarmee elk verborgen niveau bereikbaar blijft.
