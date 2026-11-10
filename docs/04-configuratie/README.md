@@ -101,3 +101,5 @@ Per snelle actieknop kan de gebruiker de zichtbaarheid, volgorde, naam, pictogra
 Per snelle actieknop kiest de gebruiker het actietype: **Homey Flow starten** of **Homey-apparaat bedienen**. De verdere configuratie hangt af van het gekozen actietype.
 
 Bij het actietype **Homey Flow starten** selecteert de gebruiker een Flow uit een lijst met Flow-namen. De lijst heeft een zoekfunctie.
+
+Bij het actietype **Homey-apparaat bedienen** kiest de gebruiker eerst een Homey-kamer/ruimte en daarna een apparaat uit die ruimte.
