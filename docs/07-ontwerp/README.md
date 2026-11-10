@@ -59,3 +59,7 @@ De mockup is hierop aangepast met één consistente standaardafstand tussen de d
 
 ## Meldingenpaneel – symmetrische randruimte en lijnaccenten (10 november 2026)
 De rechterzijde van het meldingenpaneel krijgt dezelfde binnenmarge als de linkerzijde: de afstand van de buitenste meldingskaarten tot de paneelrand moet links en rechts gelijk zijn. De decoratieve verticale lijnaccenten aan beide zijkanten moeten even lang zijn en geleidelijk over een langere lengte vervagen in de achtergrond. De gebruiker wil een zachte, langzame overgang zoals in het bestaande ontwerp, maar uitgesmeerd over een grotere afstand.
+
+
+## Verfijning fade links van meldingen (10 november 2026)
+De gebruiker vraagt specifiek om de verticale overgang links van het meldingenpaneel (in de gemarkeerde cirkel) langzamer en over een grotere lengte te laten vervagen. Maak deze overgang langer uitgesmeerd en zachter, zodat de lijn vrijwel ongemerkt in de achtergrond verdwijnt. Overige onderdelen blijven gelijk.
