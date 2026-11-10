@@ -215,3 +215,6 @@ Een nieuwe installatie start met Engels als geselecteerde dashboardtaal. Dit slu
 
 ### Taal automatisch afstemmen op Homey
 Bij de eerste installatie detecteert het dashboard de ingestelde taal van Homey en selecteert die taal wanneer vertalingen beschikbaar zijn. Is de gedetecteerde taal niet beschikbaar, dan schakelt het dashboard terug naar Engels en toont het een duidelijke melding met de gedetecteerde taal en de mededeling dat deze niet wordt ondersteund. De gebruiker kan een andere beschikbare taal kiezen. Engels blijft ook de fallback voor afzonderlijke ontbrekende vertalingen.
+
+### Weergave taalkeuze
+De taalkeuzelijst toont als eerste **Automatisch (taalnaam)**, bijvoorbeeld **Automatisch (Nederlands)**, op basis van de door Homey gedetecteerde taal. Daaronder staan alle talen waarvoor een volledige of gedeeltelijke vertaling aanwezig is. De optie Automatisch volgt de Homey-taal; bij een niet-beschikbare taal valt het dashboard terug op Engels en meldt het welke taal Homey gebruikt.
