@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 18
+# Besluitenlog – inventarisatierondes 1 t/m 19
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -163,11 +163,19 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Bij verlies van Homey-verbinding blijft de bestaande afgesproken status gelden: ‘Homey Offline’ bij de klok en laatst bekende waarden blijven staan. Dit punt wordt niet opnieuw als nieuw besluit behandeld.
 - Tijdstip van laatste update wordt alleen getoond bij waarden die als verouderd worden aangemerkt.
 
+## Ronde 19 – quick button-feedback en bevestiging
+- Tijdens uitvoering van een quick button wordt de betreffende knop tijdelijk uitgeschakeld tot Homey antwoord geeft.
+- Na een geslaagde actie blijft de feedback ongeveer 5 seconden zichtbaar.
+- Bij een mislukte actie verschijnt een algemene foutmelding bovenaan het dashboard.
+- Kritische acties gebruiken een grotere bevestigingsdialoog met een duidelijke omschrijving van de actie.
+- Om herhaald indrukken te voorkomen geldt naast blokkeren tijdens uitvoering ook een korte wachttijd na een geslaagde actie; de exacte duur moet nog worden bepaald.
+
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
 - Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
 - Hoe verouderde temperatuurwaarden visueel worden aangeduid en hoe het update-tijdstip wordt weergegeven.
 - Welke klok- en datumnotaties als instelbare opties beschikbaar komen.
+- Exacte duur van de extra wachttijd na een geslaagde quick button-actie.
 - Detailuitwerking complexe meldingscondities en editor in fase 2.
 - Exacte manier waarop de gebruiker Flow of directe apparaatbediening per quick button configureert (velden/keuzelijst en validatie).
 - Definitieve beveiligingsdetails: pincodebeleid, sessieduur-instelling, rate limiting en opslag van secrets.
