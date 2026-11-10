@@ -258,3 +258,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De verticale lijn/overgang links van het meldingenpaneel krijgt een nog langere en geleidelijkere fade naar de achtergrond.
 - Het accent moet over een grotere lengte uitlopen en mag niet abrupt zichtbaar eindigen.
 - Dit verzoek wijzigt alleen het fade-effect links van het meldingenpaneel; overige ontwerpafspraken blijven behouden.
+
+
+## Besluit toegang instellingen via tijdkaart (10 november 2026)
+- Geen zichtbaar instellingenicoon of aparte instellingenknop op het dashboard.
+- Lang indrukken op de tijdkaart opent de instellingenpagina.
+- De tijdkaart blijft visueel ongewijzigd.
+- De mockup met een extra instellingenknop en vervormde tekst/iconen is afgekeurd; niet gebruiken als referentie.
