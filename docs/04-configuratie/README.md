@@ -55,3 +55,5 @@ De standaardtijdzone is `Europe/Amsterdam`, inclusief automatische overgang tuss
 Opslag- en geheugengebruik worden als tekstuele waarden weergegeven, zonder grafische voortgangsbalken.
 
 Op de pagina Algemeen worden geen serverwaarschuwingen getoond; alleen de statuswaarden worden weergegeven.
+
+De dashboardversie wordt weergegeven met het versienummer en de datum van de laatste update.
