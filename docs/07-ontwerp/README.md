@@ -262,3 +262,6 @@ Alle meldingen zijn dashboard-eigendom qua beheer: aanmaken, bewerken en verwijd
 
 ### Responsieve meldingeditor
 Ontwerp de schermvullende editor primair voor laptopformaten van 15–16 inch en ondersteun daarnaast een tabletviewport van circa 10 inch voor incidenteel of noodbeheer. Op een 30-inch scherm mag de inhoud een comfortabele maximale breedte behouden en hoeft niet alle beschikbare ruimte gevuld te worden. De Blockly-werkruimte krijgt zoveel mogelijk bruikbare ruimte; op smallere viewports stapelen of herschikken de panelen zodat bediening en voorwaardeneditor bruikbaar blijven.
+
+### Scopecorrectie meldingeditor: Blockly naar fase 2
+De eerder besproken schermvullende Blockly-editor en het ontwerp van de blokkenbibliotheek worden niet in fase 1 gerealiseerd. Fase 1 importeert de bestaande Home Assistant-meldingsdefinities als vast geprogrammeerde dashboardmeldingen om de werking te kunnen testen. De HA-voorwaarden en combinaties worden exact overgenomen en niet gewijzigd. In fase 1 blijven alleen de afgesproken eenvoudige eigenschappen configureerbaar (actief/inactief, naam en meldingsniveau); voorwaarden zijn nog niet via de interface bewerkbaar. De volledige voorwaardeneditor en de keuze/indeling van Blockly-blokken worden onderdeel van fase 2.
