@@ -306,3 +306,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Actieve optie navigatiekolom: subtiele lichtere achtergrond achter de geselecteerde optie.
 
 - Navigatiekolom: bij iedere categorienaam staat een klein pictogram.
+
+- Navigatiecategorieën instellingen: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
