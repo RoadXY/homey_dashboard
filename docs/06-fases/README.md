@@ -27,3 +27,6 @@ Prioriteitsverfijning, verdere optimalisatie en eventuele aanvullende functies w
 
 ## Huidige status
 Inventarisatierondes 1 t/m 22 zijn afgerond en gedocumenteerd. De eerste analyse van de aangeleverde Home Assistant-YAML (983 regels, 55 kaarten) is vastgelegd. De volledige mapping van YAML-entiteiten/voorwaarden naar Homey-apparaten en capabilities moet nog gebeuren. Mockups en functioneel ontwerp zijn nog niet goedgekeurd. Er is nog geen applicatiecode gestart.
+
+### Fase 3 – Voorgeprogrammeerde thema's
+In fase 3 wordt een selectie vooraf ontworpen dashboardthema's toegevoegd. In fase 1/2 worden pictogrammen en overige visuele eigenschappen automatisch door het actieve thema bepaald; per actieknop kan de gebruiker alleen het MDI-pictogram kiezen. De concrete themavarianten worden in de ontwerpfase voor fase 3 vastgesteld.
