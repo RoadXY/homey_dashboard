@@ -39,3 +39,6 @@ De dashboardtaal is in de huidige fase Nederlands, maar alle zichtbare teksten w
 
 ### Indeling vertalingen
 In de huidige fase wordt Nederlands gebruikt. Vertalingen worden georganiseerd in meerdere JSON-bestanden per taal, opgesplitst per onderdeel van de applicatie. In fase 3 wordt ondersteuning voor meerdere talen toegevoegd.
+
+### Taalondersteuning
+Engels is de standaard- en terugvaltaal van de applicatie. Nederlands en toekomstige talen zijn optionele taalkeuzes. Bij ontbrekende vertalingen wordt de Engelse tekst gebruikt. Vertalingen blijven per taal en per applicatieonderdeel in afzonderlijke JSON-bestanden georganiseerd.
