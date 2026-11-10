@@ -310,3 +310,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Navigatiecategorieën instellingen: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
 
 - Pagina Dashboard: instelbaar zijn temperatuurtegels (kamers en sensoren), zichtbare weergegevens en snelle actieknoppen (zichtbaarheid, volgorde en instellingen).
+
+- Temperatuurtegels: exact vier vaste tegels; per tegel selecteert de gebruiker welke Homey-temperatuursensor wordt weergegeven. Het aantal tegels is niet wijzigbaar.
