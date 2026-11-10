@@ -67,3 +67,5 @@ Wanneer de gebruiker de pagina verlaat met niet-opgeslagen wijzigingen, verschij
 De pagina **Algemeen** presenteert alle gekozen instellingen en systeemstatusinformatie in één gecombineerd overzicht, zonder deze onder te verdelen in afzonderlijke blokken.
 
 De pagina combineert twee presentatiestijlen: instellingen worden als compacte lijst weergegeven en systeemstatusinformatie als compacte kaarten.
+
+De systeemstatuskaarten worden in één horizontale rij geplaatst, voor zover de beschikbare schermbreedte dit toelaat.
