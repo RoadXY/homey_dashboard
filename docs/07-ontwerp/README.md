@@ -265,3 +265,10 @@ Ontwerp de schermvullende editor primair voor laptopformaten van 15–16 inch en
 
 ### Scopecorrectie meldingeditor: Blockly naar fase 2
 De eerder besproken schermvullende Blockly-editor en het ontwerp van de blokkenbibliotheek worden niet in fase 1 gerealiseerd. Fase 1 importeert de bestaande Home Assistant-meldingsdefinities als vast geprogrammeerde dashboardmeldingen om de werking te kunnen testen. De HA-voorwaarden en combinaties worden exact overgenomen en niet gewijzigd. In fase 1 blijven alleen de afgesproken eenvoudige eigenschappen configureerbaar (actief/inactief, naam en meldingsniveau); voorwaarden zijn nog niet via de interface bewerkbaar. De volledige voorwaardeneditor en de keuze/indeling van Blockly-blokken worden onderdeel van fase 2.
+
+### Importmodel voorbereid op Blockly – centraal JSON-voorwaardenmodel (11 november 2026)
+De import van Home Assistant-kaarten legt vanaf fase 1 twee representaties vast: de oorspronkelijke YAML-definitie als bron/referentie en een genormaliseerd, versiebeheerd JSON-voorwaardenmodel als centrale representatie van de logica. Het JSON-model bewaart onder meer de volledige boomstructuur van geneste AND/OR-combinaties, vergelijkingen, waarden en bronverwijzingen.
+
+De dashboardlogica van fase 1 gebruikt dit model waar een exacte vertaling mogelijk is. De toekomstige Blockly-editor (fase 2) leest hetzelfde model in om de voorwaarden visueel weer te geven en te bewerken. De Blockly-workspace zelf is niet de enige bron van waarheid; het centrale voorwaardenmodel blijft leidend. Het model wordt voorzien van schema-versiebeheer en validatie.
+
+Als een HA-voorwaarde niet eenduidig of niet volledig naar het model kan worden vertaald, wordt die expliciet gemarkeerd voor beoordeling. Er wordt niets stilzwijgend vereenvoudigd, aangepast of weggelaten. De Blockly-editor en de blokkenbibliotheek blijven fase-2-functionaliteit.
