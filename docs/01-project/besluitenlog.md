@@ -384,3 +384,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Lang kruimelpad: huidig niveau plus twee voorgaande niveaus zichtbaar; overige niveaus achter een aanklikbare **…**, waarmee ieder verborgen niveau bereikbaar is.
 
 - Weeronderdelen: vaste volgorde; gebruiker kan per onderdeel alleen de zichtbaarheid in- of uitschakelen. Geen drag-and-drop voor de volgorde. Dit vereenvoudigt een consistente weerkaart.
+
+- Weerpreview: direct live bij iedere wijziging van de zichtbaarheid, ook vóór Opslaan. De volgorde van weeronderdelen blijft vast.
