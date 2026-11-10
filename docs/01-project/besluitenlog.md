@@ -376,3 +376,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Temperatuurtegels: preview als vaste 2×2-grid, zonder pictogrammen. Nummer 1–4 linksboven op previewtegels correspondeert met de configuratieregels; volgorde links-rechts, boven-beneden.
 
 - Temperatuurpreview: optie A — direct live bij iedere wijziging van naam, sensor of volgorde, ook vóór Opslaan.
+
+- Sensorselectie: volledige geneste Homey-ruimtestructuur, zonder vaste maximale diepte.
+- Ruimte-iconen van Homey worden niet getoond.
+- Per ruimte worden apparaten met geschikte temperatuurmetingen getoond; de gebruiker kiest de gewenste meetwaarde.
+- Geen aparte optie **Terug** in de lijst; navigeren gebeurt via het aanklikbare kruimelpad.
+- Lang kruimelpad: huidig niveau plus twee voorgaande niveaus zichtbaar; overige niveaus achter een aanklikbare **…**, waarmee ieder verborgen niveau bereikbaar is.
