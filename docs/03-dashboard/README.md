@@ -24,16 +24,17 @@
 ## Rechterzijde
 - Quick buttons en meldingen, uitgaande van de bestaande dashboardindeling.
 - Alle actieve meldingen blijven beschikbaar in scrollbaar meldingenpaneel.
-- Sortering: ernst/prioriteit, daarna tijdstip.
+- Sortering: eerst kritiek, dan waarschuwing, dan info; binnen elk niveau nieuwste activeringstijdstip eerst.
 - Bij geen actieve meldingen: ‘Alles in orde’.
 
 ## Meldingsweergave
-- Niveaus: kritiek, waarschuwing, info.
-- Standaard: herkenbaar icoon per niveau, geen opvallende achtergrond.
-- Kritiek: rode achtergrond met goed leesbare contrasterende tekst; definitieve stijl volgt in mockup.
-- Compacte basisweergave: titel en actuele waarde.
-- Meldingen verdwijnen zodra de voorwaarde niet langer actief is.
-- Trigger-/activeringstijdstip wordt bijgehouden.
+- Elke melding heeft precies één niveau: kritiek, waarschuwing of info.
+- Standaardmelding: herkenbaar icoon, titel en actuele waarde.
+- Standaard meldingen hebben geen opvallende achtergrondkleur.
+- Kritieke meldingen: rode achtergrond met contrasterende, goed leesbare tekst; definitieve stijl volgt in mockup.
+- Bij gelijke niveaus wordt de nieuwste actieve melding eerst getoond.
+- Melding verdwijnt direct zodra de onderliggende voorwaarde niet meer actief is; er is geen geschiedenisoverzicht voor beëindigde meldingen.
+- Activeringstijdstip wordt bijgehouden voor sortering.
 - Mediaspelers zijn meldingsachtige items, alleen zichtbaar wanneer actief; titel, artiest en afspeelstatus. Sem en Bram naast elkaar als beide actief zijn.
 
 ## Quick buttons
