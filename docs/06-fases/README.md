@@ -75,3 +75,6 @@ De weerkaartpreview wordt direct bijgewerkt bij het in- en uitschakelen van onde
 
 ### Configuratie snelactieknoppen
 Voor iedere snelactie kiest de gebruiker expliciet het actietype via twee keuzeknoppen: Flow of Apparaat. Bij Flow wordt een bestaande Homey Flow gekozen via een doorzoekbare lijst. Bij Apparaat wordt via ruimte en apparaat een ondersteunde apparaatactie gekozen. De Flow blijft ook handmatig in Homey startbaar. Naam en pictogram zijn per knop instelbaar; preview wordt direct bijgewerkt en gebruikt monochrome pictogrammen volgens het actieve thema.
+
+### Thema-uitbreiding fase 3
+Neem naast de overige vooraf gedefinieerde thema's ook een **Homey-stijl thema** op. Gebruik de door de gebruiker aangeleverde Homey-apparatenpagina als visuele referentie: donkere antraciet/zwart-grijze basis, ingetogen grijze kaartvlakken en blauwe accenten. De precieze stijlwaarden worden in fase 3 ontworpen.
