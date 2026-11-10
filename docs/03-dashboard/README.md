@@ -89,3 +89,50 @@ Gemiddelde kamer- en keukentemperaturen, plantensensoren, telefoon/tablet-batter
 
 ### Werkwijze
 Iedere koppeling krijgt een expliciete status: bevestigd, kandidaat, ontbreekt, semantisch verschil of bespreekpunt. Bij een niet-één-op-één-vertaling wordt niets zelfstandig vereenvoudigd of overgeslagen; dit wordt eerst met de gebruiker besproken.
+
+
+## Verdieping mapping: exacte bronvoorwaarden en actuele Homey-kandidaten
+
+Deze aanvulling is gebaseerd op parsing van de YAML-kaarten en een nieuwe read-only uitlezing van Homey-apparaten, zones, Flows en Moods. Het betreft inventarisatie, geen wijziging aan Homey.
+
+### Specifieke HA-condities uit de YAML
+- `Raam Tess niet open`: bovenraam Tess moet dicht zijn, schema `boven_ramen_open` actief, airco-zolder mag niet in `cool`, `unavailable` of `heat` staan, én buitentemperatuur boven 18 met `zon_staat_op_raam_tess` uit.
+- `Achterdeur open`: achterdeur open én buitentemperatuur lager dan 18 óf hoger dan 24.
+- `Raam Bram niet open`: bovenraam Bram dicht, schema bovenramen actief en gevoelstemperatuur onder 18.
+- `Raam Ouders niet open`: bovenraam ouders dicht, schema bovenramen actief en gevoelstemperatuur onder 18.
+- `Dakraam Sem niet open`: dakraam dicht, schema actief, weerstatus niet een van de uitgesloten regen/onweer/sneeuwstatussen, airco-zolder niet in koelen/verwarmen en neerslag onder 0,1.
+- `Lamp Sem/Bram staat aan`: bijbehorend slaapschema actief én de betreffende lamp aan.
+- Koude slaapkamers: zichtbaarheid wordt gestuurd door aparte HA-binary sensors `temperatuur_bram_laag`, `temperatuur_tess_laag`, `temperatuur_ouders_laag`, `temperatuur_zolder_laag`; niet gelijkstellen aan een simpele actuele temperatuurdrempel zonder de oorspronkelijke logica te reconstrueren.
+- Vriezerkaart toont `sensor.koelkast_temperatuur_koelkast_temperatuur_temperatuur`, terwijl de zichtbaarheid wordt bepaald door `binary_sensor.vriezer_keuken_temperatuur_hoog`. Deze afwijking is een expliciet bespreekpunt.
+- CO2-kaart toont `sensor.multisensor_woonkamer_eco2`, maar zichtbaarheid checkt `sensor.eco2` boven 1200.
+- Plantkaarten tonen vier sensorwaarden: gatenplant vochtigheid/voeding en paradijsvogelplant vochtigheid/voeding. De grenzen zijn vochtigheid onder 15 en geleidbaarheid onder 350.
+- Batterijmeldingen: Galaxy A54 onder 20% of status full; SM-S721B onder 20% of status full; Pixel 7 Pro onder 15% of status full; SM-F966B onder 15% of status full; Moto G60S onder 15% of status full; muurtablet onder 25%.
+- Truus: één kaart is zichtbaar zolang werkstatus niet Sleeping, Charging, Unavailable of Standby is; een tweede kaart is zichtbaar bij Standby.
+- Tuinhuislamp: schakelaar moet 5 minuten onafgebroken aan zijn.
+- Mediaspelers Sem en Bram zijn zichtbaar bij state `playing`.
+
+### Nieuwe Homey-gegevens die de mapping verfijnen
+- Airco keuken: Homey-apparaat `Airco keuken` bestaat met `thermostat_mode`, `onoff`, `target_temperature`, `fan_mode`, `swing_mode` en `measure_temperature`.
+- Airco zolder: Homey-apparaat `Airco zolder` bestaat met dezelfde soort modus-/temperatuurvelden.
+- Achterdeur: Homey-apparaat `Achterdeur` met `alarm_contact`.
+- Bovenraam ouderslaapkamer: Homey-apparaat `Bovenraam ouderslaapkamer` met `alarm_contact`.
+- Bovenraam Bram: Homey-apparaat `Bovenraam Bram` met `alarm_contact`.
+- Bovenraam Tess: Homey-apparaat `Boven raam Tess` met `alarm_contact`.
+- Temperatuur ouderslaapkamer: Homey-apparaat `Temperatuur ouderslaapkamer` met `measure_temperature`.
+- Koelkast keuken temperatuur: Homey-apparaat `Koelkast keuken temperatuur` met `measure_temperature`; dit is een mogelijke match voor de getoonde koelkasttemperatuur, maar verklaart niet vanzelf de HA-vriezer-visibilitysensor.
+- Muur tablet: apparaat heeft `measure_battery`; huidige uitlezing is 100%.
+- Remeha ketel: `boiler_state`, `DHW_state`, `modulation_level`, `measure_temperature.intended`, `measure_temperature.boiler`, `measure_temperature.return`, `boiler_status_code`, `boiler_error_code`, `DHW_mode`.
+- Homey Mood `TV kijken` bestaat in zone Begane grond. Dit is slechts een kandidaat voor de knop TV-modus; exacte actielogica moet nog worden vastgesteld.
+
+### Nog niet gevonden of niet gelijkwaardig bewezen
+- De YAML-verwijzingen naar plantensensoren hebben in de huidige gefilterde Homey-inventarisatie geen bevestigde overeenkomst opgeleverd.
+- De telefoonbatterij-entiteiten (Galaxy A54, SM-S721B, Pixel 7 Pro, SM-F966B en Moto G60S) zijn niet aan Homey-apparaten gekoppeld in de huidige inventarisatie.
+- De HA-schema's `boven_ramen_open`, `slapen_sem` en `slapen_bram` zijn geen apparaat-capabilities uit de huidige device-inventaris. Er moet worden vastgesteld of hiervoor Homey Logic-variabelen of Flows een equivalent bieden.
+- `zon_staat_op_raam_tess` is een HA-afgeleide sensor; geen equivalent is bevestigd.
+- Homey-apparaat `Weer` biedt actuele temperatuur, gevoelstemperatuur, vochtigheid, wind, regen, sneeuw en beschrijving, maar de YAML gebruikt ook Buienradar-specifieke neerslagkans en forecast-entiteiten. Een equivalent voor `rainchance_1d` is niet vastgesteld.
+- De YAML bevat twee temperatuur-gemiddelden (woonkamer en keuken). In Homey bestaan Flows met namen die gemiddelden vanaf thermostaat/multisensor of verwarming/airco suggereren; de Flow-inhoud moet nog worden onderzocht voordat we kunnen vaststellen of dit de exacte bronberekening is.
+- De HA-entity `binary_sensor.wasmachine` is een afgeleide status; Homey `Wasmachine` heeft onoff en vermogenswaarden. De exacte detectielogica moet worden vergeleken.
+- Voor de acht HA-scene-knoppen zijn nog niet alle bijbehorende Homey Flows/Moods definitief vastgesteld. Alleen de Mood `TV kijken` is op naam een duidelijke kandidaat. Er bestaan relevante Flows rond Q-Music en rolluiken, maar hun inhoud moet worden gelezen voordat een knop eraan wordt gekoppeld.
+
+### Relevante gevonden Homey Flows (namen, nog niet inhoudelijk geverifieerd)
+Er zijn onder meer Flows gevonden met namen rond: temperatuur gemiddelde woonkamer/keuken, CO2 woonkamer hoog, verwarming/airco, rolluiken, regen en open ramen, wateralarmen, droger looptijd/energie, wasmachine start/klaar, verjaardagsmodus, TV en Q-Music. Deze namen zijn aanwijzingen voor mogelijk herbruikbare bestaande logica, geen bevestiging van de werking.
