@@ -245,3 +245,6 @@ De acht weeronderdelen worden in een vaste volgorde getoond. Slepen om de volgor
 
 ### Live preview weerinstellingen
 De preview rechts past zich direct aan iedere wijziging in de zichtbaarheid van de weeronderdelen aan, nog voordat de gebruiker op Opslaan klikt. De vaste volgorde blijft gehandhaafd.
+
+### Quick actions – Flow- en apparaatactie
+De bewerkingsdialoog bevat twee expliciete, naast elkaar geplaatste keuzes: **Flow** en **Apparaat**. Flow: selecteer een bestaande Homey Flow via een doorzoekbare lijst. Apparaat: selecteer eerst een ruimte, dan een apparaat en daarna een door dat apparaat ondersteunde actie. Naam en pictogram zijn onafhankelijk van het actietype instelbaar. De actiepreview blijft monochroom; pictogramkleur en -grootte volgen het actieve thema. De live preview toont wijzigingen direct.
