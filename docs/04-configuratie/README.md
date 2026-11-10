@@ -143,3 +143,6 @@ De taalkeuzelijst bevat bovenaan de optie **Automatisch (taalnaam)**, waarbij de
 
 ### Direct toepassen taalwijziging
 Een handmatige wijziging van de dashboardtaal wordt direct toegepast, zonder de dashboardpagina opnieuw te laden of de Docker-container te herstarten.
+
+### Taalkeuze blijvend onthouden
+Een handmatig gekozen dashboardtaal wordt persistent opgeslagen en blijft behouden bij volgende bezoeken en na herstart van de Docker-container. De opgeslagen handmatige keuze heeft voorrang op de automatisch gedetecteerde Homey-taal. De optie Automatisch blijft beschikbaar om weer de Homey-taal te volgen.
