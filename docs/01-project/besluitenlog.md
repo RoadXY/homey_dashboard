@@ -369,3 +369,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Taalvoorkeur onthouden: een handmatig gekozen taal wordt persistent opgeslagen, ook na herstart van de Docker-container. Deze keuze heeft voorrang op automatische Homey-taaldetectie totdat de gebruiker weer Automatisch selecteert.
 
 - Locatie taalkeuze: instellingenpagina **Algemeen**, bij datum- en tijdinstellingen.
+
+- De gebruiker keurt de algemene visuele vormgeving van de mockup voor Instellingen > Algemeen goed: donkere stijl, linker navigatiekolom, tweekolomsindeling en compacte instellingenkaarten. Goedkeuring geldt niet voor de voorbeeldinstellingen in de mockup; alleen eerder afzonderlijk vastgelegde functionaliteit is leidend.
