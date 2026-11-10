@@ -112,3 +112,8 @@ De volgorde van snelle actieknoppen wordt aangepast door de knoppen te verslepen
 
 ### Pictogrammen snelle actieknoppen
 De gebruiker kiest per snelle actieknop zelf het MDI-pictogram. Kleur en grootte worden centraal door het dashboard bepaald en zijn niet door de gebruiker instelbaar. De pictogramkleur volgt de severity-/statuskleur volgens de afgesproken kleurcodering: rood, geel, blauw of groen.
+
+### Correctie pictogrammen en thema's
+Voor snelle actieknoppen kiest de gebruiker uitsluitend het MDI-pictogram. De kleur van alle actieknoppictogrammen is uniform en wordt automatisch bepaald door het actieve dashboardthema; de gebruiker stelt kleur of grootte niet afzonderlijk in. Severity-kleuren zijn niet van toepassing op actieknoppen.
+
+Voor fase 3 wordt voorzien in een aantal vooraf ontworpen thema's. De concrete themavarianten en hun kleuren worden later uitgewerkt.
