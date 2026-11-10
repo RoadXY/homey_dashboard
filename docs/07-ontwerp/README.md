@@ -254,3 +254,8 @@ Voeg in fase 3 een extra vooraf gedefinieerd thema toe: **Homey-stijl**. Visuele
 
 ### Definitieve navigatie Meldingenpagina
 De pagina Meldingen bevat geen tabbladen **Weergave** of **Volgorde**. Alleen **Meldingen** blijft beschikbaar. De weergave van meldingskaarten volgt de eerder vastgelegde vaste presentatie en is niet afzonderlijk configureerbaar. De volgorde wordt automatisch bepaald op basis van niveau (kritisch, waarschuwing, informatie) en binnen ieder niveau op nieuwste activatie eerst.
+
+### Schermvullende meldingeditor en Blockly
+De actie **Melding bewerken** en **Melding toevoegen** opent een volledige pagina/schermvullende editor, geen modal. De editor bevat de meldingseigenschappen (naam, pictogram, meldingsniveau, actief/inactief) én een visuele editor voor de volledige voorwaarden. Voor de voorwaarden wordt Blockly als voorkeurskandidaat gebruikt, met eigen styling en domeinspecifieke blokken voor logica zoals AND/OR, tijdsvensters, groter dan en kleiner dan. De editor moet voorwaarden kunnen opbouwen en aanpassen; bestaande of via Homey aangeleverde meldingen zijn niet alleen-lezen.
+
+Alle meldingen zijn dashboard-eigendom qua beheer: aanmaken, bewerken en verwijderen gebeurt vanuit het dashboard, ongeacht de herkomst. In fase 2 wordt apart bepaald via welk mechanisme Homey nieuwe meldingen kan aanleveren (bijvoorbeeld API of toekomstige Homey-app). Blockly is Apache-2.0 open source; de actuele documentatie beveelt JSON-serialisatie aan voor het bewaren en terugladen van workspaces. De uiteindelijke koppeling tussen Blockly-blokken en een gevalideerd voorwaardenmodel moet technisch worden uitgewerkt.
