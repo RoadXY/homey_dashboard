@@ -221,3 +221,6 @@ De taalkeuzelijst toont als eerste **Automatisch (taalnaam)**, bijvoorbeeld **Au
 
 ### Gedrag taalwijziging
 Wanneer de gebruiker een andere dashboardtaal selecteert, wordt de interface direct bijgewerkt zonder paginaherlading. De wijziging vereist geen herstart van de Docker-container.
+
+### Opslaan van taalvoorkeur
+Een handmatige taalkeuze wordt blijvend bewaard, ook na browserbezoek en containerherstart. Bij volgende bezoeken wordt deze keuze toegepast in plaats van opnieuw automatisch de Homey-taal te selecteren. Als de gebruiker Automatisch kiest, volgt het dashboard weer de taal van Homey.
