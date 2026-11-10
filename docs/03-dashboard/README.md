@@ -221,3 +221,10 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 - De verticale overgang links van het meldingenpaneel (tussen linker dashboardkolom en meldingen) moet nog geleidelijker en over een grotere verticale lengte vervagen in de achtergrond.
 - De overgang begint subtiel ter hoogte van de meldingen en loopt over een langere afstand naar beneden uit; vermijd een zichtbare harde eindrand.
 - Dit is een verfijning van het eerder afgesproken zachte lijn-/fade-effect. De overige layout, marges, kleuren en kaartformaten blijven ongewijzigd.
+
+
+## Verborgen toegang instellingen via tijdkaart (10 november 2026)
+- Er komt geen zichtbaar instellingenicoon of aparte instellingenknop op het hoofdscherm.
+- De instellingenpagina wordt geopend door de tijdkaart lang ingedrukt te houden.
+- De tijdkaart blijft visueel ongewijzigd; lang indrukken is de verborgen toegang.
+- De eerder gegenereerde mockup met een extra instellingenknop en de daarin vervormde tekst/iconen is afgekeurd en mag niet als ontwerp- of inhoudsreferentie worden gebruikt.
