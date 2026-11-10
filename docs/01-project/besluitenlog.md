@@ -336,3 +336,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Homey-apparaatselectie voor actieknoppen: eerst kamer/ruimte selecteren, daarna apparaat binnen die ruimte.
 
 - Apparaatselectie: op ieder niveau een duidelijke knop **Terug** om naar het vorige niveau te navigeren.
+
+- Apparaatacties: toon automatisch uitsluitend acties die het geselecteerde Homey-apparaat ondersteunt.
