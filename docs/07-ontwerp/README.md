@@ -242,3 +242,6 @@ De ruimte- en sensorpicker ondersteunt een onbeperkt aantal geneste Homey-ruimte
 
 ### Weerinstellingen – vaste volgorde
 De acht weeronderdelen worden in een vaste volgorde getoond. Slepen om de volgorde te wijzigen is niet beschikbaar. De gebruiker kan uitsluitend de zichtbaarheid per onderdeel aan- of uitzetten. De preview volgt direct de gekozen zichtbaarheid. De vaste volgorde ondersteunt een consistente en eenvoudiger te bouwen weerkaart.
+
+### Live preview weerinstellingen
+De preview rechts past zich direct aan iedere wijziging in de zichtbaarheid van de weeronderdelen aan, nog voordat de gebruiker op Opslaan klikt. De vaste volgorde blijft gehandhaafd.
