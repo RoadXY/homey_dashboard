@@ -180,3 +180,6 @@ De apparaatselectie verloopt in twee stappen: eerst een Homey-kamer/ruimte kieze
 
 ### Terugnavigatie apparaatselectie
 Op ieder selectieniveau staat een duidelijke knop **Terug**. Vanuit de apparatenlijst kan de gebruiker terug naar het overzicht van Homey-kamers/ruimtes.
+
+### Beschikbare apparaatacties
+Na selectie van een apparaat worden automatisch alleen de acties getoond die het apparaat daadwerkelijk ondersteunt.
