@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 16
+# Besluitenlog – inventarisatierondes 1 t/m 17
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -149,9 +149,17 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Kamertemperaturen worden weergegeven als afzonderlijke temperatuurtegels.
 - Als weerinformatie tijdelijk niet beschikbaar is, toont het dashboard een melding dat de weerinformatie niet beschikbaar is.
 
+## Ronde 17 – selectie en actualiteit kamertemperaturen
+- De gebruiker levert de vier gewenste kamers/sensoren zelf aan; deze selectie moet later aanpasbaar zijn.
+- Elke temperatuurtegel toont de kamernaam, de temperatuur en een klein temperatuur-icoon.
+- Temperatuurtegels gebruiken een neutrale, uniforme stijl; geen kleurcodering op basis van temperatuur.
+- Als een kamersensor offline is, blijft de tegel zichtbaar met ‘Geen gegevens’.
+- Een temperatuurwaarde ouder dan 15 minuten geldt als verouderd.
+
 ## Open punten
+- Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
 - Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
-- Welke maximaal vier kamers/sensoren worden geselecteerd.
+- Hoe verouderde temperatuurwaarden visueel worden aangeduid.
 - Detailuitwerking complexe meldingscondities en editor in fase 2.
 - Exacte manier waarop de gebruiker Flow of directe apparaatbediening per quick button configureert (velden/keuzelijst en validatie).
 - Definitieve beveiligingsdetails: pincodebeleid, sessieduur-instelling, rate limiting en opslag van secrets.
