@@ -115,3 +115,6 @@ De pagina gebruikt één algemene knop **Opslaan** onderaan de pagina voor alle 
 
 ### Niet-opgeslagen wijzigingen
 Bij het verlaten van de pagina met niet-opgeslagen wijzigingen verschijnt een bevestigingsvenster met drie keuzes: opslaan, weggooien of blijven.
+
+### Indeling pagina Algemeen
+Alle instellingen en statusinformatie worden in één gecombineerd overzicht getoond; er komen geen afzonderlijke gegroepeerde blokken.
