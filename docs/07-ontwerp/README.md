@@ -44,3 +44,14 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 3. Open technische keuzes.
 
 Geen implementatie starten voordat de mockups en het functioneel ontwerp expliciet zijn goedgekeurd.
+
+
+## Spatiëring – aanvullende ontwerpregel (10 november 2026)
+De gebruiker wil dat alle met rode markeringen aangegeven afstanden dezelfde tussenruimte krijgen. Dit geldt expliciet voor:
+- tijdkaart naar weerkaart;
+- weerkaart naar temperatuurtegels;
+- linkerkolom naar rechterkolom;
+- actieknoppenrij naar meldingenpaneel;
+- horizontale en verticale tussenruimtes tussen meldingskaarten en actieknoppen.
+
+De mockup is hierop aangepast met één consistente standaardafstand tussen de dashboardkaarten en onderdelen. Binnenruimte in een kaart mag passend blijven bij de inhoud, maar de buitenste tussenruimtes moeten uniform zijn.
