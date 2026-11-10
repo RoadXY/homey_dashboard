@@ -153,3 +153,6 @@ Gebruik één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanb
 
 ### Correctie sensorselectie temperatuurtegels
 De sensorselectie werkt zoals in de Homey mobiele app: eerst een kamer/ruimte selecteren en vervolgens een sensor uit die ruimte. Dit vervangt de eerder beschreven enkele lijst met alle sensoren. Zoeken wordt in fase 2 toegevoegd.
+
+### Terugnavigatie sensorselectie
+De sensorselectie bevat op ieder niveau een duidelijke optie **Terug** om naar het vorige niveau te gaan, bijvoorbeeld vanuit de sensorenlijst terug naar het overzicht van kamers/ruimtes.
