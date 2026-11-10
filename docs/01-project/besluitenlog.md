@@ -282,3 +282,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Pagina Algemeen bevat instellingen voor tijdnotatie, datumweergave en tijdzone.
 
 - Standaardtijdzone: `Europe/Amsterdam` (automatische zomer- en wintertijd).
+
+- Opslag- en geheugengebruik: tekstuele waarden, zonder grafische voortgangsbalken.
