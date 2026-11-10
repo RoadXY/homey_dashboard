@@ -150,3 +150,6 @@ Per vaste temperatuurtegel zijn zowel de Homey-temperatuursensor als de weergege
 
 ### Selectie temperatuursensoren
 Gebruik één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanbieden.
+
+### Correctie sensorselectie temperatuurtegels
+De sensorselectie werkt zoals in de Homey mobiele app: eerst een kamer/ruimte selecteren en vervolgens een sensor uit die ruimte. Dit vervangt de eerder beschreven enkele lijst met alle sensoren. Zoeken wordt in fase 2 toegevoegd.
