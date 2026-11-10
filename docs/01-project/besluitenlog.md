@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 20
+# Besluitenlog – inventarisatierondes 1 t/m 22
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
