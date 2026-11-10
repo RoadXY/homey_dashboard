@@ -330,3 +330,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Snelle actieknoppen: per knop zijn zichtbaarheid, volgorde, naam, pictogram en actie-instelling instelbaar.
 
 - Actietype snelle actieknop: per knop keuze tussen Homey Flow starten en Homey-apparaat bedienen.
+
+- Homey Flow-selectie voor actieknoppen: lijst met Flow-namen inclusief zoekfunctie.
