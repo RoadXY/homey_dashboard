@@ -133,3 +133,6 @@ De geselecteerde optie in de navigatiekolom krijgt een subtiele lichtere achterg
 
 ### Pictogrammen navigatie
 Alle navigatie-items krijgen een klein pictogram vóór de categorienaam.
+
+### Navigatiecategorieën
+De navigatie bevat zes categorieën: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
