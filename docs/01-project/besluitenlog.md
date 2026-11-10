@@ -415,3 +415,11 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De gebruiker kiest voor optie B: **alle conditionele kaarten uit de bestaande Home Assistant-YAML** worden meegenomen in de inventarisatie/import, dus niet alleen waarschuwingen en meldingen die om aandacht vragen. Ook conditionele statuskaarten worden opgenomen.
 - Dit besluit wijzigt niet de eerder expliciet vastgelegde scope-uitzonderingen: telefoonbatterijkaarten, plantkaarten en mediaspelerkaarten blijven uitgesloten uit het nieuwe dashboard. De muurtablet-batterijmelding blijft wel in scope.
 - Alle oorspronkelijke zichtbaarheidvoorwaarden en AND/OR-combinaties blijven behouden. Iedere kaart wordt bij de mapping apart beoordeeld op Homey-beschikbaarheid en één-op-één vertaalbaarheid; onduidelijkheden worden niet zelfstandig aangepast.
+
+## Besluit voorbereiden op Blockly via een centraal voorwaardenmodel (11 november 2026)
+- Bij de import van de conditionele Home Assistant-kaarten wordt vanaf fase 1 naast de oorspronkelijke YAML-definitie ook een genormaliseerd, versiebeheerd JSON-voorwaardenmodel opgeslagen.
+- Dit JSON-model is de centrale, blijvende representatie van de voorwaarden en vormt later de basis voor het uitlezen en bewerken via Blockly. De Blockly-workspace is dus niet de enige bron van waarheid.
+- Het model bewaart de volledige logische structuur (waaronder geneste AND/OR-combinaties), vergelijkingen, waarden en bronverwijzingen. De oorspronkelijke YAML blijft beschikbaar als herleidbare bron.
+- De fase-1-dashboardlogica gebruikt hetzelfde voorwaardenmodel waar dat technisch verantwoord en één-op-één vertaalbaar is. Blockly-bewerking en de volledige visuele editor blijven fase-2-functionaliteit.
+- Niet-ondersteunde of niet eenduidig vertaalbare HA-voorwaarden worden expliciet gemarkeerd en aan de gebruiker voorgelegd. Er vindt geen stilzwijgende vereenvoudiging, wijziging of verlies van logica plaats.
+- Het voorwaardenmodel krijgt schema-versiebeheer en validatie, zodat het later veilig kan worden uitgebreid en door Blockly kan worden ingelezen.
