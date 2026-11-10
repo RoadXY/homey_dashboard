@@ -1,7 +1,7 @@
 # Mockups en ontwerpgoedkeuring
 
 ## Status
-De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeurd, inclusief de correctie dat kritieke meldingen een duidelijk roodgetinte achtergrond krijgen. De instellingenpagina en het volledige functionele ontwerp moeten nog worden besproken en goedgekeurd; implementatie start nog niet.
+De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeurd, inclusief de correctie dat kritieke meldingen een donker roodgetinte achtergrond krijgen. De instellingenpagina en het volledige functionele ontwerp moeten nog worden besproken en goedgekeurd; implementatie start nog niet.
 
 ## Vastgestelde visuele richting
 - Donkere, rustige en minimalistische basis.
@@ -23,7 +23,7 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 
 ## Meldings- en kleurgebruik
 - Kritiek: een duidelijk roodgetinte achtergrond met contrasterende, goed leesbare tekst; alleen een rood icoon of rode rand is niet voldoende.
-- Waarschuwing: een duidelijk geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
+- Waarschuwing: een donker geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
 - Info en overige meldingen behouden de neutrale donkere achtergrond van de gewone kaarten.
 - Waarschuwing en info krijgen herkenbare, maar beheerste functionele accenten.
 - Geen decoratieve kleurvlakken op actieknoppen of temperatuurtegels.
