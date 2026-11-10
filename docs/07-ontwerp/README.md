@@ -177,3 +177,6 @@ Toon een lijst met Flow-namen met een zoekfunctie, zodat de gebruiker de gewenst
 
 ### Selectie Homey-apparaat
 De apparaatselectie verloopt in twee stappen: eerst een Homey-kamer/ruimte kiezen en daarna het gewenste apparaat uit die ruimte selecteren.
+
+### Terugnavigatie apparaatselectie
+Op ieder selectieniveau staat een duidelijke knop **Terug**. Vanuit de apparatenlijst kan de gebruiker terug naar het overzicht van Homey-kamers/ruimtes.
