@@ -367,3 +367,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Toepassen taalwijziging: direct, zonder herladen van de dashboardpagina en zonder herstart van de Docker-container.
 
 - Taalvoorkeur onthouden: een handmatig gekozen taal wordt persistent opgeslagen, ook na herstart van de Docker-container. Deze keuze heeft voorrang op automatische Homey-taaldetectie totdat de gebruiker weer Automatisch selecteert.
+
+- Locatie taalkeuze: instellingenpagina **Algemeen**, bij datum- en tijdinstellingen.
