@@ -357,3 +357,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - JSON-vertaalbestanden: optie B — meerdere bestanden per taal, opgesplitst per onderdeel (bijvoorbeeld dashboard, meldingen en instellingen).
 
 - Correctie taalbeleid: Engels is de standaard- en terugvaltaal. Nederlands is een optionele keuzetaal, net als andere talen. Ontbrekende vertalingen vallen terug op Engels. De eerdere formulering dat Nederlands de standaardtaal zou zijn, is hiermee vervangen.
+
+- Nieuwe installatie: Engels wordt standaard geselecteerd als dashboardtaal.
