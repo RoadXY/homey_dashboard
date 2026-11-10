@@ -197,3 +197,6 @@ In fase 3 worden meerdere vooraf ontworpen dashboardthema's aangeboden; de exact
 
 ### Selectie MDI-pictogrammen
 Toon alle beschikbare MDI-pictogrammen in één doorzoekbaar overzicht. Toon een live voorbeeld van het geselecteerde pictogram.
+
+### MDI-zoekfunctie – huidige fase
+De pictogramkiezer doorzoekt de door de MDI-website aangeleverde namen. Nederlandse termen, Engelse vertalingen en synoniemen worden nog niet toegevoegd.
