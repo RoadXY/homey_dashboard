@@ -83,3 +83,5 @@ Op de pagina **Dashboard** zijn deze onderdelen instelbaar: welke kamers en sens
 Het aantal temperatuurtegels staat vast op **vier**. Per tegel kan de gebruiker selecteren welke beschikbare Homey-temperatuursensor de temperatuur aanlevert. Het aantal tegels en de tegelindeling zijn niet instelbaar.
 
 Naast de sensorselectie kan de gebruiker ook de naam van elk van de vier temperatuurtegels zelf aanpassen.
+
+De sensorselectie voor temperatuurtegels is één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanbieden; apparaten worden niet op ruimte gegroepeerd.
