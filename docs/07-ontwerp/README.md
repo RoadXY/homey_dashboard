@@ -147,3 +147,6 @@ Het dashboard heeft altijd vier temperatuurtegels. Per tegel kan een beschikbare
 
 ### Namen temperatuurtegels
 Per vaste temperatuurtegel zijn zowel de Homey-temperatuursensor als de weergegeven tegelnaam instelbaar.
+
+### Selectie temperatuursensoren
+Gebruik één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanbieden.
