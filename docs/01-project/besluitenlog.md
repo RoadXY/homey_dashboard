@@ -342,3 +342,6 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Volgorde snelle actieknoppen: aanpassen door middel van drag-and-drop.
 
 - Snelle actieknoppen gebruiken Material Design Icons (MDI). De gebruiker kiest per knop het pictogram; grootte en kleur worden centraal bepaald. Kleur volgt severity/status: rood, geel, blauw of groen. De gebruiker stelt kleur en grootte niet zelf in.
+
+- **Correctie MDI/actieknoppen:** gebruiker kiest uitsluitend het MDI-pictogram. Kleur en grootte volgen automatisch het actieve thema; alle actieknoppictogrammen hebben dezelfde themakleur. Severity-kleuren zijn niet van toepassing op actieknoppen.
+- **Fase 3:** een aantal vooraf ontworpen thema's toevoegen; concrete varianten later bepalen.
