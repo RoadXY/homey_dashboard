@@ -162,3 +162,6 @@ Alle volgende onderdelen zijn afzonderlijk zichtbaar te maken of te verbergen: b
 
 ### Standaardinstellingen weer
 Bij een nieuwe installatie staan alleen de belangrijkste weeronderdelen standaard aan. De precieze selectie van die belangrijkste onderdelen moet nog worden bepaald. Alle acht weeronderdelen blijven afzonderlijk instelbaar.
+
+### Standaard zichtbare weergegevens
+Standaard ingeschakeld: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting. Standaard uitgeschakeld: luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
