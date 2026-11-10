@@ -10,8 +10,10 @@
 ## Linkerzijde
 - Grote klok met datum kleiner eronder.
 - Weer met groot icoon naast buitentemperatuur.
-- Gevoelstemperatuur, wind en neerslag zijn gewenst; exacte inhoud wordt later vastgesteld.
-- Kamertemperaturen zijn uitgesteld en worden later via configuratie geselecteerd.
+- Weersinformatie bevat gevoelstemperatuur, wind, neerslag, luchtvochtigheid en een korte weersomschrijving.
+- Weersomschrijving bestaat uit een weericoon met korte tekst.
+- Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.
+- Maximaal vier geselecteerde kamertemperaturen, weergegeven als afzonderlijke temperatuurtegels.
 
 ## Rechterzijde
 - Quick buttons en meldingen, uitgaande van de bestaande dashboardindeling.
