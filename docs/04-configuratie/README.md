@@ -35,3 +35,7 @@ JSON moet een schema-versie, stabiele IDs, validatie en begrijpelijke foutmeldin
 
 ## Beveiliging
 Pincode en eventuele API-keys/secrets worden nooit in Git opgeslagen. PIN-sessies verlopen na een instelbare periode van inactiviteit. Details zoals opslag, rate limiting en herstelprocedure moeten nog worden ontworpen.
+
+
+## Algemeen – afgesproken instellingenpagina-onderdelen
+De pagina Algemeen bevat naast algemene informatie/dashboardstatus ook instellingen voor datumweergave, tijdweergave en verversingssnelheid. De precieze opties en standaardwaarden worden nog vastgesteld.
