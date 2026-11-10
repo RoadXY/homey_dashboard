@@ -228,3 +228,7 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 - De instellingenpagina wordt geopend door de tijdkaart lang ingedrukt te houden.
 - De tijdkaart blijft visueel ongewijzigd; lang indrukken is de verborgen toegang.
 - De eerder gegenereerde mockup met een extra instellingenknop en de daarin vervormde tekst/iconen is afgekeurd en mag niet als ontwerp- of inhoudsreferentie worden gebruikt.
+
+
+## Importomvang conditionele Home Assistant-kaarten (11 november 2026)
+De gebruiker heeft bevestigd dat **alle conditionele kaarten** uit de bestaande Home Assistant-YAML worden meegenomen, inclusief conditionele statuskaarten (optie B/all). De inventarisatie beperkt zich dus niet tot waarschuwingen of meldingen die om aandacht vragen. De eerder expliciet uitgesloten telefoonbatterijkaarten, plantkaarten en mediaspelerkaarten blijven buiten scope; de muurtablet-batterijmelding blijft behouden. Voor elke overige kaart blijven de oorspronkelijke zichtbaarheidvoorwaarden en combinaties leidend. Niet één-op-één vertaalbare voorwaarden worden eerst als bespreekpunt voorgelegd.
