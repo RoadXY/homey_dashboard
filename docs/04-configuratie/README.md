@@ -91,3 +91,5 @@ De sensorselectie voor temperatuurtegels is één keuzelijst met alle Homey-appa
 Bij de selectie via kamer/ruimte en daarna sensor is op elk niveau een duidelijke navigatieoptie **Terug** beschikbaar om naar het vorige niveau te gaan (van sensorlijst terug naar kamers/ruimtes).
 
 Op de pagina **Dashboard** kan de gebruiker alle volgende weergegevens afzonderlijk aan- of uitzetten: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
+
+Bij een nieuwe installatie zijn standaard alleen de belangrijkste weeronderdelen ingeschakeld. Welke onderdelen precies als belangrijkste gelden, moet nog worden vastgesteld; de overige onderdelen blijven optioneel en afzonderlijk aan-/uitzetbaar.
