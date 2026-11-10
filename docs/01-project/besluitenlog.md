@@ -350,3 +350,6 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - MDI-zoekfunctie huidige fase: zoeken op de namen zoals aangeleverd door de MDI-website. NL/EN-termen en synoniemen volgen in fase 3.
 - Meertaligheid: in fase 3 dashboardtaal ondersteunen; vertalingen worden in JSON-bestanden beheerd.
+
+- Dashboardtaal huidige fase: Nederlands.
+- Tekstbeheer: alle dashboardteksten vanaf de huidige fase via JSON-vertaalbestanden; meertalige taalkeuze volgt in fase 3.
