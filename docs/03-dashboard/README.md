@@ -195,3 +195,6 @@ De vier temperatuurtegels zijn allemaal exact even groot en worden in een vast 2
 
 ### Actieknoppen – definitieve plaatsing
 De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in de mockup. De eerder vastgelegde volgorde blijft behouden. De gebruiker geeft aan dat de bediening bewust dichtbij het tabletscherm plaatsvindt; daarom is één compacte rij gewenst.
+
+### Kolomverhouding – bijgewerkt ontwerpbesluit
+De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de besproken mockup. Dit vervangt de eerdere voorlopige 50/50-verdeling. Links blijven klok, weer en vier temperatuurtegels; rechts komen de acht actieknoppen en de meldingen in twee kolommen.
