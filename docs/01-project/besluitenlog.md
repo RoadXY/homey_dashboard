@@ -265,3 +265,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Lang indrukken op de tijdkaart opent de instellingenpagina.
 - De tijdkaart blijft visueel ongewijzigd.
 - De mockup met een extra instellingenknop en vervormde tekst/iconen is afgekeurd; niet gebruiken als referentie.
+
+
+## Instellingenpagina – Algemeen
+- De pagina Algemeen bevat algemene informatie/dashboardstatus én instellingen voor datumweergave, tijdweergave en verversingssnelheid.
+- De concrete opties en standaardwaarden worden in een volgende ontwerpstap vastgesteld.
