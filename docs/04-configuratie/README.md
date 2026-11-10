@@ -107,3 +107,5 @@ Bij het actietype **Homey-apparaat bedienen** kiest de gebruiker eerst een Homey
 Bij apparaatselectie is op ieder niveau een duidelijke knop **Terug** beschikbaar, zodat de gebruiker vanuit de apparatenlijst terug kan naar de kamer-/ruimtelijst.
 
 Bij een geselecteerd Homey-apparaat toont de configuratie automatisch uitsluitend de acties die dat apparaat daadwerkelijk ondersteunt.
+
+De volgorde van snelle actieknoppen wordt aangepast door de knoppen te verslepen (drag-and-drop).
