@@ -119,3 +119,6 @@ Voor snelle actieknoppen kiest de gebruiker uitsluitend het MDI-pictogram. De kl
 Voor fase 3 wordt voorzien in een aantal vooraf ontworpen thema's. De concrete themavarianten en hun kleuren worden later uitgewerkt.
 
 Voor het kiezen van een actieknoppictogram gebruikt de gebruiker één doorzoekbaar overzicht met alle beschikbare MDI-pictogrammen en een live voorbeeld van het geselecteerde pictogram.
+
+### Zoeken MDI-pictogrammen en meertaligheid
+In de huidige fase gebruikt de pictogramkiezer uitsluitend de namen/zoektermen zoals de MDI-website deze aanlevert. Nederlandse zoektermen, Engelse vertalingen en synoniemen vallen buiten de huidige fase.
