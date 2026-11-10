@@ -386,3 +386,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Weeronderdelen: vaste volgorde; gebruiker kan per onderdeel alleen de zichtbaarheid in- of uitschakelen. Geen drag-and-drop voor de volgorde. Dit vereenvoudigt een consistente weerkaart.
 
 - Weerpreview: direct live bij iedere wijziging van de zichtbaarheid, ook vóór Opslaan. De volgorde van weeronderdelen blijft vast.
+
+- Quick action actietype: gebruiker kiest expliciet via twee keuzeknoppen **Flow** of **Apparaat**.
+- Flow: selecteer een bestaande Flow uit een doorzoekbare lijst; de Flow blijft ook handmatig in Homey startbaar.
+- Apparaat: selecteer Homey-ruimte → apparaat → een door het apparaat ondersteunde actie.
+- Naam en MDI-pictogram zijn instelbaar voor beide typen; preview live; pictogrammen monochroom volgens actief thema.
