@@ -437,3 +437,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De acht Quick Actions worden vanuit de gewenste functionaliteit rechtstreeks ontworpen met Homey-Flows, Homey-Moods en/of ondersteunde apparaatacties.
 - Bestaande Homey-Flows en Moods worden waar passend hergebruikt. Ontbrekende acties worden als Homey-logica opgebouwd na inventarisatie en expliciete toestemming van de gebruiker.
 - Eerdere notities over het migreren, onderzoeken of als referentie gebruiken van Home Assistant-automatiseringen voor Quick Actions zijn hiermee vervallen.
+
+## Netwerkuitgangspunt dashboard ↔ Homey (11 november 2026)
+- De Ubuntu-server met de dashboardcontainer staat in een ander VLAN dan Homey Pro 2023. De gebruiker heeft aangegeven dat er al een gerichte netwerktoegang (“gaatje”) tussen de VLAN's bestaat en dat de netwerkconfiguratie de standaard Homey-communicatie niet zal blokkeren.
+- Het dashboard gebruikt de standaard, door Homey ondersteunde communicatie en poorten; er worden geen eigen of onnodige netwerkpoorten geïntroduceerd.
+- De exacte API-/verbindingsmethode en benodigde poorten worden tijdens de technische verificatie vastgesteld voordat implementatie begint. Dit besluit legt nog geen specifieke poortnummers vast.
+- Homey-authenticatiegegevens blijven uitsluitend aan de serverzijde en worden niet aan de browser of GitHub blootgesteld.
