@@ -155,3 +155,6 @@ De voorbeeldweergave van de temperatuurtegels wordt direct bijgewerkt bij iedere
 
 ### Sensorselectie – geneste Homey-ruimtes en kruimelpad
 De sensorpicker volgt de volledige geneste Homey-ruimtestructuur zonder vaste maximale diepte. Bij selectie van een ruimte worden alleen apparaten getoond die een geschikte temperatuursensor aanbieden; per apparaat wordt de beschikbare temperatuurwaarde getoond en selecteerbaar gemaakt. Ruimte-iconen uit Homey worden niet overgenomen. Navigatie terug gebeurt uitsluitend via het aanklikbare kruimelpad; er staat geen aparte optie Terug tussen de ruimtes of apparaten. Bij lange paden worden het laatste niveau en de twee voorgaande niveaus getoond; tussenliggende niveaus worden achter een aanklikbare ellipsis (…) verborgen, waarmee elk verborgen niveau bereikbaar blijft.
+
+### Weerkaart – vaste volgorde en zichtbaarheid
+De volgorde van de acht weeronderdelen staat vast en is niet door de gebruiker te wijzigen. De gebruiker kan wel ieder onderdeel afzonderlijk in- of uitschakelen. Dit houdt de opbouw van de weerkaart voorspelbaar en vereenvoudigt de implementatie en vormgeving van de kaart.
