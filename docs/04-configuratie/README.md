@@ -69,3 +69,5 @@ De pagina **Algemeen** presenteert alle gekozen instellingen en systeemstatusinf
 De pagina combineert twee presentatiestijlen: instellingen worden als compacte lijst weergegeven en systeemstatusinformatie als compacte kaarten.
 
 De systeemstatuskaarten worden in één horizontale rij geplaatst, voor zover de beschikbare schermbreedte dit toelaat.
+
+De instellingenpagina krijgt linksboven een duidelijke terugkeerknop met het label **← Dashboard**.
