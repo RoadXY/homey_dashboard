@@ -431,3 +431,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - **Fase 1B – Meldingenvoorbereiding:** inventarisatie en mapping van de conditionele Home Assistant-kaarten, met behoud van de oorspronkelijke YAML en opslag in het versiebeheerde JSON-voorwaardenmodel. Meldingen worden pas later aan het dashboard toegevoegd.
 - **Fase 2:** meldingenbeheer en de visuele voorwaardeneditor met Blockly, voortbouwend op het JSON-voorwaardenmodel.
 - De eerder goedgekeurde hoofdschermindeling blijft het ontwerpuitgangspunt; het ontbreken van meldingen in fase 1A is een tijdelijke scopekeuze en geen nieuw visueel ontwerpbesluit.
+
+## Quick Actions: migratie van Home Assistant naar Homey (11 november 2026)
+- De acht Quick Actions in fase 1A moeten uiteindelijk rechtstreeks via Homey werken; Home Assistant is geen runtime-afhankelijkheid van het nieuwe dashboard.
+- De huidige acties worden op dit moment door Home Assistant uitgevoerd. Een deel heeft mogelijk al een bestaande overeenkomstige Homey-Flow of Mood; het merendeel moet naar verwachting nog in Homey worden opgebouwd.
+- Gebruik de bestaande Home Assistant-configuratie/automatiseringen als functionele referentie voor het gewenste gedrag. Breng per knop de huidige HA-actie, eventuele voorwaarden/stappen en het doelgedrag in kaart en koppel die aan een bestaande of nieuw te maken Homey-Flow of apparaatactie.
+- Hergebruik bestaande Homey-Flows waar passend. Maak ontbrekende Flows pas nadat de werking en benodigde apparaten/acties zijn gecontroleerd en de gebruiker de concrete wijzigingen heeft goedgekeurd. Homey blijft read-only totdat daarvoor expliciet toestemming is gegeven.
+- De migratie mag geen bestaande HA-logica stilzwijgend wijzigen; afwijkingen of ontbrekende mogelijkheden worden eerst besproken.
