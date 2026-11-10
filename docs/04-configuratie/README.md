@@ -103,3 +103,5 @@ Per snelle actieknop kiest de gebruiker het actietype: **Homey Flow starten** of
 Bij het actietype **Homey Flow starten** selecteert de gebruiker een Flow uit een lijst met Flow-namen. De lijst heeft een zoekfunctie.
 
 Bij het actietype **Homey-apparaat bedienen** kiest de gebruiker eerst een Homey-kamer/ruimte en daarna een apparaat uit die ruimte.
+
+Bij apparaatselectie is op ieder niveau een duidelijke knop **Terug** beschikbaar, zodat de gebruiker vanuit de apparatenlijst terug kan naar de kamer-/ruimtelijst.
