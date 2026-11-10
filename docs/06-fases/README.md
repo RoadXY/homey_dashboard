@@ -42,3 +42,6 @@ In de huidige fase wordt Nederlands gebruikt. Vertalingen worden georganiseerd i
 
 ### Taalondersteuning
 Engels is de standaard- en terugvaltaal van de applicatie. Nederlands en toekomstige talen zijn optionele taalkeuzes. Bij ontbrekende vertalingen wordt de Engelse tekst gebruikt. Vertalingen blijven per taal en per applicatieonderdeel in afzonderlijke JSON-bestanden georganiseerd.
+
+### Standaardtaal bij installatie
+Bij een nieuwe installatie wordt Engels automatisch als dashboardtaal geselecteerd. De gebruiker kan dit later wijzigen naar een andere beschikbare taal.
