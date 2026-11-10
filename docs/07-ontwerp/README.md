@@ -121,3 +121,6 @@ Alle instellingen en statusinformatie worden in één gecombineerd overzicht get
 
 ### Presentatiestijl pagina Algemeen
 Combinatie van compacte lijst voor instellingen en compacte kaarten voor systeemstatusinformatie.
+
+### Rangschikking systeemstatuskaarten
+De kaarten staan in één horizontale rij, voor zover de schermbreedte dit toelaat.
