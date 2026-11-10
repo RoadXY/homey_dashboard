@@ -201,3 +201,11 @@ De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in
 
 ### Kolomverhouding – bijgewerkt ontwerpbesluit
 De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de besproken mockup. Dit vervangt de eerdere voorlopige 50/50-verdeling. Links blijven klok, weer en vier temperatuurtegels; rechts komen de acht actieknoppen en de meldingen in twee kolommen.
+
+
+## Uniforme tussenruimtes en buitenmarges (10 november 2026)
+- Alle tussenruimtes tussen dashboardkaarten en -onderdelen moeten gelijk zijn, ook tussen de linker- en rechterkolom en tussen de actieknoppenrij en het meldingenpaneel.
+- De verticale afstand tussen de tijdkaart en weerkaart moet gelijk zijn aan de afstand tussen de weerkaart en het temperatuurtegelsraster.
+- De horizontale afstand tussen de linkerkolom en rechterkolom moet consistent zijn met de overige kaartafstanden.
+- De afstand tussen de actieknoppen en het meldingenpaneel moet gelijk zijn aan de tussenruimte tussen de meldingskaarten en andere kaarten.
+- Gebruik één consistente spacing-token/waarde voor de standaard tussenruimte; pas alleen bewust afwijkende binnenruimte binnen kaarten toe.
