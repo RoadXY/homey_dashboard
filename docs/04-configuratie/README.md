@@ -97,3 +97,5 @@ Bij een nieuwe installatie zijn standaard alleen de belangrijkste weeronderdelen
 De volgende vier weeronderdelen staan standaard aan bij een nieuwe installatie: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, en windsnelheid en windrichting. Luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang staan standaard uit.
 
 Per snelle actieknop kan de gebruiker de zichtbaarheid, volgorde, naam, pictogram en actie-instelling configureren.
+
+Per snelle actieknop kiest de gebruiker het actietype: **Homey Flow starten** of **Homey-apparaat bedienen**. De verdere configuratie hangt af van het gekozen actietype.
