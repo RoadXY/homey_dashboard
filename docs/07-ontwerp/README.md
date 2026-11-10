@@ -174,3 +174,6 @@ Per knop kan worden gekozen tussen het starten van een Homey Flow en het rechtst
 
 ### Selectie Homey Flow
 Toon een lijst met Flow-namen met een zoekfunctie, zodat de gebruiker de gewenste Homey Flow kan vinden en selecteren.
+
+### Selectie Homey-apparaat
+De apparaatselectie verloopt in twee stappen: eerst een Homey-kamer/ruimte kiezen en daarna het gewenste apparaat uit die ruimte selecteren.
