@@ -165,3 +165,6 @@ Bij een nieuwe installatie staan alleen de belangrijkste weeronderdelen standaar
 
 ### Standaard zichtbare weergegevens
 Standaard ingeschakeld: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting. Standaard uitgeschakeld: luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
+
+### Instelbare eigenschappen snelle actieknoppen
+Per knop zijn zichtbaarheid, volgorde, naam, pictogram en actie-instelling configureerbaar.
