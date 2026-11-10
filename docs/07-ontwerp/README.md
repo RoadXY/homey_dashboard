@@ -88,3 +88,6 @@ Gekozen is voor de korte datumvariant, bijvoorbeeld `di. 10 nov. 2026`.
 
 ### Vernieuwen van dashboardgegevens
 Gekozen is voor automatische verversing met verschillende intervallen: belangrijke gegevens vaker dan minder belangrijke gegevens. De exacte intervallen per categorie worden later uitgewerkt.
+
+### Pagina Algemeen – statusinformatie
+De pagina toont zes onderdelen: verbindingsstatus Homey Pro, verbindingsstatus dashboardserver, laatste succesvolle gegevensverversing, dashboardversie, uptime van de dashboardserver en opslag- en geheugengebruik.
