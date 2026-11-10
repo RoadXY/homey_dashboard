@@ -183,3 +183,6 @@ Op ieder selectieniveau staat een duidelijke knop **Terug**. Vanuit de apparaten
 
 ### Beschikbare apparaatacties
 Na selectie van een apparaat worden automatisch alleen de acties getoond die het apparaat daadwerkelijk ondersteunt.
+
+### Volgorde snelle actieknoppen
+De gebruiker kan de volgorde wijzigen door knoppen te verslepen (drag-and-drop).
