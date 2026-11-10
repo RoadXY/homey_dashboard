@@ -25,6 +25,9 @@ Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implemen
 - Geen decoratieve kleurvlakken op actieknoppen of temperatuurtegels.
 - Meldingskaarten blijven qua afmetingen uniform, ongeacht inhoud.
 
+
+- De vier temperatuurtegels zijn exact even groot en staan in een vast 2×2-raster.
+
 ## Nog te bespreken / goed te keuren
 1. Definitieve hoofdschermmockup, inclusief exacte kolomverhouding en knoplabels/-volgorde.
 2. Instellingenpagina-mockup.
