@@ -409,3 +409,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Alle HA-voorwaarden en combinaties worden in fase 1 exact behouden; geen zelfstandige vertaling, vereenvoudiging of wijziging.
 - Fase 1: eenvoudige meldingseigenschappen actief/inactief, naam en meldingsniveau zijn configureerbaar. Voorwaarden zijn nog niet via de dashboardinterface bewerkbaar.
 - Fase 2: Blockly, de volledige schermvullende voorwaardeneditor en het ontwerp van categorieën en blokkenbibliotheek. De concrete blokken worden pas in fase 2 bepaald.
+
+
+## Besluit import Home Assistant-kaarten (11 november 2026)
+- De gebruiker kiest voor optie B: **alle conditionele kaarten uit de bestaande Home Assistant-YAML** worden meegenomen in de inventarisatie/import, dus niet alleen waarschuwingen en meldingen die om aandacht vragen. Ook conditionele statuskaarten worden opgenomen.
+- Dit besluit wijzigt niet de eerder expliciet vastgelegde scope-uitzonderingen: telefoonbatterijkaarten, plantkaarten en mediaspelerkaarten blijven uitgesloten uit het nieuwe dashboard. De muurtablet-batterijmelding blijft wel in scope.
+- Alle oorspronkelijke zichtbaarheidvoorwaarden en AND/OR-combinaties blijven behouden. Iedere kaart wordt bij de mapping apart beoordeeld op Homey-beschikbaarheid en één-op-één vertaalbaarheid; onduidelijkheden worden niet zelfstandig aangepast.
