@@ -1,0 +1,17 @@
+# Mockup- en ontwerpgoedkeuringsstatus
+
+| Scherm/onderdeel | Status | Wat is goedgekeurd | Wat staat nog open |
+|---|---|---|---|
+| Hoofddashboard | Visueel goedgekeurd | Donkere stijl, hoofdindeling, 40/60, klok/weer/temperaturen, Quick Actions en verdere verfijningen | Implementatie en technische toetsing |
+| Meldingskaarten | Visueel goedgekeurd | Vaste kaartvormgeving en niveau-uitstraling | Wordt niet getoond in fase 1A; later toevoegen |
+| Instellingen – algemene layout | Basislayout goedgekeurd | Donkere stijl, linker navigatie, tweekolomsindeling, compacte kaarten | Volledige scherminhoud/functionele details apart controleren |
+| Instellingen – Dashboard | Ontwerpafspraken vastgelegd | Temperatuurpreview, sensorpicker, weeronderdelen en Quick Action-configuratie | Geen geverifieerd compleet mockupbestand; verdere visuele review waar nodig |
+| Instellingen – Meldingen | Niet volledig uitgewerkt | Eerdere afspraken over lijst en beheer | Volledige schermontwerpen en editor volgen later |
+| Instellingen – Apparaten | Niet volledig uitgewerkt | Categorie bestaat in navigatie | Scherminhoud en gedrag vaststellen |
+| Instellingen – Homey | Niet volledig uitgewerkt | Categorie bestaat in navigatie | Scherminhoud en gedrag vaststellen |
+| Instellingen – Systeem | Niet volledig uitgewerkt | Categorie bestaat in navigatie | Scherminhoud en gedrag vaststellen |
+| Blockly-editor | Fase 2 | Blockly als voorkeursrichting en JSON-model als centrale basis | Blokkenbibliotheek, layout en editorinteractie |
+| Variant met zichtbare instellingenknop op hoofdscherm | Afgekeurd | Niets | Niet opnieuw gebruiken als ontwerpbron |
+
+## Belangrijke statusregel
+Een goedgekeurd functioneel besluit betekent niet automatisch dat een mockupafbeelding beschikbaar of gearchiveerd is. Afbeeldingsbestanden worden pas als aanwezig gemarkeerd nadat ze op GitHub zijn gecontroleerd.
