@@ -158,3 +158,11 @@ Dit is een expliciete scope-uitzondering op de eerdere afspraak om de bestaande 
 Voor de quick buttons `Q-Music` en `Rolluiken openen` moeten nieuwe Homey Flows worden gemaakt die vanuit de Homey Dashboard-app/container gestart kunnen worden. De bestaande Flow-namen zijn niet voldoende als bevestiging van een geschikte aanroepmethode; de exacte trigger-/API-route, Flow-inhoud en foutafhandeling moeten nog worden vastgesteld.
 
 Deze twee knoppen worden dus gekoppeld aan nieuw te maken, expliciet aanroepbare Flows. Er is nog geen Flow aangemaakt of aangepast. Homey blijft read-only vanuit onze inventarisatiewerkzaamheden totdat de gebruiker expliciet opdracht geeft om Flows te maken of te wijzigen.
+
+
+### Verificatie gemiddelde temperatuurvariabelen (10 november 2026)
+De twee door de gebruiker aangemaakte Logic-variabelen zijn read-only uitgelezen en bevestigd:
+- `temperatuur_gemiddeld_woonkamer`: type `number`; actuele waarde bij uitlezen: 21,5.
+- `temperatuur_gemiddeld_keuken`: type `number`; actuele waarde bij uitlezen: 22,5.
+
+Daarmee zijn naam en numeriek datatype bevestigd. De waarden zijn uitsluitend een momentopname; de logica/Flows die deze variabelen bijwerken en de gebruikte temperatuureenheid moeten nog worden bevestigd. Er zijn geen waarden aangepast.
