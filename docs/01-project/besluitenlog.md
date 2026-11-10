@@ -209,3 +209,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Telefoonbatterijniveaus vervallen uit het dashboard.
 - Plantensensoren vervallen uit het dashboard.
 - Voor de quick buttons Q-Music en Rolluiken openen moeten nieuwe Homey Flows worden gemaakt die vanuit de Homey Dashboard-app/container aanroepbaar zijn. Er zijn nog geen Flows aangemaakt of gewijzigd; de exacte aanroepmethode en Flow-inhoud moeten eerst worden vastgesteld.
+
+
+## Aanvullende ontwerpgoedkeuring – hoofdscherm (10 november 2026)
+- De gebruiker keurt de getoonde meldingskaartindeling goed: twee kolommen, gelijke vaste kaartafmetingen, icoon naast tekst en tekst die over meerdere regels mag lopen.
+- Correctie op de mockup: de kritieke melding moet een duidelijk roodgetinte achtergrond hebben. De eerdere weergave met alleen een rood icoon/rand voldeed niet; de aangepaste mockup toont de rode achtergrond.
+- De hoofdschermmockup is hiermee visueel akkoord. De instellingenpagina en het volledige functionele ontwerp blijven nog ter goedkeuring; er wordt nog niet geïmplementeerd.
