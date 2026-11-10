@@ -53,3 +53,5 @@ Op de pagina **Algemeen** zijn de volgende datum- en tijdinstellingen beschikbaa
 De standaardtijdzone is `Europe/Amsterdam`, inclusief automatische overgang tussen zomer- en wintertijd.
 
 Opslag- en geheugengebruik worden als tekstuele waarden weergegeven, zonder grafische voortgangsbalken.
+
+Op de pagina Algemeen worden geen serverwaarschuwingen getoond; alleen de statuswaarden worden weergegeven.
