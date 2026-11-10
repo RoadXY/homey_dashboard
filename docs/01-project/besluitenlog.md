@@ -322,3 +322,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Sensorselectie: bied op ieder niveau een duidelijke optie **Terug** om naar het vorige niveau te navigeren.
 
 - Weerweergave: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang zijn afzonderlijk aan- en uitzetbaar.
+
+- Weerweergave: standaard staan bij een nieuwe installatie alleen de belangrijkste onderdelen aan. Welke onderdelen dat precies zijn, moet nog worden bepaald; alle acht blijven afzonderlijk instelbaar.
