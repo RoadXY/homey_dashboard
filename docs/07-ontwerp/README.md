@@ -236,3 +236,6 @@ De pagina Instellingen > Dashboard toont alleen de titel **Dashboard**; er wordt
 
 ### Live preview temperatuurtegels
 De preview rechts wordt direct bijgewerkt wanneer de gebruiker links een tegelnaam, sensor of volgorde wijzigt. De preview toont dus de actuele conceptinstellingen, ook voordat op Opslaan is geklikt.
+
+### Sensorpicker – definitieve navigatieafspraken
+De ruimte- en sensorpicker ondersteunt een onbeperkt aantal geneste Homey-ruimteniveaus. Ruimten worden tekstueel weergegeven zonder de Homey-ruimte-iconen. Na het kiezen van een ruimte toont de picker alle apparaten in die ruimte met een geschikte temperatuurcapability, inclusief de beschikbare temperatuurwaarde(n) om de juiste meting te kiezen. Er wordt geen aparte regel **Terug** in de lijst getoond: navigeren naar een eerder niveau gebeurt via het kruimelpad. Bij lange kruimelpaden blijven de laatste drie niveaus zichtbaar (huidig niveau plus twee voorgaande); eerdere niveaus worden samengevouwen achter **…**. Via dit menu kan de gebruiker direct elk verborgen niveau kiezen.
