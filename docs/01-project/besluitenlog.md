@@ -222,3 +222,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Alleen kritieke meldingen (rood) en waarschuwingen (geel/amber) wijken qua kaartachtergrond af.
 - Info en alle overige meldingen behouden dezelfde neutrale donkere achtergrond als de gewone kaarten.
 - De gebruiker heeft de aangepaste mockup met zowel de rode als gele waarschuwingskaart goedgekeurd als gewenste visuele richting.
+
+
+## Verfijning waarschuwingskleuren (10 november 2026)
+- De gebruiker wil zowel de rode kritieke meldingsachtergrond als de gele/amber waarschuwingsachtergrond iets donkerder.
+- De kleurcategorieën blijven ongewijzigd: kritiek rood, waarschuwing geel/amber, info en overige meldingen neutraal donker. Alleen de tint/verzadiging/helderheid van rood en geel wordt subtiel verlaagd; contrast en leesbaarheid blijven leidend.
