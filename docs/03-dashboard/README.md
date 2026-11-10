@@ -16,7 +16,8 @@
 - Weersomschrijving bestaat uit een weericoon met korte tekst.
 - Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.
 - Maximaal vier door de gebruiker geselecteerde kamertemperaturen, weergegeven als afzonderlijke temperatuurtegels.
-- Elke temperatuurtegel toont kamernaam, temperatuur en een klein temperatuur-icoon.
+- Temperatuurtegels tonen uitsluitend de ruimtenaam en temperatuur; temperatuur-iconen zijn verwijderd.
+- De ruimtenaam en temperatuurwaarde worden hierdoor groter weergegeven. De vaste tegelafmetingen en 2×2-indeling blijven ongewijzigd.
 - Temperatuurtegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
 - Bij een offline kamersensor blijft de tegel zichtbaar met de tekst ‘Geen gegevens’.
 - Een waarde ouder dan 15 minuten wordt als verouderd beschouwd; alleen bij verouderde waarden wordt het tijdstip van laatste update getoond.
