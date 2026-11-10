@@ -1,7 +1,7 @@
 # Mockups en ontwerpgoedkeuring
 
 ## Status
-Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implementatie.
+De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeurd, inclusief de correctie dat kritieke meldingen een duidelijk roodgetinte achtergrond krijgen. De instellingenpagina en het volledige functionele ontwerp moeten nog worden besproken en goedgekeurd; implementatie start nog niet.
 
 ## Vastgestelde visuele richting
 - Donkere, rustige en minimalistische basis.
@@ -22,7 +22,7 @@ Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implemen
 - Alleen het meldingenpaneel mag scrollen wanneer er meer meldingen zijn dan passen.
 
 ## Meldings- en kleurgebruik
-- Kritiek: functionele rode accentuering volgens de afgesproken kritieke stijl.
+- Kritiek: een duidelijk roodgetinte achtergrond met contrasterende, goed leesbare tekst; alleen een rood icoon of rode rand is niet voldoende.
 - Waarschuwing en info krijgen herkenbare, maar beheerste functionele accenten.
 - Geen decoratieve kleurvlakken op actieknoppen of temperatuurtegels.
 - Meldingskaarten blijven qua afmetingen uniform, ongeacht inhoud.
@@ -34,9 +34,8 @@ Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implemen
 - De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in de mockup. De knoppen behouden de eerder afgesproken volgorde. De gebruiker accepteert dat de knoppen op het tabletscherm compact naast elkaar staan, omdat bediening bewust dichtbij het scherm gebeurt.
 
 ## Nog te bespreken / goed te keuren
-1. Definitieve hoofdschermmockup, inclusief exacte kolomverhouding en knoplabels/-volgorde.
-2. Instellingenpagina-mockup.
-3. Functionele beschrijving van meldingen en knoppen.
-4. Open technische keuzes.
+1. Instellingenpagina-mockup.
+2. Functionele beschrijving van meldingen en knoppen.
+3. Open technische keuzes.
 
 Geen implementatie starten voordat de mockups en het functioneel ontwerp expliciet zijn goedgekeurd.
