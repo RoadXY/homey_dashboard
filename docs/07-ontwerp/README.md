@@ -186,3 +186,6 @@ Na selectie van een apparaat worden automatisch alleen de acties getoond die het
 
 ### Volgorde snelle actieknoppen
 De gebruiker kan de volgorde wijzigen door knoppen te verslepen (drag-and-drop).
+
+### MDI-pictogrammen
+Per snelle actieknop kan de gebruiker een eigen pictogram uit Material Design Icons (MDI) kiezen. De dashboardstijl bepaalt centraal de grootte en kleur; de gebruiker kan deze niet aanpassen. De kleur volgt de severity-/statuscodering: rood, geel, blauw of groen.
