@@ -110,3 +110,8 @@ Inventariseer alle binnen scope vallende conditionele Home Assistant-kaarten, co
 
 ### Fase 2 – Meldingen en Blockly
 Bouw het meldingenbeheer en de visuele Blockly-voorwaardeneditor op basis van het JSON-voorwaardenmodel. Voeg daarna de meldingen toe aan het hoofdscherm volgens het reeds goedgekeurde ontwerp.
+
+### Migratie Quick Actions van Home Assistant naar Homey (11 november 2026)
+De huidige Quick Actions worden door Home Assistant uitgevoerd. Voor fase 1A worden de acht acties overgezet zodat het dashboard ze rechtstreeks via Homey kan uitvoeren; Home Assistant is geen runtime-afhankelijkheid van het nieuwe dashboard. Sommige acties hebben mogelijk al een overeenkomstige Homey-Flow of Mood, maar de meeste moeten nog in Homey worden opgebouwd.
+
+Per knop wordt eerst de bestaande HA-automatisering als functionele referentie geïnventariseerd. Daarna bepalen we of een bestaande Homey-Flow/Mood kan worden hergebruikt of dat een nieuwe Flow/apparaatactie nodig is. Bestaande Homey-logica wordt waar mogelijk hergebruikt. Nieuwe Flows of wijzigingen worden pas uitgevoerd na controle van de gewenste werking en expliciete toestemming van de gebruiker. Eventuele verschillen tussen HA-gedrag en wat Homey kan uitvoeren worden vooraf besproken.
