@@ -192,3 +192,6 @@ Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare H
 
 ### Temperatuurtegels – definitieve indeling
 De vier temperatuurtegels zijn allemaal exact even groot en worden in een vast 2×2-raster geplaatst. Ze gebruiken een neutrale stijl en grote, goed leesbare waarden.
+
+### Actieknoppen – definitieve plaatsing
+De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in de mockup. De eerder vastgelegde volgorde blijft behouden. De gebruiker geeft aan dat de bediening bewust dichtbij het tabletscherm plaatsvindt; daarom is één compacte rij gewenst.
