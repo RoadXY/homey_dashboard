@@ -79,3 +79,6 @@ De gebruiker kiest expliciet voor lang indrukken op de tijdkaart als verborgen m
 
 ## Instellingenpagina – pagina Algemeen
 De gebruiker kiest ervoor om op de pagina Algemeen ook datum-, tijd- en verversingsinstellingen op te nemen, naast algemene informatie en dashboardstatus. De concrete keuzemogelijkheden en standaardwaarden moeten nog worden ontworpen.
+
+### Tijdweergave
+De gebruiker kiest voor beide tijdnotaties als instelbare opties: 24-uursnotatie en 12-uursnotatie (AM/PM). De concrete bediening (bijvoorbeeld keuzelijst of schakelaar) wordt later in de mockup bepaald.
