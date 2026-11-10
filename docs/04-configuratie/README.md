@@ -128,3 +128,6 @@ De standaarddashboardtaal is Nederlands. Alle zichtbare dashboardteksten worden 
 
 ### Indeling JSON-vertaalbestanden
 Vertalingen worden per taal én per onderdeel opgesplitst in meerdere JSON-bestanden, bijvoorbeeld afzonderlijke bestanden voor dashboard, meldingen en instellingen. De dashboardtaal is in de huidige fase Nederlands; deze structuur bereidt uitbreiding naar meerdere talen in fase 3 voor.
+
+### Taalkeuze en terugvalgedrag
+Engels is de standaard- en terugvaltaal van het dashboard. Nederlands is een optionele keuzetaal, net als toekomstige talen. Als een vertaling ontbreekt in de gekozen taal, wordt de Engelse tekst getoond.
