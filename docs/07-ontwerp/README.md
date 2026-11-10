@@ -23,6 +23,8 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 
 ## Meldings- en kleurgebruik
 - Kritiek: een duidelijk roodgetinte achtergrond met contrasterende, goed leesbare tekst; alleen een rood icoon of rode rand is niet voldoende.
+- Waarschuwing: een duidelijk geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
+- Info en overige meldingen behouden de neutrale donkere achtergrond van de gewone kaarten.
 - Waarschuwing en info krijgen herkenbare, maar beheerste functionele accenten.
 - Geen decoratieve kleurvlakken op actieknoppen of temperatuurtegels.
 - Meldingskaarten blijven qua afmetingen uniform, ongeacht inhoud.
