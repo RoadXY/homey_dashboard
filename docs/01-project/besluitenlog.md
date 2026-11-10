@@ -340,3 +340,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Apparaatacties: toon automatisch uitsluitend acties die het geselecteerde Homey-apparaat ondersteunt.
 
 - Volgorde snelle actieknoppen: aanpassen door middel van drag-and-drop.
+
+- Snelle actieknoppen gebruiken Material Design Icons (MDI). De gebruiker kiest per knop het pictogram; grootte en kleur worden centraal bepaald. Kleur volgt severity/status: rood, geel, blauw of groen. De gebruiker stelt kleur en grootte niet zelf in.
