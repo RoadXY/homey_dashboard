@@ -72,3 +72,6 @@ De volgorde van de acht weergegevens is vast. Per onderdeel kan de gebruiker de 
 
 ### Preview weerkaart
 De weerkaartpreview wordt direct bijgewerkt bij het in- en uitschakelen van onderdelen. De gebruiker ziet de conceptweergave vóór Opslaan.
+
+### Configuratie snelactieknoppen
+Voor iedere snelactie kiest de gebruiker expliciet het actietype via twee keuzeknoppen: Flow of Apparaat. Bij Flow wordt een bestaande Homey Flow gekozen via een doorzoekbare lijst. Bij Apparaat wordt via ruimte en apparaat een ondersteunde apparaatactie gekozen. De Flow blijft ook handmatig in Homey startbaar. Naam en pictogram zijn per knop instelbaar; preview wordt direct bijgewerkt en gebruikt monochrome pictogrammen volgens het actieve thema.
