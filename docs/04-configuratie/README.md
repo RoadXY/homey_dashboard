@@ -77,3 +77,5 @@ In de navigatiekolom wordt de actieve pagina aangegeven met een subtiele lichter
 Elk navigatie-item krijgt een klein pictogram vóór de categorienaam.
 
 De instellingen-navigatie bevat de zes categorieën: **Algemeen**, **Dashboard**, **Meldingen**, **Apparaten**, **Homey** en **Systeem**.
+
+Op de pagina **Dashboard** zijn deze onderdelen instelbaar: welke kamers en sensoren zichtbaar zijn in de temperatuurtegels; welke weergegevens zichtbaar zijn; en de zichtbaarheid, volgorde en instellingen van snelle actieknoppen.
