@@ -66,3 +66,6 @@ De preview wordt direct live bijgewerkt bij wijzigingen aan de vier temperatuurt
 
 ### Sensorselectie temperatuurtegels
 De sensorpicker ondersteunt alle niveaus van de Homey-ruimtestructuur. Ruimte-iconen worden weggelaten. Binnen een gekozen ruimte worden alleen apparaten met geschikte temperatuurmetingen aangeboden, met de meetwaarden zodat de gebruiker de juiste bron kan kiezen. Terugnavigatie verloopt via het kruimelpad, niet via een aparte lijstoptie. Bij lange paden blijven het huidige niveau en de twee voorgaande niveaus zichtbaar; overige niveaus zijn via een aanklikbare ellipsis te openen en te selecteren.
+
+### Weerkaart
+De volgorde van de acht weergegevens is vast. Per onderdeel kan de gebruiker de zichtbaarheid instellen; de volgorde kan niet worden aangepast. De live preview weerspiegelt de zichtbare onderdelen.
