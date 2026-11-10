@@ -88,3 +88,8 @@ Deze punten worden technisch gekozen en gedocumenteerd voordat ze als vaste proj
 ## Afbakening
 
 Dit document beschrijft de ontwikkelvereisten en werkwijze. Het bevat bewust geen installatie-instructies voor Docker Engine of Docker Compose. De productie-installatie en het beheer van de uiteindelijke container worden afzonderlijk gedocumenteerd.
+
+
+## Verdere ontwikkelstructuur
+
+De voorgestelde repository-indeling, Docker-werkwijze voor development en productie, configuratiegroepen, persistente data en testopzet staan in [structuur-ontwikkelomgeving.md](structuur-ontwikkelomgeving.md). Nog niet geverifieerde technische details, zoals poorten en exacte versies, blijven bewust open tot de eerste technische tests.
