@@ -233,3 +233,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De gebruiker wil de temperatuur-iconen op alle vier temperatuurtegels verwijderen.
 - De vrijgekomen ruimte wordt gebruikt om zowel de ruimtenaam als de temperatuurwaarde groter en beter leesbaar te tonen.
 - De vier tegels behouden exact hetzelfde formaat en de vaste 2×2-indeling.
+
+
+## Aanpassing hoofdschermindeling en temperatuurlabels (10 november 2026)
+- De rij met acht actieknoppen wordt verticaal uitgelijnd met de bovenkant van de klok-/datumkaart links.
+- Het meldingenpaneel schuift omhoog en komt direct onder de actieknoppen, zodat de beschikbare ruimte voor meldingen groter wordt.
+- De temperatuurtegels behouden hun formaat en 2×2-indeling. De ruimtenamen zijn voortaan exact: `Woonkamer`, `Keuken`, `Sem` en `Bram`. Bij de laatste twee wordt ‘Slaapkamer’ weggelaten; de naam staat op één regel.
