@@ -159,3 +159,6 @@ De sensorselectie bevat op ieder niveau een duidelijke optie **Terug** om naar h
 
 ### Instelbare weergegevens
 Alle volgende onderdelen zijn afzonderlijk zichtbaar te maken of te verbergen: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
+
+### Standaardinstellingen weer
+Bij een nieuwe installatie staan alleen de belangrijkste weeronderdelen standaard aan. De precieze selectie van die belangrijkste onderdelen moet nog worden bepaald. Alle acht weeronderdelen blijven afzonderlijk instelbaar.
