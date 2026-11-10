@@ -93,3 +93,5 @@ Bij de selectie via kamer/ruimte en daarna sensor is op elk niveau een duidelijk
 Op de pagina **Dashboard** kan de gebruiker alle volgende weergegevens afzonderlijk aan- of uitzetten: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
 
 Bij een nieuwe installatie zijn standaard alleen de belangrijkste weeronderdelen ingeschakeld. Welke onderdelen precies als belangrijkste gelden, moet nog worden vastgesteld; de overige onderdelen blijven optioneel en afzonderlijk aan-/uitzetbaar.
+
+De volgende vier weeronderdelen staan standaard aan bij een nieuwe installatie: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, en windsnelheid en windrichting. Luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang staan standaard uit.
