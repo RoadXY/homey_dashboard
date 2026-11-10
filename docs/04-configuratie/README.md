@@ -131,3 +131,6 @@ Vertalingen worden per taal én per onderdeel opgesplitst in meerdere JSON-besta
 
 ### Taalkeuze en terugvalgedrag
 Engels is de standaard- en terugvaltaal van het dashboard. Nederlands is een optionele keuzetaal, net als toekomstige talen. Als een vertaling ontbreekt in de gekozen taal, wordt de Engelse tekst getoond.
+
+### Standaardtaal nieuwe installatie
+Bij een nieuwe installatie wordt Engels standaard geselecteerd. De gebruiker kan daarna zelf een andere beschikbare taal kiezen.
