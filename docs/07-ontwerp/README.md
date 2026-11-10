@@ -55,3 +55,7 @@ De gebruiker wil dat alle met rode markeringen aangegeven afstanden dezelfde tus
 - horizontale en verticale tussenruimtes tussen meldingskaarten en actieknoppen.
 
 De mockup is hierop aangepast met één consistente standaardafstand tussen de dashboardkaarten en onderdelen. Binnenruimte in een kaart mag passend blijven bij de inhoud, maar de buitenste tussenruimtes moeten uniform zijn.
+
+
+## Meldingenpaneel – symmetrische randruimte en lijnaccenten (10 november 2026)
+De rechterzijde van het meldingenpaneel krijgt dezelfde binnenmarge als de linkerzijde: de afstand van de buitenste meldingskaarten tot de paneelrand moet links en rechts gelijk zijn. De decoratieve verticale lijnaccenten aan beide zijkanten moeten even lang zijn en geleidelijk over een langere lengte vervagen in de achtergrond. De gebruiker wil een zachte, langzame overgang zoals in het bestaande ontwerp, maar uitgesmeerd over een grotere afstand.
