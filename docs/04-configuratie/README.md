@@ -63,3 +63,5 @@ De uptime van de dashboardserver wordt compact weergegeven, bijvoorbeeld `3d 04u
 Instellingen worden centraal opgeslagen met één algemene knop **Opslaan** onderaan de pagina.
 
 Wanneer de gebruiker de pagina verlaat met niet-opgeslagen wijzigingen, verschijnt een bevestigingsvenster met de keuzes: wijzigingen opslaan, wijzigingen weggooien of op de pagina blijven.
+
+De pagina **Algemeen** presenteert alle gekozen instellingen en systeemstatusinformatie in één gecombineerd overzicht, zonder deze onder te verdelen in afzonderlijke blokken.
