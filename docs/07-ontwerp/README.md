@@ -209,3 +209,6 @@ Vertaalteksten worden opgeslagen in meerdere JSON-bestanden per taal, opgesplits
 
 ### Taalkeuze en ontbrekende vertalingen
 Engels is de standaardtaal en terugvaltaal. Nederlands is een optionele taalkeuze, gelijkwaardig aan andere toekomstige talen. Ontbreekt een vertaalwaarde in de geselecteerde taal, dan valt de applicatie terug op de Engelse vertaling. De vertaalbestanden blijven per taal en per applicatieonderdeel opgesplitst.
+
+### Initiële taalinstelling
+Een nieuwe installatie start met Engels als geselecteerde dashboardtaal. Dit sluit aan op Engels als standaard- en terugvaltaal; andere beschikbare talen kunnen door de gebruiker worden gekozen.
