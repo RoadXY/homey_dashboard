@@ -87,3 +87,8 @@ Alle meldingen worden centraal beheerd in het dashboard. Gebruikers kunnen meldi
 
 ### Homey melding-aanlevering – fase 2
 Bepaal in fase 2 het mechanisme waarmee Homey meldingen aan het dashboard kan aanleveren, bijvoorbeeld via API-aanroep of een toekomstige Homey-app. Homey-aanlevering maakt meldingen niet alleen-lezen; het dashboard blijft de plek voor beheer en bewerking.
+
+### Meldingen – fasering aangepast
+**Fase 1:** bestaande meldingskaarten/definities uit Home Assistant worden vast geprogrammeerd overgenomen in het dashboard om de werking te testen. Alle HA-voorwaarden en combinaties blijven exact gelijk. Alleen actief/inactief, naam en meldingsniveau zijn eenvoudig configureerbaar; voorwaarden worden nog niet in de interface bewerkt.
+
+**Fase 2:** ontwerp en bouw van de algemene voorwaardeneditor met Blockly. Ook de categorieën en de volledige blokkenbibliotheek worden pas in fase 2 bepaald. Homey-aanlevering van meldingen (bijvoorbeeld API of toekomstige Homey-app) blijft eveneens een fase-2-onderwerp.
