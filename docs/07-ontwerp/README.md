@@ -67,3 +67,11 @@ De gebruiker vraagt specifiek om de verticale overgang links van het meldingenpa
 
 ## Instellingen openen – verborgen bediening (10 november 2026)
 De gebruiker kiest expliciet voor lang indrukken op de tijdkaart als verborgen manier om de instellingen te openen. Er wordt geen tandwiel, instellingenicoon of zichtbare knop toegevoegd. De tijdkaart behoudt zijn bestaande uiterlijk. De gegenereerde variant met extra knop en vervormde labels/iconen is nadrukkelijk afgekeurd en wordt niet als referentie gebruikt.
+
+
+## Eerste concept instellingenpagina (10 november 2026)
+- Eerste visuele verkenning gemaakt in dezelfde donkere, rustige stijl als het goedgekeurde hoofdscherm.
+- Voorlopige indeling: navigatie links en inhoud/rechterpaneel rechts, met een duidelijke terugkeeractie naar het dashboard.
+- Voorlopige navigatiecategorieën in de conceptmockup: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
+- Dit is uitsluitend een eerste layoutverkenning en nog niet door de gebruiker goedgekeurd. De getoonde voorbeeldinstellingen (zoals thema, helderheid, verversinterval, taal en schermoriëntatie) zijn niet automatisch functionele eisen of definitieve opties.
+- De definitieve inhoud en navigatiestructuur worden iteratief met de gebruiker vastgesteld voordat implementatie start.
