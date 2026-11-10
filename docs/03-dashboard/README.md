@@ -178,3 +178,14 @@ De gebruiker heeft de beoogde inrichting van quick buttons voor fase 2 verduidel
 Dit is fase-2-functionaliteit en verandert de fase-1-afspraak niet: de huidige knoppen kunnen per knop aan een Flow of directe apparaatbediening worden gekoppeld, maar de uitgebreide selectors en dynamische configuratie van bestaande Flows/apparaatacties worden later uitgewerkt.
 
 Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare Homey Flows voorzien die ook handmatig vanuit Homey gestart kunnen worden en daarnaast vanuit het dashboard aanroepbaar moeten zijn. Er is nog geen Flow aangemaakt of gewijzigd.
+
+
+## Hoofdschermmockup – aanvullende ontwerpkeuzes (10 november 2026)
+- De gebruiker kiest voor een rustige, minimalistische donkere stijl, met een subtiel speels verloop op de achtergrond. Achtergrondkleuren mogen niet overheersen.
+- Actieknoppen zijn neutraal en hebben geen eigen decoratieve kleuren. Kleur wordt alleen functioneel gebruikt.
+- De aparte kop/balk ‘Snelle acties’ vervalt; de actieknoppen blijven bovenaan de rechterzijde staan.
+- De twee mediaspelerkaarten/-knoppen vervallen volledig uit het dashboard.
+- De meldingen staan onder de actieknoppen in twee kolommen. Alle meldingskaarten hebben dezelfde vaste, bijna vierkante afmetingen; langere tekst loopt over meerdere regels.
+- Links worden vier bijna vierkante temperatuurtegels in een 2×2-raster getoond.
+- Dashboardtekst en waarden moeten vanaf circa vier meter afstand goed leesbaar zijn.
+- Temperatuurtegels en actieknoppen blijven neutraal; kleur wordt uitsluitend functioneel gebruikt, bijvoorbeeld voor meldingsniveaus/statussen.
