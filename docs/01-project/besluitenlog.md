@@ -270,3 +270,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 ## Instellingenpagina – Algemeen
 - De pagina Algemeen bevat algemene informatie/dashboardstatus én instellingen voor datumweergave, tijdweergave en verversingssnelheid.
 - De concrete opties en standaardwaarden worden in een volgende ontwerpstap vastgesteld.
+
+- Tijdweergave: gebruiker kan kiezen tussen 24-uursnotatie en 12-uursnotatie (AM/PM).
