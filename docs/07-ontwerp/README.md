@@ -109,3 +109,6 @@ Toon zowel het versienummer als de datum van de laatste update.
 
 ### Uptimeweergave
 De uptime wordt compact weergegeven, bijvoorbeeld `3d 04u 12m`.
+
+### Instellingen opslaan
+De pagina gebruikt één algemene knop **Opslaan** onderaan de pagina voor alle gewijzigde instellingen.
