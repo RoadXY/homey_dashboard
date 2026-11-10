@@ -81,3 +81,9 @@ Neem naast de overige vooraf gedefinieerde thema's ook een **Homey-stijl thema**
 
 ### Meldingeninstellingen
 De instellingenpagina Meldingen heeft uitsluitend het tabblad **Meldingen**. Er zijn geen aparte tabbladen Weergave of Volgorde: de kaartpresentatie ligt vast volgens de bestaande ontwerpafspraken en de sortering gebeurt automatisch op niveau en activatietijd.
+
+### Meldingenbeheer en voorwaardeneditor
+Alle meldingen worden centraal beheerd in het dashboard. Gebruikers kunnen meldingen aanmaken, bewerken en verwijderen, inclusief de voorwaarden. Dit geldt ook voor meldingen die later door Homey worden aangeleverd. Bewerken en toevoegen gebeurt via een schermvullende editor met metadata en een visuele voorwaardeneditor. Blockly is de voorkeurskandidaat; eigen styling en domeinspecifieke blokken voor onder meer AND/OR, tijdsvensters, hoger dan en lager dan worden onderzocht en ontworpen. Technische validatie en vertaling naar een uitvoerbaar voorwaardenmodel moeten worden uitgewerkt.
+
+### Homey melding-aanlevering – fase 2
+Bepaal in fase 2 het mechanisme waarmee Homey meldingen aan het dashboard kan aanleveren, bijvoorbeeld via API-aanroep of een toekomstige Homey-app. Homey-aanlevering maakt meldingen niet alleen-lezen; het dashboard blijft de plek voor beheer en bewerking.
