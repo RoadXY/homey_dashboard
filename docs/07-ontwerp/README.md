@@ -91,3 +91,6 @@ Gekozen is voor automatische verversing met verschillende intervallen: belangrij
 
 ### Pagina Algemeen – statusinformatie
 De pagina toont zes onderdelen: verbindingsstatus Homey Pro, verbindingsstatus dashboardserver, laatste succesvolle gegevensverversing, dashboardversie, uptime van de dashboardserver en opslag- en geheugengebruik.
+
+### Datum- en tijdinstellingen
+Op de pagina Algemeen kan de gebruiker tijdnotatie, datumweergave en tijdzone instellen.
