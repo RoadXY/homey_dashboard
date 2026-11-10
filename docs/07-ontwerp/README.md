@@ -16,7 +16,9 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 - Linkerzijde: grote klok en datum, weerinformatie en vier temperatuurtegels.
 - Temperatuurtegels: vier bijna vierkante tegels in een 2×2-indeling.
 - Temperatuur-iconen zijn verwijderd; ruimtenamen en temperatuurwaarden worden groter weergegeven binnen dezelfde vaste tegelafmetingen.
-- Rechterzijde: acht actieknoppen bovenaan, zonder afzonderlijke kop/balk ‘Snelle acties’.
+- De vier labels zijn Woonkamer, Keuken, Sem en Bram; bij Sem en Bram staat niet het woord ‘Slaapkamer’.
+- Rechterzijde: acht actieknoppen bovenaan, zonder afzonderlijke kop/balk ‘Snelle acties’; de bovenkant van de knoppenrij lijnt uit met de bovenkant van de klok-/datumkaart.
+- Het meldingenpaneel staat direct onder de actieknoppen en wordt omhooggeschoven om meer ruimte voor meldingskaarten te creëren.
 - De twee mediaspelerkaarten/-knoppen vervallen volledig uit het dashboard.
 - Meldingen onder de actieknoppen in twee kolommen.
 - Alle meldingskaarten hebben dezelfde vaste afmetingen, bijna vierkant; tekst mag over meerdere regels lopen.
