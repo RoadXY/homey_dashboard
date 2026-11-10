@@ -60,3 +60,6 @@ De handmatige taalkeuze wordt blijvend opgeslagen en blijft actief na een volgen
 
 ### Plaatsing taalkeuze
 De taalinstelling is beschikbaar op de instellingenpagina **Algemeen**, bij de datum- en tijdinstellingen.
+
+### Temperatuurpreview
+De preview wordt direct live bijgewerkt bij wijzigingen aan de vier temperatuurtegels. Het betreft een preview van de conceptinstellingen; definitief bewaren gebeurt via Opslaan.
