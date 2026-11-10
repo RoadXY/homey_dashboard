@@ -252,3 +252,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De vrije ruimte tussen meldingskaarten en de rechterrand van het meldingenpaneel wordt gelijk aan de vrije ruimte links.
 - De verticale lijnaccenten links en rechts van het meldingenpaneel worden even lang.
 - De lijnaccenten lopen geleidelijk over een grotere lengte uit/faden naar de achtergrond, vergelijkbaar met de bestaande overgang maar langzamer en minder abrupt.
+
+
+## Besluit extra lange fade links van meldingen (10 november 2026)
+- De verticale lijn/overgang links van het meldingenpaneel krijgt een nog langere en geleidelijkere fade naar de achtergrond.
+- Het accent moet over een grotere lengte uitlopen en mag niet abrupt zichtbaar eindigen.
+- Dit verzoek wijzigt alleen het fade-effect links van het meldingenpaneel; overige ontwerpafspraken blijven behouden.
