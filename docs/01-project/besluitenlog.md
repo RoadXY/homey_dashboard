@@ -177,6 +177,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Kritieke meldingen krijgen een rode achtergrond met contrasterende tekst.
 - Zodra de voorwaarde niet meer actief is, verdwijnt de melding direct uit beeld; er komt geen geschiedenisoverzicht of logboek voor beëindigde meldingen.
 
+## Ronde 21 – meldingsinstanties (lopend)
+- Vraag 1: iedere afzonderlijke actieve voorwaarde mag een eigen melding opleveren; dezelfde soort melding kan dus meerdere keren zichtbaar zijn (keuze C).
+
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
 - Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
