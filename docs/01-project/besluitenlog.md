@@ -294,3 +294,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Instellingen opslaan: één algemene knop **Opslaan** onderaan de pagina.
 
 - Bij verlaten met niet-opgeslagen wijzigingen verschijnt een bevestiging: opslaan, weggooien of blijven.
+
+- Indeling pagina Algemeen: één gecombineerd overzicht met instellingen en systeemstatusinformatie, zonder aparte blokken.
