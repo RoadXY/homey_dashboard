@@ -274,3 +274,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Tijdweergave: gebruiker kan kiezen tussen 24-uursnotatie en 12-uursnotatie (AM/PM).
 
 - Datumweergave: korte variant, bijvoorbeeld `di. 10 nov. 2026`.
+
+- Dashboardverversing: automatische verversing met verschillende intervallen; belangrijke gegevens vaker dan minder belangrijke gegevens. Exacte intervallen worden later bepaald.
