@@ -167,3 +167,6 @@ Bij het bewerken van een snelactie kiest de gebruiker expliciet tussen twee acti
 
 ### Fase 3 – Homey-stijl thema
 Voor fase 3 wordt naast de overige vooraf gedefinieerde dashboardthema's ook een **Homey-stijl thema** toegevoegd. De door de gebruiker gedeelde Homey-apparatenpagina dient als visuele referentie. Het thema krijgt een donkere antraciet/zwart-grijze basis, ingetogen kaartvlakken en blauwe accenten, met behoud van de eigen dashboardindeling en leesbaarheid. De precieze kleuren, contrasten en componentstijlen worden tijdens het themaontwerp in fase 3 uitgewerkt.
+
+### Meldingenpagina – tabblad Weergave verwijderd
+Het aparte tabblad **Weergave** wordt niet opgenomen in de instellingenpagina Meldingen. De presentatie van meldingskaarten is al vastgelegd (pictogram, titel en actuele waarde; vormgeving en niveaukleuren volgens de bestaande afspraken) en krijgt in deze fase geen afzonderlijke configuratieopties. De pagina bevat daarom alleen het tabblad **Meldingen**. Het tabblad **Volgorde** blijft eveneens verwijderd; sortering volgt automatisch de afgesproken prioriteit en activatietijd.
