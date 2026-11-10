@@ -177,10 +177,11 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Kritieke meldingen krijgen een rode achtergrond met contrasterende tekst.
 - Zodra de voorwaarde niet meer actief is, verdwijnt de melding direct uit beeld; er komt geen geschiedenisoverzicht of logboek voor beëindigde meldingen.
 
-## Ronde 21 – meldingsinstanties (lopend)
-- Vraag 1: iedere afzonderlijke actieve voorwaarde mag een eigen melding opleveren; dezelfde soort melding kan dus meerdere keren zichtbaar zijn (keuze C).
-- Vraag 2: telkens wanneer een voorwaarde opnieuw actief wordt, wordt de melding opnieuw getoond; geen wachttijd of dempingsperiode (keuze A).
-- Vraag 3: als de actuele meetwaarde verandert terwijl de melding actief is, wordt de melding opnieuw geactiveerd en krijgt zij een nieuw activeringstijdstip (keuze C), maar uitsluitend zolang de geldende voorwaarden van die melding nog steeds vervuld zijn.
+## Ronde 21 – meldingsinstanties
+- Vraag 1 (keuze C): iedere afzonderlijke actieve voorwaarde mag een eigen melding opleveren; dezelfde soort melding kan dus meerdere keren zichtbaar zijn.
+- Vraag 2 (keuze A): telkens wanneer een voorwaarde opnieuw actief wordt, wordt de melding opnieuw getoond; er geldt geen wachttijd of dempingsperiode.
+- Vraag 3 (keuze A): als de actuele meetwaarde verandert terwijl de voorwaarde actief blijft, blijft de bestaande melding staan en toont deze direct de nieuwe actuele waarde.
+- Vraag 4 (keuze A): iedere waardeverandering zolang de voorwaarden actief blijven, geldt als een nieuwe activatie van de melding.
 
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
