@@ -54,3 +54,6 @@ De keuzelijst bevat bovenaan Automatisch met de gedetecteerde Homey-taal in de n
 
 ### Directe taalwisseling
 Een wijziging van de geselecteerde dashboardtaal wordt onmiddellijk in de interface toegepast. Een paginaherlading of herstart van de Docker-container is niet nodig.
+
+### Persistente taalvoorkeur
+De handmatige taalkeuze wordt blijvend opgeslagen en blijft actief na een volgend bezoek en na herstart van de Docker-container. Alleen wanneer de gebruiker Automatisch selecteert, volgt het dashboard opnieuw de Homey-taal.
