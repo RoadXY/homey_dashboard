@@ -328,3 +328,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Standaard weerweergave: aan — buitentemperatuur, gevoelstemperatuur, weericoon/weersomschrijving en windsnelheid/windrichting. Uit — luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/zonsondergang.
 
 - Snelle actieknoppen: per knop zijn zichtbaarheid, volgorde, naam, pictogram en actie-instelling instelbaar.
+
+- Actietype snelle actieknop: per knop keuze tussen Homey Flow starten en Homey-apparaat bedienen.
