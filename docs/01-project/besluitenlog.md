@@ -345,3 +345,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - **Correctie MDI/actieknoppen:** gebruiker kiest uitsluitend het MDI-pictogram. Kleur en grootte volgen automatisch het actieve thema; alle actieknoppictogrammen hebben dezelfde themakleur. Severity-kleuren zijn niet van toepassing op actieknoppen.
 - **Fase 3:** een aantal vooraf ontworpen thema's toevoegen; concrete varianten later bepalen.
+
+- MDI-selectie actieknoppen: één doorzoekbaar overzicht met alle MDI-pictogrammen en een live voorbeeld.
