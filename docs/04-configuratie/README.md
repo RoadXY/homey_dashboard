@@ -39,3 +39,5 @@ Pincode en eventuele API-keys/secrets worden nooit in Git opgeslagen. PIN-sessie
 
 ## Algemeen – afgesproken instellingenpagina-onderdelen
 De pagina Algemeen bevat naast algemene informatie/dashboardstatus ook instellingen voor datumweergave, tijdweergave en verversingssnelheid. De precieze opties en standaardwaarden worden nog vastgesteld.
+
+De tijdweergave is instelbaar tussen 24-uursnotatie en 12-uursnotatie (AM/PM).
