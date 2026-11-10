@@ -396,3 +396,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - Meldingenpagina: tabblad **Weergave** verwijderd; alleen **Meldingen** blijft. Meldingspresentatie is vast en niet afzonderlijk configureerbaar.
 - Tabblad **Volgorde** blijft verwijderd; automatische sortering volgens niveau en activatietijd.
+
+- Correctie beheer meldingen: meldingen worden centraal door het dashboard beheerd, niet door Homey. Alle meldingen, ongeacht herkomst, kunnen in het dashboard worden aangemaakt, bewerkt en verwijderd. Ook voorwaarden zijn volledig bewerkbaar; Homey-aangeleverde meldingen zijn niet alleen-lezen.
+- Melding toevoegen/bewerken opent een schermvullende editor, geen modal. Deze bevat metadata én een editor voor de volledige voorwaarden.
+- Blockly is de voorkeurskandidaat voor de visuele voorwaardeneditor, met eigen styling en domeinspecifieke blokken (o.a. AND/OR, tijdsvenster, hoger dan/lager dan). Definitieve blokken, validatie en vertaling naar een uitvoerbaar voorwaardenmodel worden technisch uitgewerkt.
+- Fase 2: bepalen hoe Homey meldingen kan aanleveren, bijvoorbeeld via API-aanroep of toekomstige Homey-app. Aangeleverde meldingen blijven volledig dashboard-beheerbaar.
