@@ -166,3 +166,15 @@ De twee door de gebruiker aangemaakte Logic-variabelen zijn read-only uitgelezen
 - `temperatuur_gemiddeld_keuken`: type `number`; actuele waarde bij uitlezen: 22,5.
 
 Daarmee zijn naam en numeriek datatype bevestigd. De waarden zijn uitsluitend een momentopname; de logica/Flows die deze variabelen bijwerken en de gebruikte temperatuureenheid moeten nog worden bevestigd. Er zijn geen waarden aangepast.
+
+
+## Vooruitblik fase 2: configureerbare knopacties (10 november 2026)
+
+De gebruiker heeft de beoogde inrichting van quick buttons voor fase 2 verduidelijkt:
+
+- **Actieknop (Flow):** in de instellingen komt een selector waarmee een bestaande Homey Flow kan worden gekozen. De actieknop start vervolgens de geselecteerde Flow. Flows blijven echte Homey Flows en moeten dus ook vanuit Homey zelf handmatig gestart kunnen worden.
+- **Apparaatknop:** in de instellingen kiest de gebruiker eerst een Homey-apparaat en vervolgens één van de acties die dat apparaat ondersteunt. De knop voert die geselecteerde apparaatactie uit.
+
+Dit is fase-2-functionaliteit en verandert de fase-1-afspraak niet: de huidige knoppen kunnen per knop aan een Flow of directe apparaatbediening worden gekoppeld, maar de uitgebreide selectors en dynamische configuratie van bestaande Flows/apparaatacties worden later uitgewerkt.
+
+Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare Homey Flows voorzien die ook handmatig vanuit Homey gestart kunnen worden en daarnaast vanuit het dashboard aanroepbaar moeten zijn. Er is nog geen Flow aangemaakt of gewijzigd.
