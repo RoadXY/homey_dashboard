@@ -246,3 +246,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Dit geldt nadrukkelijk ook voor de afstand tussen actieknoppen en meldingen; die mag niet afwijken van de tussenruimte tussen andere kaarten.
 - De ruimte tussen tijdkaart en weerkaart, weerkaart en temperatuurtegels, linker- en rechterkolom en de kaarten binnen het meldingenraster wordt consistent.
 - Technische uitwerking gebruikt bij voorkeur één centrale spacing-instelling/token voor deze standaardafstand.
+
+
+## Besluit meldingenpaneel: symmetrie en fade (10 november 2026)
+- De vrije ruimte tussen meldingskaarten en de rechterrand van het meldingenpaneel wordt gelijk aan de vrije ruimte links.
+- De verticale lijnaccenten links en rechts van het meldingenpaneel worden even lang.
+- De lijnaccenten lopen geleidelijk over een grotere lengte uit/faden naar de achtergrond, vergelijkbaar met de bestaande overgang maar langzamer en minder abrupt.
