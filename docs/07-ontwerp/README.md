@@ -189,3 +189,8 @@ De gebruiker kan de volgorde wijzigen door knoppen te verslepen (drag-and-drop).
 
 ### MDI-pictogrammen
 Per snelle actieknop kan de gebruiker een eigen pictogram uit Material Design Icons (MDI) kiezen. De dashboardstijl bepaalt centraal de grootte en kleur; de gebruiker kan deze niet aanpassen. De kleur volgt de severity-/statuscodering: rood, geel, blauw of groen.
+
+### Correctie actieknoppen en thema's
+Alle actieknoppictogrammen hebben dezelfde kleur binnen het actieve thema. Kleur en grootte volgen automatisch het thema en zijn niet afzonderlijk instelbaar. Severity-kleuren gelden niet voor actieknoppen. De gebruiker kiest per actieknop alleen het MDI-pictogram.
+
+In fase 3 worden meerdere vooraf ontworpen dashboardthema's aangeboden; de exacte thema's worden later ontworpen.
