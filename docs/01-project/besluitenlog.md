@@ -179,6 +179,7 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 ## Ronde 21 – meldingsinstanties (lopend)
 - Vraag 1: iedere afzonderlijke actieve voorwaarde mag een eigen melding opleveren; dezelfde soort melding kan dus meerdere keren zichtbaar zijn (keuze C).
+- Vraag 2: telkens wanneer een voorwaarde opnieuw actief wordt, wordt de melding opnieuw getoond; geen wachttijd of dempingsperiode (keuze A).
 
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
