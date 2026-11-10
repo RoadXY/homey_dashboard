@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 15
+# Besluitenlog – inventarisatierondes 1 t/m 16
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -142,9 +142,16 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - PIN-sessie: eenmaal invoeren; automatisch uitloggen na een instelbare periode van inactiviteit.
 - Instellingenpagina biedt alleen een test voor de Homey-verbinding; geen afzonderlijke meldingstest afgesproken.
 
+## Ronde 16 – weer en kamertemperaturen
+- Weerinformatie naast de buitentemperatuur bevat ook luchtvochtigheid en een weersomschrijving, naast de eerder gekozen gevoelstemperatuur, wind en neerslag.
+- Weersomschrijving wordt getoond met zowel een weericoon als een korte tekstomschrijving.
+- Er worden maximaal vier kamertemperaturen getoond.
+- Kamertemperaturen worden weergegeven als afzonderlijke temperatuurtegels.
+- Als weerinformatie tijdelijk niet beschikbaar is, toont het dashboard een melding dat de weerinformatie niet beschikbaar is.
+
 ## Open punten
-- Exacte selectie en presentatie van weergegevens.
-- Kamertemperaturen en selectie daarvan.
+- Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
+- Welke maximaal vier kamers/sensoren worden geselecteerd.
 - Detailuitwerking complexe meldingscondities en editor in fase 2.
 - Exacte manier waarop de gebruiker Flow of directe apparaatbediening per quick button configureert (velden/keuzelijst en validatie).
 - Definitieve beveiligingsdetails: pincodebeleid, sessieduur-instelling, rate limiting en opslag van secrets.
