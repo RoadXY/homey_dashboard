@@ -63,3 +63,6 @@ De taalinstelling is beschikbaar op de instellingenpagina **Algemeen**, bij de d
 
 ### Temperatuurpreview
 De preview wordt direct live bijgewerkt bij wijzigingen aan de vier temperatuurtegels. Het betreft een preview van de conceptinstellingen; definitief bewaren gebeurt via Opslaan.
+
+### Sensorselectie temperatuurtegels
+De sensorpicker ondersteunt alle niveaus van de Homey-ruimtestructuur. Ruimte-iconen worden weggelaten. Binnen een gekozen ruimte worden alleen apparaten met geschikte temperatuurmetingen aangeboden, met de meetwaarden zodat de gebruiker de juiste bron kan kiezen. Terugnavigatie verloopt via het kruimelpad, niet via een aparte lijstoptie. Bij lange paden blijven het huidige niveau en de twee voorgaande niveaus zichtbaar; overige niveaus zijn via een aanklikbare ellipsis te openen en te selecteren.
