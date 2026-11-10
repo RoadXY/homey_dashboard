@@ -239,3 +239,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De rij met acht actieknoppen wordt verticaal uitgelijnd met de bovenkant van de klok-/datumkaart links.
 - Het meldingenpaneel schuift omhoog en komt direct onder de actieknoppen, zodat de beschikbare ruimte voor meldingen groter wordt.
 - De temperatuurtegels behouden hun formaat en 2×2-indeling. De ruimtenamen zijn voortaan exact: `Woonkamer`, `Keuken`, `Sem` en `Bram`. Bij de laatste twee wordt ‘Slaapkamer’ weggelaten; de naam staat op één regel.
+
+
+## Besluit uniforme spatiëring (10 november 2026)
+- Alle buitenste tussenruimtes tussen kaarten/onderdelen worden gelijkgetrokken.
+- Dit geldt nadrukkelijk ook voor de afstand tussen actieknoppen en meldingen; die mag niet afwijken van de tussenruimte tussen andere kaarten.
+- De ruimte tussen tijdkaart en weerkaart, weerkaart en temperatuurtegels, linker- en rechterkolom en de kaarten binnen het meldingenraster wordt consistent.
+- Technische uitwerking gebruikt bij voorkeur één centrale spacing-instelling/token voor deze standaardafstand.
