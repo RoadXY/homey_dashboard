@@ -1,4 +1,4 @@
-# Besluitenlog – inventarisatierondes 1 t/m 17
+# Besluitenlog – inventarisatierondes 1 t/m 18
 
 Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
 
@@ -156,10 +156,18 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Als een kamersensor offline is, blijft de tegel zichtbaar met ‘Geen gegevens’.
 - Een temperatuurwaarde ouder dan 15 minuten geldt als verouderd.
 
+## Ronde 18 – klok, datum en gegevensactualiteit
+- Tijd wordt getoond in 24-uursnotatie; de notatie wordt later instelbaar via de instellingenpagina.
+- Datum wordt standaard voluit getoond, inclusief weekdag en maandnaam (bijv. ‘Dinsdag 10 november 2026’); de datumnotatie wordt later instelbaar.
+- De weekdag wordt duidelijk zichtbaar getoond; de presentatie ervan wordt later instelbaar.
+- Bij verlies van Homey-verbinding blijft de bestaande afgesproken status gelden: ‘Homey Offline’ bij de klok en laatst bekende waarden blijven staan. Dit punt wordt niet opnieuw als nieuw besluit behandeld.
+- Tijdstip van laatste update wordt alleen getoond bij waarden die als verouderd worden aangemerkt.
+
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
 - Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
-- Hoe verouderde temperatuurwaarden visueel worden aangeduid.
+- Hoe verouderde temperatuurwaarden visueel worden aangeduid en hoe het update-tijdstip wordt weergegeven.
+- Welke klok- en datumnotaties als instelbare opties beschikbaar komen.
 - Detailuitwerking complexe meldingscondities en editor in fase 2.
 - Exacte manier waarop de gebruiker Flow of directe apparaatbediening per quick button configureert (velden/keuzelijst en validatie).
 - Definitieve beveiligingsdetails: pincodebeleid, sessieduur-instelling, rate limiting en opslag van secrets.
