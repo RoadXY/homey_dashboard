@@ -290,3 +290,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Dashboardversie: weergave van versienummer plus datum van de laatste update.
 
 - Uptime dashboardserver: compacte notatie, bijvoorbeeld `3d 04u 12m`.
+
+- Instellingen opslaan: één algemene knop **Opslaan** onderaan de pagina.
