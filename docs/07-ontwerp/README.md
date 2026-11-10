@@ -28,6 +28,9 @@ Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implemen
 
 - De vier temperatuurtegels zijn exact even groot en staan in een vast 2×2-raster.
 
+
+- De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in de mockup. De knoppen behouden de eerder afgesproken volgorde. De gebruiker accepteert dat de knoppen op het tabletscherm compact naast elkaar staan, omdat bediening bewust dichtbij het scherm gebeurt.
+
 ## Nog te bespreken / goed te keuren
 1. Definitieve hoofdschermmockup, inclusief exacte kolomverhouding en knoplabels/-volgorde.
 2. Instellingenpagina-mockup.
