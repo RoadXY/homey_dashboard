@@ -106,3 +106,6 @@ Er worden op de pagina Algemeen geen waarschuwingen getoond. De serverstatussen 
 
 ### Dashboardversie
 Toon zowel het versienummer als de datum van de laatste update.
+
+### Uptimeweergave
+De uptime wordt compact weergegeven, bijvoorbeeld `3d 04u 12m`.
