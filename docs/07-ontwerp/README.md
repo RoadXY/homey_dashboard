@@ -203,3 +203,6 @@ De pictogramkiezer doorzoekt de door de MDI-website aangeleverde namen. Nederlan
 
 ### Taalbeheer huidige fase
 De dashboardtaal is voorlopig Nederlands. Teksten worden vanaf de huidige fase in JSON-vertaalbestanden beheerd; de daadwerkelijke keuze uit meerdere dashboardtalen volgt in fase 3.
+
+### Structuur vertaalbestanden
+Vertaalteksten worden opgeslagen in meerdere JSON-bestanden per taal, opgesplitst per applicatieonderdeel (zoals dashboard, meldingen en instellingen). Dit houdt de bestanden overzichtelijk en maakt uitbreiding naar meerdere talen in fase 3 mogelijk.
