@@ -161,3 +161,6 @@ De volgorde van de acht weeronderdelen staat vast en is niet door de gebruiker t
 
 ### Live preview weerkaart
 De preview van de weerkaart wordt direct bijgewerkt wanneer de gebruiker een van de acht weeronderdelen aan- of uitzet. De preview toont de conceptinstellingen vóór Opslaan; Opslaan bewaart de gekozen zichtbaarheid definitief.
+
+### Quick actions – actietype kiezen
+Bij het bewerken van een snelactie kiest de gebruiker expliciet tussen twee actietypen via twee duidelijke keuzeknoppen: **Flow** of **Apparaat**. Bij Flow wordt een bestaande Homey Flow gekozen uit een doorzoekbare lijst; de snelactie start die Flow en de Flow blijft ook handmatig vanuit Homey startbaar. Bij Apparaat kiest de gebruiker eerst een Homey-ruimte, daarna een apparaat en vervolgens een van de acties die dat apparaat ondersteunt. Naam en MDI-pictogram blijven onderdeel van dezelfde bewerking. De preview wordt live bijgewerkt en de pictogrammen blijven monochroom volgens het actieve thema.
