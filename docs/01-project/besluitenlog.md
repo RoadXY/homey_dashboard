@@ -276,3 +276,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Datumweergave: korte variant, bijvoorbeeld `di. 10 nov. 2026`.
 
 - Dashboardverversing: automatische verversing met verschillende intervallen; belangrijke gegevens vaker dan minder belangrijke gegevens. Exacte intervallen worden later bepaald.
+
+- Pagina Algemeen toont: Homey Pro-verbindingsstatus, dashboardserver-verbindingsstatus, laatste succesvolle gegevensverversing, dashboardversie, uptime dashboardserver en opslag- en geheugengebruik.
