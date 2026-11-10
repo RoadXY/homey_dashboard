@@ -401,3 +401,6 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Melding toevoegen/bewerken opent een schermvullende editor, geen modal. Deze bevat metadata én een editor voor de volledige voorwaarden.
 - Blockly is de voorkeurskandidaat voor de visuele voorwaardeneditor, met eigen styling en domeinspecifieke blokken (o.a. AND/OR, tijdsvenster, hoger dan/lager dan). Definitieve blokken, validatie en vertaling naar een uitvoerbaar voorwaardenmodel worden technisch uitgewerkt.
 - Fase 2: bepalen hoe Homey meldingen kan aanleveren, bijvoorbeeld via API-aanroep of toekomstige Homey-app. Aangeleverde meldingen blijven volledig dashboard-beheerbaar.
+
+- Instellingen en meldingeditor zijn responsief voor circa 10-inch tablet en 15–16-inch laptop. Tablet vooral voor incidenteel/noodgebruik; laptop is de primaire beheeromgeving.
+- Op 30-inch schermen mag ongebruikte ruimte overblijven; inhoud hoeft niet volledig uit te rekken. De meldingeditor/Blockly-werkruimte schaalt en herschikt passend bij de viewport.
