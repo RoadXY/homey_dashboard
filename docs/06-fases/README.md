@@ -78,3 +78,6 @@ Voor iedere snelactie kiest de gebruiker expliciet het actietype via twee keuzek
 
 ### Thema-uitbreiding fase 3
 Neem naast de overige vooraf gedefinieerde thema's ook een **Homey-stijl thema** op. Gebruik de door de gebruiker aangeleverde Homey-apparatenpagina als visuele referentie: donkere antraciet/zwart-grijze basis, ingetogen grijze kaartvlakken en blauwe accenten. De precieze stijlwaarden worden in fase 3 ontworpen.
+
+### Meldingeninstellingen
+De instellingenpagina Meldingen heeft uitsluitend het tabblad **Meldingen**. Er zijn geen aparte tabbladen Weergave of Volgorde: de kaartpresentatie ligt vast volgens de bestaande ontwerpafspraken en de sortering gebeurt automatisch op niveau en activatietijd.
