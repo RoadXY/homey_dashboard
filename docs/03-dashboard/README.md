@@ -136,3 +136,25 @@ Deze aanvulling is gebaseerd op parsing van de YAML-kaarten en een nieuwe read-o
 
 ### Relevante gevonden Homey Flows (namen, nog niet inhoudelijk geverifieerd)
 Er zijn onder meer Flows gevonden met namen rond: temperatuur gemiddelde woonkamer/keuken, CO2 woonkamer hoog, verwarming/airco, rolluiken, regen en open ramen, wateralarmen, droger looptijd/energie, wasmachine start/klaar, verjaardagsmodus, TV en Q-Music. Deze namen zijn aanwijzingen voor mogelijk herbruikbare bestaande logica, geen bevestiging van de werking.
+
+
+## Aanvullingen Homey-mapping en scope (10 november 2026)
+
+### Gemiddelde temperaturen
+De gebruiker heeft in Homey twee Logic-variabelen aangemaakt:
+- `temperatuur_gemiddeld_keuken`
+- `temperatuur_gemiddeld_woonkamer`
+
+Deze variabelen zijn de beoogde bron voor de gemiddelde keuken- en woonkamer-temperaturen op het dashboard. De mapping is functioneel kandidaat/beoogd, maar moet technisch nog worden gecontroleerd op variabeletype, actuele waarde, eenheid en de Flow-logica die de waarden bijwerkt. De variabelen zelf zijn door de gebruiker aangemaakt; er is vanuit het dashboardproject niets gewijzigd.
+
+### Vervallen dashboardonderdelen
+De volgende onderdelen worden niet meegenomen in het nieuwe dashboard:
+- Batterijniveaus van telefoons.
+- Plantensensoren (vochtigheid/voeding).
+
+Dit is een expliciete scope-uitzondering op de eerdere afspraak om de bestaande Home Assistant-YAML als functionele nulmeting 1:1 te behouden. Andere batterijmeldingen, zoals de muurtablet, zijn hiermee niet automatisch vervallen.
+
+### Q-Music en rolluiken openen
+Voor de quick buttons `Q-Music` en `Rolluiken openen` moeten nieuwe Homey Flows worden gemaakt die vanuit de Homey Dashboard-app/container gestart kunnen worden. De bestaande Flow-namen zijn niet voldoende als bevestiging van een geschikte aanroepmethode; de exacte trigger-/API-route, Flow-inhoud en foutafhandeling moeten nog worden vastgesteld.
+
+Deze twee knoppen worden dus gekoppeld aan nieuw te maken, expliciet aanroepbare Flows. Er is nog geen Flow aangemaakt of aangepast. Homey blijft read-only vanuit onze inventarisatiewerkzaamheden totdat de gebruiker expliciet opdracht geeft om Flows te maken of te wijzigen.
