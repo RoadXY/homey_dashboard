@@ -215,3 +215,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De gebruiker keurt de getoonde meldingskaartindeling goed: twee kolommen, gelijke vaste kaartafmetingen, icoon naast tekst en tekst die over meerdere regels mag lopen.
 - Correctie op de mockup: de kritieke melding moet een duidelijk roodgetinte achtergrond hebben. De eerdere weergave met alleen een rood icoon/rand voldeed niet; de aangepaste mockup toont de rode achtergrond.
 - De hoofdschermmockup is hiermee visueel akkoord. De instellingenpagina en het volledige functionele ontwerp blijven nog ter goedkeuring; er wordt nog niet geïmplementeerd.
+
+
+## Aanvullend kleurgebruik meldingen (10 november 2026)
+- De gebruiker kiest naast rood voor kritieke meldingen ook een geel/ambergetinte achtergrond voor waarschuwingen.
+- Alleen kritieke meldingen (rood) en waarschuwingen (geel/amber) wijken qua kaartachtergrond af.
+- Info en alle overige meldingen behouden dezelfde neutrale donkere achtergrond als de gewone kaarten.
+- De gebruiker heeft de aangepaste mockup met zowel de rode als gele waarschuwingskaart goedgekeurd als gewenste visuele richting.
