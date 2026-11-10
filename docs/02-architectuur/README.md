@@ -17,5 +17,8 @@
 ## Verversing
 Doel voor belangrijke gegevens is 5 seconden, alleen als de Homey API dit ondersteunt en de belasting acceptabel blijft. Minder belangrijke gegevens krijgen een lager update-tempo. Dit moet technisch worden gevalideerd.
 
+## Technisch stackvoorstel
+Het eerste stackvoorstel is vastgelegd in [Technisch stackvoorstel](technisch-stackvoorstel.md). Dit document is nadrukkelijk een voorstel ter bespreking; React, Vite, Fastify, SSE en de verdere implementatiedetails zijn nog niet definitief goedgekeurd.
+
 ## Nog te ontwerpen
-Netwerkdiagram, API-keuze, servicegrenzen, persistentie/cache, logging, health checks, backup/restore, secretsbeheer en foutafhandeling.
+Netwerkdiagram, definitieve API-keuze en SDK-versie, servicegrenzen, persistentie/cache, logging, health checks, backup/restore, secretsbeheer en foutafhandeling.
