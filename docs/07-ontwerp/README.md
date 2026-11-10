@@ -168,3 +168,6 @@ Standaard ingeschakeld: buitentemperatuur, gevoelstemperatuur, weericoon en weer
 
 ### Instelbare eigenschappen snelle actieknoppen
 Per knop zijn zichtbaarheid, volgorde, naam, pictogram en actie-instelling configureerbaar.
+
+### Actietype snelle actieknop
+Per knop kan worden gekozen tussen het starten van een Homey Flow en het rechtstreeks bedienen van een Homey-apparaat. De configuratievelden worden afhankelijk van die keuze getoond.
