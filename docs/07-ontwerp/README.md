@@ -218,3 +218,6 @@ Bij de eerste installatie detecteert het dashboard de ingestelde taal van Homey 
 
 ### Weergave taalkeuze
 De taalkeuzelijst toont als eerste **Automatisch (taalnaam)**, bijvoorbeeld **Automatisch (Nederlands)**, op basis van de door Homey gedetecteerde taal. Daaronder staan alle talen waarvoor een volledige of gedeeltelijke vertaling aanwezig is. De optie Automatisch volgt de Homey-taal; bij een niet-beschikbare taal valt het dashboard terug op Engels en meldt het welke taal Homey gebruikt.
+
+### Gedrag taalwijziging
+Wanneer de gebruiker een andere dashboardtaal selecteert, wordt de interface direct bijgewerkt zonder paginaherlading. De wijziging vereist geen herstart van de Docker-container.
