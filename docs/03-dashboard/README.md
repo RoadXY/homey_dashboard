@@ -39,7 +39,7 @@ Volgorde:
 7. TV-modus
 8. Bedtijd
 
-Knoppen tonen icoon en label. Statuskleuren zijn gebaseerd op werkelijke Homey-status. Status wordt pas bijgewerkt na bevestiging door Homey. Fouten worden getoond zonder de knop onbruikbaar te maken. Kritieke bevestiging is per knop configureerbaar.
+Knoppen tonen icoon en label. Statuskleuren zijn gebaseerd op werkelijke Homey-status. Status wordt pas bijgewerkt na bevestiging door Homey. Fouten worden getoond zonder de knop onbruikbaar te maken. Kritieke bevestiging is per knop configureerbaar. Per knop kan in de instellingen worden gekozen tussen het starten van een Homey Flow en directe apparaatbediening.
 
 ## Functionele nulmeting
 De aangeleverde Home Assistant YAML (984 regels) en screenshot zijn de referentie. Bestaande meldingen, condities, knoppen en informatie moeten functioneel behouden blijven. Deze bron moet als projectbestand beschikbaar blijven en bij de port systematisch worden gemapt.
