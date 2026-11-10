@@ -32,8 +32,8 @@
 - Standaardmelding: herkenbaar icoon, titel en actuele waarde.
 - Waarschuwingsmeldingen: geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
 - Info en overige standaardmeldingen behouden dezelfde neutrale donkere achtergrond als de gewone kaarten.
-- Kritieke meldingen: duidelijk roodgetinte achtergrond met contrasterende, goed leesbare tekst.
-- Waarschuwingsmeldingen: duidelijk geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
+- Kritieke meldingen: donker roodgetinte achtergrond met contrasterende, goed leesbare tekst.
+- Waarschuwingsmeldingen: donker geel/ambergetinte achtergrond met contrasterende, goed leesbare tekst.
 - Bij gelijke niveaus wordt de nieuwste actieve melding eerst getoond.
 - Melding verdwijnt direct zodra de onderliggende voorwaarde niet meer actief is; er is geen geschiedenisoverzicht voor beëindigde meldingen.
 - Activeringstijdstip wordt bijgehouden voor sortering.
