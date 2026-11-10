@@ -212,3 +212,6 @@ Engels is de standaardtaal en terugvaltaal. Nederlands is een optionele taalkeuz
 
 ### Initiële taalinstelling
 Een nieuwe installatie start met Engels als geselecteerde dashboardtaal. Dit sluit aan op Engels als standaard- en terugvaltaal; andere beschikbare talen kunnen door de gebruiker worden gekozen.
+
+### Taal automatisch afstemmen op Homey
+Bij de eerste installatie detecteert het dashboard de ingestelde taal van Homey en selecteert die taal wanneer vertalingen beschikbaar zijn. Is de gedetecteerde taal niet beschikbaar, dan schakelt het dashboard terug naar Engels en toont het een duidelijke melding met de gedetecteerde taal en de mededeling dat deze niet wordt ondersteund. De gebruiker kan een andere beschikbare taal kiezen. Engels blijft ook de fallback voor afzonderlijke ontbrekende vertalingen.
