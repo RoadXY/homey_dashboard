@@ -87,3 +87,5 @@ Naast de sensorselectie kan de gebruiker ook de naam van elk van de vier tempera
 De sensorselectie voor temperatuurtegels is één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanbieden; apparaten worden niet op ruimte gegroepeerd.
 
 **Correctie sensorselectie:** de eerdere keuze voor één ongesorteerde lijst vervalt. De selectie volgt de Homey mobiele app: eerst een Homey-kamer/ruimte kiezen en daarna een temperatuursensor binnen die ruimte. In fase 2 wordt zoeken toegevoegd om sensoren sneller te vinden.
+
+Bij de selectie via kamer/ruimte en daarna sensor is op elk niveau een duidelijke navigatieoptie **Terug** beschikbaar om naar het vorige niveau te gaan (van sensorlijst terug naar kamers/ruimtes).
