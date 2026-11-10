@@ -189,3 +189,6 @@ Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare H
 - Links worden vier bijna vierkante temperatuurtegels in een 2×2-raster getoond.
 - Dashboardtekst en waarden moeten vanaf circa vier meter afstand goed leesbaar zijn.
 - Temperatuurtegels en actieknoppen blijven neutraal; kleur wordt uitsluitend functioneel gebruikt, bijvoorbeeld voor meldingsniveaus/statussen.
+
+### Temperatuurtegels – definitieve indeling
+De vier temperatuurtegels zijn allemaal exact even groot en worden in een vast 2×2-raster geplaatst. Ze gebruiken een neutrale stijl en grote, goed leesbare waarden.
