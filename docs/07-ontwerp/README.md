@@ -124,3 +124,6 @@ Combinatie van compacte lijst voor instellingen en compacte kaarten voor systeem
 
 ### Rangschikking systeemstatuskaarten
 De kaarten staan in één horizontale rij, voor zover de schermbreedte dit toelaat.
+
+### Terugkeerknop
+Linksboven staat een duidelijke knop **← Dashboard** om terug te keren naar het dashboard.
