@@ -97,3 +97,6 @@ Op de pagina Algemeen kan de gebruiker tijdnotatie, datumweergave en tijdzone in
 
 ### Standaardtijdzone
 De standaardtijdzone is `Europe/Amsterdam`, met automatische zomer- en wintertijd.
+
+### Weergave serverresources
+Opslag- en geheugengebruik worden tekstueel getoond, zonder grafische balken.
