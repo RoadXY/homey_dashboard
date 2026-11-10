@@ -188,3 +188,13 @@ In fase 1 bouwen we nog geen algemene visuele voorwaardeneditor en geen configur
 
 ### Fase 2 – visuele voorwaardeneditor
 De Blockly-voorwaardeneditor, inclusief categorieën, blokkenbibliotheek en het opbouwen/bewerken van voorwaarden, wordt bewaard voor fase 2. De concrete blokcategorieën en beschikbare blokken worden pas in fase 2 ontworpen en vastgesteld.
+
+## Technische architectuur – voorlopige uitgangspunten (11 november 2026)
+
+### Netwerk en Homey-verbinding
+De dashboardcontainer draait op de Ubuntu-server. Deze server bevindt zich in een ander VLAN dan Homey Pro 2023. De gebruiker beheert de netwerkregels en zorgt dat de standaard, door Homey ondersteunde communicatie tussen server en Homey mogelijk is. We introduceren geen eigen of onnodige poorten. De exacte API-/verbindingsmethode en poort(en) worden vóór implementatie technisch geverifieerd; er worden op dit moment geen poortnummers vastgelegd.
+
+De backend verzorgt de Homey-communicatie. Homey-authenticatiegegevens worden uitsluitend server-side opgeslagen en zijn nooit beschikbaar in de dashboardbrowser of in GitHub.
+
+### Voorlopige applicatieopbouw
+De eerste ontwerpvariant is één zelfstandige Docker-applicatie met een webfrontend en backend. De tablet gebruikt Fully Kiosk Browser om uitsluitend de dashboardwebsite te tonen. De backend haalt Homey-gegevens op, verwerkt deze en levert ze aan de frontend. Configuratie en andere blijvende gegevens worden buiten de container persistent opgeslagen. De definitieve technologiekeuze en communicatiemethode volgen na technische verificatie.
