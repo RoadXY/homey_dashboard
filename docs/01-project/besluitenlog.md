@@ -314,3 +314,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Temperatuurtegels: exact vier vaste tegels; per tegel selecteert de gebruiker welke Homey-temperatuursensor wordt weergegeven. Het aantal tegels is niet wijzigbaar.
 
 - Temperatuurtegels: vier vaste tegels; per tegel zijn zowel de Homey-sensor als de weergegeven naam zelf instelbaar.
+
+- Sensorselectie temperatuurtegels: één lijst met alle Homey-apparaten die een temperatuurmeting aanbieden.
