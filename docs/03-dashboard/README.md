@@ -209,3 +209,9 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 - De horizontale afstand tussen de linkerkolom en rechterkolom moet consistent zijn met de overige kaartafstanden.
 - De afstand tussen de actieknoppen en het meldingenpaneel moet gelijk zijn aan de tussenruimte tussen de meldingskaarten en andere kaarten.
 - Gebruik één consistente spacing-token/waarde voor de standaard tussenruimte; pas alleen bewust afwijkende binnenruimte binnen kaarten toe.
+
+
+## Meldingenpaneel – binnenmarge en rechterrand (10 november 2026)
+- Aan de rechterzijde van het meldingenpaneel moet dezelfde vrije binnenruimte tussen de meldingskaarten en de paneelrand aanwezig zijn als aan de linkerzijde.
+- De verticale decoratieve rand-/lijnaccenten aan de linker- en rechterzijde van het meldingenpaneel krijgen dezelfde lengte.
+- Beide lijnaccenten lopen geleidelijk en over een langere afstand over in de achtergrond/verdwijnen; geen abrupte afkapping. De overgang moet visueel vergelijkbaar zijn met de bestaande zachte fade, maar langer uitgesmeerd.
