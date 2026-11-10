@@ -353,3 +353,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 
 - Dashboardtaal huidige fase: Nederlands.
 - Tekstbeheer: alle dashboardteksten vanaf de huidige fase via JSON-vertaalbestanden; meertalige taalkeuze volgt in fase 3.
+
+- JSON-vertaalbestanden: optie B — meerdere bestanden per taal, opgesplitst per onderdeel (bijvoorbeeld dashboard, meldingen en instellingen).
