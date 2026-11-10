@@ -215,3 +215,9 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 - Aan de rechterzijde van het meldingenpaneel moet dezelfde vrije binnenruimte tussen de meldingskaarten en de paneelrand aanwezig zijn als aan de linkerzijde.
 - De verticale decoratieve rand-/lijnaccenten aan de linker- en rechterzijde van het meldingenpaneel krijgen dezelfde lengte.
 - Beide lijnaccenten lopen geleidelijk en over een langere afstand over in de achtergrond/verdwijnen; geen abrupte afkapping. De overgang moet visueel vergelijkbaar zijn met de bestaande zachte fade, maar langer uitgesmeerd.
+
+
+## Extra lange fade linker scheiding meldingen (10 november 2026)
+- De verticale overgang links van het meldingenpaneel (tussen linker dashboardkolom en meldingen) moet nog geleidelijker en over een grotere verticale lengte vervagen in de achtergrond.
+- De overgang begint subtiel ter hoogte van de meldingen en loopt over een langere afstand naar beneden uit; vermijd een zichtbare harde eindrand.
+- Dit is een verfijning van het eerder afgesproken zachte lijn-/fade-effect. De overige layout, marges, kleuren en kaartformaten blijven ongewijzigd.
