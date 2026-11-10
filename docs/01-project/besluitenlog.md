@@ -227,3 +227,9 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 ## Verfijning waarschuwingskleuren (10 november 2026)
 - De gebruiker wil zowel de rode kritieke meldingsachtergrond als de gele/amber waarschuwingsachtergrond iets donkerder.
 - De kleurcategorieën blijven ongewijzigd: kritiek rood, waarschuwing geel/amber, info en overige meldingen neutraal donker. Alleen de tint/verzadiging/helderheid van rood en geel wordt subtiel verlaagd; contrast en leesbaarheid blijven leidend.
+
+
+## Verfijning temperatuurtegels (10 november 2026)
+- De gebruiker wil de temperatuur-iconen op alle vier temperatuurtegels verwijderen.
+- De vrijgekomen ruimte wordt gebruikt om zowel de ruimtenaam als de temperatuurwaarde groter en beter leesbaar te tonen.
+- De vier tegels behouden exact hetzelfde formaat en de vaste 2×2-indeling.
