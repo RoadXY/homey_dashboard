@@ -57,3 +57,5 @@ Opslag- en geheugengebruik worden als tekstuele waarden weergegeven, zonder graf
 Op de pagina Algemeen worden geen serverwaarschuwingen getoond; alleen de statuswaarden worden weergegeven.
 
 De dashboardversie wordt weergegeven met het versienummer en de datum van de laatste update.
+
+De uptime van de dashboardserver wordt compact weergegeven, bijvoorbeeld `3d 04u 12m`.
