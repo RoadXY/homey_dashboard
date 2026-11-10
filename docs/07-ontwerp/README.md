@@ -251,3 +251,6 @@ De bewerkingsdialoog bevat twee expliciete, naast elkaar geplaatste keuzes: **Fl
 
 ### Homey-stijl thema (fase 3)
 Voeg in fase 3 een extra vooraf gedefinieerd thema toe: **Homey-stijl**. Visuele referentie is de door de gebruiker aangeleverde screenshot van de Homey-apparatenpagina. Richting: donkere antraciet/zwart-grijze achtergrond, sobere donkergrijze kaarten en blauwe accentkleur. Dit is een themavariant voor het bestaande Homey Dashboard; de dashboardstructuur en bediening blijven intact. Exacte kleurwaarden, contrasten, typografie en componentdetails worden bij de uitwerking van de thema's bepaald.
+
+### Definitieve navigatie Meldingenpagina
+De pagina Meldingen bevat geen tabbladen **Weergave** of **Volgorde**. Alleen **Meldingen** blijft beschikbaar. De weergave van meldingskaarten volgt de eerder vastgelegde vaste presentatie en is niet afzonderlijk configureerbaar. De volgorde wordt automatisch bepaald op basis van niveau (kritisch, waarschuwing, informatie) en binnen ieder niveau op nieuwste activatie eerst.
