@@ -73,3 +73,5 @@ De systeemstatuskaarten worden in één horizontale rij geplaatst, voor zover de
 De instellingenpagina krijgt linksboven een duidelijke terugkeerknop met het label **← Dashboard**.
 
 In de navigatiekolom wordt de actieve pagina aangegeven met een subtiele lichtere achtergrond achter de geselecteerde optie.
+
+Elk navigatie-item krijgt een klein pictogram vóór de categorienaam.
