@@ -183,6 +183,13 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Vraag 3 (keuze A): als de actuele meetwaarde verandert terwijl de voorwaarde actief blijft, blijft de bestaande melding staan en toont deze direct de nieuwe actuele waarde.
 - Vraag 4 (keuze A): iedere waardeverandering zolang de voorwaarden actief blijven, geldt als een nieuwe activatie van de melding.
 
+## Ronde 22 – meldingsinhoud en behoud van bestaande logica
+- Vraag 1 (keuze A, met toelichting): één melding kan meerdere voorwaarden bevatten. De melding toont relevante informatie in een passende vorm: bijvoorbeeld een apparaatwaarde met context (‘Het is warm in de woonkamer – 25 °C’) of een tekstuele status (‘Deur is open’, ‘Raam is nog niet open’). Niet standaard alle ruwe meetwaarden opsommen.
+- Vraag 2 (keuze A, aangevuld met optie D): voor fase 1 wordt de inhoud/presentatie exact overgenomen uit de bestaande Home Assistant-YAML. In fase 2 moet de gebruiker zelf dynamisch kunnen instellen welke tekst, apparaatwaarden en combinaties een melding toont; dit wordt een uitgebreider onderdeel van fase 2.
+- Vraag 3 (keuze A): alle bestaande voorwaarden en combinaties uit de Home Assistant-YAML blijven in fase 1 exact behouden. De logica wordt niet vereenvoudigd of gewijzigd tijdens het overzetten.
+- Vraag 4 (keuze A): als een bestaande melding niet één-op-één kan worden vertaald, wordt deze niet zelfstandig aangepast. Het probleem wordt gedocumenteerd en eerst met de gebruiker besproken.
+- Vraag 5 (keuze B, met toelichting): de gebruiker vergelijkt/test het nieuwe dashboard zelf naast Home Assistant. Het uitvoeren en organiseren van die tests is de verantwoordelijkheid van de gebruiker; dit hoeft niet door de assistent te worden uitgewerkt of beheerd.
+
 ## Open punten
 - Welke vier kamers/sensoren worden geselecteerd (namen en Homey-apparaten).
 - Exacte selectie, volgorde en presentatie van de weergegevens en de melding bij ontbrekende weerdata.
