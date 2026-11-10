@@ -432,9 +432,8 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - **Fase 2:** meldingenbeheer en de visuele voorwaardeneditor met Blockly, voortbouwend op het JSON-voorwaardenmodel.
 - De eerder goedgekeurde hoofdschermindeling blijft het ontwerpuitgangspunt; het ontbreken van meldingen in fase 1A is een tijdelijke scopekeuze en geen nieuw visueel ontwerpbesluit.
 
-## Quick Actions: migratie van Home Assistant naar Homey (11 november 2026)
-- De acht Quick Actions in fase 1A moeten uiteindelijk rechtstreeks via Homey werken; Home Assistant is geen runtime-afhankelijkheid van het nieuwe dashboard.
-- De huidige acties worden op dit moment door Home Assistant uitgevoerd. Een deel heeft mogelijk al een bestaande overeenkomstige Homey-Flow of Mood; het merendeel moet naar verwachting nog in Homey worden opgebouwd.
-- Gebruik de bestaande Home Assistant-configuratie/automatiseringen als functionele referentie voor het gewenste gedrag. Breng per knop de huidige HA-actie, eventuele voorwaarden/stappen en het doelgedrag in kaart en koppel die aan een bestaande of nieuw te maken Homey-Flow of apparaatactie.
-- Hergebruik bestaande Homey-Flows waar passend. Maak ontbrekende Flows pas nadat de werking en benodigde apparaten/acties zijn gecontroleerd en de gebruiker de concrete wijzigingen heeft goedgekeurd. Homey blijft read-only totdat daarvoor expliciet toestemming is gegeven.
-- De migratie mag geen bestaande HA-logica stilzwijgend wijzigen; afwijkingen of ontbrekende mogelijkheden worden eerst besproken.
+## Correctie scope Homey als enige automatiseringsplatform (11 november 2026)
+- Het nieuwe dashboard en alle Quick Actions worden volledig op Homey Pro 2023 gebaseerd. Home Assistant wordt niet gebruikt als bron, referentie, integratie, uitvoeringslaag of runtime-afhankelijkheid.
+- De acht Quick Actions worden vanuit de gewenste functionaliteit rechtstreeks ontworpen met Homey-Flows, Homey-Moods en/of ondersteunde apparaatacties.
+- Bestaande Homey-Flows en Moods worden waar passend hergebruikt. Ontbrekende acties worden als Homey-logica opgebouwd na inventarisatie en expliciete toestemming van de gebruiker.
+- Eerdere notities over het migreren, onderzoeken of als referentie gebruiken van Home Assistant-automatiseringen voor Quick Actions zijn hiermee vervallen.
