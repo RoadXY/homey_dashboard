@@ -179,3 +179,6 @@ Blockly wordt gekozen als voorkeurskandidaat voor een visuele blokeditor voor me
 
 ### Homey als bron van meldingen – fase 2
 In fase 2 wordt onderzocht en besloten hoe Homey meldingen aan het dashboard kan aanleveren, bijvoorbeeld via een API-aanroep of een toekomstige Homey-app. Dit verandert niets aan het centrale beheer: na ontvangst worden ook deze meldingen volledig in het dashboard beheerd en zijn ze bewerkbaar en verwijderbaar.
+
+### Responsieve instellingen- en meldingeditor
+De instellingen zijn bereikbaar vanaf tablet, laptop en desktop. De ontwerpdoelen zijn een tablet van circa 10 inch (voor incidenteel/noodgebruik) en laptops van 15–16 inch (primair gebruik). Op grotere schermen, zoals 30 inch, mag vrije ruimte overblijven; de interface hoeft niet uitgerekt te worden om de volledige breedte te vullen. De schermvullende meldingeditor en Blockly-werkruimte moeten zich aanpassen aan de beschikbare viewport en op tablet bruikbaar blijven, zonder de laptopervaring te benadelen.
