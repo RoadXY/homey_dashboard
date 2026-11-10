@@ -45,3 +45,6 @@ Engels is de standaard- en terugvaltaal van de applicatie. Nederlands en toekoms
 
 ### Standaardtaal bij installatie
 Bij een nieuwe installatie wordt Engels automatisch als dashboardtaal geselecteerd. De gebruiker kan dit later wijzigen naar een andere beschikbare taal.
+
+### Taalinstelling bij nieuwe installatie
+De dashboardtaal wordt bij de eerste installatie afgeleid van de taalinstelling van Homey. Als die taal wordt ondersteund, wordt deze geselecteerd. Anders wordt Engels gebruikt en krijgt de gebruiker een duidelijke melding over de gedetecteerde maar niet-beschikbare taal. Engels is tevens de terugvaltaal voor ontbrekende vertalingen binnen een taalbestand.
