@@ -170,3 +170,12 @@ Voor fase 3 wordt naast de overige vooraf gedefinieerde dashboardthema's ook een
 
 ### Meldingenpagina – tabblad Weergave verwijderd
 Het aparte tabblad **Weergave** wordt niet opgenomen in de instellingenpagina Meldingen. De presentatie van meldingskaarten is al vastgelegd (pictogram, titel en actuele waarde; vormgeving en niveaukleuren volgens de bestaande afspraken) en krijgt in deze fase geen afzonderlijke configuratieopties. De pagina bevat daarom alleen het tabblad **Meldingen**. Het tabblad **Volgorde** blijft eveneens verwijderd; sortering volgt automatisch de afgesproken prioriteit en activatietijd.
+
+### Meldingen – centraal beheer en volledige editor
+Alle meldingen worden beheerd door het dashboard, ongeacht of ze handmatig zijn aangemaakt of later via Homey worden aangeleverd. Iedere melding kan in het dashboard worden aangemaakt, bewerkt en verwijderd. Ook de voorwaarden zijn volledig bewerkbaar; meldingen die door Homey zijn aangeleverd zijn niet alleen-lezen. Het bewerken en aanmaken gebeurt in een aparte schermvullende editor in plaats van een klein dialoogvenster. In deze editor kunnen metadata (naam, pictogram, niveau, actief/inactief) en de voorwaarden worden aangepast.
+
+### Blockly als kandidaat voor de voorwaardeneditor
+Blockly wordt gekozen als voorkeurskandidaat voor een visuele blokeditor voor meldingsvoorwaarden. De interface wordt met eigen styling en eigen domeinspecifieke blokken ingericht, onder andere voor AND/OR, tijdsvensters, hoger dan en lager dan. Blockly is een open-source client-side bibliotheek onder Apache 2.0. De Blockly-workspace kan met de aanbevolen JSON-serialisatie worden opgeslagen. De definitieve technische architectuur, de set ondersteunde blokken en de omzetting naar een gevalideerd, uitvoerbaar voorwaardenmodel worden tijdens de technische uitwerking vastgesteld.
+
+### Homey als bron van meldingen – fase 2
+In fase 2 wordt onderzocht en besloten hoe Homey meldingen aan het dashboard kan aanleveren, bijvoorbeeld via een API-aanroep of een toekomstige Homey-app. Dit verandert niets aan het centrale beheer: na ontvangst worden ook deze meldingen volledig in het dashboard beheerd en zijn ze bewerkbaar en verwijderbaar.
