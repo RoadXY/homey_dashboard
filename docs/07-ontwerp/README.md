@@ -136,3 +136,8 @@ Alle navigatie-items krijgen een klein pictogram vóór de categorienaam.
 
 ### Navigatiecategorieën
 De navigatie bevat zes categorieën: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
+
+### Instelbare onderdelen pagina Dashboard
+- Temperatuurtegels: kiezen welke kamers en sensoren zichtbaar zijn.
+- Weerweergave: kiezen welke weergegevens zichtbaar zijn.
+- Snelle actieknoppen: zichtbaarheid, volgorde en instellingen beheren.
