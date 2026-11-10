@@ -6,6 +6,7 @@
 - Twee gelijke kolommen (50/50).
 - Dashboard zelf staat vast; geen paginascroll.
 - Alleen het meldingenpaneel mag verticaal scrollen als er veel meldingen zijn.
+- Bij een mislukte quick button-actie verschijnt een algemene foutmelding bovenaan het dashboard.
 
 ## Linkerzijde
 - Grote klok met tijd in 24-uursnotatie (standaard); tijdnotatie wordt later instelbaar.
@@ -46,7 +47,8 @@ Volgorde:
 7. TV-modus
 8. Bedtijd
 
-Knoppen tonen icoon en label. Statuskleuren zijn gebaseerd op werkelijke Homey-status. Status wordt pas bijgewerkt na bevestiging door Homey. Fouten worden getoond zonder de knop onbruikbaar te maken. Kritieke bevestiging is per knop configureerbaar. Per knop kan in de instellingen worden gekozen tussen het starten van een Homey Flow en directe apparaatbediening.
+Knoppen tonen icoon en label. Statuskleuren zijn gebaseerd op werkelijke Homey-status. Status wordt pas bijgewerkt nadat Homey de actie heeft bevestigd. Tijdens uitvoering wordt de betreffende knop uitgeschakeld. Na succes blijft de feedback ongeveer 5 seconden zichtbaar. Bij een mislukte actie verschijnt een algemene foutmelding bovenaan het dashboard. Kritische bevestiging is per knop configureerbaar en gebruikt een grotere dialoog met duidelijke actiebeschrijving. Er geldt ook een korte wachttijd na een geslaagde actie om dubbel indrukken te voorkomen; exacte duur volgt.
+Per knop kan in de instellingen worden gekozen tussen het starten van een Homey Flow en directe apparaatbediening.
 
 ## Functionele nulmeting
 De aangeleverde Home Assistant YAML (984 regels) en screenshot zijn de referentie. Bestaande meldingen, condities, knoppen en informatie moeten functioneel behouden blijven. Deze bron moet als projectbestand beschikbaar blijven en bij de port systematisch worden gemapt.
