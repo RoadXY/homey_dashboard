@@ -300,3 +300,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Pagina Algemeen: instellingen als compacte lijst; systeemstatusinformatie als compacte kaarten.
 
 - Systeemstatuskaarten: één horizontale rij, zolang de beschikbare schermbreedte dit toelaat.
+
+- Instellingenpagina: duidelijke terugkeerknop linksboven met label **← Dashboard**.
