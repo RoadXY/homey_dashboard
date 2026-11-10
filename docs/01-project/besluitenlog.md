@@ -308,3 +308,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Navigatiekolom: bij iedere categorienaam staat een klein pictogram.
 
 - Navigatiecategorieën instellingen: Algemeen, Dashboard, Meldingen, Apparaten, Homey en Systeem.
+
+- Pagina Dashboard: instelbaar zijn temperatuurtegels (kamers en sensoren), zichtbare weergegevens en snelle actieknoppen (zichtbaarheid, volgorde en instellingen).
