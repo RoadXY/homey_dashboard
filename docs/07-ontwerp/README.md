@@ -15,6 +15,7 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 - Kolomverhouding: links 40%, rechts 60%.
 - Linkerzijde: grote klok en datum, weerinformatie en vier temperatuurtegels.
 - Temperatuurtegels: vier bijna vierkante tegels in een 2×2-indeling.
+- Temperatuur-iconen zijn verwijderd; ruimtenamen en temperatuurwaarden worden groter weergegeven binnen dezelfde vaste tegelafmetingen.
 - Rechterzijde: acht actieknoppen bovenaan, zonder afzonderlijke kop/balk ‘Snelle acties’.
 - De twee mediaspelerkaarten/-knoppen vervallen volledig uit het dashboard.
 - Meldingen onder de actieknoppen in twee kolommen.
