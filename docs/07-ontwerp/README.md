@@ -11,6 +11,8 @@ Ontwerp wordt iteratief besproken; nog niet definitief goedgekeurd voor implemen
 - Hoge leesbaarheid vanaf circa vier meter afstand; duidelijke, grote tekst en waarden.
 
 ## Hoofdschermindeling
+- Kolomverhouding: links 40%, rechts 60%; dit vervangt de eerdere voorlopige 50/50-verdeling.
+- Kolomverhouding: links 40%, rechts 60%.
 - Linkerzijde: grote klok en datum, weerinformatie en vier temperatuurtegels.
 - Temperatuurtegels: vier bijna vierkante tegels in een 2×2-indeling.
 - Rechterzijde: acht actieknoppen bovenaan, zonder afzonderlijke kop/balk ‘Snelle acties’.
