@@ -284,3 +284,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Standaardtijdzone: `Europe/Amsterdam` (automatische zomer- en wintertijd).
 
 - Opslag- en geheugengebruik: tekstuele waarden, zonder grafische voortgangsbalken.
+
+- Serverwaarschuwingen op pagina Algemeen: niet tonen; alleen statuswaarden weergeven.
