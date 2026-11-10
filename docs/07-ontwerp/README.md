@@ -194,3 +194,6 @@ Per snelle actieknop kan de gebruiker een eigen pictogram uit Material Design Ic
 Alle actieknoppictogrammen hebben dezelfde kleur binnen het actieve thema. Kleur en grootte volgen automatisch het thema en zijn niet afzonderlijk instelbaar. Severity-kleuren gelden niet voor actieknoppen. De gebruiker kiest per actieknop alleen het MDI-pictogram.
 
 In fase 3 worden meerdere vooraf ontworpen dashboardthema's aangeboden; de exacte thema's worden later ontworpen.
+
+### Selectie MDI-pictogrammen
+Toon alle beschikbare MDI-pictogrammen in één doorzoekbaar overzicht. Toon een live voorbeeld van het geselecteerde pictogram.
