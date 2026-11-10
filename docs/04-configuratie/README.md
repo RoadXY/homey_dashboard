@@ -109,3 +109,6 @@ Bij apparaatselectie is op ieder niveau een duidelijke knop **Terug** beschikbaa
 Bij een geselecteerd Homey-apparaat toont de configuratie automatisch uitsluitend de acties die dat apparaat daadwerkelijk ondersteunt.
 
 De volgorde van snelle actieknoppen wordt aangepast door de knoppen te verslepen (drag-and-drop).
+
+### Pictogrammen snelle actieknoppen
+De gebruiker kiest per snelle actieknop zelf het MDI-pictogram. Kleur en grootte worden centraal door het dashboard bepaald en zijn niet door de gebruiker instelbaar. De pictogramkleur volgt de severity-/statuskleur volgens de afgesproken kleurcodering: rood, geel, blauw of groen.
