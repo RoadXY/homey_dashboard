@@ -1,0 +1,146 @@
+# Besluitenlog – inventarisatierondes 1 t/m 14
+
+Dit document registreert de door de gebruiker bevestigde keuzes. Open punten zijn expliciet als zodanig gemarkeerd.
+
+## Ronde 1 – basis en presentatie
+- Het nieuwe dashboard vervangt het Home Assistant-dashboard.
+- Dynamische meldingen in een tweekolomsweergave; alleen relevante meldingen zijn zichtbaar.
+- Schermoriëntatie: landscape.
+
+## Ronde 2 – architectuur en scope
+- Homey Pro 2023 is de backend.
+- Eigen dashboard in Docker op Ubuntu; Home Assistant is geen vereiste runtime.
+- Lokale Homey-koppeling heeft de voorkeur.
+- Alle informatie uit de bestaande HA-YAML blijft de functionele nulmeting.
+- Meldingen sorteren op nieuwste eerst; prioriteitsweging is later verder uitgewerkt.
+- Repository: https://github.com/RoadXY/homey_dashboard.
+
+## Ronde 3 – globale indeling
+- Links: klok, weer en temperaturen; rechts: quick buttons en meldingen.
+- Klok is het grootste element; buitentemperatuur iets kleiner; overige weerinformatie compacter.
+- Kamertemperaturen worden later uitgewerkt.
+- Meldingen compact weergeven.
+
+## Ronde 4 – tablet en bediening
+- Samsung Galaxy Tab A SM-T515, landscape en responsive.
+- Scherm blijft 24/7 aan.
+- Fully Kiosk Browser verzorgt de kioskweergave.
+- Quick buttons voeren direct uit, behalve acties die als kritisch zijn ingesteld; die vragen bevestiging.
+
+## Ronde 5 – gegevens en verversing
+- Streefwaarde: belangrijke gegevens elke 5 seconden verversen, mits Homey API en belasting dit toelaten.
+- Bij Homey-offline blijven laatst bekende waarden zichtbaar met een waarschuwing.
+- Lokale Homey API-authenticatie met API-key.
+- Homey is de voorkeursbron voor weer; externe bron alleen indien nodig.
+- Configuratiepagina moet Homey-apparaten kunnen ontdekken en gebruiker moet zelf apparaten/meetwaarden kunnen selecteren.
+- Configuratie via externe configuratiebestanden én een beheerpagina.
+
+## Ronde 6 – Homey-ontdekking en beheer
+- Read-only inventarisatie van Homey is toegestaan.
+- Apparaten handmatig selecteren.
+- Automatisch zoeken bij openen van configuratiepagina én handmatige knop ‘opnieuw zoeken’.
+- Belangrijke gegevens elke 5 seconden; minder belangrijke gegevens minder frequent.
+- Configuratiepagina wordt beveiligd met een pincode (zie correctie ronde 14).
+
+## Homey-inventarisatie (read-only)
+Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabelen, 172 flows en 2 Moods aangetroffen. Er zijn geen apparaten of flows gewijzigd.
+- Er is een Homey-apparaat ‘Weer’ met diverse weer-capabilities, waaronder temperatuur, gevoelstemperatuur, wind, neerslag, beschrijving, zonsopkomst en zonsondergang.
+- ‘Multisensor woonkamer’ levert onder meer CO2, TVOC, temperatuur, druk en luchtvochtigheid.
+- Er zijn sensoren voor onder andere slaapkamers, vriezer en koelkast, raam/deurcontacten, watermelders, wasmachine/droger, stofzuiger en energie/water.
+- De inventarisatie was niet volledig uitgeschreven; voor concrete mapping moet gericht opnieuw worden opgevraagd.
+
+## Ronde 7 – meldingen en acties
+- Zowel Homey Flows als directe apparaatbediening moeten ondersteund worden.
+- Kritische bevestiging wordt per quick button configureerbaar.
+- Fase 1: meldingen op basis van statische regels die apparaatwaarden/condities evalueren; configuratie in JSON, gebaseerd op bestaande meldingen.
+- Fase 2: meldingenconfiguratiepagina en ondersteuning voor pushmeldingen vanuit Homey Flows.
+- De weergave moet nu al voorbereid zijn op toekomstige pushmeldingen.
+- Hoofddashboard toont alleen actieve meldingen.
+- Bij geen meldingen: compacte status ‘Alles in orde’.
+- Alle bestaande conditionele logica uit de HA-YAML moet behouden blijven.
+
+## Ronde 8 – meldingsregels en gegevensmodel
+- Voorwaarden ondersteunen AND/OR en combinaties.
+- Drie ernstniveaus: kritiek, waarschuwing en info.
+- Sortering: ernst/prioriteit eerst, daarna tijdstip (definitief bevestigd in ronde 12).
+- Tijdstip is het moment waarop de regel actief wordt.
+- JSON wordt opgesplitst in meerdere bestanden per categorie.
+- Structuur moet leesbaar/beheerbaar zijn en later geschikt zijn voor een WYSIWYG-editor.
+- Voorgestelde structuur (nog te valideren bij technische uitwerking):
+  - config/dashboard.json
+  - config/devices.json
+  - config/notifications/{safety,climate,appliances,energy,other}.json
+  - config/actions/{buttons,confirmations}.json
+- Elke melding krijgt een stabiele unieke ID, titel, ernstniveau, conditiegroep en presentatieopties.
+- Condities verwijzen naar Homey device-ID en capability, niet naar zichtbare apparaatnamen.
+- Schema-versie, validatie en begrijpelijke foutmeldingen zijn gewenst.
+
+## Ronde 9 – quick buttons
+- Alle acht huidige knoppen blijven aanwezig en behouden volgorde/layout als uitgangspunt:
+  1. Q-Music
+  2. Q-Music Foute Uur
+  3. Rolluiken openen
+  4. Verjaardagmodus
+  5. Woonkamerverlichting uit
+  6. Sfeerverlichting
+  7. TV-modus
+  8. Bedtijd
+- Knoppen tonen icoon en tekstlabel.
+- Zowel directe feedback als werkelijke Homey-status is gewenst.
+- Statuskleur/icoon moet de daadwerkelijke Homey-status weerspiegelen, niet alleen het indrukken.
+- Sommige knoppen hebben een status (bijv. woonkamerverlichting en verjaardagmodus).
+- Fouten worden duidelijk getoond; knop blijft beschikbaar.
+- Kritische actie wordt per knop instelbaar en vraagt bevestiging.
+
+## Ronde 10 – media, klok en weer
+- Mediaspelers Sem en Bram zijn alleen zichtbaar wanneer actief/aan het afspelen.
+- Media is informatief: titel, artiest en afspeelstatus; geen mediabediening.
+- Mediaspelers zijn geen permanent zichtbaar vast onderdeel.
+- Klok groot, datum kleiner eronder.
+- Weer compact.
+- Buitentemperatuur plus geselecteerde kamertemperaturen; kamertemperatuurselectie later via configuratie.
+- Bij offline apparaat wordt het betreffende media-/weeronderdeel verborgen.
+
+## Ronde 11 – schermverhouding en interactie
+- Kolomverhouding: 50/50.
+- Kamertemperaturen: uitgesteld.
+- Weericoon groot naast buitentemperatuur.
+- Oorspronkelijke keuze: geen scrollen; dashboard moet op één scherm passen.
+- Hoofdscherm is display-only, behalve quick buttons.
+- Thema: donker.
+
+## Ronde 12 – meldingenoverzicht
+- Alle actieve meldingen tonen; er is geen vast maximum.
+- Als er meer meldingen zijn dan passen, mag alleen het meldingenpaneel verticaal scrollen.
+- Prioriteit/ernst eerst, daarna tijdstip.
+- Mediaspelers Sem en Bram verschijnen in hetzelfde meldingenoverzicht, als compacte meldingen. Als beide actief zijn, naast elkaar.
+- Homey offline: rode tekstmelding ‘Homey Offline’ bij de klok.
+- Weer toont ook gevoelstemperatuur, wind en neerslag; exacte selectie en presentatie later bepalen.
+- Verfijning ronde 11: dashboardpagina zelf blijft vast; alleen meldingenpaneel mag scrollen.
+
+## Ronde 13 – meldingstijl en knopfeedback
+- Standaard meldingen: icoon per niveau, geen opvallende achtergrondkleur.
+- Kritieke meldingen zijn uitzondering: rode achtergrond en rode/contrasterende tekst; exacte toegankelijke vormgeving wordt bij mockups bepaald.
+- Compacte melding: titel en actuele waarde. Complexe meldingen (bijv. ‘Raam ouders niet open’) vragen later nadere uitwerking.
+- Fase 2: instellingenpagina toont overzicht van beschikbare meldingen; potloodje opent specifieke WYSIWYG-editor voor die melding.
+- Editor moet meerdere voorwaarden en AND/OR-combinaties kunnen bewerken.
+- Mediaspelers: compacte melding met titel, artiest en afspeelstatus.
+- Melding verdwijnt automatisch zodra onderliggende voorwaarde niet meer actief is.
+- Quick button-status pas aanpassen nadat Homey de actie heeft bevestigd.
+
+## Ronde 14 – instellingenpagina
+- Fase 1 instellingenpagina beheert Homey-verbinding, basisinstellingen, quick buttons en meldingen via eenvoudige instellingen.
+- Apparaten kiezen via overzichtelijke apparatenlijst; na selectie kiest gebruiker de meetwaarde/capability.
+- Beveiliging: pincode; dit corrigeert de eerdere voorlopige formulering ‘gebruikersnaam en wachtwoord’.
+- Instellingenpagina is bereikbaar vanaf tablet, computer en telefoon, maar alleen na pincode/login.
+- Wijzigingen opslaan met expliciete knop ‘Opslaan’.
+
+## Open punten
+- Ronde 15 is nog niet beantwoord.
+- Exacte selectie en presentatie van weergegevens.
+- Kamertemperaturen en selectie daarvan.
+- Detailuitwerking complexe meldingscondities en editor in fase 2.
+- Definitieve beveiligingsdetails: pincodebeleid, sessieduur, rate limiting en opslag van secrets.
+- Definitieve JSON-schema's en categorie-indeling.
+- API-ondersteuning en haalbaarheid van refreshintervallen.
+- Mockups en functioneel ontwerp moeten nog worden gemaakt en expliciet goedgekeurd voordat implementatie start.
