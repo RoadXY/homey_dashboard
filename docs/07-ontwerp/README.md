@@ -227,3 +227,6 @@ Een handmatige taalkeuze wordt blijvend bewaard, ook na browserbezoek en contain
 
 ### Taalkeuze in instellingen
 De taalkeuze wordt geplaatst op de pagina **Algemeen**, samen met de instellingen voor datum en tijd.
+
+### Vormgeving instellingenpagina Algemeen – eerste mockup goedgekeurd
+De gebruiker heeft de algemene vormgeving van de eerste mockup voor de pagina Algemeen goedgekeurd: donkere stijl, linker navigatiekolom, tweekolomsindeling en compacte instellingenkaarten. Dit is goedkeuring van de visuele basis en indeling, niet van de voorbeeldinstellingen die in de mockup stonden (zoals thema, accentkleur, kaartgrootte en meldingsschakelaars); die zijn niet automatisch functioneel of besloten.
