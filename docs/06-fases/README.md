@@ -69,3 +69,6 @@ De sensorpicker ondersteunt alle niveaus van de Homey-ruimtestructuur. Ruimte-ic
 
 ### Weerkaart
 De volgorde van de acht weergegevens is vast. Per onderdeel kan de gebruiker de zichtbaarheid instellen; de volgorde kan niet worden aangepast. De live preview weerspiegelt de zichtbare onderdelen.
+
+### Preview weerkaart
+De weerkaartpreview wordt direct bijgewerkt bij het in- en uitschakelen van onderdelen. De gebruiker ziet de conceptweergave vóór Opslaan.
