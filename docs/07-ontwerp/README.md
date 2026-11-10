@@ -233,3 +233,6 @@ De gebruiker heeft de algemene vormgeving van de eerste mockup voor de pagina Al
 
 ### Dashboardinstellingen – temperatuurtegels en navigatie
 De pagina Instellingen > Dashboard toont alleen de titel **Dashboard**; er wordt geen broodkruimelpad getoond omdat de linker navigatie de huidige sectie al aangeeft. De bovenbalk bevat links de terugactie **← Back to dashboard** en rechts datum en tijd; de knop **Settings** wordt op deze pagina niet getoond. De temperatuurpreview is een vaste 2×2-grid die overeenkomt met het hoofddashboard. Temperatuurtegels bevatten geen pictogrammen. In de preview staat linksboven op iedere tegel een nummer 1 t/m 4 dat correspondeert met de configuratieregel links. De volgorde loopt links naar rechts en daarna van boven naar beneden.
+
+### Live preview temperatuurtegels
+De preview rechts wordt direct bijgewerkt wanneer de gebruiker links een tegelnaam, sensor of volgorde wijzigt. De preview toont dus de actuele conceptinstellingen, ook voordat op Opslaan is geklikt.
