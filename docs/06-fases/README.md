@@ -57,3 +57,6 @@ Een wijziging van de geselecteerde dashboardtaal wordt onmiddellijk in de interf
 
 ### Persistente taalvoorkeur
 De handmatige taalkeuze wordt blijvend opgeslagen en blijft actief na een volgend bezoek en na herstart van de Docker-container. Alleen wanneer de gebruiker Automatisch selecteert, volgt het dashboard opnieuw de Homey-taal.
+
+### Plaatsing taalkeuze
+De taalinstelling is beschikbaar op de instellingenpagina **Algemeen**, bij de datum- en tijdinstellingen.
