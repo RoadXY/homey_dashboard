@@ -92,3 +92,21 @@ Bepaal in fase 2 het mechanisme waarmee Homey meldingen aan het dashboard kan aa
 **Fase 1:** bestaande meldingskaarten/definities uit Home Assistant worden vast geprogrammeerd overgenomen in het dashboard om de werking te testen. Alle HA-voorwaarden en combinaties blijven exact gelijk. Alleen actief/inactief, naam en meldingsniveau zijn eenvoudig configureerbaar; voorwaarden worden nog niet in de interface bewerkt.
 
 **Fase 2:** ontwerp en bouw van de algemene voorwaardeneditor met Blockly. Ook de categorieën en de volledige blokkenbibliotheek worden pas in fase 2 bepaald. Homey-aanlevering van meldingen (bijvoorbeeld API of toekomstige Homey-app) blijft eveneens een fase-2-onderwerp.
+
+## Bijgestelde oplevervolgorde – basisdashboard eerst (11 november 2026)
+
+### Fase 1A – Werkend basisdashboard zonder meldingen
+Lever eerst een bruikbaar dashboard op met:
+- klok en datum;
+- weerkaart;
+- vier temperatuurtegels (Woonkamer, Keuken, Sem en Bram);
+- Homey- en dashboardserverstatus;
+- alle acht goedgekeurde quick action buttons, volledig functioneel gekoppeld aan de bedoelde Homey-Flows of apparaatacties.
+
+Het meldingenpaneel wordt in fase 1A niet weergegeven. De acht quick action buttons moeten daadwerkelijk acties uitvoeren; een uitsluitend visuele implementatie voldoet niet. Voor acties waarvoor een nieuwe Homey-Flow nodig is, worden de vereiste Flows voorbereid en pas na controle van hun exacte werking aangemaakt. Bestaande Homey-logica wordt niet onbedoeld gewijzigd.
+
+### Fase 1B – Meldingen inventariseren en voorbereiden
+Inventariseer alle binnen scope vallende conditionele Home Assistant-kaarten, controleer de Homey-bronnen en leg de oorspronkelijke YAML plus het versiebeheerde JSON-voorwaardenmodel vast. Deze voorbereiding mag parallel aan of na fase 1A plaatsvinden, maar is geen voorwaarde om fase 1A op te leveren. Meldingen verschijnen nog niet op het dashboard.
+
+### Fase 2 – Meldingen en Blockly
+Bouw het meldingenbeheer en de visuele Blockly-voorwaardeneditor op basis van het JSON-voorwaardenmodel. Voeg daarna de meldingen toe aan het hoofdscherm volgens het reeds goedgekeurde ontwerp.
