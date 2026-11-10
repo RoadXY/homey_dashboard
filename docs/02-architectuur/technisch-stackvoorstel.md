@@ -1,6 +1,6 @@
 # Technisch stackvoorstel – Homey Dashboard
 
-**Status: voorstel ter bespreking – nog niet definitief goedgekeurd**  
+**Status: technische stack goedgekeurd op 11 november 2026**  
 **Datum: 11 november 2026**  
 **Branch: phase_1_foundation**
 
@@ -72,7 +72,7 @@ De frontend krijgt nooit de Homey API-key. Alle Homey-verzoeken lopen via de bac
 
 ## Nog niet besloten
 
-- Definitieve goedkeuring van React, Vite, Fastify en SSE.
+- Technische validatie van React/Vite, Fastify, SSE en de Homey-koppeling in de beoogde runtime.
 - Exacte Node.js-versie en dependencyversies.
 - Definitieve dashboardpoort en eventuele reverse-proxy/HTTPS-opzet.
 - Definitieve mappenstructuur en JSON-schema's.
@@ -88,4 +88,4 @@ De frontend krijgt nooit de Homey API-key. Alle Homey-verzoeken lopen via de bac
 
 ## Voortgang
 
-Op 11 november 2026 is dit stackvoorstel opgesteld op basis van de vastgelegde architectuurafspraken. Dit document is een voorstel en mag niet worden gelezen als definitieve technische goedkeuring. Na bespreking worden goedgekeurde keuzes naar de architectuur- en besluitenlogdocumentatie overgebracht.
+Op 11 november 2026 heeft de gebruiker de voorgestelde technische stack goedgekeurd: TypeScript, React + Vite, Node.js + Fastify, de officiële homey-api-client, SSE als kandidaat voor statusupdates, JSON-configuratie op een persistent volume en een multi-stage Docker-build. De goedkeuring legt de gekozen richting vast; versies, Homey-permissies, netwerkdetails en operationele instellingen blijven afhankelijk van technische validatie.
