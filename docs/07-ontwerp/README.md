@@ -130,3 +130,6 @@ Linksboven staat een duidelijke knop **← Dashboard** om terug te keren naar he
 
 ### Actieve navigatieoptie
 De geselecteerde optie in de navigatiekolom krijgt een subtiele lichtere achtergrond.
+
+### Pictogrammen navigatie
+Alle navigatie-items krijgen een klein pictogram vóór de categorienaam.
