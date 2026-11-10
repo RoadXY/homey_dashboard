@@ -347,3 +347,6 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - **Fase 3:** een aantal vooraf ontworpen thema's toevoegen; concrete varianten later bepalen.
 
 - MDI-selectie actieknoppen: één doorzoekbaar overzicht met alle MDI-pictogrammen en een live voorbeeld.
+
+- MDI-zoekfunctie huidige fase: zoeken op de namen zoals aangeleverd door de MDI-website. NL/EN-termen en synoniemen volgen in fase 3.
+- Meertaligheid: in fase 3 dashboardtaal ondersteunen; vertalingen worden in JSON-bestanden beheerd.
