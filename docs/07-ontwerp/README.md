@@ -127,3 +127,6 @@ De kaarten staan in één horizontale rij, voor zover de schermbreedte dit toela
 
 ### Terugkeerknop
 Linksboven staat een duidelijke knop **← Dashboard** om terug te keren naar het dashboard.
+
+### Actieve navigatieoptie
+De geselecteerde optie in de navigatiekolom krijgt een subtiele lichtere achtergrond.
