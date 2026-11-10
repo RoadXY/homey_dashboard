@@ -171,3 +171,6 @@ Per knop zijn zichtbaarheid, volgorde, naam, pictogram en actie-instelling confi
 
 ### Actietype snelle actieknop
 Per knop kan worden gekozen tussen het starten van een Homey Flow en het rechtstreeks bedienen van een Homey-apparaat. De configuratievelden worden afhankelijk van die keuze getoond.
+
+### Selectie Homey Flow
+Toon een lijst met Flow-namen met een zoekfunctie, zodat de gebruiker de gewenste Homey Flow kan vinden en selecteren.
