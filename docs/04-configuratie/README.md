@@ -117,3 +117,5 @@ De gebruiker kiest per snelle actieknop zelf het MDI-pictogram. Kleur en grootte
 Voor snelle actieknoppen kiest de gebruiker uitsluitend het MDI-pictogram. De kleur van alle actieknoppictogrammen is uniform en wordt automatisch bepaald door het actieve dashboardthema; de gebruiker stelt kleur of grootte niet afzonderlijk in. Severity-kleuren zijn niet van toepassing op actieknoppen.
 
 Voor fase 3 wordt voorzien in een aantal vooraf ontworpen thema's. De concrete themavarianten en hun kleuren worden later uitgewerkt.
+
+Voor het kiezen van een actieknoppictogram gebruikt de gebruiker één doorzoekbaar overzicht met alle beschikbare MDI-pictogrammen en een live voorbeeld van het geselecteerde pictogram.
