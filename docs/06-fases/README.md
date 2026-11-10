@@ -30,3 +30,6 @@ Inventarisatierondes 1 t/m 22 zijn afgerond en gedocumenteerd. De eerste analyse
 
 ### Fase 3 – Voorgeprogrammeerde thema's
 In fase 3 wordt een selectie vooraf ontworpen dashboardthema's toegevoegd. In fase 1/2 worden pictogrammen en overige visuele eigenschappen automatisch door het actieve thema bepaald; per actieknop kan de gebruiker alleen het MDI-pictogram kiezen. De concrete themavarianten worden in de ontwerpfase voor fase 3 vastgesteld.
+
+### Fase 3 – Meertaligheid en vertalingen
+Fase 3 omvat ondersteuning voor meerdere dashboardtalen. Vertalingen van dashboardteksten en relevante zoektermen worden in JSON-bestanden beheerd. Ook wordt de MDI-zoekfunctie uitgebreid met Nederlandse en Engelse termen en synoniemen. In de huidige fase gebruikt de zoekfunctie alleen de namen die door de MDI-website worden aangeleverd.
