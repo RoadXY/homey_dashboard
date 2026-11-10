@@ -286,3 +286,5 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Opslag- en geheugengebruik: tekstuele waarden, zonder grafische voortgangsbalken.
 
 - Serverwaarschuwingen op pagina Algemeen: niet tonen; alleen statuswaarden weergeven.
+
+- Dashboardversie: weergave van versienummer plus datum van de laatste update.
