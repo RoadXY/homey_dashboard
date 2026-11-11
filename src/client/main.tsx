@@ -56,7 +56,6 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const weatherText = capability(weather, "conditioncode_text") ?? capability(weather, "description");
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
-  const dateText = new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const timeText = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const updateText = lastUpdated ? new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(lastUpdated) : "—";
   const homeyOnline = homey?.state === "online";
@@ -64,13 +63,12 @@ function App() {
     <main className="dashboard">
       <section className="left-column" aria-label="Tijd, weer en temperaturen">
         <article className="card clock-card">
-          <div className="clock-top">
-            <span className="eyebrow">HOMEY PRO 2023</span>
-            <span className={`connection ${homeyOnline ? "online" : "offline"}`}><i />{homeyOnline ? "Verbonden" : homey?.state === "offline" ? "Niet bereikbaar" : "Verbinden…"}</span>
-          </div>
           <div className="clock">{timeText}</div>
-          <div className="date">{dateText}</div>
-          <div className="clock-bottom"><span>Thuis</span><span className="server-dot" /> Dashboard actief</div>
+          {(loadError || (homey !== null && !homeyOnline)) && (
+            <div className="connection-warning" role="status">
+              {loadError ? "Verbinding met de dashboardserver mislukt" : "Verbinding met Homey Pro mislukt"}
+            </div>
+          )}
         </article>
         <article className="card weather-card">
           <div className="weather-main">
