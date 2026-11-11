@@ -37,7 +37,7 @@ function App() {
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([]));
+      .catch(() => setNotifications([{ id: "notifications-load-error", title: "Meldingen niet beschikbaar", message: "De meldingsconfiguratie kon niet worden ingelezen.", severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     try {
       const [statusResponse, readingsResponse, logicResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
