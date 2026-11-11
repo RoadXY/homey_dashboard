@@ -48,7 +48,7 @@ De koppelingen Bram/Tess zijn sterk op basis van naam en zone, maar de uiteindel
 
 - Homey-apparaat **Weer**, ID `c7e68c38-1588-4c93-9db8-e854f4d251ab`, bevat onder andere temperatuur, gevoelstemperatuur, actuele regen (`measure_rain`), sneeuw, conditioncode, wind, zonsopkomst en zonsondergang.
 - Een expliciete neerslagkans zoals de HA-sensor `rainchance_1d` is niet aangetroffen in de geïnventariseerde state.
-- Homey-apparaat **Zon positie**, ID `08be2365-c8f4-43e5-8e04-7b290e164a1b`, bevat `measure_numeric` (momentopname 218,87). Dit is nog geen bewijs dat de waarde de HA-binarysensor `zon_staat_op_raam_tess` kan vervangen. De betekenis/eenheid en de berekening van zon op specifiek raam Tess zijn niet vastgesteld.
+- Homey-apparaat **Zon positie**, ID `08be2365-c8f4-43e5-8e04-7b290e164a1b`, bevat `measure_numeric` (momentopname 218,87). De gebruiker heeft besloten de specifieke dashboardconditie “Zon op raam Tess” niet te migreren; deze bronmapping vervalt voor het dashboard.
 
 ## 4. Temperatuur- en klimaatbronnen
 
@@ -60,17 +60,15 @@ Aangetroffen:
 - **Airco keuken** en **Airco zolder** bieden `thermostat_mode`, `onoff`, `target_temperature` en temperatuurmetingen.
 - **Remeha ketel** bevat `boiler_state`, `DHW_state`, `DHW_mode` en statuscodes.
 
-Geen herkenbaar Homey-apparaat met naam “Temperatuur Tess” of een expliciete HA-achtige binarysensor `temperatuur_*_laag` is in deze naam-/capabilitygerichte inventarisatie gevonden. De onderliggende temperatuur kan anders benoemd zijn; de lage-temperatuurregels blijven daarom open. Remeha-capabilities zijn beschikbaar, maar de exacte HA-binarysensorsemantiek moet nog worden gevalideerd.
+De gebruiker heeft bevestigd dat de vier koude-kamerkaarten gemigreerd moeten worden met dezelfde eenvoudige regel: toon de melding wanneer de temperatuursensor in de betreffende kamer **lager dan 16 °C** meet. De bron voor Bram en ouderslaapkamer is gevonden. Een aparte sensor voor Tess is nog niet geïdentificeerd. Voor zolder moet nog worden bevestigd welke temperatuursensor als de kamersensor geldt; de zolder-airco heeft wel een `measure_temperature`-waarde, maar dat is niet automatisch de bedoelde temperatuursensor.
 
 ## 5. Plant- en telefoonbatterijen
 
-- In de inventarisatie van 128 apparaten is geen herkenbaar apparaat gevonden voor de vier HA-plantkaarten (vochtigheid/conductivity).
-- Evenmin zijn herkenbare Homey-apparaten voor de HA-telefoonbatterijkaarten Galaxy A54, SM-S721B, Pixel 7 Pro, SM-F966B en Moto G60S gevonden.
-- De Muur tablet is wel aanwezig (ID `3047fdb8-2dea-4cea-b023-27c9693b4635`) met `measure_battery`; momentopname 100%.
+De gebruiker heeft alle vier plantmeldingen en alle vijf telefoonbatterijmeldingen expliciet op **Niet migreren** gezet. Deze onderdelen worden niet gebouwd in het nieuwe dashboard. De oorspronkelijke HA-configuratie blijft alleen als historische referentie bestaan.
 
-Afwezig in de huidige Homey-device-inventarisatie betekent niet automatisch dat de gebruiker geen andere bron heeft; alleen dat de koppeling via deze Homey-apparaatlijst niet beschikbaar is aangetoond.
+De Muur tablet is wel aanwezig (ID `3047fdb8-2dea-4cea-b023-27c9693b4635`) met `measure_battery`; momentopname 100%.
 
-## 6. Logic-variabelen
+## 6. Logic-variabelen en schema's
 
 De actuele Logic-inventarisatie bevestigt onder andere:
 - `ramen_AantalOpen` (number, 0)
@@ -83,26 +81,32 @@ De actuele Logic-inventarisatie bevestigt onder andere:
 - `regen_ramenOpenTimout` en `regen_deurOpenTimeout` (debounce/timeout booleans)
 - `eco2_woonkamer_status` (number, 0)
 
-Er zijn geen Logic-variabelen gevonden met namen die de HA-schemas `schedule.boven_ramen_open`, `schedule.slapen_sem` of `schedule.slapen_bram` rechtstreeks bevestigen. De Homey-Flow-timeoutvariabelen mogen niet als vervanging voor de oorspronkelijke dashboard-schemas worden gebruikt.
+Er zijn geen Logic-variabelen gevonden die de HA-schema's rechtstreeks bevestigen. De gebruiker heeft de schema's als volgt beoordeeld:
+- `schedule.boven_ramen_open`: **Migreren**. Onderzoeken of het schema kan worden gereproduceerd en als herbruikbare bouwsteen in Blockly beschikbaar kan worden gemaakt.
+- `schedule.slapen_sem`: **Niet migreren**.
+- `schedule.slapen_bram`: **Niet migreren**.
 
-## 7. Voorlopige mappingstatus
+De Homey-Flow-timeoutvariabelen mogen niet als vervanging voor het oorspronkelijke bovenramenschema worden gebruikt.
 
-**Goed gekoppeld / sterke kandidaten**
-- Deuren en meeste raamcontacten (met fysieke mapping nog door gebruiker te bevestigen).
-- Watersensor wasmachines en aparte vaatwasser-watersensor.
-- Keuken-koelkasttemperatuurbron en garage-vriezertemperatuurbron, met de genoemde semantische kanttekening.
-- Truus, muurtablet, wasmachine, droger, weer, airco's en CO2-bron.
+## 7. Voorlopige mappingstatus na gebruikerskeuzes
 
-**Nog open**
-- De drie HA-schemas voor bovenramen/slapen.
+**Migreren**
+- Koude-kamerkaarten Bram, Tess, ouderslaapkamer en zolder, met de expliciete grens <16 °C.
+- Neerslagkans >25: migreren, maar op de backlog tot een geschikte app/databron met regenkans is gekozen.
+- Bovenramenschema: migreren; onderzoek reproductie en herbruikbaarheid in Blockly.
+
+**Niet migreren**
+- Alle vier plantmeldingen (vochtigheid en voedingswaarde).
+- Alle vijf telefoonbatterijmeldingen.
 - Zon op raam Tess.
-- Neerslagkans >25.
-- Plantensensoren.
-- Telefoonbatterijen.
-- Lage-temperatuurregels voor de slaapkamers.
-- Remeha-statusvertaling.
-- Exacte HA-binarysensor-/templatebetekenis van wasmachine en droger.
+- Slaap-/schema-afhankelijkheid voor lamp Sem en lamp Bram.
+
+**Nog open / bronmapping nodig**
+- Temperatuursensor Tess.
+- Bevestiging welke zoldertemperatuursensor voor de koude-zoldermelding bedoeld is.
+- Reproductie van het bovenramenschema en de Blockly-bouwsteen.
+- Geschikte bron/app voor neerslagkans.
 
 ## 8. Volgende stap
 
-Onderzoek de nog open Homey- en niet-Homey-bronnen gericht. Als een bron niet in Homey bestaat, registreer die als ontbrekende databron in plaats van de HA-regel te veranderen. Daarna kan het regelmodel de originele HA-condition trees overnemen en de bronkoppeling als configureerbare mapping bewaren.
+Zoek de ontbrekende temperatuursensor(en) en ontwerp de herbruikbare schema-bouwsteen voor `schedule.boven_ramen_open`. Zet neerslagkans op de backlog tot de gebruiker een geschikte weer-app/databron heeft gekozen. Niet-migreren-onderdelen worden uitgesloten van de nieuwe dashboardimplementatie, maar blijven traceerbaar in de historische HA-referentie.
