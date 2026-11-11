@@ -8,10 +8,28 @@ const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "0.0.0.0";
 
-app.get("/api/health", async () => ({
+const startedAt = Date.now();
+
+app.get("/api/health/live", async () => ({
   status: "ok",
   application: "homey-dashboard",
-  homey: getHomeyStatus().state
+  uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
+}));
+
+app.get("/api/health/ready", async () => ({
+  status: "ready",
+  application: "homey-dashboard",
+  uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
+}));
+
+// Backwards-compatible aggregate endpoint; Homey availability is informational,
+// not a prerequisite for the dashboard container to be healthy.
+app.get("/api/health", async () => ({
+  status: "ok",
+  readiness: "ready",
+  application: "homey-dashboard",
+  uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
+  homey: getHomeyStatus().state,
 }));
 
 app.get("/api/homey/status", async () => getHomeyStatus());
