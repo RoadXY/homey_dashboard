@@ -163,3 +163,8 @@ De vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram niet open**
 ### Vraag 19 – meldingsniveau Achterdeur open (12 november 2026)
 
 De melding **Achterdeur open** krijgt het niveau **waarschuwing**. De bestaande gecombineerde voorwaarde blijft ongewijzigd: achterdeur open én (buitentemperatuur <18 °C of >24 °C). Geen aanvullende opmerkingen.
+
+
+### Vraag 20 – meldingsniveau slaapkamerlampen (12 november 2026)
+
+De twee afzonderlijke meldingen **Lamp Sem staat aan** en **Lamp Bram staat aan** krijgen beide het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande voorwaarden blijven ongewijzigd: de betreffende lamp is aan en het bijbehorende tijdschema (`slapen_sem` respectievelijk `slapen_bram`) is actief.
