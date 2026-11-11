@@ -174,7 +174,7 @@ function WeatherIcon({ condition }: { condition: string }) {
   const text = condition.toLocaleLowerCase("nl-NL").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "");
   const kind =
     /onweer|bliksem|thunder/.test(text) ? "thunder" :
-    /sneeuw|snow|hagel|hail|ijzel|ijzel/.test(text) ? "snow" :
+    /sneeuw|snow|hagel|hail|ijzel/.test(text) ? "snow" :
     /mist|nevel|fog|haze/.test(text) ? "fog" :
     /regen|bui|rain|shower|motregen/.test(text) ? "rain" :
     /wind/.test(text) ? "wind" :
