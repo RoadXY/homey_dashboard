@@ -14,6 +14,8 @@ type HomeySnapshot = {
 let api: Awaited<ReturnType<typeof HomeyAPI.createLocalAPI>> | null = null;
 export const homeyRealtime = new EventEmitter();
 let realtimeSetupFor: unknown = null;
+let capabilitySubscriptions: Array<{ destroy: () => void }> = [];
+let logicEventHandlers: Array<{ event: string; listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void }> = [];
 let connectPromise: Promise<HomeySnapshot> | null = null;
 let realtimeWatchdogStarted = false;
 let snapshot: HomeySnapshot = {
@@ -47,7 +49,7 @@ async function setupRealtimeSubscriptions(): Promise<void> {
     if (!device || !Array.isArray(device.capabilities)) continue;
     for (const capabilityId of device.capabilities as string[]) {
       try {
-        device.makeCapabilityInstance(capabilityId, (value: unknown) => {
+        const instance = device.makeCapabilityInstance(capabilityId, (value: unknown) => {
           homeyRealtime.emit("update", {
             source: "device",
             deviceId,
@@ -68,21 +70,31 @@ async function setupRealtimeSubscriptions(): Promise<void> {
   const logicManager = currentApi.logic as unknown as {
     on: (event: string, listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void) => void;
   };
-  logicManager.on("variable.update", (variable) => {
-    homeyRealtime.emit("update", {
-      source: "logic",
-      variableId: variable.id,
-      variableName: variable.name,
-      value: variable.value,
-      changedAt: new Date().toISOString(),
-    });
-  });
-  logicManager.on("variable.create", (variable) => {
-    homeyRealtime.emit("update", { source: "logic", variableName: variable.name, changedAt: new Date().toISOString() });
-  });
-  logicManager.on("variable.delete", (variable) => {
-    homeyRealtime.emit("update", { source: "logic", variableName: variable.name, changedAt: new Date().toISOString() });
-  });
+  const logicHandlers = [
+    {
+      event: "variable.update",
+      listener: (variable: { id?: string; name?: string; value?: unknown }) => homeyRealtime.emit("update", {
+        source: "logic", variableId: variable.id, variableName: variable.name,
+        value: variable.value, changedAt: new Date().toISOString(),
+      }),
+    },
+    {
+      event: "variable.create",
+      listener: (variable: { name?: string }) => homeyRealtime.emit("update", {
+        source: "logic", variableName: variable.name, changedAt: new Date().toISOString(),
+      }),
+    },
+    {
+      event: "variable.delete",
+      listener: (variable: { name?: string }) => homeyRealtime.emit("update", {
+        source: "logic", variableName: variable.name, changedAt: new Date().toISOString(),
+      }),
+    },
+  ];
+  for (const handler of logicHandlers) {
+    logicManager.on(handler.event, handler.listener);
+    logicEventHandlers.push(handler);
+  }
 
   realtimeSetupFor = currentApi;
   homeyRealtime.emit("connected", { subscriptions, changedAt: new Date().toISOString() });
