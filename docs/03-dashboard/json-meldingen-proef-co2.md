@@ -78,3 +78,11 @@ De vier nieuwe JSON-configuraties zijn:
 - `config/notifications/zolder-koud.json`
 
 Na deploy moet de build en praktijktest met actuele Homey-waarden nog worden uitgevoerd.
+
+## Buildvalidatie Ubuntu – eerste poging en correctie (11 november 2026)
+
+De gebruiker heeft `~/bin/homey-dashboard-update.sh` uitgevoerd. Git bijgewerkt en Docker Compose-validatie slaagden; de Vite-clientbuild slaagde eveneens. De server-TypeScript-controle stopte echter op drie TS2339-fouten in `src/server/notifications.ts`: TypeScript behield de discriminated-union-narrowing van `config.source` niet binnen de callbacks van `find()`. Daardoor werden `name`, `deviceId` en `capabilityId` niet op beide bronvarianten herkend.
+
+Dit is gecorrigeerd door `config.source` eerst in een lokale constante `source` vast te leggen en binnen de betreffende branch uitsluitend die constante te gebruiken. De correctie is vastgelegd in commit `53741671ab3853f5beba35fda7fca54bc510b3b9`.
+
+**Status:** de codecorrectie staat op GitHub. De Docker-build en runtime zijn na deze correctie nog niet opnieuw gevalideerd. Voer daarom het updatescript opnieuw uit; pas na een geslaagde build en start kunnen we de vier temperatuurmeldingen en de CO₂-proef functioneel testen.
