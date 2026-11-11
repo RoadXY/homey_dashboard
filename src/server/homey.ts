@@ -116,3 +116,44 @@ export async function getHomeyInventory() {
     devices: deviceList,
   };
 }
+
+export async function getHomeyDeviceReadings(deviceIds: string[]) {
+  if (!api || snapshot.state !== "online") {
+    await connectHomey();
+  }
+
+  if (!api || snapshot.state !== "online") {
+    throw new Error("Homey is niet verbonden.");
+  }
+
+  const devices = await api.devices.getDevices();
+  const results = await Promise.all(deviceIds.map(async (id) => {
+    const device = (devices as Record<string, unknown>)[id] as Record<string, unknown> | undefined;
+    if (!device) return { id, error: "Apparaat niet gevonden" };
+
+    const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
+    const temperatureCapabilities = capabilities.filter((capability) =>
+      capability === "measure_temperature" ||
+      capability === "measure_temperature_feelslike"
+    );
+
+    const readings = await Promise.all(temperatureCapabilities.map(async (capabilityId) => {
+      try {
+        const value = await api!.devices.getCapabilityValue({ deviceId: id, capabilityId });
+        return { capabilityId, value };
+      } catch {
+        return { capabilityId, value: null };
+      }
+    }));
+
+    return {
+      id,
+      name: device.name,
+      zone: device.zone,
+      available: device.available,
+      readings,
+    };
+  }));
+
+  return { retrievedAt: new Date().toISOString(), devices: results };
+}
