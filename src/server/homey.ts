@@ -40,6 +40,13 @@ const dashboardDeviceIds = [
 async function setupRealtimeSubscriptions(): Promise<void> {
   if (!api || realtimeSetupFor === api) return;
   const currentApi = api;
+  for (const subscription of capabilitySubscriptions) subscription.destroy();
+  capabilitySubscriptions = [];
+  const previousLogicManager = currentApi.logic as unknown as {
+    off: (event: string, listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void) => void;
+  };
+  for (const handler of logicEventHandlers) previousLogicManager.off(handler.event, handler.listener);
+  logicEventHandlers = [];
   await Promise.all([currentApi.devices.connect(), currentApi.logic.connect()]);
   const devices = await currentApi.devices.getDevices();
   let subscriptions = 0;
@@ -58,7 +65,7 @@ async function setupRealtimeSubscriptions(): Promise<void> {
             changedAt: new Date().toISOString(),
           });
         });
-        subscriptions += 1;
+        capabilitySubscriptions.push(instance);\n        subscriptions += 1;
       } catch (error) {
         // Unsupported or temporarily unavailable capabilities must not stop
         // the remaining subscriptions from being registered.
