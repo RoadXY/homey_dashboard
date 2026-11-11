@@ -341,3 +341,16 @@ De uitkomst van de inventarisatie moet per apparaat vastleggen:
 De inventarisatie van expliciete beschikbaarheidsstatussen via de Homey API richt zich in deze ontwerpfase alleen op Homey-apparaten die als bron dienen voor dashboardmeldingen. Apparaten die uitsluitend voor andere dashboardtegels of algemene statusinformatie worden gebruikt, vallen buiten deze inventarisatie.
 
 Per meldingsbron wordt vastgelegd of de API een bruikbare beschikbaarheidsstatus aanbiedt, wat de betekenis daarvan is en hoe ontbrekende of niet-eenduidige statusinformatie wordt behandeld. Er wordt geen ontbrekende status automatisch als online of offline geïnterpreteerd.
+
+
+### 12.4 Aanvulling gebruiker – beschikbaarheidsstatus via Homey Apps SDK (11 november 2026)
+
+De gebruiker vult de eerdere keuze over de reikwijdte aan: de online/offline-status wordt voorlopig bepaald voor **alle Homey-apparaten die het dashboard gebruikt**, niet uitsluitend voor apparaten die dashboardmeldingen aansturen. Dit vervangt voor de beschikbaarheidsinventarisatie de beperktere reikwijdte uit besluit 12.3.
+
+De gebruiker wijst op de methode `getAvailable()` uit de Homey Apps SDK. Deze retourneert een boolean:
+- `true`: Homey markeert het apparaat als beschikbaar.
+- `false`: Homey markeert het apparaat als niet beschikbaar.
+
+Voor de technische uitwerking gebruiken we deze methode als bron voor de beschikbaarheidsstatus, voor zover de methode via de gebruikte Homey API/client voor de betreffende apparaten beschikbaar is. We controleren dit in de implementatie en tonen de door Homey geretourneerde status; we leiden geen extra offline-status af uit verouderde meetwaarden. Als de methode voor een apparaat niet beschikbaar is of niet kan worden uitgelezen, registreren en tonen we dat als onbekend/niet vast te stellen.
+
+De eerder gemaakte keuze blijft gelden: controle op uitblijvende of verouderde meetwaarden wordt pas in fase 3 toegevoegd.
