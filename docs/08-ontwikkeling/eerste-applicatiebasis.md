@@ -32,7 +32,7 @@ Node.js 24 is gekozen als LTS-lijn met brede compatibiliteit voor de gebruikte s
 4. Open `http://localhost:5173` voor de Vite-ontwikkelinterface.
 5. Controleer `http://localhost:5173/api/health` voor de backendstatus via de Vite-proxy. De backendpoort `3000` wordt niet op de Ubuntu-host gepubliceerd; deze blijft intern in de container en kan daardoor naast bijvoorbeeld Grafana op hostpoort 3000 draaien.
 
-De ontwikkelpoorten zijn uitsluitend aan localhost gebonden. De productiepoort is een voorlopige standaard en moet vóór deployment worden afgestemd op de serveromgeving.
+De Vite-ontwikkelinterface wordt op hostpoort `5173` gepubliceerd voor toegang vanaf het lokale netwerk. De backendpoort `3000` wordt niet op de host gepubliceerd en blijft intern in de container. Beperk netwerktoegang tot vertrouwde apparaten via de bestaande netwerk-/firewallregels. De productiepoort is een voorlopige standaard en moet vóór deployment worden afgestemd op de serveromgeving.
 
 ## Belangrijke aandachtspunten
 
@@ -63,3 +63,10 @@ Na een nieuwe SSH-sessie moet eerst naar deze projectmap worden gegaan voordat `
 - De backend blijft intern bereikbaar op `127.0.0.1:3000` binnen de dashboardcontainer. Vite routeert `/api`-verzoeken intern door naar de backend.
 - Alleen de Vite-ontwikkelinterface wordt voorlopig op `127.0.0.1:5173` van de host gepubliceerd.
 - De healthcheck tijdens ontwikkeling loopt via `http://localhost:5173/api/health`; poort `3000` hoeft niet rechtstreeks vanaf Ubuntu bereikbaar te zijn.
+
+
+## LAN-toegang ontwikkelinterface (11 november 2026)
+- Voor testen vanaf een andere computer/tablet wordt Vite-poort `5173` gepubliceerd op de hostinterfaces (`5173:5173`).
+- De ontwikkelinterface is daarmee bereikbaar via het LAN-adres van Ubuntu, bijvoorbeeld `http://10.7.10.8:5173`.
+- Backendpoort `3000` blijft uitsluitend intern in de container; API-verzoeken lopen via de Vite-proxy.
+- Dit is een tijdelijke ontwikkelinstelling. Voor productie wordt toegang via de beoogde reverse proxy/HTTPS en passende netwerkbeperkingen ingericht.
