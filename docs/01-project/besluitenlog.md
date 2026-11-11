@@ -547,3 +547,10 @@ Daarom gelden voor alle volgende meldingen en uitbreidingen de volgende technisc
 - Dit is de gekozen statusbron voor **Wasmachine staat aan**. `true` betekent draaiend; `false` betekent niet draaiend.
 - Het dashboard leest de variabele uitsluitend read-only uit. De Homey-Flow/logica die de variabele beheert blijft ongewijzigd.
 - Ontbrekende, ongeldige of niet-beschikbare waarden zijn `unknown` en worden nooit als `false` geïnterpreteerd.
+
+
+## Gebruikersbesluit – severity vriezer (11 november 2026)
+
+- De melding **Vriezer keuken warm!** krijgt het vaste meldingsniveau **critical (kritiek)**.
+- Er zijn geen aanvullende opmerkingen meegegeven.
+- Dit besluit staat los van de oorspronkelijke temperatuurvoorwaarde. De exacte grens achter `binary_sensor.vriezer_keuken_temperatuur_hoog` moet nog worden achterhaald; er wordt hiermee geen drempel verondersteld.
