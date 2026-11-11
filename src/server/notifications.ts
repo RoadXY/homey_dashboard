@@ -88,7 +88,7 @@ function sourceKey(source: Source): SourceKey {
 }
 
 function collectSources(config: NotificationConfig): Source[] {
-  if ("operator" in config.condition) {
+  if (isConditionGroup(config.condition)) {
     const collect = (node: ConditionNode): Source[] => {
       if ("conditions" in node) return node.conditions.flatMap(collect);
       return [node.source];
