@@ -30,7 +30,7 @@ Node.js 24 is gekozen als LTS-lijn met brede compatibiliteit voor de gebruikte s
 2. Kopieer `.env.example` naar `.env`.
 3. Start de ontwikkelomgeving met `docker compose up --build`.
 4. Open `http://localhost:5173` voor de Vite-ontwikkelinterface.
-5. Controleer `http://localhost:3000/api/health` voor de backendstatus.
+5. Controleer `http://localhost:5173/api/health` voor de backendstatus via de Vite-proxy. De backendpoort `3000` wordt niet op de Ubuntu-host gepubliceerd; deze blijft intern in de container en kan daardoor naast bijvoorbeeld Grafana op hostpoort 3000 draaien.
 
 De ontwikkelpoorten zijn uitsluitend aan localhost gebonden. De productiepoort is een voorlopige standaard en moet vóór deployment worden afgestemd op de serveromgeving.
 
@@ -56,3 +56,10 @@ docker compose up --build -d
 ```
 
 Na een nieuwe SSH-sessie moet eerst naar deze projectmap worden gegaan voordat `git pull`, `docker compose ps` of `docker compose logs` wordt uitgevoerd.
+
+
+## Poortconflict met bestaande services (11 november 2026)
+- Ubuntu-hostpoort `3000` is al in gebruik door Grafana. Daarom wordt de backendpoort `3000` niet langer op de host gepubliceerd.
+- De backend blijft intern bereikbaar op `127.0.0.1:3000` binnen de dashboardcontainer. Vite routeert `/api`-verzoeken intern door naar de backend.
+- Alleen de Vite-ontwikkelinterface wordt voorlopig op `127.0.0.1:5173` van de host gepubliceerd.
+- De healthcheck tijdens ontwikkeling loopt via `http://localhost:5173/api/health`; poort `3000` hoeft niet rechtstreeks vanaf Ubuntu bereikbaar te zijn.
