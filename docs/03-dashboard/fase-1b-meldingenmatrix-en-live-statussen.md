@@ -195,3 +195,7 @@ De gebruiker bevestigt Homey-apparaat **Multisensor woonkamer**, capability `mea
 ### Gebruikersbevestiging – Kans op neerslag (12 november 2026)
 
 De gebruiker bevestigt **Raamsdonksveer** (ID `b2fa37bb-45e2-4fda-87b7-24dcecf64420`), capability `measure_precipitation_probability`, als Homey-bron. De oorspronkelijke grens **>25%** blijft behouden: actief bij >25%, inactief bij ≤25%. Meldingsniveau blijft **info**.
+
+### Gebruikersbevestiging – bron buitentemperatuur Achterdeur open (12 november 2026)
+
+De gebruiker bevestigt Homey-apparaat **Weer**, capability `measure_temperature`, als buitentemperatuurbron voor **Achterdeur open**. De oorspronkelijke YAML-voorwaarde blijft: contact achterdeur open én (buitentemperatuur <18 °C óf >24 °C). Meldingsniveau blijft **waarschuwing**.
