@@ -191,3 +191,14 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De type-informatie van `api.logic.getVariables()` werd door TypeScript als `unknown` behandeld. De resultaten worden nu expliciet als lijst van Homey Logic-variabelen getypeerd voordat de twee toegestane variabelen worden gefilterd.
 - Correctie vastgelegd in commit `88d5f33`.
 - Validatie van de nieuwe Docker-build op Ubuntu staat nog open. De bestaande draaiende container is niet als succesvol bijgewerkt beschouwd zolang die build niet volledig slaagt.
+
+
+## Docker healthcheck en applicatie-readiness (11 november 2026)
+- Er zijn afzonderlijke API-endpoints toegevoegd: `GET /api/health/live` voor liveness en `GET /api/health/ready` voor readiness.
+- Het bestaande `GET /api/health` blijft backwards-compatible en geeft daarnaast applicatiereadiness, uptime en de Homey-status als informatieve deelstatus terug.
+- Docker controleert voortaan `/api/health/ready` met Node's ingebouwde `fetch`; hiervoor zijn geen extra tools zoals curl of wget in de container nodig.
+- De ontwikkelservice in `compose.yaml` heeft een expliciete healthcheck (interval 30s, timeout 5s, 3 retries, startperiode 30s). De productie-runtime in `Dockerfile` gebruikt dezelfde endpoint en instellingen.
+- Homey-bereikbaarheid is bewust geen voorwaarde voor Docker-health. Als Homey offline is, blijft de dashboardapplicatie beschikbaar en rapporteert alleen de Homey-deelstatus dit.
+- Docker-healthstatus: `starting` tijdens de startperiode, daarna `healthy` bij succesvolle readiness-controles of `unhealthy` na opeenvolgende mislukte controles. De containerstatus (bijvoorbeeld `running` of `exited`) blijft hiervan een afzonderlijk gegeven.
+- Codewijzigingen: `src/server/index.ts` (783faa1), `compose.yaml` (993d0c6), `Dockerfile` (7965bc6).
+- Ubuntu-validatie met `docker compose ps`, `docker inspect` en de health-endpoints moet nog worden uitgevoerd.
