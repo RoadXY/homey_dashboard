@@ -50,6 +50,9 @@ app.get("/api/events", async (request, reply) => {
   const onConnected = (payload: unknown) => {
     if (!reply.raw.destroyed) reply.raw.write(`event: homey-connected\ndata: ${JSON.stringify(payload)}\n\n`);
   };
+  const onDisconnected = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: homey-disconnected\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
   const heartbeat = setInterval(() => {
     if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\n\n`);
   }, 20_000);
