@@ -133,3 +133,8 @@ De twee afzonderlijke meldingen **Wateralarm wasmachines!** en **Wateralarm vaat
 ### Vraag 13 – meldingsniveau vriezer keuken (12 november 2026)
 
 De melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. Er zijn geen aanvullende opmerkingen. De eerder vastgelegde Homey-bron en bestaande bronvoorwaarde blijven ongewijzigd.
+
+
+### Vraag 14 – meldingsniveau CO₂ woonkamer (12 november 2026)
+
+De melding **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande drempel (>1200 ppm), bron en voorwaarden blijven ongewijzigd.
