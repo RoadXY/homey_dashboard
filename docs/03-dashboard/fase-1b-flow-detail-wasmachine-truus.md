@@ -38,6 +38,11 @@ Read-only inventarisatie van Homey Pro 2023. Er zijn geen Flows, apparaten of in
 - Stuurt dan een melding dat Truus genoeg accu heeft om de bovenverdieping te stofzuigen.
 - Dit is een gereedheidsmelding, niet de actuele schoonmaakstatus.
 
+
+
+## Gebruikersbesluit – dashboardbron wasmachine (11 november 2026)
+De gebruiker heeft gekozen voor de Logic-variabele `wasmachine_draait` als bron voor de dashboardstatus. De variabele-ID is `c21929a1-2693-416b-9240-74b4ca5d96b9`. De dashboardapp leest deze waarde uitsluitend read-only. De Flow blijft volledig in beheer van de gebruiker en wordt niet aangepast. De eerdere mogelijkheid om vermogen als primaire bron te gebruiken is niet gekozen.
+
 ## Dashboardconsequenties
 - Wasmachine: `wasmachine_draait` is een directe kandidaat voor een eenvoudige draaiend/niet-draaiend indicatie. Houd rekening met de Flow-drempels en het feit dat de boolean afhankelijk is van de Flow.
 - Wasmachine: `measure_power` kan als aanvullende actuele meetwaarde worden getoond, maar vervangt de Flow-status niet zonder expliciete ontwerpkeuze.
