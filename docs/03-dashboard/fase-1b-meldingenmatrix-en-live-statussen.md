@@ -405,3 +405,18 @@ Afspraken:
 - Dit is geen afhankelijkheid van Homey Flow-logica in de dashboardapplicatie: de dashboardregel zelf wordt intern uitgevoerd.
 
 Deze afspraak nuanceert de eerdere formulering dat alle benodigde invoer rechtstreeks uit apparaat-capabilities moet komen. Een Logic-variabele is een volwaardige, expliciet toegestane invoerbron wanneer de gebruiker die daarvoor aanwijst.
+
+
+### 12.9 Gebruikersbesluit – databron en vaste prioriteit per Blockly-melding (11 november 2026)
+
+De gebruiker verduidelijkt dat de keuze tussen een rechtstreekse Homey-apparaatwaarde/capability en een Homey Logic-variabele **niet projectbreed of vooraf per melding wordt vastgelegd**. De gebruiker kiest dit zelf tijdens het bouwen/configureren van een melding in de Blockly-editor.
+
+Daarom moet de Blockly-bouwsteen de gebruiker als databron laten selecteren:
+- een relevante waarde/capability van een Homey-apparaat; of
+- een bestaande Homey Logic-variabele.
+
+Beide bronnen worden uitsluitend read-only door de dashboardapplicatie uitgelezen. Als de gebruiker een Logic-variabele kiest, is de gebruiker zelf verantwoordelijk voor het vullen en actueel houden van die variabele. De dashboardapplicatie voert geen Homey Flow uit en wijzigt de variabele niet.
+
+**Prioriteit is een vaste eigenschap van iedere afzonderlijke melding.** De prioriteit verandert niet dynamisch op basis van de actuele bronwaarde of de uitkomst van een voorwaarde. Wil de gebruiker bijvoorbeeld zowel een normale als een hoge-prioriteitsmelding, dan maakt de gebruiker twee afzonderlijke meldingen met elk een eigen prioriteit en eigen voorwaarden.
+
+De bronkeuze en de prioriteitsinstelling zijn dus twee afzonderlijke configuraties in Blockly. Voor de CO₂-melding wordt op dit moment geen vaste bronkeuze opgelegd; de gebruiker kiest die bij het aanmaken van de melding.
