@@ -104,10 +104,7 @@ function App() {
           ))}
         </div>
         <section className="notifications-panel" aria-label="Meldingen">
-          <div className="notifications-heading">
-            <div><span className="eyebrow">THUIS · MELDINGEN</span><h1>Meldingen</h1></div>
-            <span className="notification-count">—</span>
-          </div>
+          <div className="notifications-heading"><h1>Meldingen</h1></div>
           <div className="notifications-content">
             <div className="empty-state">
               <span className="empty-mark" aria-hidden="true">◇</span>
