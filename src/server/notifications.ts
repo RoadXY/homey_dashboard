@@ -68,7 +68,7 @@ export async function getDashboardNotifications(): Promise<{
   } catch {
     return {
       retrievedAt: new Date().toISOString(),
-      notifications: configs.map((config) => ({
+      notifications: configs.map((config): DashboardNotification => ({
         id: config.id,
         title: config.title,
         message: config.message,
@@ -91,7 +91,7 @@ export async function getDashboardNotifications(): Promise<{
     };
 
     if (!variable) return { ...base, state: "unknown", reason: "source_missing" };
-    if (variable.type.toLowerCase() !== config.source.expectedType) {
+    if (typeof variable.type !== "string" || variable.type.toLowerCase() !== config.source.expectedType) {
       return { ...base, state: "unknown", reason: "source_type_mismatch" };
     }
     if (typeof variable.value !== "boolean") {
