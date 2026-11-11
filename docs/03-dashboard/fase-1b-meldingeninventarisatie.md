@@ -69,3 +69,8 @@ Behoud de oorspronkelijke regel: melding wanneer de CO₂-waarde hoger is dan 12
 ### Vraag 7 – regenmelding
 
 Behoud de oorspronkelijke regel: regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
+
+
+### Vraag 8 – algemene Blockly-bewerkbaarheid
+
+Besluit: alle meldingen moeten later via Blockly bewerkbaar zijn. Alle grenswaarden en tijdsvoorwaarden zijn instelbaar. Dit geldt voor het volledige notificatieaanbod, niet alleen voor enkele expliciet genoemde meldingen. Gebruik één generiek en versieerbaar notificatiemodel waarin voorwaarden, operatoren, grenswaarden en duur-/tijdvoorwaarden worden opgeslagen. JSON en Blockly werken op hetzelfde model en dezelfde backend-evaluator. De momenteel bevestigde waarden uit de oorspronkelijke YAML dienen als initiële configuratie/defaults, zodat het bestaande gedrag behouden blijft totdat de gebruiker ze wijzigt.
