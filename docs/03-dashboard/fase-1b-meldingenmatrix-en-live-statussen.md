@@ -113,3 +113,8 @@ De gebruiker besluit dat **alle meldingen later met de Blockly-editor bewerkbaar
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 9 (raamwaarschuwingen)
 
 De gebruiker kiest ervoor de vier raamwaarschuwingen als vier afzonderlijke meldingen te behouden. Elke melding moet volledig zelfstandig bewerkbaar zijn, inclusief eigen voorwaarden, grenswaarden en tijdschema via de toekomstige Blockly-editor. Geen aanvullende opmerkingen. De bestaande inhoudelijke voorwaarden en schema's van elk van de vier regels blijven afzonderlijk behouden; deze keuze voegt geen nieuwe voorwaarden toe.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 10 (weergave raamwaarschuwingen)
+
+De gebruiker kiest ervoor de vier raamwaarschuwingen als vier losse meldingen weer te geven, zonder gezamenlijke kop of visuele groepering. De dashboardbrede sorteerregel uit `docs/03-dashboard/README.md` blijft leidend: eerst kritiek, daarna waarschuwing, daarna info; binnen hetzelfde niveau staat de melding met het nieuwste activeringstijdstip bovenaan. Groepering vindt dus uitsluitend plaats op meldingsniveau (kritiek/waarschuwing/info) en binnen elk niveau op tijd van binnenkomst/activering, niet op onderwerp of ruimte. De vier raamregels blijven technisch zelfstandig en afzonderlijk Blockly-bewerkbaar.
