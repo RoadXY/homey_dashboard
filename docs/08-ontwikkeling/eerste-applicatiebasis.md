@@ -70,3 +70,12 @@ Na een nieuwe SSH-sessie moet eerst naar deze projectmap worden gegaan voordat `
 - De ontwikkelinterface is daarmee bereikbaar via het LAN-adres van Ubuntu, bijvoorbeeld `http://10.7.10.8:5173`.
 - Backendpoort `3000` blijft uitsluitend intern in de container; API-verzoeken lopen via de Vite-proxy.
 - Dit is een tijdelijke ontwikkelinstelling. Voor productie wordt toegang via de beoogde reverse proxy/HTTPS en passende netwerkbeperkingen ingericht.
+
+
+## Eerste succesvolle start op Ubuntu (11 november 2026)
+- De eerste Docker-ontwikkelomgeving is succesvol gestart op de Ubuntu-server in `/opt/homey_dashboard`.
+- De frontend is vanaf een andere machine op het LAN bereikbaar via `http://10.7.10.8:5173`.
+- De browser toont de scaffoldpagina en de status **Backend online**; daarmee is de frontend-naar-backend health-check bevestigd.
+- Hostpoort `3000` blijft vrij voor de bestaande Grafana-installatie; de dashboardbackend gebruikt poort `3000` uitsluitend intern in de container.
+- De Vite-ontwikkelinterface wordt voorlopig op hostpoort `5173` gepubliceerd. Dit is een ontwikkelconfiguratie, nog geen productie-/tablet-deployment.
+- Volgende technische stap: de basisintegratie met Homey Pro 2023 voorbereiden en daarna de eerste echte dashboardcomponenten bouwen volgens de goedgekeurde fase-1A-scope.
