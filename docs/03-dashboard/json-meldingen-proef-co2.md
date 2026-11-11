@@ -60,7 +60,7 @@ Een onbekende waarde wordt nadrukkelijk niet als `false` geïnterpreteerd. Allee
 
 ## Uitbreiding – vier slaapkamer-temperatuurmeldingen
 
-De gebruiker heeft bevestigd dat de vier temperatuurmeldingen als volgende stap worden toegevoegd. De drempel is gecorrigeerd van 16 °C naar **lager dan 12 °C**. De voorwaarde is strikt kleiner dan 12: exact 12,0 °C activeert de melding niet.
+De gebruiker heeft bevestigd dat de vier temperatuurmeldingen worden toegevoegd; de vier JSON-configuraties zijn inmiddels aangemaakt. De drempel is gecorrigeerd van 16 °C naar **lager dan 12 °C**. De voorwaarde is strikt kleiner dan 12: exact 12,0 °C activeert de melding niet.
 
 | Melding | Homey-device-ID | Capability | Voorwaarde |
 |---|---|---|---|
