@@ -7,6 +7,8 @@ type HomeyDevice = { id: string; name?: string; zone?: string; available?: boole
 type DeviceReadings = { retrievedAt: string; devices: HomeyDevice[] };
 type LogicResponse = { retrievedAt: string; variables: { name: string; value: unknown }[] };
 type HomeyStatus = { state: string; checkedAt: string | null; error: string | null; deviceCount?: number; zoneCount?: number };
+type DashboardNotification = { id: string; title: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
+type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[] };
 
 const actions = [
   { name: "Q-Music", icon: "♫" }, { name: "Q-Music Foute Uur", icon: "♫" },
@@ -24,7 +26,7 @@ function App() {
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
-  const [logic, setLogic] = React.useState<LogicResponse | null>(null);
+  const [logic, setLogic] = React.useState<LogicResponse | null>(null);\n  const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [lastUpdated, setLastUpdated] = React.useState<Date | null>(null);
   const [loadError, setLoadError] = React.useState("");
   const refresh = React.useCallback(async () => {
@@ -108,11 +110,29 @@ function App() {
         <section className="notifications-panel" aria-label="Meldingen">
           <div className="notifications-heading"><h1>Meldingen</h1></div>
           <div className="notifications-content">
-            <div className="empty-state">
-              <span className="empty-mark" aria-hidden="true">◇</span>
-              <strong>{loadError ? "Gegevens tijdelijk niet beschikbaar" : "Meldingen worden hier getoond"}</strong>
-              <span>{loadError || "Het meldingenpaneel is voorbereid. Er worden nog geen meldingenbronnen ingelezen."}</span>
-            </div>
+            {notifications.some((item) => item.state === "active") ? (
+              <div className="notification-list">
+                {notifications.filter((item) => item.state === "active").map((item) => (
+                  <article className={`notification-card severity-${item.severity}`} key={item.id}>
+                    <span className="notification-level">{item.testOnly ? "TEST · " : ""}{item.severity === "critical" ? "KRITIEK" : item.severity === "warning" ? "WAARSCHUWING" : "INFO"}</span>
+                    <strong>{item.title}</strong>
+                    <span>{item.message}</span>
+                  </article>
+                ))}
+              </div>
+            ) : notifications.some((item) => item.state === "unknown") ? (
+              <div className="empty-state">
+                <span className="empty-mark" aria-hidden="true">!</span>
+                <strong>Bron niet beschikbaar</strong>
+                <span>De testvariabele ontbreekt of kan niet betrouwbaar worden uitgelezen. De meldingstatus is onbekend.</span>
+              </div>
+            ) : (
+              <div className="empty-state">
+                <span className="empty-mark" aria-hidden="true">◇</span>
+                <strong>{loadError ? "Gegevens tijdelijk niet beschikbaar" : "Geen actieve meldingen"}</strong>
+                <span>{loadError || "Alle dashboardmeldingen zijn momenteel inactief."}</span>
+              </div>
+            )}
           </div>
           <div className="panel-footer">
             <span>HOMEY DASHBOARD</span>
