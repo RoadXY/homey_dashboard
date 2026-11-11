@@ -93,3 +93,8 @@ De gebruiker besluit dat alle meldingen later met Blockly bewerkt moeten kunnen 
 ## Inventarisatie HA-YAML – vier raamwaarschuwingen
 
 Besluit: de vier raamwaarschuwingen blijven afzonderlijke meldingen (raam Tess, raam Bram, raam ouders en dakraam Sem), elk volledig zelfstandig bewerkbaar via Blockly. De bestaande voorwaarden en tijdschema's blijven per melding gescheiden. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – weergave en sortering raamwaarschuwingen
+
+Besluit: de vier raamwaarschuwingen verschijnen als losse meldingen zonder gezamenlijke kop. De al bestaande dashboardregel uit `docs/03-dashboard/README.md` is leidend voor de volgorde: kritiek → waarschuwing → info; binnen hetzelfde niveau nieuwste activeringstijdstip/tijd van binnenkomst eerst. Er wordt niet aanvullend gegroepeerd op ruimte of onderwerp. De vier meldingen blijven afzonderlijke Blockly-bewerkbare regels.
