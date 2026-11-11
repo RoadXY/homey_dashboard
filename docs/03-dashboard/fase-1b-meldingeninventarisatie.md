@@ -139,3 +139,8 @@ De gebruiker kiest voor niveau **info** voor beide afzonderlijke meldingen: **La
 ### Vraag 21 – meldingsniveau batterij muurtablet
 
 De gebruiker kiest voor niveau **waarschuwing** wanneer de batterij van de muurtablet lager is dan 25%. Geen aanvullende opmerkingen. De bestaande grenswaarde (<25%) blijft ongewijzigd.
+
+
+### Vraag 22 – meldingsniveau Truus wil opgehaald worden!
+
+De gebruiker kiest voor niveau **waarschuwing** voor **Truus wil opgehaald worden!**. Geen aanvullende opmerkingen. De bestaande voorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`.
