@@ -455,3 +455,12 @@ Dit is een afzonderlijke testvariabele en vervangt of beïnvloedt niet de bestaa
 De gebruiker maakt en bedient de Logic-variabele zelf in Homey. De dashboardapplicatie leest de boolean uitsluitend read-only uit en evalueert de JSON-voorwaarde intern. Er hoeft voor deze proef geen Homey Flow te worden aangemaakt of gewijzigd.
 
 De exacte naam en het type worden als voorstel vastgelegd; vóór de implementatie moet de gebruiker bevestigen dat deze variabele in Homey is aangemaakt of een andere bestaande testvariabele aanwijzen.
+
+
+### 12.12 Implementatie eerste JSON-proefmelding (11 november 2026)
+
+De eerste CO₂-proefmelding is als JSON-configuratie toegevoegd in `config/notifications/co2-woonkamer-test.json`. De databron is de aparte Homey Logic-boolean `dashboard_test_co2_melding`; `true` activeert de testwaarschuwing en `false` maakt deze inactief. De bestaande productievariabele en fysieke CO₂-sensor worden niet gebruikt voor deze proef.
+
+De server leest JSON-configuraties uit `config/notifications/`, haalt de genoemde Logic-variabelen read-only op en evalueert de booleanvoorwaarde intern. De nieuwe endpoint is `GET /api/notifications`. De frontend toont actieve meldingen en toont bij ontbrekende, ongeldige of onbereikbare bron een onbekende status; onbekend wordt niet gelijkgesteld aan onwaar.
+
+De eerste evaluator ondersteunt bewust alleen de boolean-gelijkheidsvoorwaarde die nodig is voor deze proef. Numerieke vergelijkingen en volledige HA-condition trees volgen pas in vervolgstappen. De implementatie en handmatige testprocedure staan in [JSON-meldingenproef CO₂](json-meldingen-proef-co2.md). De Docker-build en runtime-test op de Ubuntu-server moeten nog worden uitgevoerd.
