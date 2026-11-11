@@ -49,9 +49,9 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Slaap-/schema-afhankelijkheid Sem is expliciet niet migreren; kaart/regel niet overnemen. |
 | Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Slaap-/schema-afhankelijkheid Bram is expliciet niet migreren; kaart/regel niet overnemen. |
 | Slaapkamer Bram koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur Bram, `measure_temperature`. |
-| Slaapkamer Tess koud | Temperatuursensor in de kamer <16 °C | Migreren; exacte Homey-temperatuursensor nog identificeren. |
+| Slaapkamer Tess koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Thermostaat Tess**, `203a126c-1923-4857-abcb-6a727a133099`, capability `measure_temperature`. |
 | Ouderslaapkamer koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur ouderslaapkamer, `measure_temperature`. |
-| Zolder koud | Temperatuursensor in de kamer <16 °C | Migreren; exacte bedoelde zoldertemperatuursensor nog bevestigen. |
+| Zolder koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Temperatuur Sem** (slaapkamer Sem), `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. |
 | Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | Homey-device-ID bekend als Koelkast keuken temperatuur; semantische relatie nog verifiëren. |
 | Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Droger-capabilities beschikbaar; statewaarde en templatevertaling nog valideren. Behoud de HA-voorwaarde, niet Flow-push. |
 | Wasmachine staat aan | `binary_sensor.wasmachine` is on | Kandidaat: `wasmachine_draait` en/of vermogen. Exacte HA-afgeleide status eerst semantisch mappen. |
@@ -127,14 +127,12 @@ De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard g
 
 ## 7. Openstaande bronmappings
 
-1. Temperatuursensor Tess.
-2. Exacte bedoelde temperatuursensor voor zolder.
-3. Reproductie van `schedule.boven_ramen_open` en de herbruikbare Blockly-schema-bouwsteen.
-4. Neerslagkans >25: wachten op keuze/beschikbaarheid van een app/databron.
-5. Keuken-vriezer device-ID en relatie met HA-entity die `koelkast` in de naam heeft.
-6. Exacte Homey-statuswaarden voor droger en de HA-completion-time-template.
-7. Remeha-statuscodevertaling.
-8. Exacte semantische bron van de wasmachine-binarysensor.
+1. Reproductie van `schedule.boven_ramen_open`: exacte weekdagen en tijden uit de oorspronkelijke HA-definitie vastleggen en vertalen naar de herbruikbare Blockly-bouwsteen.
+2. Neerslagkans >25: wachten op keuze/beschikbaarheid van een app/databron.
+3. Keuken-vriezer: semantische relatie tussen HA-entity en Homey-device Koelkast keuken temperatuur bevestigen.
+4. Droger: exacte Homey-statuswaarden en de HA-completion-time-template valideren.
+5. Remeha-statuscodevertaling.
+6. Wasmachine: exacte semantische bron van de HA-binarysensor bevestigen.
 
 De volgende onderdelen zijn door de gebruiker expliciet uitgesloten en gelden dus niet meer als open migratiemapping: plantensensoren, vijf telefoonbatterijen, zon op raam Tess, schema slapen Sem en schema slapen Bram.
 
@@ -189,3 +187,7 @@ Thermostaat Tess (`203a126c-1923-4857-abcb-6a727a133099`) is de gekozen bron voo
 
 ### 10.2 Gebruikersbevestiging zolder / slaapkamer Sem
 Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkamer Sem: **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`). De regel blijft **temperatuur <16 °C**.
+
+
+### 10.3 Opschoning openstaande mappinglijst
+De temperatuurbronnen voor Tess en slaapkamer Sem zijn nu bevestigd. De oude voorlopige vermeldingen in de oorspronkelijke meldingenmatrix zijn bijgewerkt. Ze staan niet langer op de openstaande mappinglijst. De resterende mappingvragen zijn schema, neerslagkans, keuken-vriezer, droger, Remeha en wasmachine.
