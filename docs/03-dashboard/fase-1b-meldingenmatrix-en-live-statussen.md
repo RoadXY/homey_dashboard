@@ -332,3 +332,12 @@ De uitkomst van de inventarisatie moet per apparaat vastleggen:
 - welke waarde(n) of signalen beschikbaar zijn;
 - of de betekenis voldoende duidelijk is om online/offline te tonen;
 - hoe het dashboard de situatie weergeeft als de status ontbreekt of niet eenduidig is.
+
+
+### 12.3 Gebruikersbesluit – reikwijdte inventarisatie beschikbaarheidsstatus (11 november 2026)
+
+**Keuze gebruiker: optie B – uitsluitend apparaten die meldingen aansturen.**
+
+De inventarisatie van expliciete beschikbaarheidsstatussen via de Homey API richt zich in deze ontwerpfase alleen op Homey-apparaten die als bron dienen voor dashboardmeldingen. Apparaten die uitsluitend voor andere dashboardtegels of algemene statusinformatie worden gebruikt, vallen buiten deze inventarisatie.
+
+Per meldingsbron wordt vastgelegd of de API een bruikbare beschikbaarheidsstatus aanbiedt, wat de betekenis daarvan is en hoe ontbrekende of niet-eenduidige statusinformatie wordt behandeld. Er wordt geen ontbrekende status automatisch als online of offline geïnterpreteerd.
