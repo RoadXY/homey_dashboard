@@ -295,3 +295,12 @@ Deze functie wordt in fase 1 gebouwd als generieke betrouwbaarheid-/diagnoselaag
 - Een onbekende voorwaarde wordt nooit als onwaar behandeld. De bijbehorende melding wordt niet als normale actieve/inactieve status gepresenteerd; de diagnose toont welke melding hierdoor niet kan verschijnen of betrouwbaar worden beoordeeld.
 - Bij samengestelde AND/OR-voorwaarden wordt onbekend volgens de logische uitkomst verwerkt. Alleen wanneer de totale voorwaarde niet eenduidig waar of onwaar kan worden vastgesteld, krijgt de melding de status niet te beoordelen.
 - De diagnose toont per geblokkeerde meldingsregel de ontbrekende bron(nen), het laatst bekende meetmoment en de reden van blokkade.
+
+
+### Correctie vormgeving diagnose-indicator en toegang instellingen
+- De header toont **uitsluitend een rood uitroepteken binnen een cirkel** (geen tekstlabel of knipperende tekst).
+- Alleen het pictogram knippert wanneer er één of meer meldingsregels door een onbeschikbare/onbetrouwbare bron niet beoordeeld kunnen worden. De rest van de interface blijft clean en ongewijzigd.
+- Het pictogram is aanklikbaar. Na aanklikken wordt eerst de instellingen-PIN gevraagd; pas na correcte invoer wordt **Instellingen → Systeem → Diagnose** geopend.
+- De PIN-beveiliging geldt voor iedere route naar de instellingen, dus ook voor deze snelkoppeling vanuit de meldingenheader. Er mag geen alternatieve onbeveiligde route bestaan.
+- De eerdere omschrijving van een tekstuele/uitgeschreven rode headerwaarschuwing vervalt en wordt door deze pictogram-only variant vervangen.
+- **Fase-indeling PIN:** de bestaande ontwerpdocumentatie die bij dit besluit is gecontroleerd, legt de fase voor de PIN-beveiliging niet expliciet vast. Om de door de gebruiker vereiste toegangsbescherming te waarborgen, valt minimaal het PIN-invoerscherm en de toegangscontrole voor Instellingen binnen fase 1. Uitgebreider PIN-beheer kan alleen naar een latere fase worden verplaatst als dat afzonderlijk wordt besloten.
