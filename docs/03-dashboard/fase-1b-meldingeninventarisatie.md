@@ -129,3 +129,8 @@ De gebruiker kiest voor niveau **info** voor alle vier afzonderlijke meldingen: 
 ### Vraag 19 – meldingsniveau Achterdeur open
 
 De gebruiker kiest voor niveau **waarschuwing** voor **Achterdeur open**. De oorspronkelijke voorwaarde blijft intact: contact open én (buitentemperatuur <18 °C of >24 °C). Geen aanvullende opmerkingen.
+
+
+### Vraag 20 – meldingsniveau slaapkamerlampen
+
+De gebruiker kiest voor niveau **info** voor beide afzonderlijke meldingen: **Lamp Sem staat aan** en **Lamp Bram staat aan**. Geen aanvullende opmerkingen. De oorspronkelijke combinatie van lamp aan en het bijbehorende actieve slaaptijdschema blijft behouden.
