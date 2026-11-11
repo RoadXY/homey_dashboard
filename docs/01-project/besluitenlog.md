@@ -148,3 +148,8 @@ Besluit: **Achterdeur open** krijgt niveau **waarschuwing**. De oorspronkelijke 
 ## Inventarisatie HA-YAML – meldingsniveau slaapkamerlampen
 
 Besluit: **Lamp Sem staat aan** en **Lamp Bram staat aan** krijgen beide niveau **info**. De bestaande voorwaarden (lamp aan én het bijbehorende slaaptijdschema actief) blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau batterij muurtablet
+
+Besluit: de melding bij een batterijniveau van de muurtablet lager dan 25% krijgt niveau **waarschuwing**. De oorspronkelijke grenswaarde (<25%) blijft ongewijzigd. Geen aanvullende opmerkingen.
