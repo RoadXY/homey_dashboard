@@ -114,3 +114,8 @@ De gebruiker kiest voor niveau **info** voor de melding **Kans op neerslag** (ne
 ### Vraag 16 – meldingsniveau lage slaapkamer-temperaturen
 
 De gebruiker kiest voor niveau **info** voor alle vier temperatuurmeldingen: Slaapkamer Bram, Slaapkamer Tess, Ouderslaapkamer en Slaapkamer Sem. De bestaande activeringsgrens blijft voor alle vier lager dan 12 °C. Geen aanvullende opmerkingen.
+
+
+### Vraag 17 – meldingsniveau tuinhuislamp
+
+De gebruiker kiest voor niveau **info** voor de melding wanneer de tuinhuislamp langer dan vijf minuten aan staat. Geen aanvullende opmerkingen. De duurvoorwaarde blijft configureerbaar in het gedeelde notificatiemodel voor JSON en Blockly.
