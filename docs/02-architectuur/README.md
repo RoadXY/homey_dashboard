@@ -79,8 +79,9 @@ The settings menu must visibly distinguish **Automatic (Homey: <language>)** fro
 
 - Use `i18next` with `react-i18next` for React interface translations, after dependency/build validation.
 - Translation resources are organized by locale, with stable English translation keys and JSON property names.
-- Dutch (`nl-NL`) is the initial default interface locale. English (`en`) is the fallback locale.
-- Additional locales are added as translation resources; component code must not contain locale-specific interface strings.
+- English (`en`) is the canonical source locale and universal fallback; Dutch (`nl-NL`) is supported alongside it from the start.
+- Every interface string/key must be provided in both English and Dutch together. Translation-key parity is validated so missing translations are caught before release.
+- Additional locales are added as complete translation resources; component code must not contain locale-specific interface strings.
 - Date, time, number, and unit formatting follows the effective locale where appropriate.
 - Homey device names, zone names, Flow names, Logic variable names, and other user-defined values are displayed unchanged and are not passed through translation dictionaries.
 
