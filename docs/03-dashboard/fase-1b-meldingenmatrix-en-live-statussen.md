@@ -187,3 +187,7 @@ De afzonderlijke melding **Zolder koud** krijgt het niveau **info**, gelijk aan 
 ### Gebruikersbesluit – grenswaarde Vriezer keuken warm! (12 november 2026)
 
 De gebruiker stelt voor de melding **Vriezer keuken warm!** een vaste startgrens van **>10 °C** vast. Gebruik Homey-apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. Bij >10 °C actief; bij ≤10 °C inactief. Meldingsniveau blijft **kritiek**. De oorspronkelijke YAML bevatte alleen de verwijzing naar `binary_sensor.vriezer_keuken_temperatuur_hoog` en geen numerieke grens; 10 °C is dus een expliciet migratiebesluit. De Logic-variabele `Vriezer_tempAlarm` is niet nodig voor deze implementatie.
+
+### Gebruikersbevestiging – CO₂ woonkamer hoog! (12 november 2026)
+
+De gebruiker bevestigt Homey-apparaat **Multisensor woonkamer**, capability `measure_co2`, als bron voor **CO₂ woonkamer hoog!**. Behoud de oorspronkelijke activeringsgrens **>1200 ppm**. Bij >1200 ppm actief; bij ≤1200 ppm inactief. Het eerder gekozen meldingsniveau **waarschuwing** blijft van kracht.
