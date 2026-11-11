@@ -118,3 +118,8 @@ Besluit: de melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. De b
 ## Inventarisatie HA-YAML – meldingsniveau CO₂ woonkamer
 
 Besluit: **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. De bestaande drempel (>1200 ppm), bronkoppeling en voorwaarde blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau regenmelding
+
+Besluit: **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. De bestaande Homey-bron en drempel blijven ongewijzigd. Geen aanvullende opmerkingen.
