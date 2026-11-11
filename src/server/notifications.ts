@@ -41,7 +41,7 @@ export type DashboardNotification = {
   reason?: string;
 };
 
-type Evaluation = { state: "active" | "inactive" | "unknown"; reason?: string };
+export type Evaluation = { state: "active" | "inactive" | "unknown"; reason?: string };
 type SourceKey = string;
 
 function isSource(value: unknown): value is Source {
@@ -130,7 +130,7 @@ function evaluateComparison(value: unknown, expectedType: ExpectedType, conditio
   }
 }
 
-function combine(operator: "and" | "or", results: Evaluation[]): Evaluation {
+export function combineConditionResults(operator: "and" | "or", results: Evaluation[]): Evaluation {
   // Three-valued logic: an unknown child is never silently treated as false.
   if (operator === "and") {
     if (results.some((result) => result.state === "inactive")) return { state: "inactive" };
@@ -146,7 +146,7 @@ function evaluateNode(
   node: ConditionNode,
   values: Map<SourceKey, { value?: unknown; expectedType: ExpectedType; error?: string }>,
 ): Evaluation {
-  if ("conditions" in node) return combine(node.operator, node.conditions.map((child) => evaluateNode(child, values)));
+  if ("conditions" in node) return combineConditionResults(node.operator, node.conditions.map((child) => evaluateNode(child, values)));
   const sourceValue = values.get(sourceKey(node.source));
   if (!sourceValue) return { state: "unknown", reason: "source_missing" };
   if (sourceValue.error) return { state: "unknown", reason: sourceValue.error };
