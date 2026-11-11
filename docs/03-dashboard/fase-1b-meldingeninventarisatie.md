@@ -165,3 +165,8 @@ Voor **Vriezer keuken warm!** is het meldingsniveau **critical (kritiek)** gekoz
 ### Gebruikersbesluit – severity wasmachine (11 november 2026)
 
 Voor **Wasmachine staat aan** is het meldingsniveau **info (informatie)** gekozen. Er zijn geen aanvullende opmerkingen. De bron blijft de read-only boolean Logic-variabele `wasmachine_draait`.
+
+
+### Gebruikersbesluit – droger als actuele statusweergave (11 november 2026)
+
+De droger wordt als **actuele statusweergave** opgenomen. Er komt geen afzonderlijke melding wanneer de droger klaar is. De statuskaart toont de actuele status, voortgang en resterende tijd. De Homey-machine-state en bijbehorende capabilities worden nog technisch gevalideerd en uitsluitend read-only uitgelezen.
