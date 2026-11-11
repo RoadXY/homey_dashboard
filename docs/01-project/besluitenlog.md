@@ -163,3 +163,7 @@ Besluit: **Truus wil opgehaald worden!** krijgt niveau **waarschuwing**. De best
 ## Inventarisatie HA-YAML – meldingsniveau Zolder koud
 
 Besluit: **Zolder koud** krijgt niveau **info**, overeenkomstig de vier slaapkamer-temperatuurmeldingen. De oorspronkelijke HA-bronvoorwaarde (`binary_sensor.temperatuur_zolder_laag`) en kaartverwijzing (`climate.airco_zolder_thermostaat`) blijven geregistreerd; de exacte Homey-vertaling moet nog worden vastgesteld. Geen aanvullende opmerkingen.
+
+## Gebruikersbesluit – grenswaarde Vriezer keuken warm! (12 november 2026)
+
+Voor de kritieke melding **Vriezer keuken warm!** geldt in de dashboardmigratie: activeer bij een Homey-temperatuur van **meer dan 10 °C** en deactiveer bij **10 °C of lager**. De gekozen bron is Homey-apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. De oorspronkelijke HA-dashboard-YAML bevatte een binaire zichtbaarheidstrigger (`binary_sensor.vriezer_keuken_temperatuur_hoog`) maar geen numerieke grens; 10 °C is een nieuw gebruikersbesluit. De Logic-variabele `Vriezer_tempAlarm` wordt niet als bron gebruikt.
