@@ -548,3 +548,8 @@ De gebruiker bevestigt dat de Logic-variabele **`wasmachine_draait`** (`c21929a1
 ### 12.5 Gebruikersbesluit – severity vriezer (11 november 2026)
 
 De gebruiker kiest voor **critical (kritiek)** als vast meldingsniveau voor **Vriezer keuken warm!**. Er zijn geen aanvullende opmerkingen meegegeven. De severity is metadata van de melding en staat los van de nog te achterhalen oorspronkelijke temperatuurvoorwaarde; deze keuze legt dus geen temperatuurdrempel vast.
+
+
+### 12.6 Gebruikersbesluit – severity wasmachine (11 november 2026)
+
+De gebruiker kiest voor **info (informatie)** als vast meldingsniveau voor **Wasmachine staat aan**. Er zijn geen aanvullende opmerkingen meegegeven. De statusbron blijft de bevestigde boolean Logic-variabele `wasmachine_draait`; deze keuze wijzigt de read-only bronkoppeling of de onbekend-statusafhandeling niet.
