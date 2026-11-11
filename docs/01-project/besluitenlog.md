@@ -63,3 +63,8 @@ De gebruiker bevestigt de bestaande YAML-zichtbaarheidslogica ongewijzigd: gewon
 ## Inventarisatie HA-YAML – airco's
 
 De gebruiker besluit dat airco keuken en airco zolder uitsluitend zichtbaar zijn wanneer actief: status is niet `off` en niet `unavailable`. Beide tonen bedrijfsstatus en ingestelde temperatuur. Hiermee wordt het oorspronkelijke verschil in YAML-zichtbaarheidsvoorwaarden gelijkgetrokken.
+
+
+## Inventarisatie HA-YAML – batterij muurtablet
+
+Besluit: behoud de oorspronkelijke zichtbaarheid van de batterijkaart; alleen tonen wanneer het batterijniveau lager is dan 25%. Geen aanvullende opmerkingen.
