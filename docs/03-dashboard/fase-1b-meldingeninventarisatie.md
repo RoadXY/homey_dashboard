@@ -32,3 +32,10 @@ Als voorlopig API-ontwerp wordt `POST /api/v1/weather/condition` met body `{"typ
 ### API-authenticatie – gebruikerswens voor tokenbeheer (11 november 2026)
 
 De dashboardinstellingen moeten een beheerplek krijgen om Bearer-tokens met een eigen naam te genereren. De gebruiker kan deze token als Authorization-header meegeven in de Homey Logic HTTP POST-kaart; die kaart ondersteunt headers. De gebruiker stelt de JSON-body zelf samen, bijvoorbeeld `{"type":"cloudy"}`. Tokenbeheer moet veilige eenmalige weergave van de geheime tokenwaarde, veilige hashopslag, intrekken/verwijderen en uitbreidbare rechten/scopes ondersteunen. Technische uitwerking en implementatie staan nog open.
+
+
+### Inventarisatie YAML – behouden onderdelen, vraag 1
+
+De gebruiker wil alle acht voorgelegde onderdelen behouden: droger (status, voortgang, resterende tijd), Truus (werkstatus en ophalen), Remeha (verwarming en warm tapwater), airco keuken/zolder (status en ingestelde temperatuur), neerslagkans boven 25%, muurtablet-batterij onder 25%, tuinhuislamp langer dan 5 minuten aan en CO₂ woonkamer boven 1200 ppm. Geen van deze onderdelen is uitgesloten.
+
+Voor de droger geldt expliciet: alleen tonen als deze actief is/draait. In de oorspronkelijke YAML is de kaart zichtbaar bij `sensor.droger_dryer_machine_state` = `run` en wordt de eindtijd getoond uit `sensor.droger_dryer_completion_time`.
