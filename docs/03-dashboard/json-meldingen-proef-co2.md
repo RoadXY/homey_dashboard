@@ -154,3 +154,17 @@ Een onbekende bron wordt dus nooit als een normale `false`-waarde geïnterpretee
 ### Validatie
 
 Er zijn unit tests toegevoegd voor AND, OR en de omgang met onbekende waarden. De nieuwe code en tests staan op GitHub. De TypeScript-build, Docker-build en praktijktest op de Ubuntu-server moeten nog worden uitgevoerd; dit is dus nog geen als gevalideerd beschouwde runtime-release.
+
+### Eerste YAML-melding gemigreerd naar geneste conditieboom – Achterdeur open
+
+De eerste samengestelde melding is nu als echte JSON-configuratie toegevoegd: `config/notifications/achterdeur-open.json`.
+
+De structuur volgt de bevestigde YAML-voorwaarde exact:
+- Buitenste AND: achterdeurcontact is open én de temperatuurvoorwaarde klopt.
+- Binnenste OR: buitentemperatuur is lager dan 18 °C óf hoger dan 24 °C.
+- Homey-bronnen: apparaat Achterdeur (`8bd0184e-5cd7-443f-bafc-8d509ab32e7a`), capability `alarm_contact`; apparaat Weer (`c7e68c38-1588-4c93-9db8-e854f4d251ab`), capability `measure_temperature`.
+- Niveau: waarschuwing.
+
+De temperatuurbron wordt door de evaluator maar één keer opgehaald, hoewel deze in twee vergelijkingsbladen voorkomt. Deze migratie vervangt geen YAML-voorwaarden door Homey-Flow-logica.
+
+**Nog te valideren:** configuratie-inlezing, TypeScript/Vitest-build, Docker-build en live gedrag op de Ubuntu-server.
