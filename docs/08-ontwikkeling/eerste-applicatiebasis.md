@@ -79,3 +79,44 @@ Na een nieuwe SSH-sessie moet eerst naar deze projectmap worden gegaan voordat `
 - Hostpoort `3000` blijft vrij voor de bestaande Grafana-installatie; de dashboardbackend gebruikt poort `3000` uitsluitend intern in de container.
 - De Vite-ontwikkelinterface wordt voorlopig op hostpoort `5173` gepubliceerd. Dit is een ontwikkelconfiguratie, nog geen productie-/tablet-deployment.
 - Volgende technische stap: de basisintegratie met Homey Pro 2023 voorbereiden en daarna de eerste echte dashboardcomponenten bouwen volgens de goedgekeurde fase-1A-scope.
+
+
+## Homey Pro 2023 – eerste lokale API-integratie
+
+De backend bevat een eerste read-only adapter op basis van de officiële `homey-api` Node.js-client. Deze gebruikt `HomeyAPI.createLocalAPI({ address, token })` voor de lokale Homey-verbinding. De API-key blijft uitsluitend in het lokale `.env`-bestand op Ubuntu en wordt nooit naar de frontend gestuurd of in Git opgenomen.
+
+### Lokale configuratie
+
+Voeg aan `/opt/homey_dashboard/.env` toe:
+
+```dotenv
+HOMEY_ADDRESS=http://<IP-ADRES-VAN-HOMEY>
+HOMEY_API_KEY=<LOKALE-HOMEY-API-KEY>
+```
+
+Gebruik het daadwerkelijke IP-adres van Homey Pro 2023 dat vanaf de Docker-host/container bereikbaar is. De voorbeeldwaarden uit `.env.example` zijn placeholders en mogen niet letterlijk worden gebruikt.
+
+Maak in de Homey Web App via **Settings → API Keys → New API Key** een sleutel aan. Geef deze voor de eerste inventarisatie alleen leesrechten voor apparaten en zones (View devices / View zones). Geef geen apparaatbedienings- of Flow-startrechten in deze eerste read-only stap. Bewaar de sleutel direct; Homey toont hem na het aanmaken niet opnieuw. Een sleutel kan later worden ingetrokken.
+
+Na aanpassen van `.env` moet de container opnieuw worden aangemaakt:
+
+```bash
+cd /opt/homey_dashboard
+docker compose up -d --force-recreate
+```
+
+### Eerste endpoints
+
+- `GET /api/homey/status`: verbindingsstatus en aantallen, zonder geheimen.
+- `POST /api/homey/connect`: voert een nieuwe verbindingspoging uit.
+- `GET /api/homey/inventory`: leest apparaat- en ruimtelijsten read-only uit.
+
+De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, apparaatbediening en Flows starten zijn nog niet geactiveerd.
+
+### Beveiliging en netwerk
+
+- Zet de echte API-key uitsluitend in `.env`; deel hem niet in chat, screenshots, shell-output of GitHub.
+- Controleer dat `.env` door `.gitignore` wordt uitgesloten.
+- De Homey API-key wordt alleen door de backend gelezen.
+- Het exacte Homey-adres en de bereikbaarheid over de VLAN-grens moeten vanaf de Ubuntu-server worden getest. Er wordt geen poortnummer verondersteld.
+
