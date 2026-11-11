@@ -93,3 +93,8 @@ De gebruiker bevestigt de oorspronkelijke zichtbaarheid: toon de batterijkaart u
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 5 (tuinhuislamp)
 
 De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de lamp in het tuinhuis langer dan 5 minuten aan staat. Aanvullende eis: houd bij de uitwerking rekening met de toekomstige Blockly-editor. De configureerbare tijdsduur/duurvoorwaarde moet daarom onderdeel zijn van het gedeelde, versieerbare notificatiemodel dat zowel JSON-configuratie als Blockly gebruikt; Blockly krijgt geen aparte evaluator of afwijkende regelimplementatie.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 6 (CO₂ woonkamer)
+
+De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de CO₂-waarde in de woonkamer hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
