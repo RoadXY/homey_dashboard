@@ -479,3 +479,10 @@ De gekozen severity (critical/warning/info) blijft inhoudelijke metadata van de 
 - **Info** gebruikt de neutrale kleuren van het actieve thema; er wordt geen blauwe accentkleur toegepast.
 - De severity-klassen verwijzen uitsluitend naar semantische tokens. Thema's kunnen de tokens later overschrijven zonder de meldingscomponent of de betekenis van severity te wijzigen.
 - De bestaande meldingsniveaus en meldingslogica blijven ongewijzigd; dit is uitsluitend een visuele frontend-aanpassing.
+
+
+## Correctie meldingskaart – verwijdering linkerstreep (11 november 2026)
+
+- De eerste visuele controle liet zien dat de 4px linkerrand als een losse gele streep naast een waarschuwing werd ervaren.
+- De overgebleven linkerrand uit de oude meldingskaartstijl is daarom verwijderd. Meldingsniveaus worden voortaan door het volledige rustige kleurvlak, de subtiele kaartomranding, het pictogram en de tekstkleur onderscheiden.
+- Deze correctie geldt voor alle severity-niveaus en blijft via semantische thematokens aanpasbaar.
