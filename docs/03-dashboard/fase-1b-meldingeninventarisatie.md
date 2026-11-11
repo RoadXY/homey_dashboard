@@ -144,3 +144,8 @@ De gebruiker kiest voor niveau **waarschuwing** wanneer de batterij van de muurt
 ### Vraag 22 – meldingsniveau Truus wil opgehaald worden!
 
 De gebruiker kiest voor niveau **waarschuwing** voor **Truus wil opgehaald worden!**. Geen aanvullende opmerkingen. De bestaande voorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`.
+
+
+### Vraag 23 – meldingsniveau Zolder koud
+
+De gebruiker kiest voor niveau **info** voor de afzonderlijke melding **Zolder koud**. De oorspronkelijke bronvoorwaarde via `binary_sensor.temperatuur_zolder_laag` en de verwijzing naar `climate.airco_zolder_thermostaat` blijven behouden. De exacte Homey-mapping van de afgeleide HA-sensor is nog niet bevestigd. Geen aanvullende opmerkingen.
