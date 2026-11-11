@@ -131,6 +131,7 @@ export async function connectHomey(): Promise<HomeySnapshot> {
       deviceCount: Object.keys(devices).length,
       zoneCount: Object.keys(zones).length,
     };
+    await setupRealtimeSubscriptions();
   } catch (error) {
     api = null;
     snapshot = {
