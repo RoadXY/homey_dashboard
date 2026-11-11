@@ -18,3 +18,11 @@ De eerste twee zijn de gekozen read-only bronnen voor respectievelijk verwarming
 Voor de regenwaarschijnlijkheid is de Homey-weerdienst **Raamsdonksveer** bevestigd (apparaat-ID `b2fa37bb-45e2-4fda-87b7-24dcecf64420`, Open-Meteo-driver). Capability `measure_precipitation_probability` (number) levert de regenwaarschijnlijkheid; de bestaande grens blijft **groter dan 25%**. De screenshot toont 80 als momentopname.
 
 De weer-icoonmatrix komt te vervallen. Gewenste toekomstige oplossing: een API-endpoint in de dashboardcontainer ontvangt de actuele weerconditie vanuit de toekomstige Homey-app. Die app biedt een Flow-kaart **‘Zet huidige weerconditie naar’** met een dropdown van de door het dashboard ondersteunde condities. De gebruiker bepaalt in Homey welke actuele conditie uit de eigen weerprovider wordt doorgestuurd. Canonieke condities, endpointcontract, beveiliging en stale/missing-data gedrag zijn nog uit te werken; endpoint en kaart zijn nog niet gebouwd.
+
+
+
+### Canonieke weercondities – akkoord gebruiker (11 november 2026)
+
+De gebruiker keurt de set van 16 dashboardcondities goed: `sunny`, `mostly_sunny`, `partly_cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy_rain`, `showers`, `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet` en `windy`. De Homey Flow-kaart toont Nederlandse labels; de API gebruikt deze vaste Engelse codes. Dag/nacht wordt apart behandeld. Onbekende codes mogen de laatst bekende geldige conditie niet overschrijven.
+
+Als voorlopig API-ontwerp wordt `POST /api/v1/weather/condition` met body `{"type":"cloudy"}` voorgesteld. Bearer-tokenauthenticatie, allowlist-validatie, serverontvangsttijd en HTTP 200/400/401-responses zijn aanbevolen maar nog ter definitieve bevestiging en implementatie.
