@@ -390,3 +390,18 @@ Dit verduidelijkt en vervangt de eerdere suggestie in paragraaf 12.6 om bij twij
 **Fase 3:** uitgebreidere validatie en diagnose van databronnen, gegevensactualiteit en eventuele bestaande Homey-automatiseringen worden uitgesteld tot fase 3. Ook de combinatie van Homey-beschikbaarheidsstatus en detectie van verouderde/uitblijvende meetwaarden blijft fase 3.
 
 De keuze om `getAvailable()` als Homey-beschikbaarheidsstatus te gebruiken blijft staan, voor zover de gebruikte API/client deze status voor de betreffende apparaten beschikbaar maakt. De status wordt niet afgeleid uit een Homey Flow.
+
+
+### 12.8 Aanvulling gebruiker – Homey Logic-variabelen zijn toegestane databronnen (11 november 2026)
+
+De gebruiker verduidelijkt dat de dashboardapplicatie in fase 1 **wel Homey Logic-variabelen mag uitlezen en als invoer voor dashboardmeldingen mag gebruiken**.
+
+Afspraken:
+- Homey-apparaatgegevens en Homey Logic-variabelen zijn beide toegestane read-only databronnen.
+- De dashboardapplicatie leest de actuele waarde van een Logic-variabele uit en voert de bijbehorende meldingsvoorwaarde zelf uit.
+- Het is de verantwoordelijkheid van de gebruiker om ervoor te zorgen dat de waarde van een gebruikte Logic-variabele op het juiste moment en op de juiste manier wordt bijgewerkt.
+- Het dashboard neemt geen verantwoordelijkheid voor het vullen of wijzigen van Logic-variabelen en voert daarvoor geen Homey Flows uit.
+- Een Logic-variabele mag dus afkomstig zijn uit een door de gebruiker beheerde Homey Flow of een andere door de gebruiker ingerichte bron; de dashboardapplicatie blijft uitsluitend lezer.
+- Dit is geen afhankelijkheid van Homey Flow-logica in de dashboardapplicatie: de dashboardregel zelf wordt intern uitgevoerd.
+
+Deze afspraak nuanceert de eerdere formulering dat alle benodigde invoer rechtstreeks uit apparaat-capabilities moet komen. Een Logic-variabele is een volwaardige, expliciet toegestane invoerbron wanneer de gebruiker die daarvoor aanwijst.
