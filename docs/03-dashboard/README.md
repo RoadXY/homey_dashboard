@@ -232,3 +232,8 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 
 ## Importomvang conditionele Home Assistant-kaarten (11 november 2026)
 De gebruiker heeft bevestigd dat **alle conditionele kaarten** uit de bestaande Home Assistant-YAML worden meegenomen, inclusief conditionele statuskaarten (optie B/all). De inventarisatie beperkt zich dus niet tot waarschuwingen of meldingen die om aandacht vragen. De eerder expliciet uitgesloten telefoonbatterijkaarten, plantkaarten en mediaspelerkaarten blijven buiten scope; de muurtablet-batterijmelding blijft behouden. Voor elke overige kaart blijven de oorspronkelijke zichtbaarheidvoorwaarden en combinaties leidend. Niet één-op-één vertaalbare voorwaarden worden eerst als bespreekpunt voorgelegd.
+
+
+## Blockly-bouwstenen
+- [Databron selecteren en voorwaarde vergelijken](blockly-bouwsteen-databron-en-vergelijking.md) – eerste functionele ontwerpschets voor Homey-apparaatwaarden en Logic-variabelen als read-only bronnen, met interne vergelijking en vaste prioriteit per melding.
+- [Tijdschema's per dashboardmelding](blockly-bouwsteen-tijdschema.md) – afzonderlijke, configureerbare tijdschema-instanties.
