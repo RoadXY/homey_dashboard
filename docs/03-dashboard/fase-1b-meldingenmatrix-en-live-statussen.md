@@ -224,3 +224,20 @@ Er zijn geen aanvullende opmerkingen meegegeven.
 - **Droger:** de gekozen weergave is status, voortgang en resterende tijd. Valideer de ruwe machine-state-waarden en hoe de oorspronkelijke HA-template voor de eindtijd kan worden vertaald. De Homey-capabilities `localthings_machine_state`, `localthings_cycle_active`, `localthings_progress` en `localthings_remaining_minutes` zijn de kandidaten.
 - **Remeha:** valideer de ruwe waarden van `boiler_state`, `DHW_state` en `DHW_mode` om de twee gekozen booleaanse statussen correct af te leiden.
 - **Wasmachine:** `wasmachine_draait` is de gekozen bron. Documenteer dat dit een Flow-onderhouden Logic-variabele is; de dashboardapp leest deze alleen en neemt de Flow-logica niet over.
+
+### 11.2 Technische statuscontrole Remeha – 11 november 2026
+
+Read-only momentopname van Homey-apparaat **Remeha ketel** (ed9e603f-0930-4a37-8282-86298c6ecf56):
+
+| Capability | Waarde bij uitlezen |
+|---|---:|
+| boiler_state | false |
+| DHW_state | false |
+| DHW_mode | off |
+| boiler_status_code | 0 |
+| boiler_error_code | 255 |
+| modulation_level | 0 |
+| measure_temperature.boiler | 21.9 °C |
+| measure_temperature.return | 21.4 °C |
+
+De snapshot is consistent met geen actieve verwarmingsvraag en geen actieve warmwatervraag op dat meetmoment (boiler_state=false, DHW_state=false, DHW_mode=off). De ruwe statuscode 0 en foutcode 255 zijn nog niet semantisch gedecodeerd en worden niet als fout of normale status geïnterpreteerd zonder aanvullende broninformatie. Voor de dashboardindicatoren gebruiken we primair de booleans boiler_state en DHW_state; DHW_mode kan als aanvullende context dienen. Een momentopname bewijst nog niet alle mogelijke toestanden.
