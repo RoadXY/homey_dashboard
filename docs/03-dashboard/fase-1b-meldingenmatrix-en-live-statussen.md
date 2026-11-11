@@ -108,3 +108,8 @@ De gebruiker bevestigt de oorspronkelijke regel: toon een regenmelding wanneer d
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 8 (Blockly-bewerkbaarheid)
 
 De gebruiker besluit dat **alle meldingen later met de Blockly-editor bewerkbaar moeten zijn**. Alle grenswaarden én tijdsvoorwaarden moeten instelbaar zijn. Dit geldt niet alleen voor de tuinhuislamp, CO₂- en regenmelding, maar voor het volledige notificatieaanbod. Ontwerp daarom vanaf het begin één generiek, versieerbaar notificatiemodel waarin per melding de voorwaarden, operatoren, grenswaarden, duur- en tijdsvoorwaarden bewerkbaar zijn. JSON-configuratie en Blockly moeten hetzelfde model en dezelfde backend-evaluator gebruiken; geen hardgecodeerde uitzonderingsregels of afzonderlijke Blockly-evaluator. De huidige bevestigde drempels zijn startwaarden/defaults die de bestaande YAML-werking behouden, geen onveranderlijke waarden.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 9 (raamwaarschuwingen)
+
+De gebruiker kiest ervoor de vier raamwaarschuwingen als vier afzonderlijke meldingen te behouden. Elke melding moet volledig zelfstandig bewerkbaar zijn, inclusief eigen voorwaarden, grenswaarden en tijdschema via de toekomstige Blockly-editor. Geen aanvullende opmerkingen. De bestaande inhoudelijke voorwaarden en schema's van elk van de vier regels blijven afzonderlijk behouden; deze keuze voegt geen nieuwe voorwaarden toe.
