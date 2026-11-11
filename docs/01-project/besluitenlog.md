@@ -153,3 +153,8 @@ Besluit: **Lamp Sem staat aan** en **Lamp Bram staat aan** krijgen beide niveau 
 ## Inventarisatie HA-YAML – meldingsniveau batterij muurtablet
 
 Besluit: de melding bij een batterijniveau van de muurtablet lager dan 25% krijgt niveau **waarschuwing**. De oorspronkelijke grenswaarde (<25%) blijft ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau Truus wil opgehaald worden!
+
+Besluit: **Truus wil opgehaald worden!** krijgt niveau **waarschuwing**. De bestaande voorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`. Geen aanvullende opmerkingen.
