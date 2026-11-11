@@ -469,3 +469,13 @@ De gebruiker heeft de voorgestelde blauwe accentkleur voor **INFO** nog niet vas
 **Voorbereiding op toekomstige dashboardthema's is verplicht:** meldingskaarten en hun niveaustyling mogen niet afhankelijk worden van hardgecodeerde kleuren per component. De implementatie gebruikt semantische thematokens/CSS custom properties voor onder meer kaartachtergrond, tekst, pictogram, rand en severity-accenten. De huidige donkere interface levert de eerste set tokenwaarden. In een latere fase moeten thema's deze tokens kunnen overschrijven, zodat kritieke en waarschuwingsmeldingen in elk thema herkenbaar, consistent en voldoende contrastrijk blijven. INFO volgt voorlopig de neutrale tokens van het actieve thema.
 
 De gekozen severity (critical/warning/info) blijft inhoudelijke metadata van de melding; alleen de visuele presentatie wordt door het actieve thema bepaald. Zo blijft de meldingslogica onafhankelijk van de themakeuze.
+
+
+## Implementatie meldingsniveaus en thematokens (11 november 2026)
+
+- De frontend gebruikt nu centrale CSS custom properties voor de basisstijl van meldingskaarten en voor de kleuren van critical, warning en info.
+- **Critical** krijgt een rustige bordeauxrode achtergrond, lichtrode tekst en een lichtrood uitroepteken.
+- **Warning** krijgt een rustige donkerokergele achtergrond, lichtere gele tekst en een lichtgeel waarschuwingspictogram.
+- **Info** gebruikt de neutrale kleuren van het actieve thema; er wordt geen blauwe accentkleur toegepast.
+- De severity-klassen verwijzen uitsluitend naar semantische tokens. Thema's kunnen de tokens later overschrijven zonder de meldingscomponent of de betekenis van severity te wijzigen.
+- De bestaande meldingsniveaus en meldingslogica blijven ongewijzigd; dit is uitsluitend een visuele frontend-aanpassing.
