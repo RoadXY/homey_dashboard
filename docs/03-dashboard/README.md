@@ -274,7 +274,7 @@ De JSON-engine is uitgebreid met numerieke voorwaarden op read-only Homey-device
 - The user can override the automatic language by selecting a language manually in dashboard settings.
 - A manual selection takes precedence over the Homey language and remains selected across application/container restarts.
 - The user can return to **Automatic** at any time. The dashboard then follows the current Homey language again.
-- Dutch (`nl-NL`) is the default fallback when the Homey language cannot be read or is not supported by the available translation resources. Unsupported Homey locales must not cause a broken or partially translated interface.
+- English (`en`) is the fallback when the Homey language cannot be read or is not supported by the available translation resources. Unsupported Homey locales must not cause a broken or partially translated interface.
 - All interface text is stored in locale resources, not hardcoded in React components. Translation keys and JSON property names remain English.
 - Homey entity names, room names, Flow names, Logic variable names, and other user-created content are displayed unchanged; they are not translated by the dashboard.
 - Date, time, number, and unit formatting follows the effective locale where appropriate.
