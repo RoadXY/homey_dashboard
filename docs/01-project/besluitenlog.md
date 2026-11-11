@@ -143,3 +143,8 @@ Besluit: de vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram ni
 ## Inventarisatie HA-YAML – meldingsniveau Achterdeur open
 
 Besluit: **Achterdeur open** krijgt niveau **waarschuwing**. De oorspronkelijke gecombineerde voorwaarde (deur open én buitentemperatuur <18 °C of >24 °C) blijft ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau slaapkamerlampen
+
+Besluit: **Lamp Sem staat aan** en **Lamp Bram staat aan** krijgen beide niveau **info**. De bestaande voorwaarden (lamp aan én het bijbehorende slaaptijdschema actief) blijven ongewijzigd. Geen aanvullende opmerkingen.
