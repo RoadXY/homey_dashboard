@@ -31,6 +31,13 @@ function App() {
   const [lastUpdated, setLastUpdated] = React.useState<Date | null>(null);
   const [loadError, setLoadError] = React.useState("");
   const refresh = React.useCallback(async () => {
+    void fetch("/api/notifications")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Meldingen ophalen mislukt");
+        return await response.json() as NotificationsResponse;
+      })
+      .then((data) => setNotifications(data.notifications))
+      .catch(() => setNotifications([]));
     try {
       const [statusResponse, readingsResponse, logicResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
