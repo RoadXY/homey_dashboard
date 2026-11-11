@@ -52,9 +52,9 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Slaapkamer Tess koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Thermostaat Tess**, `203a126c-1923-4857-abcb-6a727a133099`, capability `measure_temperature`. |
 | Ouderslaapkamer koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur ouderslaapkamer, `measure_temperature`. |
 | Zolder koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Temperatuur Sem** (slaapkamer Sem), `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. |
-| Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | Homey-device-ID bekend als Koelkast keuken temperatuur; semantische relatie nog verifiëren. |
-| Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Droger-capabilities beschikbaar; statewaarde en templatevertaling nog valideren. Behoud de HA-voorwaarde, niet Flow-push. |
-| Wasmachine staat aan | `binary_sensor.wasmachine` is on | Kandidaat: `wasmachine_draait` en/of vermogen. Exacte HA-afgeleide status eerst semantisch mappen. |
+| Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | **Door gebruiker bevestigd:** Koelkast keuken temperatuur (`64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. |
+| Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Gebruiker kiest dashboardinformatie: status, voortgang en resterende tijd. Homey-bron: machine state, `localthings_cycle_active`, `localthings_progress`, `localthings_remaining_minutes`; exacte statuswaarden/templatevertaling nog technisch valideren. Geen energiekosten-tegel gevraagd. |
+| Wasmachine staat aan | `binary_sensor.wasmachine` is on | **Gebruikerskeuze:** Logic-variabele `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5d96b9`) als statusbron. Deze is Flow-afhankelijk; dashboard leest de variabele uitsluitend read-only. |
 | Galaxy A54 | Batterijpercentage <20 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
 | Telefoon batterij (SM-S721B) | Batterijpercentage <20 OF state-entiteit full | **Niet migreren** op verzoek gebruiker. |
 | Pixel 7 Pro | Batterijpercentage <15 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
@@ -67,8 +67,8 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Bovenramenschema migreren; bronwaarden verder mappen. |
 | Airco keuken | Modus niet off en niet unavailable | Airco keuken: `thermostat_mode`, `onoff`, `target_temperature`. |
 | Airco zolder | Modus niet off | Airco zolder: `thermostat_mode`, `onoff`, `target_temperature`. |
-| Verwarming aan | Remeha verwarmen-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
-| Warm water | Remeha huishoudelijk-warmwater-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
+| Verwarming aan | Remeha verwarmen-binarysensor is on | Gebruiker wil verwarming actief/niet actief tonen; bron `boiler_state` moet nog technisch naar betekenisvolle status worden vertaald. |
+| Warm water | Remeha huishoudelijk-warmwater-binarysensor is on | Gebruiker wil warm water actief/niet actief tonen; bron `DHW_state`/`DHW_mode` moet nog technisch naar betekenisvolle status worden vertaald. |
 | Bak voorraam voeding! | Conductivity <350; kaart toont aparte voedingssensor | **Niet migreren** op verzoek gebruiker. |
 | Bak voorraam water! | Vochtigheid <15 | **Niet migreren** op verzoek gebruiker. |
 | Paradijsvogelplant water! | Vochtigheid <15 | **Niet migreren** op verzoek gebruiker. |
@@ -93,11 +93,11 @@ Deze gegevens kunnen als compacte status of waarde worden getoond, ook wanneer e
 | Bram, Tess, ouders, zolder | Temperatuurcapabilities na mapping | Waarde tonen wanneer bijbehorende HA-kaart actief is. |
 | Weer | Weer-device: temperatuur, gevoelstemperatuur, actuele regen, conditie, wind | Weerkaart; neerslagkans blijft backlog. |
 | Deuren en ramen | Individuele `alarm_contact` | Actuele open/dichtstatus, gebruikt voor HA-condities. |
-| Wasmachine | Live vermogen en/of gemapte status | Alleen als de bronsemantiek overeenkomt met HA-binarysensor. |
-| Droger | Machine state, cycle active, progress, remaining minutes | Status en resterende tijd na validatie. |
+| Wasmachine | Logic-status | Gebruik `wasmachine_draait` als gekozen statusbron; alleen read-only uitlezen. |
+| Droger | Machine state, cycle active, progress, remaining minutes | Toon status, voortgang en resterende tijd; mapping van statuswaarden blijft technische validatie. |
 | Truus | `measure_work_status`, `measure_docked`, `measure_battery` | Werkstatus, dockstatus en accupercentage afzonderlijk. |
 | Airco's | `thermostat_mode`, `onoff`, `target_temperature` | Actuele modus en doeltemperatuur. |
-| Remeha | `boiler_state`, `DHW_state`, `DHW_mode` | Pas tonen nadat de statuscodes zijn vertaald. |
+| Remeha | `boiler_state`, `DHW_state`, `DHW_mode` | Toon verwarming en warm water actief/niet actief nadat de statuscodes zijn vertaald. |
 
 ## 5. Wat we nadrukkelijk niet overnemen uit Homey-Flows
 
@@ -127,17 +127,15 @@ De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard g
 
 ## 7. Openstaande bronmappings
 
-2. Neerslagkans >25: wachten op keuze/beschikbaarheid van een app/databron.
-3. Keuken-vriezer: semantische relatie tussen HA-entity en Homey-device Koelkast keuken temperatuur bevestigen.
-4. Droger: exacte Homey-statuswaarden en de HA-completion-time-template valideren.
-5. Remeha-statuscodevertaling.
-6. Wasmachine: exacte semantische bron van de HA-binarysensor bevestigen.
+1. Neerslagkans >25: blijft op de backlog totdat een geschikte app/databron beschikbaar is.
+2. Droger: de betekenis van de machine-state-waarden en de vertaling van de HA-completion-time-template technisch valideren.
+3. Remeha: `boiler_state`, `DHW_state` en `DHW_mode` vertalen naar verwarming actief/niet actief en warm water actief/niet actief.
 
 De volgende onderdelen zijn door de gebruiker expliciet uitgesloten en gelden dus niet meer als open migratiemapping: plantensensoren, vijf telefoonbatterijen, zon op raam Tess, schema slapen Sem en schema slapen Bram.
 
 ## 8. Volgende stap
 
-Werk de open bronmappings af. Onderzoek daarnaast of het bovenramenschema als herbruikbare Blockly-bouwsteen kan worden gereproduceerd. Neerslagkans blijft op de backlog totdat een passende databron is gekozen. Daarna kan het regelmodel de gemigreerde HA-condition trees representeren en configureerbaar maken.
+Valideer de resterende droger- en Remeha-statusmapping. De keuken-vriezerbron en wasmachine-statusbron zijn door de gebruiker gekozen/bevestigd. De vier afzonderlijke bovenramenschema's zijn vastgelegd. Neerslagkans blijft op de backlog totdat een passende databron is gekozen. Daarna kan het regelmodel de gemigreerde HA-condition trees representeren en configureerbaar maken.
 
 ## 9. Gebruikersbesluiten – migratievragenlijst
 
@@ -177,7 +175,7 @@ De actuele Homey-apparaatcontrole heeft de volgende kandidaten opgeleverd:
 
 De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 16 °C** is. De temperatuurbronnen voor Tess en slaapkamer Sem zijn door de gebruiker bevestigd.
 
-Het functionele ontwerp van de herbruikbare Blockly-bouwsteen staat apart in `blockly-bouwsteen-tijdschema.md`. De bouwsteen `Tijdschema actief?` ondersteunt weekdagen, lokale start-/eindtijd, vensters over middernacht, tijdzonebewust gedrag en hergebruik door meerdere dashboardregels. De exacte weekdagen en tijden van `schedule.boven_ramen_open` moeten nog uit de oorspronkelijke HA-definitie worden bevestigd; er zijn geen tijden verzonnen.
+Het functionele ontwerp van de Blockly-tijdschema's staat apart in `blockly-bouwsteen-tijdschema.md`. De vier onafhankelijke schema-instanties voor de raam-meldingen zijn bevestigd: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00.
 
 
 ### 10.1 Gebruikersbevestiging Tess
@@ -189,7 +187,7 @@ Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkame
 
 
 ### 10.3 Opschoning openstaande mappinglijst
-De temperatuurbronnen voor Tess en slaapkamer Sem zijn nu bevestigd. De oude voorlopige vermeldingen in de oorspronkelijke meldingenmatrix zijn bijgewerkt. Ze staan niet langer op de openstaande mappinglijst. De resterende mappingvragen zijn schema, neerslagkans, keuken-vriezer, droger, Remeha en wasmachine.
+De temperatuurbronnen voor Tess en slaapkamer Sem zijn nu bevestigd. De oude voorlopige vermeldingen in de oorspronkelijke meldingenmatrix zijn bijgewerkt. Ze staan niet langer op de openstaande mappinglijst. De resterende mappingvragen zijn neerslagkans, droger en Remeha. Keuken-vriezer en wasmachinebron zijn inmiddels door de gebruiker gekozen/bevestigd.
 
 
 ### 10.4 Gebruikersbesluit – schema's per melding
@@ -205,3 +203,24 @@ Alle vier krijgen bij de migratie dezelfde beginconfiguratie uit Home Assistant:
 - Zondag: 08:00–20:00
 
 De vier instanties blijven daarna onafhankelijk wijzigbaar. Dit maakt het later eenvoudiger om per melding een eigen schema naar Blockly te importeren en aan te passen. De implementatie mag één gedeelde technische evaluator gebruiken; dat betekent nadrukkelijk niet dat de vier meldingen één gedeelde schema-configuratie gebruiken.
+
+
+## 11. Gebruikersbesluiten – inventarisatieronde 3 (11 november 2026)
+
+De gebruiker heeft de volgende keuzes bevestigd. Deze besluiten zijn leidend voor de verdere mapping en implementatie.
+
+| Onderdeel | Gebruikersantwoord | Vastgelegde uitwerking |
+|---|---|---|
+| Keuken-vriezer | Bevestigen | Koelkast keuken temperatuur (`64fc846e-01b0-438a-9114-4498ea8005e7`, `measure_temperature`) is de juiste Homey-bron voor “Vriezer keuken warm!”. De semantische koppeling is door de gebruiker bevestigd. |
+| Wasdroger | Status, resterende tijd, voortgang | Dashboard toont de actuele status, resterende tijd en voortgang. Geen energie-/kostentegel gevraagd. |
+| Remeha | Verwarming, warm water | Dashboard toont verwarming actief/niet actief en warm water actief/niet actief. De technische statuscodevertaling moet nog worden gevalideerd. |
+| Wasmachine | Logic | Gebruik Logic-variabele `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5d96b9`) als gekozen statusbron. Alleen read-only uitlezen; geen Flow of variabele aanpassen. |
+| Neerslagkans | Backlog | Blijft op de backlog totdat een geschikte bron/app beschikbaar is. |
+
+Er zijn geen aanvullende opmerkingen meegegeven.
+
+### 11.1 Resterende technische verificatie
+
+- **Droger:** de gekozen weergave is status, voortgang en resterende tijd. Valideer de ruwe machine-state-waarden en hoe de oorspronkelijke HA-template voor de eindtijd kan worden vertaald. De Homey-capabilities `localthings_machine_state`, `localthings_cycle_active`, `localthings_progress` en `localthings_remaining_minutes` zijn de kandidaten.
+- **Remeha:** valideer de ruwe waarden van `boiler_state`, `DHW_state` en `DHW_mode` om de twee gekozen booleaanse statussen correct af te leiden.
+- **Wasmachine:** `wasmachine_draait` is de gekozen bron. Documenteer dat dit een Flow-onderhouden Logic-variabele is; de dashboardapp leest deze alleen en neemt de Flow-logica niet over.
