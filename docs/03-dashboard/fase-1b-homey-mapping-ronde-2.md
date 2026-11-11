@@ -165,3 +165,7 @@ Voor **Zolder koud** bevestigt de gebruiker Homey-apparaat **Temperatuur Sem** (
 ## 15. Gebruikersbesluit – herbruikbaar schema bovenramen (12 november 2026)
 
 Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in Homey reproduceerbaar gemaakt als een **herbruikbare Blockly-bouwsteen**. De bouwsteen krijgt instelbare dagen en tijden, zodat de raamcondities het schema kunnen hergebruiken. De inhoudelijke werking blijft gebaseerd op het oorspronkelijke YAML-schema; Homey Flows worden niet als bron voor de dashboardlogica gebruikt.
+
+### Wasmachine-wateralarm – gebruikersbevestiging (12 november 2026)
+
+Voor de afzonderlijke melding **Wateralarm wasmachines!** bevestigt de gebruiker de afzonderlijke Homey-**Water sensor wasmachine** met capability `alarm_water` als bron. Gebruik dus niet de wasmachine zelf als wateralarmbron. De exacte apparaat-ID en actuele waarde zijn in deze bevestiging niet vastgelegd; die blijven te verifiëren in de Homey-inventarisatie. De bestaande YAML-voorwaarde en het meldingsniveau **kritiek** blijven ongewijzigd.
