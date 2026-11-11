@@ -104,3 +104,8 @@ De gebruiker kiest voor niveau **kritiek** voor de melding **Vriezer keuken warm
 ### Vraag 14 – meldingsniveau CO₂ woonkamer
 
 De gebruiker kiest voor niveau **waarschuwing** voor **CO₂ woonkamer hoog!**. Geen aanvullende opmerkingen; de bestaande grens (>1200 ppm), Homey-bron en voorwaarde blijven ongewijzigd.
+
+
+### Vraag 15 – meldingsniveau regenmelding
+
+De gebruiker kiest voor niveau **info** voor de melding **Kans op neerslag** (neerslagkans >25%). Geen aanvullende opmerkingen; de bestaande bron en voorwaarde blijven ongewijzigd.
