@@ -178,10 +178,14 @@ De actuele Homey-apparaatcontrole heeft de volgende kandidaten opgeleverd:
 - **Tess:** de gebruiker heeft **Thermostaat Tess** (`203a126c-1923-4857-abcb-6a727a133099`) bevestigd als bron; gebruik `measure_temperature`. Radiator Tess is niet geselecteerd.
 - **Zolder:** Airco zolder (`746e2538-bf25-45b0-8e98-3e0100bff811`), Rookmelder zolder (`480cee53-22da-47e0-a9bd-6a64c9b11c40`) en CO Sensor (`6f1b28a0-0641-42d7-8f30-e6d8293c0b34`) leveren alle drie `measure_temperature`. Juiste kamersensor nog te bevestigen.
 
-De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 16 °C** is. De temperatuurbron voor Tess is bevestigd; alleen de zolderbron is nog niet definitief gekozen.
+De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 16 °C** is. De temperatuurbronnen voor Tess en slaapkamer Sem zijn door de gebruiker bevestigd.
 
 Het functionele ontwerp van de herbruikbare Blockly-bouwsteen staat apart in `blockly-bouwsteen-tijdschema.md`. De bouwsteen `Tijdschema actief?` ondersteunt weekdagen, lokale start-/eindtijd, vensters over middernacht, tijdzonebewust gedrag en hergebruik door meerdere dashboardregels. De exacte weekdagen en tijden van `schedule.boven_ramen_open` moeten nog uit de oorspronkelijke HA-definitie worden bevestigd; er zijn geen tijden verzonnen.
 
 
 ### 10.1 Gebruikersbevestiging Tess
 Thermostaat Tess (`203a126c-1923-4857-abcb-6a727a133099`) is de gekozen bron voor “Slaapkamer Tess koud”. De dashboardregel blijft **temperatuur <16 °C**.
+
+
+### 10.2 Gebruikersbevestiging zolder / slaapkamer Sem
+Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkamer Sem: **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`). De regel blijft **temperatuur <16 °C**.
