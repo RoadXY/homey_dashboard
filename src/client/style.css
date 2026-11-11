@@ -37,7 +37,31 @@ body {
 .weather-main { display: flex; justify-content: space-between; align-items: center; }
 .weather-temp { font-size: clamp(42px, 4.2vw, 70px); line-height: 1.05; letter-spacing: -.06em; font-weight: 520; margin-top: 8px; }
 .weather-description { color: #aab1bc; font-size: clamp(15px, 1.05vw, 19px); text-transform: capitalize; margin-top: 4px; }
-.weather-symbol { font-size: clamp(48px, 5vw, 78px); color: #c0c8d4; opacity: .8; padding-right: 8px; }
+.weather-symbol {
+  position: relative; width: clamp(76px, 7vw, 104px); height: clamp(68px, 6vw, 88px);
+  flex: 0 0 auto; color: #b9c1cc; opacity: .82; margin-right: 2px;
+}
+.weather-symbol svg { position: absolute; overflow: visible; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.weather-cloud { width: 100%; height: 76%; left: 0; top: 14%; }
+.weather-sun { width: 54%; height: 62%; left: 5%; top: 0; stroke-width: 2.6; animation: sun-breathe 7s ease-in-out infinite; }
+.weather-sun circle { fill: currentColor; fill-opacity: .08; }
+.weather-precipitation { width: 100%; height: 72%; left: 0; top: 24%; stroke-width: 2.8; }
+.weather-rain .weather-precipitation { animation: rain-drift 2.8s ease-in-out infinite; }
+.weather-snow .weather-precipitation { animation: snow-drift 5s ease-in-out infinite; }
+.weather-thunder .weather-precipitation { width: 78%; left: 12%; top: 40%; }
+.weather-fog .weather-cloud { top: 0; height: 66%; }
+.weather-fog .weather-precipitation { top: 43%; animation: fog-drift 6s ease-in-out infinite; }
+.weather-wind .weather-cloud { top: 12%; height: 78%; animation: cloud-drift 6s ease-in-out infinite; }
+.weather-partly .weather-cloud { width: 82%; left: 18%; top: 27%; }
+.weather-cloud:not(.weather-wind .weather-cloud) { animation: cloud-drift 8s ease-in-out infinite; }
+@keyframes cloud-drift { 0%,100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes rain-drift { 0%,100% { transform: translateY(-1px); opacity: .7; } 50% { transform: translateY(3px); opacity: 1; } }
+@keyframes snow-drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(2px,3px); } }
+@keyframes fog-drift { 0%,100% { transform: translateX(-2px); opacity: .65; } 50% { transform: translateX(2px); opacity: .95; } }
+@keyframes sun-breathe { 0%,100% { opacity: .78; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .weather-symbol svg { animation: none !important; }
+}
 .weather-details { display: flex; gap: clamp(24px, 3vw, 48px); border-top: 1px solid rgba(255,255,255,.07); padding-top: 12px; margin-top: 12px; }
 .weather-details div { display: flex; flex-direction: column; gap: 5px; }
 .weather-details span { color: #8992a0; font-size: clamp(12px, .8vw, 15px); }
@@ -79,7 +103,6 @@ body {
 .empty-state span:last-child { max-width: 390px; font-size: clamp(14px,1vw,17px); line-height: 1.5; }
 .panel-footer { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.07); padding: 12px 2px 0; color: #87909e; font-size: 12px; }
 .panel-meta { text-align: right; }
-.meta-separator { opacity: .55; }
 @media (max-width: 900px) {
   .dashboard { height: auto; min-height: 100vh; overflow: visible; grid-template-columns: minmax(0,1fr); }
   .left-column { display: grid; grid-template-columns: 1.15fr .85fr; }
