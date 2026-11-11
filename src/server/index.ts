@@ -34,7 +34,7 @@ app.get("/api/health", async () => ({
 }));
 
 app.get("/api/homey/status", async () => getHomeyStatus());
-app.get("/api/events", async (request, reply) => {
+app.get("/api/events", async (_request, reply) => {
   reply.hijack();
   reply.raw.writeHead(200, {
     "Content-Type": "text/event-stream; charset=utf-8",
