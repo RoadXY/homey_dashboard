@@ -108,6 +108,47 @@ De videostream en de deuropenactie moeten twee afzonderlijke functies blijven.
 - Fase 4: beveiligde event-ingang vanuit Homey en dashboardmeldingen/geluid/presentatie-events.
 - Fase 5: live camerastreams, deurbel-popup, tijdelijke mediasessies en optionele expliciete deurbediening.
 
+
+## UniFi Protect als eerste camera-adapter (onderzoek 11 november 2026)
+
+De gebruiker heeft aangegeven dat de huidige camera-/deurbelomgeving UniFi is. De architectuur blijft fabrikant-onafhankelijk: **UniFi Protect wordt de eerste concrete adapter**, niet de basis van de generieke dashboard-popup.
+
+### Wat de documentatie bevestigt
+
+- Ubiquiti publiceert een officiële UniFi Protect API-documentatieportal.
+- De portal documenteert WebSocket-updates, waaronder het ophalen van Protect-eventberichten.
+- De camera-API documenteert het aanmaken en beheren van RTSPS-streams voor camera's.
+- De API-documentatie beschrijft authenticatie met API-keys.
+- De Home Assistant UniFi Protect-integratiedocumentatie bevestigt als aanvullende praktijkreferentie dat live camerafeeds via RTSPS worden aangeboden en dat deurbelringen als event met `event_type: ring` worden herkend.
+- Diezelfde Home Assistant-documentatie maakt onderscheid tussen de publieke API-key-integratie en aanvullende lokale gebruikersauthenticatie. In de beschreven integratie vereisen bepaalde events, waaronder deurbelringen, een lokale gebruiker. Dit is een aandachtspunt om niet te verwarren met de officiële publieke API-capabilities: de exacte ondersteunde eventroute en permissies moeten rechtstreeks tegen de actuele UniFi Protect API worden gevalideerd.
+- Home Assistant is uitsluitend een aanvullende referentie voor het gedrag van Protect; de dashboardcontainer krijgt geen runtime-afhankelijkheid van Home Assistant.
+
+Bronnen:
+- Ubiquiti officiële UniFi Protect API: https://developer.ui.com/protect
+- Ubiquiti officiële poortenreferentie (pas netwerkvereisten bepalen nadat de streamroute gekozen is): https://help.ui.com/hc/en-us/articles/218506997-Required-Ports-Reference
+- Home Assistant UniFi Protect-integratie (aanvullende implementatiereferentie, geen runtime-afhankelijkheid): https://www.home-assistant.io/integrations/unifiprotect
+
+### Voorlopige voorkeursroute
+
+1. De UniFi Protect-adapter ontvangt deurbel-events via de officieel ondersteunde Protect-event/WebSocket-interface, indien de benodigde ring-eventgegevens en autorisatie beschikbaar zijn.
+2. De adapter koppelt het event aan een stabiele camera/device-ID en publiceert een generiek dashboard-event, bijvoorbeeld `doorbell.ring`.
+3. De adapter vraagt via de officiële camera-API een RTSPS-stream aan of gebruikt een reeds actieve stream, afhankelijk van wat de API en camera ondersteunen.
+4. Omdat een browser niet standaard RTSPS afspeelt, onderzoeken we een media-gateway die de stream omzet naar een browsergeschikt transport, bij voorkeur WebRTC. De gateway is alleen nodig als de tablet/browser de UniFi-stream niet rechtstreeks ondersteund kan afspelen.
+5. De tablet krijgt via de bestaande SSE-laag alleen het signaal om de generieke popup te openen; de videomedia loopt apart van SSE.
+
+### Nog te valideren vóór implementatie
+
+- Welk UniFi Protect-consolemodel en welke Protect-softwareversie worden gebruikt.
+- Exact deurbelmodel en of dit device in Protect livebeeld en ring-events aanbiedt.
+- Of de officiële Protect API met een afzonderlijke, minimaal geprivilegieerde API-key zowel het benodigde ring-event als de stream lifecycle kan leveren.
+- Of een ring-event via de gedocumenteerde WebSocket-interface binnenkomt zonder afhankelijk te zijn van Home Assistant of een ongedocumenteerde private API.
+- Of RTSPS rechtstreeks door de gekozen browser-/tabletcombinatie kan worden gebruikt; anders welke media-gateway nodig is.
+- Welke netwerkstromen tussen Protect-console, Docker-host en tablet noodzakelijk zijn. De gebruiker beheert VLAN- en firewallconfiguratie; concrete poorten/protocollen worden pas na de technische proef vastgelegd.
+
+### Generiek ontwerp blijft leidend
+
+De generieke dashboardlaag kent geen UniFi-specifieke eventvelden, API-authenticatie of stream-URL's. De UniFi-adapter vertaalt Protect-events naar het gedeelde eventcontract en levert tijdelijke streaminformatie via een interne backendinterface. Een toekomstige andere fabrikant krijgt een eigen adapter die hetzelfde contract implementeert. Camera-geheimen blijven server-side; tijdelijke streamtoegang wordt niet permanent in events of configuratiebestanden opgeslagen.
+
 ## Voorlopige conclusie
 
 De gewenste ervaring is technisch aannemelijk. Homey Pro (2023) heeft platformondersteuning voor camerastreams en WebRTC-proxying vanaf firmware v12.12.0. De cruciale onzekerheid is of de bestaande Homey-camera-stream op een officieel ondersteunde manier door een externe dashboardbackend kan worden geconsumeerd. Dit blijft een expliciet fase-5-onderzoekspunt. Route A heeft de voorkeur als Homey hiervoor een gedocumenteerde consumer-API biedt; anders moet Route B worden geëvalueerd. Er is in deze fase geen code of Homey-configuratie gewijzigd.
