@@ -169,3 +169,7 @@ Homey-apparaat **Weer**, capability `measure_temperature`, is bevestigd als buit
 ### Zolder koud – Homey-bron en grens bevestigd (12 november 2026)
 
 Homey-apparaat **Temperatuur Sem**, capability `measure_temperature`, is bevestigd als bron voor de zichtbaarheidstrigger. De melding wordt actief bij **<12 °C**. De kaart toont daarnaast de ingestelde temperatuur van de zolder-airco zoals in de oorspronkelijke YAML. Meldingsniveau: **info**.
+
+### Schema bovenramen – migratiebesluit (12 november 2026)
+
+Het in de oorspronkelijke YAML gebruikte `schedule.boven_ramen_open` wordt als herbruikbare Blockly-bouwsteen gereproduceerd, met instelbare dagen en tijden. De bestaande raamcondities blijven leidend.
