@@ -153,3 +153,7 @@ De gebruiker kiest voor niveau **info** voor de afzonderlijke melding **Zolder k
 ### Vriezer keuken warm! – expliciete migratiegrens (12 november 2026)
 
 Voor deze kritieke melding is de migratiegrens vastgesteld op **temperatuur >10 °C**. De oorspronkelijke YAML-kaart gebruikte `binary_sensor.vriezer_keuken_temperatuur_hoog` als zichtbaarheidstrigger, maar gaf geen numerieke grens. De 10 °C is een nieuw, expliciet gebruikersbesluit en mag niet worden gepresenteerd als een uit de YAML overgenomen waarde. De Homey-temperatuurbron is **Koelkast keuken temperatuur**, capability `measure_temperature`; `Vriezer_tempAlarm` wordt niet gebruikt.
+
+### CO₂ woonkamer hoog! – Homey-bron bevestigd (12 november 2026)
+
+Homey-apparaat **Multisensor woonkamer**, capability `measure_co2`, is bevestigd als bron. De oorspronkelijke YAML-grens **>1200 ppm** blijft behouden. De melding heeft niveau **waarschuwing**.
