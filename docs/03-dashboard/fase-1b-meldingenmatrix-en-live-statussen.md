@@ -98,3 +98,8 @@ De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de lam
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 6 (CO₂ woonkamer)
 
 De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de CO₂-waarde in de woonkamer hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 7 (regenmelding)
+
+De gebruiker bevestigt de oorspronkelijke regel: toon een regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
