@@ -145,3 +145,7 @@ De gebruiker heeft bevestigd dat de temperatuursensor op slaapkamer Sem bedoeld 
 ## 10. Gebruikersbesluit – keuken-vriezergrens (12 november 2026)
 
 Voor de melding **Vriezer keuken warm!** wordt een expliciete grenswaarde van **hoger dan 10 °C** gebruikt. De Homey-bron is het apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. Bij een waarde >10 °C is de melding actief; bij ≤10 °C is deze inactief. De melding behoudt niveau **kritiek**. De oorspronkelijke HA-dashboard-YAML verwees naar `binary_sensor.vriezer_keuken_temperatuur_hoog`, maar bevatte zelf geen numerieke grens. De grens van 10 °C is daarom een expliciet nieuw gebruikersbesluit voor de migratie, niet een uit de YAML afgeleide waarde. De Logic-variabele `Vriezer_tempAlarm` wordt hiervoor niet gebruikt.
+
+## 11. Gebruikersbevestiging – CO₂-woonkamerbron (12 november 2026)
+
+Voor **CO₂ woonkamer hoog!** is Homey-apparaat **Multisensor woonkamer** met capability `measure_co2` bevestigd als bron. De oorspronkelijke grens blijft exact **>1200 ppm**. De melding is actief boven 1200 ppm en inactief bij 1200 ppm of lager. Meldingsniveau: **waarschuwing**.
