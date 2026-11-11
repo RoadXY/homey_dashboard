@@ -347,3 +347,35 @@ export async function getHomeyLogicVariables(variableNames: string[]) {
       })),
   };
 }
+
+
+export async function getHomeyDeviceCapabilityValues(
+  sources: Array<{ deviceId: string; capabilityId: string }>
+) {
+  if (!api || snapshot.state !== "online") {
+    await connectHomey();
+  }
+
+  if (!api || snapshot.state !== "online") {
+    throw new Error("Homey is niet verbonden.");
+  }
+
+  const devices = await api.devices.getDevices();
+  return {
+    retrievedAt: new Date().toISOString(),
+    readings: await Promise.all(sources.map(async ({ deviceId, capabilityId }) => {
+      const device = (devices as Record<string, any>)[deviceId];
+      if (!device) return { deviceId, capabilityId, available: false, error: "device_missing" };
+      if (device.available === false) return { deviceId, capabilityId, available: false, error: "device_unavailable" };
+      if (!Array.isArray(device.capabilities) || !device.capabilities.includes(capabilityId)) {
+        return { deviceId, capabilityId, available: device.available !== false, error: "capability_missing" };
+      }
+      try {
+        const value = await api!.devices.getCapabilityValue({ deviceId, capabilityId });
+        return { deviceId, capabilityId, available: device.available !== false, value };
+      } catch {
+        return { deviceId, capabilityId, available: device.available !== false, error: "value_unavailable" };
+      }
+    })),
+  };
+}
