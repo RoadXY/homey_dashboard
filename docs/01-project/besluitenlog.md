@@ -187,3 +187,7 @@ Voor **Zolder koud** gebruikt het dashboard Homey-apparaat **Temperatuur Sem** (
 ## Herbruikbare Blockly-bouwsteen voor bovenramenschema (12 november 2026)
 
 Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in Homey gereproduceerd als herbruikbare Blockly-bouwsteen met instelbare dagen en tijden. Dashboardcondities blijven strikt gebaseerd op de oorspronkelijke YAML; Homey Flows zijn geen bron voor deze logica.
+
+## Wateralarm wasmachine – bronkeuze (12 november 2026)
+
+Voor **Wateralarm wasmachines!** is de afzonderlijke Homey-**Water sensor wasmachine** met capability `alarm_water` bevestigd als bron. De wasmachine zelf wordt niet als wateralarmbron gebruikt. De oorspronkelijke YAML-voorwaarde blijft leidend en het meldingsniveau blijft **kritiek**. Exact apparaat-ID en actuele waarde moeten nog in de Homey-inventarisatie worden geverifieerd.
