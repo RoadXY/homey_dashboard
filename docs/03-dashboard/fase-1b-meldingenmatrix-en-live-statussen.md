@@ -66,3 +66,10 @@ De gebruiker wil in de dashboardinstellingen een beheerplek waar Bearer-tokens m
 Ontwerpuitwerking voor tokenbeheer: toon een lijst met tokennaam en metadata (bijvoorbeeld aanmaakdatum/laatst gebruikt), genereer een cryptografisch willekeurig token, toon de volledige geheime waarde alleen direct na aanmaak en sla uitsluitend een veilige hash op. Bied intrekken/verwijderen en opnieuw genereren aan. Geheimen mogen niet in logs of API-responses terugkomen. Voor de eerste implementatie kan het token toegang geven tot de weerconditie-POST; houd autorisatie uitbreidbaar met scopes/rechten zodat tokens later niet automatisch volledige API-toegang krijgen. De precieze UI, tokenopslag en scope-indeling moeten nog technisch worden uitgewerkt.
 
 Voorbeeld tijdelijke Homey-header: `Authorization: Bearer <token>`; content-type: `application/json`. Voorbeeld body: `{"type":"cloudy"}`. De gebruiker stelt de JSON handmatig in de Logic-kaart samen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 1
+
+De gebruiker bevestigt dat de volgende onderdelen uit `ha tablet layout.yml` behouden blijven in de dashboardinventarisatie: droger (status/voortgang/resterende tijd), Truus (werkstatus en ophalen), Remeha (verwarming en warm tapwater), airco keuken en zolder (bedrijfsstatus en ingestelde temperatuur), kans op neerslag (>25%), muurtablet-batterij (<25%), tuinhuislamp (langer dan 5 minuten aan) en CO₂ woonkamer (>1200 ppm). Er zijn bij deze vraag geen onderdelen uitgesloten.
+
+Aanvullende expliciete voorwaarde: de drogerkaart wordt alleen getoond wanneer de droger actief is/draait. De YAML gebruikt hiervoor `sensor.droger_dryer_machine_state == run` als visibility-voorwaarde en toont de geplande eindtijd via `sensor.droger_dryer_completion_time`. Deze oorspronkelijke logica blijft uitgangspunt voor verdere mapping.
