@@ -103,3 +103,8 @@ De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de CO�
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 7 (regenmelding)
 
 De gebruiker bevestigt de oorspronkelijke regel: toon een regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 8 (Blockly-bewerkbaarheid)
+
+De gebruiker besluit dat **alle meldingen later met de Blockly-editor bewerkbaar moeten zijn**. Alle grenswaarden én tijdsvoorwaarden moeten instelbaar zijn. Dit geldt niet alleen voor de tuinhuislamp, CO₂- en regenmelding, maar voor het volledige notificatieaanbod. Ontwerp daarom vanaf het begin één generiek, versieerbaar notificatiemodel waarin per melding de voorwaarden, operatoren, grenswaarden, duur- en tijdsvoorwaarden bewerkbaar zijn. JSON-configuratie en Blockly moeten hetzelfde model en dezelfde backend-evaluator gebruiken; geen hardgecodeerde uitzonderingsregels of afzonderlijke Blockly-evaluator. De huidige bevestigde drempels zijn startwaarden/defaults die de bestaande YAML-werking behouden, geen onveranderlijke waarden.
