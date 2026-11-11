@@ -183,3 +183,7 @@ Voor **Achterdeur open** wordt Homey-apparaat **Weer** met capability `measure_t
 ## Gebruikersbevestiging – Zolder koud (12 november 2026)
 
 Voor **Zolder koud** gebruikt het dashboard Homey-apparaat **Temperatuur Sem** (ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`. De melding is actief bij een temperatuur **lager dan 12 °C**. De oorspronkelijke kaartverwijzing naar de ingestelde temperatuur van `climate.airco_zolder_thermostaat` blijft behouden voor de weergave. Het eerder vastgestelde meldingsniveau blijft **info**.
+
+## Herbruikbare Blockly-bouwsteen voor bovenramenschema (12 november 2026)
+
+Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in Homey gereproduceerd als herbruikbare Blockly-bouwsteen met instelbare dagen en tijden. Dashboardcondities blijven strikt gebaseerd op de oorspronkelijke YAML; Homey Flows zijn geen bron voor deze logica.
