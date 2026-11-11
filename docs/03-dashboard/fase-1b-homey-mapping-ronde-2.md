@@ -157,3 +157,7 @@ Voor **Kans op neerslag** bevestigt de gebruiker Homey-apparaat **Raamsdonksveer
 ## 13. Gebruikersbevestiging – buitentemperatuur Achterdeur open (12 november 2026)
 
 Voor de melding **Achterdeur open** bevestigt de gebruiker Homey-apparaat **Weer**, capability `measure_temperature`, als bron voor de buitentemperatuur. Behoud de oorspronkelijke YAML-conditie: achterdeurcontact open én (buitentemperatuur **<18 °C of >24 °C**). De temperatuurvergelijking is een OR-groep; deze wordt gecombineerd met het open deurcontact via AND. Het eerder vastgestelde meldingsniveau blijft **waarschuwing**.
+
+## 14. Gebruikersbevestiging – Zolder koud (12 november 2026)
+
+Voor **Zolder koud** bevestigt de gebruiker Homey-apparaat **Temperatuur Sem** (ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`, als bron. De melding wordt actief bij een temperatuur **<12 °C** en inactief bij ≥12 °C. De kaart behoudt de oorspronkelijke verwijzing naar de ingestelde temperatuur van `climate.airco_zolder_thermostaat` voor de weergave. Meldingsniveau blijft **info**.
