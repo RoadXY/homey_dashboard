@@ -89,8 +89,8 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
     const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
     let value: unknown;
     let sourceType: "boolean" | "number";
-    // Bewaar de discriminated union in een lokale constante zodat TypeScript
-    // de bronvariant ook binnen callbacks (find) correct kan blijven narrowen.
+    // Keep the discriminated union in a local constant so TypeScript
+    // preserves the source variant inside find() callbacks.
     const source = config.source;
     if (source.type === "logic-variable") {
       sourceType = source.expectedType;
