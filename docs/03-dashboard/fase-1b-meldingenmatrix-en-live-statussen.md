@@ -543,3 +543,8 @@ De gekozen Homey-bron blijft **Koelkast keuken temperatuur**, capability `measur
 ### 12.4 Gebruikersbevestiging – type wasmachine-Logic-variabele (11 november 2026)
 
 De gebruiker bevestigt dat de Logic-variabele **`wasmachine_draait`** (`c21929a1-2693-416b-9240-74b4ca5d96b9`) het type **Ja/Nee (boolean)** heeft. Deze variabele is de gekozen statusbron voor **Wasmachine staat aan**. Het dashboard leest de variabele uitsluitend read-only uit; de bestaande Homey-Flow/logica die de variabele beheert blijft ongewijzigd. De statusvoorwaarde is boolean `true` voor draaiend en `false` voor niet draaiend. Onbekende of niet-beschikbare waarden blijven een afzonderlijke onbekende status en worden niet als `false` geïnterpreteerd.
+
+
+### 12.5 Gebruikersbesluit – severity vriezer (11 november 2026)
+
+De gebruiker kiest voor **critical (kritiek)** als vast meldingsniveau voor **Vriezer keuken warm!**. Er zijn geen aanvullende opmerkingen meegegeven. De severity is metadata van de melding en staat los van de nog te achterhalen oorspronkelijke temperatuurvoorwaarde; deze keuze legt dus geen temperatuurdrempel vast.
