@@ -265,3 +265,19 @@ De Homey-verbinding gebruikt realtime Socket.IO-events voor de dashboardapparate
 ## Uitbreiding JSON-meldingen – slaapkamer-temperaturen (11 november 2026)
 
 De JSON-engine is uitgebreid met numerieke voorwaarden op read-only Homey-device-capabilities. De vier slaapkamer-meldingen zijn toegevoegd met de door de gebruiker gecorrigeerde grens **<12 °C**. Zie [JSON-meldingenengine – CO₂-proef en temperatuuruitbreiding](json-meldingen-proef-co2.md) en de [fase-1 meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md). Na GitHub-update volgt nog de Docker-build en praktijktest op de Ubuntu-server.
+
+## Interface language and localization (11 November 2026)
+
+- The dashboard uses i18n from the start; the selected implementation is i18next with react-i18next, subject to dependency and build validation.
+- The dashboard reads the language configured in Homey and uses it as the automatic interface language when that locale is supported.
+- The language selector in **Settings → System → Language** explicitly identifies this state as **Automatic (Homey: <language>)**.
+- The user can override the automatic language by selecting a language manually in dashboard settings.
+- A manual selection takes precedence over the Homey language and remains selected across application/container restarts.
+- The user can return to **Automatic** at any time. The dashboard then follows the current Homey language again.
+- Dutch (`nl-NL`) is the default fallback when the Homey language cannot be read or is not supported by the available translation resources. Unsupported Homey locales must not cause a broken or partially translated interface.
+- All interface text is stored in locale resources, not hardcoded in React components. Translation keys and JSON property names remain English.
+- Homey entity names, room names, Flow names, Logic variable names, and other user-created content are displayed unchanged; they are not translated by the dashboard.
+- Date, time, number, and unit formatting follows the effective locale where appropriate.
+- The initial supported interface locale is Dutch (`nl-NL`). Additional locales can be added by providing translation resources without changing component logic.
+
+The exact Homey API/property used to retrieve the configured language must be verified during implementation. If Homey does not expose it through the supported API, the automatic mode must report that it cannot detect the Homey language and use the Dutch fallback; it must not silently claim a detected locale.
