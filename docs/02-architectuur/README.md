@@ -43,3 +43,19 @@ Zie [Externe API – contract, documentatie en beheer](externe-api-openapi.md) v
 ## Fase 5: camerastreams en deurbel-popup
 
 De gewenste deurbel-popup met livevideo en optionele expliciete deuropenactie is opgenomen als fase 5. Uitgangspunt is dat de dashboardcontainer uitsluitend via Homey met camera en deurbel communiceert; er komt geen rechtstreekse koppeling met UniFi of andere camerafabrikanten. Homey Pro ondersteunt camerastreams en WebRTC-proxying vanaf firmware v12.12.0, maar de officiële route om een bestaande Homey-camera-stream vanuit onze eigen dashboardwebsite te consumeren is nog niet aangetoond. Een eigen Homey-app mag als mogelijke adapter worden onderzocht. Zie [Fase 5 – Live camerastreams en deurbel-popup](fase-5-camera-streams-en-deurbel-popup.md) voor de Homey-routes, open onderzoeksvragen, beveiliging en testplan. Er is geen fase-5-code of Homey-configuratie gewijzigd.
+
+
+## Technische taalconventie (11 november 2026)
+
+De gebruiker heeft als harde eis vastgesteld dat alle technische artefacten Engelstalig zijn:
+- JSON-propertynamen, waarden, categorieën en identifiers zijn Engels.
+- Source code, variabelen, types, functienamen, comments en API-contractvelden zijn Engels.
+- Technische documentatie en codevoorbeelden zijn Engels.
+- User-facing dashboardteksten mogen Nederlands blijven.
+- Letterlijke externe/providerwaarden in mappings mogen in de oorspronkelijke taal staan, omdat ze exact de bronwaarde moeten herkennen.
+
+Deze conventie geldt voor alle toekomstige projectbestanden en uitbreidingen, niet alleen voor de weerconfiguratie.
+
+## Weerbronmapping
+
+Weergegevens worden via een JSON-profiel aan vaste interne weercategorieën gekoppeld. De backend doet de providervertaling; de frontend kent uitsluitend de canonieke categorieën. Onbekende waarden blijven expliciet `unknown`. De toekomstige instellingen-GUI moet hetzelfde JSON-profiel beheren en wordt niet automatisch onderdeel van de fase-4 externe event-API. Zie [Weather condition mapping](../03-dashboard/weather-mapping.md).
