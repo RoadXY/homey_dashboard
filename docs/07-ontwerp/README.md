@@ -308,3 +308,11 @@ De gebruiker heeft bevestigd dat de centrale diagnosefunctie voor Homey-apparate
 - Een melding die niet beoordeeld kan worden, wordt onderscheiden van een melding die gewoon niet actief is. Zo lijkt het niet alsof alles in orde is terwijl een waarschuwing door een offline apparaat niet kan worden vastgesteld.
 
 Dit gedrag is expliciet onderdeel van fase 1. De exacte positie en vormgeving van het header-icoon wordt tijdens de UI-uitwerking afgestemd op de bestaande dashboardheader.
+
+
+### Correctie diagnose-indicator en PIN-beveiliging instellingen
+De diagnosewaarschuwing in de header is uitsluitend een **rood uitroepteken in een cirkel**. Alleen dit pictogram knippert wanneer een of meer meldingsregels niet betrouwbaar beoordeeld kunnen worden door ontbrekende/offline/verouderde brondata. Er komt geen knipperende rode tekst of permanent tekstlabel; de interface blijft clean.
+
+Het pictogram is aanklikbaar, maar opent niet rechtstreeks de diagnosepagina. Eerst moet de gebruiker de instellingen-PIN invoeren. Na succesvolle invoer opent **Instellingen → Systeem → Diagnose**. Iedere route naar Instellingen moet dezelfde PIN-controle afdwingen; de headerlink mag deze beveiliging niet omzeilen.
+
+De fase-indeling van de PIN was in de geraadpleegde bestaande documentatie niet expliciet terug te vinden. Omdat de gebruiker eist dat Instellingen altijd met PIN beschermd zijn en de diagnosepagina in fase 1 valt, wordt de minimale PIN-toegangscontrole (PIN-prompt en beveiligde route naar Instellingen) eveneens onderdeel van fase 1. Uitgebreider PIN-beheer of aanvullende beveiligingsopties kunnen eventueel later worden uitgewerkt, mits de basisbeveiliging in fase 1 aanwezig is.
