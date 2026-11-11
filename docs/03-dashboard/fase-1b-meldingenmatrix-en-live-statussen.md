@@ -39,13 +39,13 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 
 | HA-kaart / melding | Oorspronkelijke zichtbaarheid / conditie | Homey-databron of mappingstatus |
 |---|---|---|
-| Grote Bram | Contactstatus is `on` | Kandidaat: Onder raam Bram, `alarm_contact`; fysieke match nog bevestigen. |
-| Grote Tess | Contactstatus is `on` | Kandidaat: Onder raam Tess, `alarm_contact`; fysieke match nog bevestigen. |
+| Grote Bram | Contactstatus is `on` | **Door gebruiker bevestigd:** Onder raam Bram, `alarm_contact`. |
+| Grote Tess | Contactstatus is `on` | **Door gebruiker bevestigd:** Onder raam Tess, `alarm_contact`. |
 | Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Eigen schema-instantie voor deze melding; zon-op-raamconditie wordt niet gemigreerd. HA-conditie wordt aangepast volgens de expliciete migratiekeuze. |
-| Grote Ouders open | Contactstatus is `on` | Kandidaat: Ouderslaapkamer onderraam, `alarm_contact`. |
-| Raam Sem open | Contactstatus is `on` | Kandidaat: Raam Sem, `alarm_contact`. |
-| Achterdeur open | Contact `on` én (buitentemperatuur <18 OF >24) | Contact en weerwaarde beschikbaar. Behoud de HA-absolute buitentemperatuurvoorwaarde; niet vervangen door Homey-temperatuurverschil. |
-| Voordeur open | Contactstatus is `on` | Kandidaat: Voordeur, `alarm_contact`. |
+| Grote Ouders open | Contactstatus is `on` | **Door gebruiker bevestigd:** Ouderslaapkamer onderraam, `alarm_contact`. |
+| Raam Sem open | Contactstatus is `on` | **Door gebruiker bevestigd:** Raam Sem, `alarm_contact`. |
+| Achterdeur open | Contact `on` én (buitentemperatuur <18 OF >24) | **Door gebruiker bevestigd:** Achterdeur, `alarm_contact`. Behoud daarnaast de HA-absolute buitentemperatuurvoorwaarde; niet vervangen door Homey-temperatuurverschil. |
+| Voordeur open | Contactstatus is `on` | **Door gebruiker bevestigd:** Voordeur, `alarm_contact`. |
 | Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Slaap-/schema-afhankelijkheid Sem is expliciet niet migreren; kaart/regel niet overnemen. |
 | Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Slaap-/schema-afhankelijkheid Bram is expliciet niet migreren; kaart/regel niet overnemen. |
 | Slaapkamer Bram koud | Temperatuursensor in de kamer <12 °C | Migreren; Homey-bron Temperatuur Bram, `measure_temperature`. |
@@ -77,9 +77,9 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Truus | Werkstatus niet Sleeping, Charging, Unavailable of Standby | Truus: `measure_work_status`; statuswaarden rechtstreeks gebruiken en exacte strings behouden. |
 | Truus wil opgehaald worden! | Werkstatus is Standby | Truus: `measure_work_status`; exacte statuswaarde. |
 | Tuinhuis lamp | Switch is on gedurende 5 minuten | Tuinhuis lamp `onoff`; duurvoorwaarde van 5 minuten behouden. |
-| Wateralarm wasmachines! | Watersensorstatus is on | Water Sensor wasmachines `alarm_water`; actuele capability beschikbaar. |
-| Wateralarm vaatwasser! | Watersensorstatus is on | Water sensor vaatwasser `alarm_water`; actuele capability beschikbaar. |
-| Deur tuinhuis open! | Contactstatus is on | Deur tuinhuis `alarm_contact`. |
+| Wateralarm wasmachines! | Watersensorstatus is on | **Door gebruiker bevestigd:** Water Sensor wasmachines, `alarm_water`. |
+| Wateralarm vaatwasser! | Watersensorstatus is on | **Door gebruiker bevestigd:** Water sensor vaatwasser, `alarm_water`. |
+| Deur tuinhuis open! | Contactstatus is on | **Door gebruiker bevestigd:** Deur tuinhuis, `alarm_contact`. |
 
 De twee mediaspelerkaarten uit de HA-YAML zijn in de eerdere projectbesluiten uitgesloten van de nieuwe dashboardweergave; deze keuze blijft apart van de meldingenmatrix.
 
@@ -475,3 +475,24 @@ De gebruiker heeft de eerder vastgelegde temperatuurdrempel van **16 °C** gecor
 - Zolder – Temperatuur Sem (slaapkamer Sem).
 
 De grens is exclusief: exact 12,0 °C activeert de melding niet; waarden onder 12,0 °C wel. Deze correctie vervangt de eerdere 16 °C-vermelding in deze meldingenmatrix.
+
+
+## 12. Gebruikersbevestiging – wateralarmen en deur-/raamcontacten (11 november 2026)
+
+De gebruiker heeft de volgende Homey-apparaatkoppelingen expliciet bevestigd. De apparaatnaam en capability zijn bevestigd; exacte apparaat-ID's zijn in deze inventarisatiestap niet vastgelegd.
+
+| Homey-apparaat | Capability | Bijbehorende dashboardkaart(en) | Mappingstatus |
+|---|---|---|---|
+| Water Sensor wasmachines | `alarm_water` | Wateralarm wasmachines! | Bevestigd door gebruiker |
+| Water sensor vaatwasser | `alarm_water` | Wateralarm vaatwasser! | Bevestigd door gebruiker |
+| Deur tuinhuis | `alarm_contact` | Deur tuinhuis open! | Bevestigd door gebruiker |
+| Voordeur | `alarm_contact` | Voordeur open | Bevestigd door gebruiker |
+| Achterdeur | `alarm_contact` | Achterdeur open | Bevestigd door gebruiker |
+| Onder raam Bram | `alarm_contact` | Grote Bram; Raam Bram niet open | Bevestigd door gebruiker |
+| Onder raam Tess | `alarm_contact` | Grote Tess; Raam Tess niet open | Bevestigd door gebruiker |
+| Ouderslaapkamer onderraam | `alarm_contact` | Grote Ouders open; Raam Ouders niet open | Bevestigd door gebruiker |
+| Raam Sem | `alarm_contact` | Raam Sem open | Bevestigd door gebruiker |
+
+De gebruiker heeft geen aanvullende opmerkingen of correcties meegegeven. De oorspronkelijke zichtbaarheidvoorwaarden uit de HA-referentie blijven ongewijzigd; deze bevestiging valideert uitsluitend de Homey-bron/device-capability-koppelingen. Er worden geen Homey-apparaten of instellingen aangepast.
+
+**Nog niet bevestigd in deze stap:** exacte Homey-apparaat-ID's, de verdere samengestelde voorwaarden van de raam-/deurmeldingen en de uiteindelijke JSON-configuraties. De achterdeurmelding behoudt dus nadrukkelijk de oorspronkelijke extra voorwaarde: deur open én (buitentemperatuur <18 °C óf >24 °C).
