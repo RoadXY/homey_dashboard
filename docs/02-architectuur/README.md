@@ -68,7 +68,7 @@ The dashboard uses i18n and separates interface translations from Homey-provided
 
 1. Read the configured language from Homey through a supported, documented interface. The exact API field/property must be technically verified.
 2. In automatic mode, use the Homey locale when it is supported by the dashboard translation resources.
-3. If Homey language detection fails or the locale is unsupported, use Dutch (`nl-NL`) as the fallback. The UI must not claim that a locale was detected when it was not.
+3. If Homey language detection fails or the locale is unsupported, use English (`en`) as the fallback. The UI must not claim that a locale was detected when it was not.
 4. A manual language selection in **Settings → System → Language** overrides Homey.
 5. Persist the manual override in dashboard configuration so it survives container restarts.
 6. The user can select **Automatic** to clear the override and follow Homey language again.
@@ -79,7 +79,7 @@ The settings menu must visibly distinguish **Automatic (Homey: <language>)** fro
 
 - Use `i18next` with `react-i18next` for React interface translations, after dependency/build validation.
 - Translation resources are organized by locale, with stable English translation keys and JSON property names.
-- Dutch (`nl-NL`) is the initial supported locale and the fallback.
+- Dutch (`nl-NL`) is the initial default interface locale. English (`en`) is the fallback locale.
 - Additional locales are added as translation resources; component code must not contain locale-specific interface strings.
 - Date, time, number, and unit formatting follows the effective locale where appropriate.
 - Homey device names, zone names, Flow names, Logic variable names, and other user-defined values are displayed unchanged and are not passed through translation dictionaries.
