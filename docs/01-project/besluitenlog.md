@@ -128,3 +128,8 @@ Besluit: **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. De
 ## Inventarisatie HA-YAML – meldingsniveau lage slaapkamer-temperaturen
 
 Besluit: de vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaapkamer** en **Slaapkamer Sem** krijgen allemaal niveau **info**. De bestaande grens van <12 °C en bronkoppelingen blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau tuinhuislamp
+
+Besluit: de melding voor de tuinhuislamp die langer dan vijf minuten aan staat krijgt niveau **info**. De bestaande duurvoorwaarde blijft ongewijzigd en configureerbaar in het gedeelde notificatiemodel. Geen aanvullende opmerkingen.
