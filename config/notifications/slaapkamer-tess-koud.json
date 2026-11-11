@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "slaapkamer-tess-koud",
+  "title": "Slaapkamer Tess koud",
+  "message": "De temperatuur in slaapkamer Tess is lager dan 12 °C.",
+  "severity": "warning",
+  "enabled": true,
+  "source": {
+    "type": "device-capability",
+    "deviceId": "203a126c-1923-4857-abcb-6a727a133099",
+    "capabilityId": "measure_temperature",
+    "expectedType": "number"
+  },
+  "condition": {
+    "operator": "lessThan",
+    "value": 12
+  }
+}
