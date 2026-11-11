@@ -72,8 +72,27 @@ De projectbaseline `ha-baseline-analyse.md` bevestigt dat `schedule.boven_ramen_
 - Raam Ouders niet open
 - Dakraam Sem niet open
 
-De baseline-analyse beschrijft alleen het gebruik van de schedule-entiteit in de condition tree. Zij bevat niet de onderliggende schedule-configuratie met weekdagen, begin-/eindtijden of eventuele uitzonderingen. De oorspronkelijke bron `tablet_home_assistant.yml` is op dit moment niet beschikbaar via de gekoppelde projectbestanden of als bestand in de repository.
+De gebruiker heeft op 11 november 2026 de volgende YAML-statusmomentopname van de entiteit aangeleverd:
 
-**Blokkade voor exacte reconstructie:** de oorspronkelijke YAML (of alleen de volledige definitie van `schedule.boven_ramen_open`) is nodig. Tot die bron beschikbaar is, blijven de concrete tijden/dagen onbekend en worden ze niet ingevuld op basis van aannames.
+```yaml
+state: 'on'
+last_changed: '2026-11-11T06:00:00.001Z'
+last_updated: '2026-11-11T06:00:00.001Z'
+attributes:
+  editable: true
+  next_event: '2026-11-11T20:00:00+01:00'
+  icon: mdi:window-closed
+  friendly_name: Boven ramen open
+```
 
-Na ontvangst wordt alleen de schedule-definitie uitgelezen en vastgelegd; daarna vertalen we de precieze configuratie naar het herbruikbare Blockly-blok en testen we de randgevallen.
+Deze momentopname bevestigt:
+- De entiteit had status `on` op het moment van uitlezen.
+- De laatst geregistreerde statuswijziging was op 11 november 2026 om 06:00:00.001 UTC.
+- Home Assistant rapporteerde 11 november 2026 om 20:00 uur (offset `+01:00`) als `next_event`.
+- De entiteit heeft de vriendelijke naam `Boven ramen open` en attribuut `editable: true`.
+
+**Belangrijke bronbeperking:** dit is de actuele status plus attributen van de schedule-entiteit, niet de onderliggende terugkerende schedule-configuratie. De momentopname bevat geen weekdagen, starttijd, volledige eindtijdregel, datumgrenzen of uitzonderingsdagen. De precieze herhalingsregels zijn dus nog niet vastgesteld. De waarde `next_event` is één volgende omschakeling en is op zichzelf onvoldoende om het volledige weekpatroon te reconstrueren.
+
+Voor de exacte migratie is nog steeds de configuratie-definitie van `schedule.boven_ramen_open` nodig (bijvoorbeeld de relevante volledige YAML-configuratie uit Home Assistant, niet alleen de state/attributes-weergave). Tot die bron beschikbaar is, blijven concrete dagen en terugkerende tijden onbekend en worden ze niet ingevuld op basis van aannames.
+
+De Blockly-bouwsteen kan intussen wel rekening houden met de bevestigde entiteitssemantiek: een benoemd schema met een actuele boolean-status en een mogelijk beschikbaar volgend omslagmoment. De precieze weekdag-/tijdinstellingen en hun evaluatie blijven afhankelijk van de ontbrekende configuratiebron.
