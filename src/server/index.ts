@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications } from "./notifications.js";
+import { getDashboardWeather } from "./weather.js";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -66,6 +67,15 @@ app.get("/api/events", async (_request, reply) => {
     homeyRealtime.off("connected", onConnected);
     homeyRealtime.off("disconnected", onDisconnected);
   });
+});
+
+app.get("/api/weather", async (_request, reply) => {
+  try {
+    return await getDashboardWeather();
+  } catch (error) {
+    app.log.error(error);
+    return reply.code(500).send({ error: "Weather condition mapping could not be loaded." });
+  }
 });
 
 app.get("/api/notifications", async (_request, reply) => {
