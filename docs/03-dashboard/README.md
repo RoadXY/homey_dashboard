@@ -290,3 +290,8 @@ De gebruiker bevestigt expliciet dat de oorspronkelijke Home Assistant-YAML stri
 Homey wordt uitsluitend gebruikt als read-only gegevensbron voor actuele apparaatwaarden, capabilities en Logic-waarden die nodig zijn om de oorspronkelijke YAML-condities in het dashboard uit te voeren. Als een YAML-bron of afgeleide voorwaarde niet rechtstreeks beschikbaar is in Homey, wordt dit als open mapping-/implementatiepunt vastgelegd. Er wordt geen Homey-Flow-logica als vervanging aangenomen en er worden geen ontbrekende voorwaarden of drempelwaarden geraden.
 
 De oorspronkelijke YAML blijft de functionele referentie; nieuw gekozen meldingsniveaus en expliciete dashboardontwerpbesluiten zijn aanvullende presentatiemetadata en wijzigen de YAML-bronvoorwaarden niet.
+
+
+## Zonnepanelen en historische energiegegevens (12 november 2026)
+
+Het Homey-apparaat **Zonnepanelen** is geïdentificeerd (ID `e743e650-8ac8-477a-b174-bc614fd6a5a2`). De actuele capability `meter_power_today` levert een dagopbrengst in kWh. In de huidige Homey Insights-lijst ontbreekt echter een numerieke historische log voor dit apparaat; alleen de boolean-statuslog is zichtbaar. Logs voor productie/energie van een ander apparaat worden niet gebruikt. Een historische grafiek blijft daarom afhankelijk van het beschikbaar maken van numerieke Insights-registratie of het opzetten van eigen backendhistorie. Details staan in [fase 1B Homey-mapping ronde 2](fase-1b-homey-mapping-ronde-2.md).
