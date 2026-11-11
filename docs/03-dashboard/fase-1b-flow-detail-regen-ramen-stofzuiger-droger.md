@@ -59,6 +59,11 @@ Read-only inventarisatie van Homey Pro 2023. Vastgelegd op basis van de huidige 
 - Er is ook een pushmelding bij wijziging van `localthings_machine_state`, met de nieuwe machine-status.
 - De Flow-details geven geen eenduidige mapping van de machine-state-waarden naar gebruikersvriendelijke statusteksten.
 
+
+
+## Gebruikersbesluit – dashboardweergave droger (11 november 2026)
+De gebruiker wil voor de droger de actuele **status**, **voortgang** en **resterende tijd** op het dashboard zien. Een aparte energie-/kostentegel is niet gevraagd. De kandidaten zijn `localthings_machine_state`, `localthings_cycle_active`, `localthings_progress` en `localthings_remaining_minutes`. De ruwe machine-state-waarden moeten nog worden gevalideerd voordat ze aan gebruiksvriendelijke labels worden gekoppeld.
+
 ## Nog te onderzoeken
 - De wasmachine-Flow en eventuele bron van `wasmachine_draait`.
 - De precieze apparaatnamen achter de contact-ID's in de raam-tel-Flows, om de mapping met de HA-bronnamen definitief te maken.
