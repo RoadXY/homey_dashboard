@@ -73,3 +73,8 @@ Besluit: behoud de oorspronkelijke zichtbaarheid van de batterijkaart; alleen to
 ## Inventarisatie HA-YAML – tuinhuislamp en Blockly
 
 De melding voor de tuinhuislamp blijft conform de oorspronkelijke regel: lamp langer dan 5 minuten aan. Bij de technische uitwerking moet de duurvoorwaarde configureerbaar zijn in het gedeelde, versieerbare notificatiemodel, dat zowel JSON-configuratie als de toekomstige Blockly-editor gebruikt. Geen afzonderlijke Blockly-evaluator of afwijkende logica.
+
+
+## Inventarisatie HA-YAML – CO₂ woonkamer
+
+Besluit: behoud de oorspronkelijke melding wanneer de CO₂-waarde hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
