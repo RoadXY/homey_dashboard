@@ -158,3 +158,8 @@ Besluit: de melding bij een batterijniveau van de muurtablet lager dan 25% krijg
 ## Inventarisatie HA-YAML – meldingsniveau Truus wil opgehaald worden!
 
 Besluit: **Truus wil opgehaald worden!** krijgt niveau **waarschuwing**. De bestaande voorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau Zolder koud
+
+Besluit: **Zolder koud** krijgt niveau **info**, overeenkomstig de vier slaapkamer-temperatuurmeldingen. De oorspronkelijke HA-bronvoorwaarde (`binary_sensor.temperatuur_zolder_laag`) en kaartverwijzing (`climate.airco_zolder_thermostaat`) blijven geregistreerd; de exacte Homey-vertaling moet nog worden vastgesteld. Geen aanvullende opmerkingen.
