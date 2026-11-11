@@ -15,7 +15,7 @@ let api: Awaited<ReturnType<typeof HomeyAPI.createLocalAPI>> | null = null;
 export const homeyRealtime = new EventEmitter();
 let realtimeSetupFor: unknown = null;
 let capabilitySubscriptions: Array<{ destroy: () => void }> = [];
-let logicEventHandlers: Array<{ event: string; listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void }> = [];
+let logicEventHandlers: Array<{ event: string; listener: (...args: any[]) => void }> = [];
 let connectPromise: Promise<HomeySnapshot> | null = null;
 let realtimeWatchdogStarted = false;
 let snapshot: HomeySnapshot = {
@@ -43,7 +43,7 @@ async function setupRealtimeSubscriptions(): Promise<void> {
   for (const subscription of capabilitySubscriptions) subscription.destroy();
   capabilitySubscriptions = [];
   const previousLogicManager = currentApi.logic as unknown as {
-    off: (event: string, listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void) => void;
+    off: (event: string, listener: (...args: any[]) => void) => void;
   };
   for (const handler of logicEventHandlers) previousLogicManager.off(handler.event, handler.listener);
   logicEventHandlers = [];
@@ -65,7 +65,8 @@ async function setupRealtimeSubscriptions(): Promise<void> {
             changedAt: new Date().toISOString(),
           });
         });
-        capabilitySubscriptions.push(instance);\n        subscriptions += 1;
+        capabilitySubscriptions.push(instance);
+        subscriptions += 1;
       } catch (error) {
         // Unsupported or temporarily unavailable capabilities must not stop
         // the remaining subscriptions from being registered.
