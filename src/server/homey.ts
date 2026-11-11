@@ -14,6 +14,8 @@ type HomeySnapshot = {
 let api: Awaited<ReturnType<typeof HomeyAPI.createLocalAPI>> | null = null;
 export const homeyRealtime = new EventEmitter();
 let realtimeSetupFor: unknown = null;
+let connectPromise: Promise<HomeySnapshot> | null = null;
+let realtimeWatchdogStarted = false;
 let snapshot: HomeySnapshot = {
   state: "not-connected",
   checkedAt: null,
@@ -101,7 +103,7 @@ export function getHomeyStatus(): HomeySnapshot {
   return { ...snapshot };
 }
 
-export async function connectHomey(): Promise<HomeySnapshot> {
+async function connectHomeyInternal(): Promise<HomeySnapshot> {
   const { address, token } = getConfig();
 
   if (!address || !token) {
@@ -132,6 +134,7 @@ export async function connectHomey(): Promise<HomeySnapshot> {
       zoneCount: Object.keys(zones).length,
     };
     await setupRealtimeSubscriptions();
+    startRealtimeWatchdog();
   } catch (error) {
     api = null;
     snapshot = {
@@ -144,6 +147,44 @@ export async function connectHomey(): Promise<HomeySnapshot> {
   }
 
   return getHomeyStatus();
+}
+
+export function connectHomey(): Promise<HomeySnapshot> {
+  if (connectPromise) return connectPromise;
+  connectPromise = connectHomeyInternal().finally(() => {
+    connectPromise = null;
+  });
+  return connectPromise;
+}
+
+function startRealtimeWatchdog(): void {
+  if (realtimeWatchdogStarted) return;
+  realtimeWatchdogStarted = true;
+  const timer = setInterval(async () => {
+    if (!api || snapshot.state !== "online") {
+      await connectHomey().catch(() => undefined);
+      return;
+    }
+    const managers = api as unknown as {
+      devices: { isConnected: () => boolean };
+      logic: { isConnected: () => boolean };
+    };
+    if (!managers.devices.isConnected() || !managers.logic.isConnected()) {
+      realtimeSetupFor = null;
+      try {
+        await setupRealtimeSubscriptions();
+      } catch (error) {
+        snapshot = {
+          ...snapshot,
+          state: "offline",
+          checkedAt: new Date().toISOString(),
+          error: error instanceof Error ? error.message : "Realtimeverbinding met Homey verbroken",
+        };
+        homeyRealtime.emit("disconnected", { changedAt: new Date().toISOString() });
+      }
+    }
+  }, 15_000);
+  timer.unref();
 }
 
 export async function getHomeyInventory() {
