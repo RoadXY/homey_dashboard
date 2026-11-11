@@ -337,3 +337,10 @@ Bij tegenstrijdigheid met oudere passages in dit document of in oudere ontwerpno
 Homey Logic-variabelen mogen in fase 1 als read-only databron worden gebruikt, naast rechtstreekse apparaat-capabilities. De dashboardapplicatie leest de actuele variabelewaarde en beoordeelt zelf de dashboardvoorwaarde.
 
 De gebruiker is verantwoordelijk voor het correct en tijdig bijwerken van de Logic-variabele, bijvoorbeeld via een eigen Homey Flow. De dashboardapplicatie wijzigt geen Logic-variabelen en voert geen Homey Flows uit. Het gebruik van een door de gebruiker onderhouden Logic-variabele betekent dus niet dat de dashboardlogica in Homey wordt uitgevoerd: de meldingsregel blijft intern in onze applicatie.
+
+
+### Aanvulling 11 november 2026 – bronselectie en vaste prioriteit in Blockly
+
+Bij het bouwen van een melding kiest de gebruiker zelf de invoerbron in Blockly. Beschikbare bronsoorten zijn een Homey-apparaatwaarde/capability of een Homey Logic-variabele. Beide worden read-only uitgelezen. De gebruiker is verantwoordelijk voor het vullen en actueel houden van zelfgekozen Logic-variabelen.
+
+De prioriteit hoort vast bij de afzonderlijke melding en wordt niet dynamisch aangepast door voorwaarden of bronwaarden. Als verschillende prioriteiten nodig zijn, maakt de gebruiker afzonderlijke meldingen met elk een eigen prioriteit en eigen voorwaarden. Bronkeuze en prioriteit zijn afzonderlijke instellingen.
