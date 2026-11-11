@@ -161,3 +161,7 @@ Homey-apparaat **Multisensor woonkamer**, capability `measure_co2`, is bevestigd
 ### Kans op neerslag – Homey-bron en grens bevestigd (12 november 2026)
 
 Homey-apparaat **Raamsdonksveer**, capability `measure_precipitation_probability`, is bevestigd als bron. Behoud de oorspronkelijke YAML-grens **>25%**. Meldingsniveau: **info**.
+
+### Achterdeur open – buitentemperatuurbron bevestigd (12 november 2026)
+
+Homey-apparaat **Weer**, capability `measure_temperature`, is bevestigd als buitentemperatuurbron. Behoud de oorspronkelijke samengestelde voorwaarde: achterdeur open én (temperatuur <18 °C óf >24 °C). Meldingsniveau: **waarschuwing**.
