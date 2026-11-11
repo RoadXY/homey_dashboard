@@ -281,3 +281,17 @@ Als een HA-voorwaarde niet eenduidig of niet volledig naar het model kan worden 
 - De acht Quick Actions behouden de vastgelegde volgorde. In deze eerste visuele implementatiestap zijn de knoppen uitsluitend presentatief en nog niet bedienbaar; koppeling aan Homey-acties volgt na afzonderlijke technische validatie.
 - De huidige implementatie toont nog geen meldingenpaneel. De meldingenfunctionaliteit is niet onderdeel van deze eerste hoofdschermstap en wordt later volgens de vastgelegde fasering opgepakt.
 - Tablet-landscape is het primaire formaat; aanvullende responsive weergave ondersteunt ontwikkeling en beheer vanaf kleinere schermen.
+
+
+## Voorstel apparaatdiagnose in instellingen (11 november 2026)
+
+Naar aanleiding van de gebruikerssuggestie wordt een centrale diagnosefunctie voorgesteld voor Homey-apparaten en databronnen die dashboardinformatie voeden.
+
+- Op het hoofddashboard verschijnt een compacte algemene waarschuwing wanneer relevante apparaatbronnen problemen hebben; een betrokken tegel of melding krijgt ook een eigen waarschuwing/uitroepteken.
+- Onder **Instellingen → Systeem → Diagnose** komt een overzicht per apparaat/databron met Homey-zone, bereikbaarheid (voor zover beschikbaar), laatste geldige update, betrokken dashboardonderdelen en de gevolgen voor meldingen.
+- Een ontbrekende, ongeldige of verouderde waarde wordt als **onbekend/niet te bepalen** behandeld en nooit stilzwijgend als false, uit of normaal.
+- Als een meldingsvoorwaarde door een onbekende bronwaarde niet kan worden geëvalueerd, wordt dat expliciet aangegeven; dit is geen inactieve melding.
+- Na herstel en een nieuwe geldige meting verdwijnt de actuele waarschuwing automatisch.
+- De diagnosefunctie is uitsluitend read-only en verandert geen Homey-apparaten, Flows of Logic-variabelen.
+
+**Status:** ontwerpvoorstel, nog niet definitief uitgewerkt. De Homey-API-beschikbaarheidssignalen, laatste update-tijdstippen, versheidsgrenzen per datatype en diagnosehistoriek moeten technisch worden onderzocht en vastgelegd. De functionele uitwerking staat ook in hoofdstuk 12 van `fase-1b-meldingenmatrix-en-live-statussen.md`.
