@@ -215,3 +215,21 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 ### Open punt Homey Logic-waarden
 - `GET /api/homey/logic` vindt beide verwachte variabelen (`temperatuur_gemiddeld_woonkamer` en `temperatuur_gemiddeld_keuken`), maar retourneert voor beide `value: null`.
 - De Homey Logic API-route werkt dus op naam/id-niveau, maar de werkelijke waarden zijn nog niet bevestigd. Dit punt blijft open voor nader onderzoek; `null` mag niet als een temperatuurwaarde worden geïnterpreteerd.
+
+
+## Diagnose temperatuur-gemiddeldeflows (11 november 2026)
+- De gebruiker heeft bevestigd dat de getoonde waarden `42` fictieve/testwaarden zijn; de twee Logic-variabelen bevatten in werkelijkheid `null`.
+- De vier opgegeven flows zijn read-only opgehaald uit Homey. Alle vier zijn ingeschakeld en niet als broken gemarkeerd.
+- Keuken:
+  - `Temperatuur gemiddelde keuken – airco` (33d9edf8-53c9-43d8-a575-b33b43ad0b2e), trigger: `measure_temperature_changed` van het airco-apparaat.
+  - `Temperatuur gemiddelde keuken – verwarming` (f2d76792-8507-4e7a-a794-1edf3a1a6511), trigger: `measure_temperature_changed` van het verwarmingsapparaat.
+  - Beide schrijven naar Logic-variabele `temperatuur_gemiddeld_keuken` (0181a65b-2001-4d33-9e98-0ea9ecce2ade) met formule `(huidige variabele + Temperatuur) / 2`.
+- Woonkamer:
+  - `Temperatuur gemiddelde woonkamer – multisensor` (e32a05fd-adc9-4689-87d9-b340a1f71dcc), trigger: `measure_temperature_changed` van de multisensor.
+  - `Temperatuur gemiddelde woonkamer – thermostaat` (eaf41103-3cf6-47b5-a6aa-339da845f15b), trigger: `measure_temperature_changed` van de thermostaat.
+  - Beide schrijven naar Logic-variabele `temperatuur_gemiddeld_woonkamer` (15c95ed8-e341-41e4-b9f0-e897e5292d16) met formule `(huidige variabele + Temperatuur) / 2`.
+- In de vier onderzochte flows is geen afwijkende doelvariabele of andere numerieke toewijzing aangetroffen.
+- Diagnose: de formules lezen de bestaande gemiddelde variabele terug en delen door twee. Als de beginwaarde `null` is, levert deze berekening geen geldige numerieke startwaarde op. Dit is een waarschijnlijke verklaring voor het uitblijven van een bruikbare waarde; de exacte Homey-evaluatie van `null` in deze formule is nog niet apart getest.
+- De triggers reageren op temperatuurwijzigingen. Daardoor kan de flow van de nog online sensor blijven draaien als de andere sensor offline is, mits de formule een ontbrekende/ongeldige beginwaarde veilig afhandelt.
+- Terminologie: de huidige formule is een exponentieel voortschrijdend gemiddelde met een vaste weging van 50% (EMA-achtig), niet een tijdvenster-rolling-average.
+- Er zijn geen Homey-flows, apparaten of Logic-variabelen gewijzigd. Herstelontwerp en eventuele aanpassing wachten op expliciete goedkeuring van de gebruiker.
