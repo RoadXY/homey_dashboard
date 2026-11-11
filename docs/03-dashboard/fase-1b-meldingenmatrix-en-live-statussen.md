@@ -1,95 +1,147 @@
-# Fase 1B – voorstel meldingenmatrix en live-statussen
+# Fase 1B – dashboardmeldingenmatrix en live-statussen
 
-**Status:** ontwerpvoorstel, gebaseerd op read-only Homey-inventarisaties  
+**Status:** functioneel ontwerpvoorstel, gebaseerd op de oorspronkelijke Home Assistant-YAML  
 **Project:** Homey Dashboard – Homey Pro 2023  
 **Branch:** `phase_1_foundation`  
-**Veiligheidsgrens:** geen Homey-Flows, apparaten, Logic-variabelen of instellingen gewijzigd.
+**Besluit:** CO2 volgt voorlopig de huidige Homey-drempels (optie A). Deze waarden worden configureerbaar in de latere Blockly-regelbewerker.  
+**Veiligheidsgrens:** Homey blijft uitsluitend een read-only databron; er worden geen Flows of apparaten bediend.
 
-## 1. Ontwerpprincipes
+## 1. Leidende ontwerpkeuze
 
-1. **Live-status is leidend voor wat nú waar is.** Gebruik waar mogelijk de actuele capability van het apparaat.
-2. **Een Flow-melding is een gebeurtenis, niet automatisch een blijvende status.** Regen-, accu- en voltooiingsmeldingen mogen niet als actuele alarmstatus blijven staan.
-3. **Afgeleide Logic-variabelen alleen gebruiken als hun producerende Flow en betekenis bekend zijn.**
-4. **Onzekere mappings niet stilzwijgend overnemen.** Semantische verschillen met de HA-bron blijven open tot een expliciet besluit.
-5. **Homey blijft de runtime-bron.** De dashboardcontainer leest Homey; hij voert geen Homey-acties of Flows uit.
-6. **Tabletweergave blijft rustig en scanbaar.** Alleen actuele en relevante informatie krijgt prominente ruimte.
+De meldingen op het dashboard hebben een ander doel dan push- en TTS-meldingen die in Homey-Flows zijn opgenomen.
 
-## 2. Voorstel A – actieve alarmen
+**Daarom gebruiken we de Home Assistant-dashboardconfiguratie als functionele blauwdruk voor de dashboardmeldingen.** We nemen zo veel mogelijk de oorspronkelijke kaarten, zichtbaarheid, voorwaarden, drempels, combinaties en tijdsduur over. De Homey-Flow-acties (push, Google TTS, SOS, notificatieteksten en meldingslimieten) zijn geen dashboardvereisten en worden niet automatisch overgenomen.
 
-| Alarm | Voorgestelde bron | Weergavevoorstel | Betrouwbaarheid / status |
-|---|---|---|---|
-| Waterlekkage wasmachines | Water Sensor wasmachines, `alarm_water` | Hoog-prioriteitsalarm zolang capability true is; direct duidelijk zichtbaar | Directe capability bevestigd. Momentopname false. Sensorwerking bij echte detectie niet getest. |
-| CO2 woonkamer | Multisensor `measure_co2` plus `eco2_woonkamer_status` | CO2-waarde met statusniveau; waarschuwing bij Homey-status 1 en kritisch bij 2 | Homey-Flow gebruikt >1000, >2000 en reset <990 ppm. HA-bron gebruikte >1200 ppm. Besluit vereist. |
-| Vriezer(s) te warm | Temperatuurcapability + Flowgrenzen | Temperatuur zichtbaar; waarschuwing bij bevestigde drempel | Garage: >-13 °C waarschuwing, tweede tak >-5 °C, herstel <-17 °C. Keuken-device-ID/ruimte nog niet bevestigd. Gedeelde alarmvariabele en labelverschil open. |
-| Achterdeur open onder ongunstige condities | Contact `alarm_contact`, airco-modus, temperatuur en bestaande Flow-logica | Alleen contextmelding wanneer de deur open is én de relevante conditie klopt | Flow is complex met temperatuurverschil, airco-condities, timer en maximaal 3 meldingen. Niet gelijk aan HA-absolute buitentemperatuurconditie. |
-| Voordeur open onder ongunstige condities | Contact `alarm_contact` en bestaande Flow/variabele | Contextmelding bij bevestigde voorwaarden | Variabele en volledige producerende Flow-logica nog niet gevalideerd. |
-| Regen terwijl ramen open zijn | Buienradar-trigger + contactstatussen | Gebeurtenismelding; eventueel een tijdelijke melding, niet permanent alarm na sluiten | Bestaande Flow gebruikt timeout en telt grote ramen. Voor actuele open ramen: contacten rechtstreeks lezen. |
-| Regen terwijl deuren open zijn | Regen-event + voor-/achterdeurcontacten | Gebeurtenismelding; actuele deurstatus afzonderlijk tonen | Flow wacht 30 seconden en gebruikt 30-minutentimeout. Geen blijvende alarmstatus afleiden uit de timeout. |
-| Rook-/CV-/overige veiligheidsalarmen | Nog te koppelen Homey-bronnen | Nog niet opnemen in eerste matrix tot bron en semantiek zijn bevestigd | In Flow-lijst genoemd, detailmapping nog niet compleet. |
+Homey levert de actuele apparaatwaarden en Logic-waarden. De dashboardapplicatie beoordeelt daarmee zelfstandig de overgenomen Home Assistant-voorwaarden. Een Homey-Flow mag alleen als technische bron of als expliciet bevestigde statusbron worden gebruikt wanneer dat nodig is om een waarde te verkrijgen; de Flow-melding zelf bepaalt niet wat op het dashboard verschijnt.
 
-### Prioriteitsvoorstel
-- **Kritiek:** waterlekkage; CO2-status 2; bevestigde zeer hoge vriezertemperatuur.
-- **Waarschuwing:** CO2-status 1; vriezer waarschuwingsgrens; deur/raam in combinatie met regen of relevante klimaatconditie.
-- **Informatief:** normale open/dicht-statussen en afgeronde huishoudelijke cycli.
+### Ontwerpregels
+1. De HA-YAML bepaalt welke dashboardmelding bestaat en onder welke voorwaarden deze zichtbaar wordt.
+2. We vertalen de volledige condition tree: AND/OR-groepen, state/state-not, numerieke grenzen, templates en `for`-duur.
+3. We vervangen alleen de entiteit/capability door een Homey-bron als de betekenis overeenkomt.
+4. Als een bron nog niet betrouwbaar is gekoppeld, markeren we die regel als *mapping open*; we veranderen de HA-voorwaarde niet stilzwijgend.
+5. De melding wordt berekend uit de actuele Homey-data. Een oude push- of TTS-melding speelt geen rol in de zichtbaarheid.
+6. De gekozen CO2-drempels zijn voorlopig 1000/2000 ppm met herstel onder 990 ppm. Blockly moet deze waarden later instelbaar maken zonder codewijziging.
 
-Prioriteiten zijn een voorstel voor de presentatie, niet een wijziging van Homey-logica.
+## 2. CO2-besluit
 
-## 3. Voorstel B – live-statussen
+<badge color="success">Optie A gekozen</badge>
 
-| Onderdeel | Homey-bron | Voorgestelde tegel/status | Opmerkingen |
-|---|---|---|---|
-| Voordeur, achterdeur, tuinhuisdeur | `alarm_contact` | Open/dicht | Rechtstreeks uitlezen; combineer niet met de temperatuurmelding in dezelfde status. |
-| Ramen | Afzonderlijke `alarm_contact`-capabilities | Aantal open + eventueel namen/lijst | Beter dan `ramen_telRamenOpenReden`, want die variabele bewaart slechts één laatst verwerkte raamnaam. Fysieke mapping Bram/Tess nog bevestigen. |
-| Wasmachine | `wasmachine_draait` + `measure_power` | Draait / niet actief, eventueel vermogen | Boolean wordt door Flow onderhouden. Start >120 W, stop <2 W na countdown. Toon bronafhankelijkheid in implementatie. |
-| Wasdroger | `localthings_machine_state`, `localthings_cycle_active`, `localthings_progress`, `localthings_remaining_minutes` | Draait / klaar / resterende tijd indien waarden gevalideerd | State-waarden en eindtijdmapping nog valideren. |
-| Truus | `measure_work_status`, `measure_docked`, `measure_battery` | Werkstatus + dockstatus + batterijpercentage | Gescheiden gegevens. Momentopname: Sleeping, gedockt, 100%. |
-| CO2 woonkamer | `measure_co2` | Actuele ppm-waarde | Numerieke meting rechtstreeks uit sensor. |
-| Vriezers | `measure_temperature` per bevestigd apparaat | Actuele temperatuur per vriezer | Keukenbron en gedeelde alarmvariabele eerst verifiëren. |
-| Weer | Weer-device: temperatuur, gevoelstemperatuur, `measure_rain`, conditioncode, wind | Compact weerblok | Neerslagkans is niet beschikbaar in de geïnventariseerde Homey-state. |
-| Airco keuken/zolder | `thermostat_mode`, `onoff`, `target_temperature` | Aan/uit, modus, doeltemperatuur | Logic `aircoZolder_aan` niet als waarheid gebruiken zonder reconciliatie; device-modus was eerder off. |
-| Remeha | `boiler_state`, `DHW_state`, `DHW_mode` | Alleen tonen na statuscode-mapping | Betekenis van statuscodes nog niet bevestigd. |
-| Lampen Sem/Bram/tuinhuis | `onoff` | Aan/uit indien relevant | Slaap-/schema-condities niet aan Homey-bron gekoppeld. |
-| Muurtablet | `measure_battery` | Alleen in systeem-/instellingenstatus | Momentopname 100%; niet prominent op hoofdscherm nodig. |
+Voor de eerste implementatie volgen we de bestaande Homey-niveaus:
+- Waarschuwing vanaf **1000 ppm**.
+- Kritiek vanaf **2000 ppm**.
+- Herstel wanneer de waarde **onder 990 ppm** komt.
 
-## 4. Voorstel C – gebeurtenismeldingen
+De oorspronkelijke HA-weergave had één zichtbaarheidstrigger boven 1200 ppm. Dit verschil wordt bewust geregistreerd. In de latere Blockly-editor worden minimaal de waarschuwingsgrens, kritieke grens en herstelgrens instelbare parameters. De actuele Homey-Logic-statusvariabele `eco2_woonkamer_status` kan als referentie worden gebruikt, maar de dashboardregel moet primair toetsbaar blijven aan de live CO2-meting en ingestelde drempels.
 
-Deze gebeurtenissen kunnen als korte melding verschijnen, maar mogen niet zonder aanvullende actuele status als blijvend alarm worden getoond:
+## 3. Meldingenmatrix – oorspronkelijke Home Assistant-kaarten
 
-- Regen begint terwijl ramen of deuren open zijn.
-- Wasmachine start en is klaar.
-- Droger start, status verandert of cyclus eindigt.
-- Truus meldt voldoende accu of accu boven 50%.
-- Truus rondt een schoonmaakcyclus af.
-- CO2 herstelt onder de Homey-resetgrens.
-- Vriezer herstelt onder de ingestelde herstelgrens.
+Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-analyse.md`. De Homey-koppeling is een databronmapping, geen overname van de Homey-Flow-notificatie.
 
-**Voorgestelde UX:** toon een melding kort en/of in een compacte meldingenlijst met tijdstip. De actuele status blijft apart zichtbaar. De precieze bewaartermijn en het aantal zichtbare meldingen worden in de UI-fase bepaald.
-
-## 5. Nog niet veilig te implementeren
-
-| Onderwerp | Wat ontbreekt | Benodigde vervolgstap |
+| HA-kaart / melding | Oorspronkelijke zichtbaarheid / conditie | Homey-databron of mappingstatus |
 |---|---|---|
-| CO2-drempel | HA >1200 ppm versus Homey >1000 / >2000 / reset <990 | Gebruikersbesluit: HA-gedrag behouden of huidige Homey-niveaus volgen. |
-| Keuken-vriezer | Device-ID `64fc846e-01b0-438a-9114-4498ea8005e7` niet definitief aan naam/zone gekoppeld | Device-inventarisatie op exact ID en variabeleproducer controleren. |
-| Gedeeld vriezeralarm | Zelfde Logic-ID met labels `Vriezer_tempAlarm` en `tempVriezer_alarm` | Vaststellen of beide vriezers één gedeelde alarmstatus gebruiken. |
-| Achterdeur | Homey gebruikt temperatuurverschil en airco-modus; HA gebruikte absolute buitentemperatuurgrenzen | Alleen tonen op basis van de bestaande Homey-Flow-condities, of expliciet ontwerpbesluit over afwijkend gedrag. |
-| Voordeur | Variabele `voordeur_melding` en volledige producerende logica niet gevalideerd | Flow-detail en schrijvers van de variabele controleren. |
-| Ramen Bram/Tess | Homey-naam versus HA-bronnaam/positie niet bevestigd | Fysieke sensor-mapping bevestigen. |
-| Droger | Machine-state-waarden en exacte eindtijdsemantiek niet gevalideerd | Capabilitywaarden documenteren en gebruikersvriendelijke labels mappen. |
-| Remeha | Statuscodes niet vertaald | Device-state en bijbehorende documentatie/Flow-voorwaarden analyseren. |
-| Weer | Neerslagkans ontbreekt in huidige Homey-state | Bepalen of actuele regen voldoende is of dat aanvullende bron nodig is. |
+| Grote Bram | Contactstatus is `on` | Kandidaat: Onder raam Bram, `alarm_contact`; fysieke match nog bevestigen. |
+| Grote Tess | Contactstatus is `on` | Kandidaat: Onder raam Tess, `alarm_contact`; fysieke match nog bevestigen. |
+| Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Raam-, airco- en weerbronnen deels aanwezig; schema en zonconditie nog niet gekoppeld. |
+| Grote Ouders open | Contactstatus is `on` | Kandidaat: Ouderslaapkamer onderraam, `alarm_contact`. |
+| Raam Sem open | Contactstatus is `on` | Kandidaat: Raam Sem, `alarm_contact`. |
+| Achterdeur open | Contact `on` én (buitentemperatuur <18 OF >24) | Contact en weerwaarde beschikbaar. Behoud de HA-absolute buitentemperatuurvoorwaarde; niet vervangen door Homey-temperatuurverschil. |
+| Voordeur open | Contactstatus is `on` | Kandidaat: Voordeur, `alarm_contact`. |
+| Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Lamp `onoff` beschikbaar; schema nog niet gekoppeld. |
+| Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Lamp `onoff` beschikbaar; schema nog niet gekoppeld. |
+| Slaapkamer Bram koud | `binary_sensor.temperatuur_bram_laag` is on | Temperatuursensor kandidaat aanwezig; exacte bronconditie/threshold nog koppelen. |
+| Slaapkamer Tess koud | `binary_sensor.temperatuur_tess_laag` is on | Temperatuursensor kandidaat aanwezig; exacte bronconditie/threshold nog koppelen. |
+| Ouderslaapkamer koud | `binary_sensor.temperatuur_ouders_laag` is on | Temperatuurbron nog exact koppelen. |
+| Zolder koud | `binary_sensor.temperatuur_zolder_laag` is on; kaart toont zolder-airco | Temperatuur-/aircobronnen aanwezig; lage-temperatuur-binarystatus nog koppelen. |
+| Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | Homey-device-ID uit Flow bekend, maar apparaatnaam/zone en relatie met HA-koelkastentity moeten nog bevestigd worden. |
+| Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Droger-capabilities beschikbaar; statewaarde en templatevertaling nog valideren. Behoud de HA-voorwaarde, niet Flow-push. |
+| Wasmachine staat aan | `binary_sensor.wasmachine` is on | Kandidaat: `wasmachine_draait` en/of vermogen. Exacte HA-afgeleide status eerst semantisch mappen. |
+| Galaxy A54 | Batterijpercentage <20 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| Telefoon batterij (SM-S721B) | Batterijpercentage <20 OF state-entiteit full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| Pixel 7 Pro | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| SM-F966B | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| Moto G60S | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| Muur tablet | Batterijpercentage <25 | Kandidaat: Muur tablet, `measure_battery`. |
+| CO2 woonkamer hoog! | HA-bron: `sensor.eco2` >1200; kaart toont multisensor-CO2 | Homey live `measure_co2`; projectbesluit gebruikt voorlopig Homey-drempels 1000/2000/reset <990. Blockly-configuratie later. |
+| Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Contact kandidaat aanwezig; schema- en gevoelstemperatuurmapping nog verifiëren. |
+| Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Contact kandidaat aanwezig; schema- en gevoelstemperatuurmapping nog verifiëren. |
+| Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Contact, weer, regen en airco deels beschikbaar; schema- en statusmapping nog verifiëren. |
+| Airco keuken | Modus niet off en niet unavailable | Airco keuken: `thermostat_mode`, `onoff`, `target_temperature`. |
+| Airco zolder | Modus niet off | Airco zolder: `thermostat_mode`, `onoff`, `target_temperature`. |
+| Verwarming aan | Remeha verwarmen-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
+| Warm water | Remeha huishoudelijk-warmwater-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
+| Bak voorraam voeding! | Conductivity <350; kaart toont aparte voedingssensor | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
+| Bak voorraam water! | Vochtigheid <15 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
+| Paradijsvogelplant water! | Vochtigheid <15 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
+| Paradijsvogelplant voeding! | Conductivity <350 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
+| Kans op neerslag | Neerslagkans >25 | Homey-weather state bevat geen expliciete neerslagkans; aanvullende databron of capability nodig. |
+| Truus | Werkstatus niet Sleeping, Charging, Unavailable of Standby | Truus: `measure_work_status`; statuswaarden rechtstreeks gebruiken en exacte strings behouden. |
+| Truus wil opgehaald worden! | Werkstatus is Standby | Truus: `measure_work_status`; exacte statuswaarde. |
+| Tuinhuis lamp | Switch is on gedurende 5 minuten | Tuinhuis lamp `onoff`; duurvoorwaarde van 5 minuten behouden. |
+| Wateralarm wasmachines! | Watersensorstatus is on | Water Sensor wasmachines `alarm_water`; actuele capability beschikbaar. |
+| Wateralarm vaatwasser! | Watersensorstatus is on | Vaatwasser-watersensor nog exact koppelen. |
+| Deur tuinhuis open! | Contactstatus is on | Deur tuinhuis `alarm_contact`. |
 
-## 6. Aanbevolen implementatievolgorde
+De twee mediaspelerkaarten uit de HA-YAML zijn in de eerdere projectbesluiten uitgesloten van de nieuwe dashboardweergave; deze keuze blijft apart van de meldingenmatrix.
 
-1. **Eerst betrouwbare live-statussen:** deuren/ramen, waterlekkage, Truus, wasmachine, droger, CO2 en temperaturen.
-2. **Daarna alarmregels:** CO2, vriezers en deur-/regencombinaties, pas na expliciete mapping.
-3. **Daarna gebeurtenismeldingen:** start/klaar, regenwaarschuwingen, Truus-berichten en herstelmeldingen.
-4. **Tot slot instellingen en verfijning:** prioriteiten, zichtduur, meldingenlijst en tabletgedrag.
+## 4. Live-statussen naast de meldingen
 
-## 7. Besluiten die nog van de gebruiker nodig zijn
+Deze gegevens kunnen als compacte status of waarde worden getoond, ook wanneer er geen conditionele melding actief is:
 
-De eerste inhoudelijke ontwerpkeuze is de CO2-weergave:
-- **Optie A – Homey volgen:** waarschuwing vanaf 1000 ppm, kritisch vanaf 2000 ppm, herstel onder 990 ppm.
-- **Optie B – HA-bron behouden:** waarschuwing pas boven 1200 ppm; daarnaast bepalen hoe de Homey-kritieke grens van 2000 ppm wordt gebruikt.
+| Onderdeel | Homey-bron | Gebruik |
+|---|---|---|
+| Woonkamer- en keukentemperatuur | Reeds gemapte sensoren/Logic-waarde | Temperatuurtegels op hoofddashboard. |
+| Bram, Tess, ouders, zolder | Temperatuurcapabilities na mapping | Waarde tonen wanneer bijbehorende HA-kaart actief is. |
+| Weer | Weer-device: temperatuur, gevoelstemperatuur, actuele regen, conditie, wind | Weerkaart; neerslagkans blijft apart open. |
+| Deuren en ramen | Individuele `alarm_contact` | Actuele open/dichtstatus, gebruikt voor HA-condities. |
+| Wasmachine | Live vermogen en/of gemapte status | Alleen als de bronsemantiek overeenkomt met HA-binarysensor. |
+| Droger | Machine state, cycle active, progress, remaining minutes | Status en resterende tijd na validatie. |
+| Truus | `measure_work_status`, `measure_docked`, `measure_battery` | Werkstatus, dockstatus en accupercentage afzonderlijk. |
+| Airco's | `thermostat_mode`, `onoff`, `target_temperature` | Actuele modus en doeltemperatuur. |
+| Remeha | `boiler_state`, `DHW_state`, `DHW_mode` | Pas tonen nadat de statuscodes zijn vertaald. |
+| Plant sensoren | Nog te koppelen | Meldingen pas activeren na bronmapping. |
 
-Voor alle overige onzekere mappings geldt: niet gokken; eerst bron en betekenis verifiëren. De dashboardimplementatie blijft read-only richting Homey.
+## 5. Wat we nadrukkelijk niet overnemen uit Homey-Flows
+
+De volgende Flow-acties zijn bedoeld voor het Homey-notificatie-/spraakgebruik en zijn geen dashboardregels:
+- Pushberichten en hun tekst.
+- Google TTS-berichten.
+- SOS-morseacties.
+- Aanwezigheidsafhankelijke pushlogica.
+- Flow-timeouts en meldingtellers die alleen dubbele push/TTS-berichten voorkomen.
+- Accu-drempelmeldingen van Truus als gebeurtenis.
+
+De dashboardapp berekent de zichtbaarheid op basis van de HA-condities en actuele Homey-data. Alleen als een Flow een statusvariabele produceert die nodig is om een HA-bronwaarde te reconstrueren, onderzoeken we die variabele als databron; we nemen de notificatieactie zelf niet over.
+
+## 6. Blockly-configuratie – later aanpasbaar
+
+De volgende instellingen moeten in de latere Blockly-regelbewerker configureerbaar worden:
+- Numerieke grenzen (bijvoorbeeld CO2, temperatuur, vochtigheid, conductivity, batterijpercentage, neerslagkans).
+- Vergelijkingen (`<`, `>`, `=`, state-is, state-is-not).
+- AND/OR-groepen en geneste voorwaarden.
+- Tijdsduren (`for`, bijvoorbeeld tuinhuislamp 5 minuten).
+- Weerstatus in/uit een lijst.
+- Welke bronwaarde wordt getoond en welke voorwaarde de kaart zichtbaar maakt.
+- Meldingstitel, omschrijving, prioriteit en eventueel icoon.
+
+De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze.
+
+## 7. Openstaande bronmappings
+
+1. Schema's `schedule.boven_ramen_open`, `schedule.slapen_sem` en `schedule.slapen_bram`.
+2. Zonconditie `zon_staat_op_raam_tess`.
+3. Fysieke mapping van de Bram-/Tess-raamcontacten.
+4. Lage-temperatuur-binarysensoren voor Bram, Tess, ouders en zolder.
+5. Keuken-vriezer device-ID en relatie met HA-entity die `koelkast` in de naam heeft.
+6. Exacte Homey-statuswaarden voor droger en de HA-completion-time-template.
+7. Vaatwasser-wateralarm.
+8. Telefoonbatterijen.
+9. Plantvochtigheid en conductivity.
+10. Neerslagkans >25.
+11. Remeha-statuscodevertaling.
+12. Exacte semantische bron van de wasmachine-binarysensor.
+
+Deze punten zijn mappingwerk; ze zijn geen reden om de oorspronkelijke HA-condities te vervangen door Flow-notificatiegedrag.
+
+## 8. Volgende stap
+
+Werk de open bronmappings systematisch af vanuit de oorspronkelijke HA-YAML. Daarna maken we een regelmodel dat deze condities exact kan representeren en dat later door Blockly kan worden aangepast. Pas daarna koppelen we de regels aan de dashboardweergave.
