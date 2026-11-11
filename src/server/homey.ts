@@ -51,7 +51,7 @@ export async function connectHomey(): Promise<HomeySnapshot> {
   snapshot = { ...snapshot, state: "connecting", error: null };
 
   try {
-    api = await HomeyAPI.createLocalAPI({ address, token });
+    api = await HomeyAPI.createLocalAPI({ address, token, debug: null });
     const [devices, zones] = await Promise.all([
       api.devices.getDevices(),
       api.zones.getZones(),
@@ -196,9 +196,19 @@ export async function getHomeyLogicVariables(variableNames: string[]) {
 
   const variables = await api.logic.getVariables();
   const wanted = new Set(variableNames);
+  type HomeyLogicVariable = {
+    id: string;
+    name: string;
+    type: string;
+    value: unknown;
+  };
+  const variableList = Object.values(
+    variables as Record<string, HomeyLogicVariable>
+  );
+
   return {
     retrievedAt: new Date().toISOString(),
-    variables: Object.values(variables)
+    variables: variableList
       .filter((variable) => wanted.has(variable.name))
       .map((variable) => ({
         id: variable.id,
