@@ -83,3 +83,8 @@ Besluit: behoud de oorspronkelijke melding wanneer de CO₂-waarde hoger is dan 
 ## Inventarisatie HA-YAML – regenmelding
 
 Besluit: behoud de oorspronkelijke regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
+
+
+## Architectuurbesluit – volledige Blockly-bewerkbaarheid van meldingen
+
+De gebruiker besluit dat alle meldingen later met Blockly bewerkt moeten kunnen worden. Alle grenswaarden en tijdsvoorwaarden moeten instelbaar zijn. Dit is een generieke architectuureis voor het volledige notificatieaanbod. Ontwerp één versieerbaar notificatiemodel met bewerkbare voorwaarden, operatoren, grenswaarden, duur- en tijdsvoorwaarden. De JSON-configuratie en toekomstige Blockly-editor gebruiken hetzelfde model en dezelfde backend-evaluator. De uit de oorspronkelijke Home Assistant YAML bevestigde waarden blijven de initiële instellingen/defaults om bestaand gedrag te behouden; ze mogen niet als hardgecodeerde, niet-bewerkbare waarden worden geïmplementeerd.
