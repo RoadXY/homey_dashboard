@@ -94,3 +94,8 @@ De gebruiker kent aan alle zes directe contactmeldingen hetzelfde niveau toe: **
 ### Vraag 12 – meldingsniveau wateralarmen
 
 De gebruiker kiest voor niveau **kritiek** voor beide afzonderlijke wateralarmen: **Wateralarm wasmachines!** en **Wateralarm vaatwasser!**. Geen aanvullende opmerkingen; de oorspronkelijke voorwaarden blijven ongewijzigd.
+
+
+### Vraag 13 – meldingsniveau vriezer keuken
+
+De gebruiker kiest voor niveau **kritiek** voor de melding **Vriezer keuken warm!**. Geen aanvullende opmerkingen; de eerder vastgelegde Homey-bron en bestaande voorwaarde blijven ongewijzigd.
