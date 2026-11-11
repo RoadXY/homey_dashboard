@@ -36,3 +36,13 @@ De gebruiker bevestigt dat we bij het bestaande plan blijven: het dashboard toon
 De gebruiker keurt de voorgestelde lijst van 16 weercondities goed voor het dashboard en de toekomstige Homey Flow-dropdown. De canonieke API-codes zijn: `sunny`, `mostly_sunny`, `partly_cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy_rain`, `showers`, `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet`, `windy`. De Flow-kaart toont Nederlandse labels en verstuurt de Engelse code. Dag/nacht blijft een aparte dimensie; onbekende codes overschrijven de laatst bekende geldige conditie niet.
 
 **Voorlopig API-advies, nog niet definitief besloten:** `POST /api/v1/weather/condition` met JSON `{"type":"cloudy"}`, Bearer-tokenauthenticatie, validatie tegen de vaste enum en servergegenereerde ontvangsttijd. Succes: HTTP 200; ongeldige body/code: 400; ontbrekende of ongeldige token: 401. De endpoint moet idempotent omgaan met herhaalde updates. Definitieve keuze en implementatie volgen na afstemming.
+
+
+
+## Gebruikersbesluit – benoemde Bearer-tokens beheren in Settings (11 november 2026)
+
+- Er komt een plek in de dashboardinstellingen om Bearer-tokens met een eigen naam te genereren en te beheren.
+- De tijdelijke Homey Logic HTTP POST-kaart kan headers meesturen; de gebruiker stelt zelf de Authorization-header in en maakt de JSON-body handmatig.
+- Voorbeeld: header `Authorization: Bearer <token>`, body `{"type":"cloudy"}`.
+- Beveiligingsontwerp: tokenwaarde cryptografisch willekeurig genereren, volledig geheim alleen bij aanmaak tonen, alleen een veilige hash bewaren, intrekken/verwijderen mogelijk maken en geheimen nooit loggen. Ontwerp uitbreidbaar houden met scopes/rechten; de eerste token kan beperkt worden tot de weerconditie-API.
+- De exacte UI, opslag, scopes en implementatie worden nog technisch uitgewerkt.
