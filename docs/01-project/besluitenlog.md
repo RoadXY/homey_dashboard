@@ -554,3 +554,10 @@ Daarom gelden voor alle volgende meldingen en uitbreidingen de volgende technisc
 - De melding **Vriezer keuken warm!** krijgt het vaste meldingsniveau **critical (kritiek)**.
 - Er zijn geen aanvullende opmerkingen meegegeven.
 - Dit besluit staat los van de oorspronkelijke temperatuurvoorwaarde. De exacte grens achter `binary_sensor.vriezer_keuken_temperatuur_hoog` moet nog worden achterhaald; er wordt hiermee geen drempel verondersteld.
+
+
+## Gebruikersbesluit – severity wasmachine (11 november 2026)
+
+- De melding **Wasmachine staat aan** krijgt het vaste meldingsniveau **info (informatie)**.
+- Er zijn geen aanvullende opmerkingen meegegeven.
+- De bron blijft de read-only boolean Logic-variabele `wasmachine_draait`.
