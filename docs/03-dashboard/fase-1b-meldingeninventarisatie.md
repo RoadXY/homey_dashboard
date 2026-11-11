@@ -99,3 +99,8 @@ De gebruiker kiest voor niveau **kritiek** voor beide afzonderlijke wateralarmen
 ### Vraag 13 – meldingsniveau vriezer keuken
 
 De gebruiker kiest voor niveau **kritiek** voor de melding **Vriezer keuken warm!**. Geen aanvullende opmerkingen; de eerder vastgelegde Homey-bron en bestaande voorwaarde blijven ongewijzigd.
+
+
+### Vraag 14 – meldingsniveau CO₂ woonkamer
+
+De gebruiker kiest voor niveau **waarschuwing** voor **CO₂ woonkamer hoog!**. Geen aanvullende opmerkingen; de bestaande grens (>1200 ppm), Homey-bron en voorwaarde blijven ongewijzigd.
