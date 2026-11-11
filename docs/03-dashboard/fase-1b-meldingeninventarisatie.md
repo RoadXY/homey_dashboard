@@ -39,3 +39,8 @@ De dashboardinstellingen moeten een beheerplek krijgen om Bearer-tokens met een 
 De gebruiker wil alle acht voorgelegde onderdelen behouden: droger (status, voortgang, resterende tijd), Truus (werkstatus en ophalen), Remeha (verwarming en warm tapwater), airco keuken/zolder (status en ingestelde temperatuur), neerslagkans boven 25%, muurtablet-batterij onder 25%, tuinhuislamp langer dan 5 minuten aan en CO₂ woonkamer boven 1200 ppm. Geen van deze onderdelen is uitgesloten.
 
 Voor de droger geldt expliciet: alleen tonen als deze actief is/draait. In de oorspronkelijke YAML is de kaart zichtbaar bij `sensor.droger_dryer_machine_state` = `run` en wordt de eindtijd getoond uit `sensor.droger_dryer_completion_time`.
+
+
+### Vraag 2 – Truus: oorspronkelijke zichtbaarheid behouden
+
+De gebruiker bevestigt behoud van de YAML-logica: toon de gewone Truus-status wanneer de werkstatus niet `Sleeping`, `Charging`, `Unavailable` of `Standby` is. Toon de aparte melding **‘Truus wil opgehaald worden!’** wanneer de status exact `Standby` is. Geen aanvullende opmerkingen.
