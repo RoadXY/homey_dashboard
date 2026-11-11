@@ -3,6 +3,7 @@ import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables } from "./homey.js";
+import { getDashboardNotifications } from "./notifications.js";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -33,6 +34,15 @@ app.get("/api/health", async () => ({
 }));
 
 app.get("/api/homey/status", async () => getHomeyStatus());
+
+app.get("/api/notifications", async (_request, reply) => {
+  try {
+    return await getDashboardNotifications();
+  } catch (error) {
+    app.log.error(error);
+    return reply.code(500).send({ error: "Dashboardmeldingen konden niet worden ingelezen." });
+  }
+});
 
 app.post("/api/homey/connect", async () => connectHomey());
 
