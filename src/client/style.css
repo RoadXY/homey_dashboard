@@ -160,7 +160,7 @@ body {
 .notification-list { display: flex; flex-direction: column; gap: 12px; }
 .notification-card {
   display: flex; flex-direction: column; gap: 8px; padding: clamp(16px,1.4vw,22px);
-  border: 1px solid var(--severity-info-border); border-left-width: 4px; border-radius: 13px;
+  border: 1px solid var(--severity-info-border); border-radius: 13px;
   background: var(--severity-info-background); color: var(--severity-info-text);
 }
 .notification-card strong { color: var(--notification-title-color); font-size: clamp(19px,1.5vw,25px); font-weight: 550; }
@@ -171,7 +171,7 @@ body {
 .severity-critical {
   background: var(--severity-critical-background);
   border-color: var(--severity-critical-border);
-  border-left-color: var(--severity-critical-accent);
+  border-color: var(--severity-critical-border);
 }
 .severity-critical .notification-level,
 .severity-critical .notification-icon,
@@ -180,7 +180,7 @@ body {
 .severity-warning {
   background: var(--severity-warning-background);
   border-color: var(--severity-warning-border);
-  border-left-color: var(--severity-warning-accent);
+  border-color: var(--severity-warning-border);
 }
 .severity-warning .notification-level,
 .severity-warning .notification-icon,
@@ -189,7 +189,7 @@ body {
 .severity-info {
   background: var(--severity-info-background);
   border-color: var(--severity-info-border);
-  border-left-color: var(--severity-info-accent);
+  border-color: var(--severity-info-border);
 }
 .severity-info .notification-level,
 .severity-info .notification-icon,
