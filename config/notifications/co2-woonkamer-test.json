@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "co2-woonkamer-test",
+  "title": "CO₂ woonkamer",
+  "message": "Dit is een testmelding vanuit Homey Logic.",
+  "severity": "warning",
+  "enabled": true,
+  "testOnly": true,
+  "source": {
+    "type": "logic-variable",
+    "name": "dashboard_test_co2_melding",
+    "expectedType": "boolean"
+  },
+  "condition": {
+    "operator": "equals",
+    "value": true
+  }
+}
