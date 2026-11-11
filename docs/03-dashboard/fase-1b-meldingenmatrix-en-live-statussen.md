@@ -168,3 +168,8 @@ De melding **Achterdeur open** krijgt het niveau **waarschuwing**. De bestaande 
 ### Vraag 20 – meldingsniveau slaapkamerlampen (12 november 2026)
 
 De twee afzonderlijke meldingen **Lamp Sem staat aan** en **Lamp Bram staat aan** krijgen beide het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande voorwaarden blijven ongewijzigd: de betreffende lamp is aan en het bijbehorende tijdschema (`slapen_sem` respectievelijk `slapen_bram`) is actief.
+
+
+### Vraag 21 – meldingsniveau muurtablet-batterij (12 november 2026)
+
+De melding bij een batterijniveau van de muurtablet lager dan 25% krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande grenswaarde en zichtbaarheid blijven ongewijzigd.
