@@ -62,7 +62,8 @@ function App() {
     void refresh();
     const stream = new EventSource("/api/events");
     stream.addEventListener("homey-update", scheduleRefresh);
-    stream.addEventListener("homey-connected", scheduleRefresh);\n    stream.addEventListener("homey-disconnected", scheduleRefresh);
+    stream.addEventListener("homey-connected", scheduleRefresh);
+    stream.addEventListener("homey-disconnected", scheduleRefresh);
 
     return () => {
       window.clearInterval(clock);
