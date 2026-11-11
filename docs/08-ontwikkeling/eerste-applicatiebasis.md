@@ -41,3 +41,18 @@ De ontwikkelpoorten zijn uitsluitend aan localhost gebonden. De productiepoort i
 - Een lockfile wordt gegenereerd en gecommit zodra de eerste dependency-installatie en build lokaal succesvol zijn gevalideerd.
 - De Homey API-key wordt nog niet gebruikt en mag niet in frontendconfiguratie worden opgenomen.
 - De eerste scaffold is geen afgeronde dashboardrelease; Homey-integratie, persistent configuratiebeheer, SSE en functionele dashboardcomponenten volgen later.
+
+
+## Ubuntu-server: vaste projectlocatie
+
+De afgesproken projectlocatie op de Ubuntu-server is `~/opt/homey_dashboard` (oftewel `$HOME/opt/homey_dashboard`). Gebruik deze map als werkdirectory voor alle onderstaande Git- en Docker Compose-commando's. De locatie is een hostpad; binnen de Docker-container blijft de applicatiemap `/app`.
+
+Voorbeeld:
+
+```bash
+cd "$HOME/opt/homey_dashboard"
+git pull
+docker compose up --build -d
+```
+
+Na een nieuwe SSH-sessie moet eerst naar deze projectmap worden gegaan voordat `git pull`, `docker compose ps` of `docker compose logs` wordt uitgevoerd.
