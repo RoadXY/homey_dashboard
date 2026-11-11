@@ -372,3 +372,21 @@ De inventarisatie is uitsluitend read-only: de gebruiker beheert de Homey Flows;
 Dit besluit vervangt de voorlopige keuze B uit paragraaf 12.5. Voor de koppeling tussen dashboardmeldingen en de bijbehorende Homey-apparaten/Logic-variabelen gebruiken we voorlopig de bestaande meldingenmatrix als uitgangspunt. Er wordt dus niet standaard een volledige herinventarisatie van alle actuele Homey Flows uitgevoerd.
 
 Als tijdens de verdere uitwerking een concrete onduidelijkheid of tegenstrijdigheid naar voren komt, kan die gericht worden gecontroleerd in de betreffende Homey Flow. Dit blijft read-only: er worden geen Homey Flows, apparaten, variabelen of instellingen gewijzigd.
+
+
+### 12.7 Definitieve verduidelijking – Homey als databron, dashboardlogica intern (11 november 2026)
+
+**Gebruikersbesluit: voor fase 1 nemen we Homey als waarheid voor de actuele apparaatstatus en gegevens. We gebruiken geen Homey Flows voor de logica van het dashboard.**
+
+De architectuur voor fase 1 is:
+- Homey Pro 2023 is de bron voor de actuele gegevens en apparaatstatussen die het dashboard uitleest.
+- De dashboardapplicatie haalt de benodigde gegevens read-only uit Homey.
+- De voorwaarden, vergelijkingen, meldingsregels en statusbeoordelingen voor het dashboard worden intern in onze eigen applicatie uitgevoerd.
+- Eenvoudige voorwaarden worden rechtstreeks in de dashboardlogica geïmplementeerd; waar passend moeten deze later ook via Blockly configureerbaar zijn.
+- We starten, wijzigen of gebruiken geen Homey Flows om de dashboardlogica uit te voeren. Homey Flows zijn dus geen runtime-afhankelijkheid van de dashboardmeldingen.
+
+Dit verduidelijkt en vervangt de eerdere suggestie in paragraaf 12.6 om bij twijfel gericht Homey Flows te controleren. Voor fase 1 gebruiken we de bestaande meldingenmatrix als functionele referentie, maar we vertalen de benodigde regels naar interne dashboardlogica en baseren de actuele invoer op de gegevens die Homey beschikbaar stelt. We gaan niet standaard Flows inspecteren of herinventariseren.
+
+**Fase 3:** uitgebreidere validatie en diagnose van databronnen, gegevensactualiteit en eventuele bestaande Homey-automatiseringen worden uitgesteld tot fase 3. Ook de combinatie van Homey-beschikbaarheidsstatus en detectie van verouderde/uitblijvende meetwaarden blijft fase 3.
+
+De keuze om `getAvailable()` als Homey-beschikbaarheidsstatus te gebruiken blijft staan, voor zover de gebruikte API/client deze status voor de betreffende apparaten beschikbaar maakt. De status wordt niet afgeleid uit een Homey Flow.
