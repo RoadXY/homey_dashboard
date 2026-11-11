@@ -450,3 +450,13 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - De Deploy Key krijgt uitsluitend leesrechten zolang de server alleen code hoeft te clonen en bij te werken (git clone/git pull).
 - De privésleutel blijft op de Ubuntu-server en wordt niet naar GitHub, de repository of andere systemen gekopieerd. Alleen de publieke sleutel wordt als Deploy Key aan de repository gekoppeld.
 - De sleutel wordt specifiek voor deze repository gebruikt en krijgt een herkenbare SSH-hostalias, zodat andere GitHub-repositories en persoonlijke SSH-sleutels niet onbedoeld worden beïnvloed.
+
+
+## Meldingsniveaus – visuele kleurcodering (11 november 2026)
+
+De gebruiker heeft de visuele richting voor meldingsniveaus bevestigd:
+- **Kritiek:** rustige donkerrode/bordeauxrode achtergrond met lichtrode tekst en een lichtrood pictogram. Het contrast moet duidelijk en goed leesbaar zijn zonder fel of vermoeiend te ogen.
+- **Waarschuwing:** rustige donkergele/okergele achtergrond met lichtere gele tekst en een lichtgeel pictogram. Ook hier geldt goed contrast en een rustige uitstraling.
+- **Informatie:** kleurstelling nog niet vastgesteld; hiervoor wordt eerst de gebruiker geraadpleegd.
+
+De bestaande frontend toont al de niveau-labels KRITIEK, WAARSCHUWING en INFO en kent CSS-klassen per severity, maar de huidige uitvoering onderscheidt de niveaus hoofdzakelijk met een gekleurde linkerrand. De volledige kleurvlakken, niveau-iconen en definitieve styling moeten nog worden geïmplementeerd. De prioriteit blijft een vaste eigenschap per melding.
