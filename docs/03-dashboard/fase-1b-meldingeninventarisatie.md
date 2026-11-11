@@ -134,3 +134,8 @@ De gebruiker kiest voor niveau **waarschuwing** voor **Achterdeur open**. De oor
 ### Vraag 20 – meldingsniveau slaapkamerlampen
 
 De gebruiker kiest voor niveau **info** voor beide afzonderlijke meldingen: **Lamp Sem staat aan** en **Lamp Bram staat aan**. Geen aanvullende opmerkingen. De oorspronkelijke combinatie van lamp aan en het bijbehorende actieve slaaptijdschema blijft behouden.
+
+
+### Vraag 21 – meldingsniveau batterij muurtablet
+
+De gebruiker kiest voor niveau **waarschuwing** wanneer de batterij van de muurtablet lager is dan 25%. Geen aanvullende opmerkingen. De bestaande grenswaarde (<25%) blijft ongewijzigd.
