@@ -155,3 +155,8 @@ Voor **Vriezer keuken warm!** blijft de oorspronkelijke Home Assistant-voorwaard
 ### Gebruikersbevestiging – type wasmachine-Logic-variabele (11 november 2026)
 
 De gebruiker bevestigt dat `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5d96b9`) een Logic-variabele van het type **Ja/Nee (boolean)** is. Dit is de gekozen statusbron voor Wasmachine staat aan. De dashboardapp leest de variabele read-only uit: `true` betekent draaiend en `false` betekent niet draaiend. Een ontbrekende, ongeldige of niet-beschikbare waarde wordt als onbekend behandeld, nooit stilzwijgend als false. De Homey-Flow/logica die de variabele beheert wordt niet aangepast.
+
+
+### Gebruikersbesluit – severity vriezer (11 november 2026)
+
+Voor **Vriezer keuken warm!** is het meldingsniveau **critical (kritiek)** gekozen. Er zijn geen aanvullende opmerkingen. Dit legt alleen de severity vast; de oorspronkelijke temperatuurvoorwaarde en exacte drempel blijven nog te achterhalen.
