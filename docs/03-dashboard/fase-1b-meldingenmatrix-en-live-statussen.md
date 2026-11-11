@@ -118,3 +118,8 @@ De gebruiker kiest ervoor de vier raamwaarschuwingen als vier afzonderlijke meld
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 10 (weergave raamwaarschuwingen)
 
 De gebruiker kiest ervoor de vier raamwaarschuwingen als vier losse meldingen weer te geven, zonder gezamenlijke kop of visuele groepering. De dashboardbrede sorteerregel uit `docs/03-dashboard/README.md` blijft leidend: eerst kritiek, daarna waarschuwing, daarna info; binnen hetzelfde niveau staat de melding met het nieuwste activeringstijdstip bovenaan. Groepering vindt dus uitsluitend plaats op meldingsniveau (kritiek/waarschuwing/info) en binnen elk niveau op tijd van binnenkomst/activering, niet op onderwerp of ruimte. De vier raamregels blijven technisch zelfstandig en afzonderlijk Blockly-bewerkbaar.
+
+
+### Vraag 11 – meldingsniveau directe contactmeldingen (11 november 2026)
+
+De zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open**, **Grote Bram**, **Grote Tess**, **Grote Ouders open** en **Raam Sem open** krijgen alle het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande voorwaarden en zelfstandige meldingen blijven ongewijzigd.
