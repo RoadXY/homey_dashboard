@@ -8,3 +8,6 @@ Screenshots uit Homey Developer Tools bevestigen voor apparaat **Remeha ketel** 
 - `DHW_mode` — enum, titel **Tap water comfort modus**; getoonde waarde `off`.
 
 De eerste twee zijn de gekozen read-only bronnen voor respectievelijk verwarming/ketel actief-inactief en tapwater actief-inactief. Voor beide geldt `true` = actief en `false` = inactief; een ontbrekende, ongeldige of niet-beschikbare waarde wordt als onbekend behandeld. `DHW_mode` is aanvullende informatie over de ingestelde comfortmodus en mag niet worden verward met de actuele tapwatertoestand. De getoonde waarden zijn slechts een momentopname.
+
+
+**Afbakening:** conform bevestiging van de gebruiker blijft de Remeha-weergave beperkt tot verwarming actief/inactief en tapwater actief/inactief. `DHW_mode` wordt niet opgenomen in het dashboard.
