@@ -151,7 +151,7 @@ function App() {
               <div className="empty-state">
                 <span className="empty-mark" aria-hidden="true">!</span>
                 <strong>Bron niet beschikbaar</strong>
-                <span>De testvariabele ontbreekt of kan niet betrouwbaar worden uitgelezen. De meldingstatus is onbekend.</span>
+                <span>Een of meer Homey-bronnen ontbreken of kunnen niet betrouwbaar worden uitgelezen. De meldingstatus is onbekend.</span>
               </div>
             ) : (
               <div className="empty-state">
