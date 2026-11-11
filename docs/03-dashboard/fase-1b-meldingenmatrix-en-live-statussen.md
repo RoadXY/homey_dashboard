@@ -496,3 +496,8 @@ De gebruiker heeft de volgende Homey-apparaatkoppelingen expliciet bevestigd. De
 De gebruiker heeft geen aanvullende opmerkingen of correcties meegegeven. De oorspronkelijke zichtbaarheidvoorwaarden uit de HA-referentie blijven ongewijzigd; deze bevestiging valideert uitsluitend de Homey-bron/device-capability-koppelingen. Er worden geen Homey-apparaten of instellingen aangepast.
 
 **Nog niet bevestigd in deze stap:** exacte Homey-apparaat-ID's, de verdere samengestelde voorwaarden van de raam-/deurmeldingen en de uiteindelijke JSON-configuraties. De achterdeurmelding behoudt dus nadrukkelijk de oorspronkelijke extra voorwaarde: deur open én (buitentemperatuur <18 °C óf >24 °C).
+
+
+### 12.1 Gebruikersbesluit – activeringsmoment wateralarmen (11 november 2026)
+
+Voor beide wateralarmmeldingen kiest de gebruiker voor **directe weergave** zodra de Homey-capability `alarm_water` actief wordt. Er wordt geen extra vertraging of duurvoorwaarde toegevoegd. De oorspronkelijke voorwaarde `state is on` blijft behouden.
