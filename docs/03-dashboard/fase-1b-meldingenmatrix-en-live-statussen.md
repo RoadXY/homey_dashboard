@@ -438,3 +438,20 @@ De bronkeuze en de prioriteitsinstelling zijn dus twee afzonderlijke configurati
 De JSON-configuratie is de runtime-configuratiebron voor meldingen. De eerste JSON-bestanden worden opgesteld op basis van de huidige HA-YAML, met inachtneming van de expliciete migratiebesluiten en uitsluitingen in deze documentatie. Home Assistant blijft niet nodig tijdens runtime.
 
 Homey blijft de read-only databron. De dashboardapplicatie voert alle voorwaarden intern uit. Homey Logic-variabelen zijn toegestane invoerbronnen wanneer de configuratie die aanwijst; de gebruiker is verantwoordelijk voor het vullen en actueel houden ervan. Een meldingsprioriteit is statisch per afzonderlijke melding.
+
+
+### 12.11 Gebruikersbesluit – CO₂-melding testen met handmatig bedienbare Logic-variabele (11 november 2026)
+
+Voor de eerste JSON-proefmelding kiest de gebruiker bewust een Homey Logic-variabele als databron, zodat de melding handmatig aan en uit gezet kan worden zonder de CO₂-waarde in de woonkamer fysiek te hoeven verhogen.
+
+**Voorstel voor een aparte testvariabele:**
+- Naam: `dashboard_test_co2_melding`
+- Type: boolean (waar/onwaar)
+- `true`: de testmelding wordt actief en zichtbaar.
+- `false`: de testmelding is niet actief en verdwijnt van het dashboard.
+
+Dit is een afzonderlijke testvariabele en vervangt of beïnvloedt niet de bestaande productievariabele `eco2_woonkamer_status`. De testmelding wordt als test/configuratieproef herkenbaar gehouden en is geen definitieve CO₂-drempelimplementatie.
+
+De gebruiker maakt en bedient de Logic-variabele zelf in Homey. De dashboardapplicatie leest de boolean uitsluitend read-only uit en evalueert de JSON-voorwaarde intern. Er hoeft voor deze proef geen Homey Flow te worden aangemaakt of gewijzigd.
+
+De exacte naam en het type worden als voorstel vastgelegd; vóór de implementatie moet de gebruiker bevestigen dat deze variabele in Homey is aangemaakt of een andere bestaande testvariabele aanwijzen.
