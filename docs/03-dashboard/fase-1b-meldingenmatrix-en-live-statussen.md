@@ -78,3 +78,8 @@ Aanvullende expliciete voorwaarde: de drogerkaart wordt alleen getoond wanneer d
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 2 (Truus)
 
 De gebruiker kiest ervoor de oorspronkelijke YAML-logica exact te behouden. De gewone Truus-kaart is zichtbaar zolang `sensor.truus_truus_werk_status` niet gelijk is aan `Sleeping`, `Charging`, `Unavailable` of `Standby`. Bij exact `Standby` verschijnt de aparte kaart **‘Truus wil opgehaald worden!’**. Geen aanvullende opmerkingen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 3 (airco's)
+
+De gebruiker kiest ervoor beide aircokaarten uitsluitend te tonen wanneer de airco actief is. Dit vervangt het oorspronkelijke verschil in zichtbaarheid tussen keuken en zolder: beide moeten een status anders dan `off` en `unavailable` hebben. Beide kaarten tonen bedrijfsstatus en ingestelde temperatuur. Geen aanvullende opmerkingen.
