@@ -297,3 +297,14 @@ De gebruiker heeft bevestigd dat de centrale diagnosefunctie voor Homey-apparate
 - De diagnosefunctie is uitsluitend read-only en verandert geen Homey-apparaten, Flows of Logic-variabelen.
 
 **Uitwerking voor implementatie:** de Homey-API-beschikbaarheidssignalen, laatste update-tijdstippen en versheidsgrenzen per datatype moeten technisch worden onderzocht en vastgelegd. De diagnosehistoriek kan als aparte vervolgbeslissing worden uitgewerkt; de actuele waarschuwing moet in fase 1 automatisch verdwijnen na herstel en een nieuwe geldige meting. De functionele eisen staan ook in hoofdstuk 12 van `fase-1b-meldingenmatrix-en-live-statussen.md`.
+
+
+### Meldingenheader en meldingen die niet beoordeeld kunnen worden
+- In de header/menubalk bij de meldingenstatus verschijnt een **knipperend rood waarschuwingssignaal** zodra een onderliggende Homey-bron een of meer dashboardmeldingen blokkeert doordat het apparaat offline is of geen geldige/verwachte actuele data meer aanlevert.
+- Het waarschuwingssignaal is aanklikbaar en navigeert direct naar **Instellingen → Systeem → Diagnose**.
+- Het blijft zichtbaar zolang ten minste één relevant bronprobleem openstaat en verdwijnt automatisch na herstel en een nieuwe geldige meting.
+- Meldingsvoorwaarden krijgen een drieledige evaluatie: waar, onwaar of onbekend/niet te beoordelen. Ontbrekende of verouderde data mag nooit stilzwijgend als onwaar worden geïnterpreteerd.
+- De diagnosepagina toont welke meldingsregels hierdoor niet kunnen worden beoordeeld, welke apparaatbron(nen) ontbreken, wanneer voor het laatst geldige data is ontvangen en waarom de melding niet kan worden getoond.
+- Een melding die niet beoordeeld kan worden, wordt onderscheiden van een melding die gewoon niet actief is. Zo lijkt het niet alsof alles in orde is terwijl een waarschuwing door een offline apparaat niet kan worden vastgesteld.
+
+Dit gedrag is expliciet onderdeel van fase 1. De exacte positie en vormgeving van het header-icoon wordt tijdens de UI-uitwerking afgestemd op de bestaande dashboardheader.
