@@ -72,3 +72,19 @@ De gebruiker wil voor de droger de actuele **status**, **voortgang** en **rester
 
 ## Dashboardconsequentie
 De variabelen `ramen_AantalOpen` en `ramen_telRamenOpenReden` zijn bruikbare dashboardkandidaten, maar de redenvariabele is slechts één raamnaam. Voor een betrouwbare lijst met afzonderlijke open ramen is het beter de actuele contactstatussen rechtstreeks uit Homey te lezen. Regenmeldingen zijn gebeurtenis-/timeoutlogica; ze moeten niet zonder meer als blijvende actieve alarmstatus worden geïnterpreteerd.
+
+## Technische statuscontrole droger – 11 november 2026
+
+Read-only momentopname van Homey-apparaat **Samsung wasdroger** (134d7e99-5067-4891-bb1e-222d1e970222):
+
+| Capability | Waarde bij uitlezen |
+|---|---:|
+| onoff | false |
+| localthings_machine_state | Ready |
+| localthings_cycle_active | false |
+| localthings_progress | 0 |
+| localthings_remaining_minutes | 220 |
+| measure_power | null |
+| meter_power | 349.9 |
+
+Dit is één momentopname en geen volledige statusmapping. Ready samen met cycle_active=false, progress=0 en remaining_minutes=220 is nog niet voldoende om de resterende tijd als een actieve droogcyclus te presenteren. De implementatie moet resterende tijd alleen tonen wanneer de cyclus daadwerkelijk actief is en de waarde plausibel is. De exacte betekenis van Ready en de resterende-minutenwaarde moet nog worden bevestigd met een tweede momentopname tijdens een draaiend programma.
