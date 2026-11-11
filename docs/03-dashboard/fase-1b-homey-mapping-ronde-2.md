@@ -161,3 +161,7 @@ Voor de melding **Achterdeur open** bevestigt de gebruiker Homey-apparaat **Weer
 ## 14. Gebruikersbevestiging – Zolder koud (12 november 2026)
 
 Voor **Zolder koud** bevestigt de gebruiker Homey-apparaat **Temperatuur Sem** (ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`, als bron. De melding wordt actief bij een temperatuur **<12 °C** en inactief bij ≥12 °C. De kaart behoudt de oorspronkelijke verwijzing naar de ingestelde temperatuur van `climate.airco_zolder_thermostaat` voor de weergave. Meldingsniveau blijft **info**.
+
+## 15. Gebruikersbesluit – herbruikbaar schema bovenramen (12 november 2026)
+
+Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in Homey reproduceerbaar gemaakt als een **herbruikbare Blockly-bouwsteen**. De bouwsteen krijgt instelbare dagen en tijden, zodat de raamcondities het schema kunnen hergebruiken. De inhoudelijke werking blijft gebaseerd op het oorspronkelijke YAML-schema; Homey Flows worden niet als bron voor de dashboardlogica gebruikt.
