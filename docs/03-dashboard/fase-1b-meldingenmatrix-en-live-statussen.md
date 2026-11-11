@@ -243,9 +243,11 @@ Read-only momentopname van Homey-apparaat **Remeha ketel** (ed9e603f-0930-4a37-8
 De snapshot is consistent met geen actieve verwarmingsvraag en geen actieve warmwatervraag op dat meetmoment (boiler_state=false, DHW_state=false, DHW_mode=off). De ruwe statuscode 0 en foutcode 255 zijn nog niet semantisch gedecodeerd en worden niet als fout of normale status geïnterpreteerd zonder aanvullende broninformatie. Voor de dashboardindicatoren gebruiken we primair de booleans boiler_state en DHW_state; DHW_mode kan als aanvullende context dienen. Een momentopname bewijst nog niet alle mogelijke toestanden.
 
 
-## 12. Voorstel – apparaatdiagnose en betrouwbaarheid van dashboardmeldingen (11 november 2026)
+## 12. Fase 1-besluit – apparaatdiagnose en betrouwbaarheid van dashboardmeldingen (11 november 2026)
 
-**Status:** ontwerpvoorstel op basis van gebruikerssuggestie; uitwerking en exacte presentatie moeten nog worden bevestigd.
+<badge color="success">Opgenomen in fase 1</badge>
+
+**Besluit:** de gebruiker heeft bevestigd dat de apparaatdiagnose onderdeel wordt van fase 1. Dit is dus geen optionele latere uitbreiding. De onderstaande functionele eisen gelden als scope voor fase 1; de technische uitwerking en precieze vormgeving worden tijdens de implementatie verder uitgewerkt.
 
 Het dashboard moet zichtbaar maken wanneer een Homey-apparaat niet bereikbaar is of wanneer een noodzakelijke bronwaarde ontbreekt/verouderd is. Een gebruiker mag een onbepaalbare status niet aanzien voor een normale of inactieve status.
 
@@ -278,4 +280,4 @@ Een diagnosepagina geeft per betrokken Homey-apparaat of databron ten minste:
 - Welke versheidsgrenzen passend zijn voor temperatuur, contactstatus, machine-status, Logic-variabelen en weersinformatie.
 - Hoe een apparaatprobleem wordt gekoppeld aan alle dashboardonderdelen en meldingsregels die ervan afhankelijk zijn.
 
-Dit voorstel geldt als een generieke betrouwbaarheid-/diagnoselaag naast de bestaande HA-meldingenmatrix. Het wijzigt de oorspronkelijke HA-condities of de gekozen Homey-bronmappings niet.
+Deze functie wordt in fase 1 gebouwd als generieke betrouwbaarheid-/diagnoselaag naast de bestaande HA-meldingenmatrix. Ze wijzigt de oorspronkelijke HA-condities of de gekozen Homey-bronmappings niet. De diagnosepagina en de waarschuwingen op het hoofddashboard vallen beide binnen de fase-1-scope.
