@@ -173,3 +173,7 @@ Homey-apparaat **Temperatuur Sem**, capability `measure_temperature`, is bevesti
 ### Schema bovenramen – migratiebesluit (12 november 2026)
 
 Het in de oorspronkelijke YAML gebruikte `schedule.boven_ramen_open` wordt als herbruikbare Blockly-bouwsteen gereproduceerd, met instelbare dagen en tijden. De bestaande raamcondities blijven leidend.
+
+### Bronbevestiging – Wateralarm wasmachines! (12 november 2026)
+
+Gekozen Homey-bron: afzonderlijke **Water sensor wasmachine**, capability `alarm_water`. Niet de wasmachine zelf. De oorspronkelijke YAML-voorwaarde blijft leidend; meldingsniveau **kritiek**. Exact apparaat-ID en actuele waarde zijn nog niet in deze bevestiging opgenomen.
