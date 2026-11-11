@@ -531,3 +531,10 @@ De gebruiker kiest voor de eenvoudige deur- en raamcontactmeldingen voor **direc
 Er zijn geen aanvullende opmerkingen of uitzonderingen meegegeven. De bevestigde Homey-bron voor deze contacten blijft de bijbehorende `alarm_contact`-capability; de dashboardapplicatie leest deze read-only uit.
 
 **Afbakening:** dit besluit wijzigt de samengestelde voorwaarde van **Achterdeur open** niet: daarvoor blijft gelden contact open én (buitentemperatuur <18 °C óf >24 °C). Ook de vier afzonderlijke meldingen over ramen die niet open zijn, behouden hun eigen contact-, schema- en overige voorwaarden; die worden niet door dit besluit vervangen.
+
+
+### 12.3 Gebruikersbesluit – vriezerregel ongewijzigd overnemen (11 november 2026)
+
+Voor **Vriezer keuken warm!** kiest de gebruiker ervoor de oorspronkelijke Home Assistant-voorwaarde ongewijzigd aan te houden. De precieze temperatuurgrens/onderliggende definitie van `binary_sensor.vriezer_keuken_temperatuur_hoog` moet eerst in de oorspronkelijke Home Assistant-configuratie worden achterhaald. Er wordt nu geen nieuwe of veronderstelde drempelwaarde ingevuld.
+
+De gekozen Homey-bron blijft **Koelkast keuken temperatuur**, capability `measure_temperature` (apparaat-ID `64fc846e-01b0-438a-9114-4498ea8005e7`). Zodra de oorspronkelijke grens is vastgesteld, vertalen we de HA-regel één-op-één naar deze Homey-temperatuurbron. Er zijn geen aanvullende opmerkingen meegegeven.
