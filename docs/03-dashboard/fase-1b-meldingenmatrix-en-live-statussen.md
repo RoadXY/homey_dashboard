@@ -281,3 +281,17 @@ Een diagnosepagina geeft per betrokken Homey-apparaat of databron ten minste:
 - Hoe een apparaatprobleem wordt gekoppeld aan alle dashboardonderdelen en meldingsregels die ervan afhankelijk zijn.
 
 Deze functie wordt in fase 1 gebouwd als generieke betrouwbaarheid-/diagnoselaag naast de bestaande HA-meldingenmatrix. Ze wijzigt de oorspronkelijke HA-condities of de gekozen Homey-bronmappings niet. De diagnosepagina en de waarschuwingen op het hoofddashboard vallen beide binnen de fase-1-scope.
+
+
+### Meldingenheader – opvallende diagnosewaarschuwing
+- In de header/menubalk waar de meldingenstatus wordt getoond, verschijnt een **knipperend rood waarschuwingssignaal** zodra één of meer meldingsregels niet betrouwbaar kunnen worden beoordeeld doordat een vereiste Homey-bron offline is, ontbreekt of verouderde/ongeldige gegevens levert.
+- Het signaal is aanklikbaar. Aanklikken opent rechtstreeks **Instellingen → Systeem → Diagnose**.
+- Het signaal blijft zichtbaar zolang er ten minste één onopgelost bronprobleem bestaat dat een dashboardmelding blokkeert. Na herstel en een nieuwe geldige meting verdwijnt het automatisch.
+- De diagnosepagina maakt expliciet onderscheid tussen een actieve melding en een melding die **niet kan worden beoordeeld**. Een geblokkeerde melding mag niet verdwijnen zonder uitleg.
+
+### Meldingsbeoordeling bij onbeschikbare bronnen
+- De evaluatie van meldingsvoorwaarden gebruikt minimaal drie uitkomsten: **waar**, **onwaar** en **onbekend/niet te beoordelen**.
+- Als een noodzakelijke bron ontbreekt, offline is of buiten de ingestelde versheidsgrens valt, wordt de betrokken voorwaarde onbekend.
+- Een onbekende voorwaarde wordt nooit als onwaar behandeld. De bijbehorende melding wordt niet als normale actieve/inactieve status gepresenteerd; de diagnose toont welke melding hierdoor niet kan verschijnen of betrouwbaar worden beoordeeld.
+- Bij samengestelde AND/OR-voorwaarden wordt onbekend volgens de logische uitkomst verwerkt. Alleen wanneer de totale voorwaarde niet eenduidig waar of onwaar kan worden vastgesteld, krijgt de melding de status niet te beoordelen.
+- De diagnose toont per geblokkeerde meldingsregel de ontbrekende bron(nen), het laatst bekende meetmoment en de reden van blokkade.
