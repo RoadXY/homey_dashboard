@@ -69,8 +69,10 @@ function App() {
     return () => {
       window.clearInterval(clock);
       window.clearTimeout(refreshTimer);
-      stream.removeEventListener("ready", scheduleRefresh);\n      stream.removeEventListener("homey-update", scheduleRefresh);
-      stream.removeEventListener("homey-connected", scheduleRefresh);\n      stream.removeEventListener("homey-disconnected", scheduleRefresh);
+      stream.removeEventListener("ready", scheduleRefresh);
+      stream.removeEventListener("homey-update", scheduleRefresh);
+      stream.removeEventListener("homey-connected", scheduleRefresh);
+      stream.removeEventListener("homey-disconnected", scheduleRefresh);
       stream.close();
     };
   }, [refresh]);
