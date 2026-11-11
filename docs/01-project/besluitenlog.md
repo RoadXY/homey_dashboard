@@ -53,3 +53,8 @@ De gebruiker keurt de voorgestelde lijst van 16 weercondities goed voor het dash
 De gebruiker bevestigt behoud van: drogerstatus/voortgang/resterende tijd; Truus werkstatus/ophaalverzoek; Remeha verwarming/warm tapwater; airco keuken en zolder met bedrijfsstatus/ingestelde temperatuur; neerslagkans boven 25%; muurtablet-batterij onder 25%; tuinhuislamp langer dan 5 minuten aan; CO₂ woonkamer boven 1200 ppm. Geen uitsluitingen bij deze vraag.
 
 De droger wordt uitsluitend getoond wanneer hij actief is/draait. De YAML-bronvoorwaarde is `sensor.droger_dryer_machine_state == run`; de getoonde eindtijd komt uit `sensor.droger_dryer_completion_time`.
+
+
+## Inventarisatie HA-YAML – Truus
+
+De gebruiker bevestigt de bestaande YAML-zichtbaarheidslogica ongewijzigd: gewone Truus-status bij alle statussen behalve `Sleeping`, `Charging`, `Unavailable` en `Standby`; aparte melding **‘Truus wil opgehaald worden!’** bij `Standby`. Geen opmerkingen of uitzonderingen toegevoegd.
