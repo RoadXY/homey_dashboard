@@ -243,3 +243,16 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - Dit zijn handmatig ingestelde tijdelijke waarden en mogen niet als gevalideerde actuele kamertemperaturen worden beschouwd.
 - De vier flows blijven uitgeschakeld totdat de berekeningslogica is herzien en expliciet door de gebruiker is goedgekeurd.
 - De dashboardintegratie kan de variabelen nu als numerieke waarden uitlezen. De definitieve keuze tussen een 50/50 exponentieel voortschrijdend gemiddelde en een rolling average over een tijdvenster is nog niet gemaakt.
+
+
+## Eerste hoofdschermimplementatie (11 november 2026)
+- De gebruiker heeft akkoord gegeven om de eerste echte dashboardcomponenten te bouwen.
+- `src/client/main.tsx` is vervangen: de scaffold-welkomstpagina maakt plaats voor een eerste dashboardlayout met klok/datum, Homey-status, weerkaart, vier temperatuurtegels en de acht afgesproken Quick Actions.
+- De frontend haalt gegevens op via bestaande read-only endpoints: `/api/homey/status`, `/api/homey/readings` en `/api/homey/logic`.
+- Verversing: klok elke seconde; Homey-gegevens elke 30 seconden.
+- Temperatuurbronnen in deze eerste implementatie: woonkamer Multisensor, keuken Logic-gemiddelde, Temperatuur Sem en Temperatuur Bram. Ontbrekende waarden worden als een streepje weergegeven; er worden geen fictieve temperaturen ingevuld.
+- `src/client/style.css` bevat de eerste donkere 40/60-layout, grote temperatuurtegels en responsive aanpassing voor kleinere viewports.
+- Quick Actions zijn in deze stap alleen visuele placeholders met label "Binnenkort"; er worden geen Homey Flows gestart en geen apparaten bediend.
+- De huidige UI toont nog geen meldingenpaneel. Dat is bewust buiten deze eerste hoofdschermstap gehouden.
+- GitHub-commits: `e6456e4` (frontendstructuur) en `24dfbb5` (styling).
+- Validatie: code is op GitHub bijgewerkt; een Docker-build en visuele controle op Ubuntu/tablet moeten nog worden uitgevoerd. De implementatie wordt dus nog niet als getest of afgerond beschouwd.
