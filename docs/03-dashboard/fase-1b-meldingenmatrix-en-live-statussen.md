@@ -13,3 +13,6 @@ De gebruiker heeft screenshots uit Homey Developer Tools aangeleverd voor het ap
 Hiermee zijn de twee gevraagde statusbronnen voor de dashboardweergave vastgesteld: `boiler_state` voor verwarming/ketel actief-inactief en `DHW_state` voor tapwater actief-inactief. De booleanwaarde wordt als status gebruikt (`true` = actief, `false` = inactief); ontbrekende, ongeldige of niet-beschikbare waarden blijven `unknown` en worden niet als inactief getoond. De enum `DHW_mode` geeft de ingestelde tapwater-comfortmodus weer en is aanvullende context, niet de actuele tapwatervraag. De getoonde `off`-waarde is een momentopname, geen vaste configuratiewaarde.
 
 De exacte semantiek van de ketelstatus is voor de dashboardtegel functioneel voldoende als Homey deze boolean betrouwbaar bijwerkt. De dashboardapp leest alle waarden uitsluitend read-only uit en wijzigt geen Homey-instellingen.
+
+
+**Afbakening dashboardweergave:** de gebruiker bevestigt dat we bij het bestaande plan blijven. Alleen de twee afgesproken statussen (verwarming/ketel en tapwater) worden weergegeven. `DHW_mode` wordt niet als aparte status of tegel opgenomen.
