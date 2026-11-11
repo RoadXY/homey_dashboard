@@ -145,3 +145,8 @@ De gebruiker bevestigt dat de volgende eenvoudige contactmeldingen direct zichtb
 Er wordt geen aanvullende vertraging of minimale open-duur toegepast. Er zijn geen opmerkingen of uitzonderingen meegegeven. De Homey-`alarm_contact`-capabilities worden uitsluitend read-only uitgelezen.
 
 Dit besluit verandert de samengestelde voorwaarde voor Achterdeur open niet (contact open én buitentemperatuur <18 °C of >24 °C). Evenmin verandert het de afzonderlijke schema- en aanvullende voorwaarden van de vier meldingen over ramen die niet open zijn.
+
+
+### Gebruikersbesluit – vriezerregel ongewijzigd overnemen (11 november 2026)
+
+Voor **Vriezer keuken warm!** blijft de oorspronkelijke Home Assistant-voorwaarde leidend. De exacte temperatuurdrempel/definitie achter `binary_sensor.vriezer_keuken_temperatuur_hoog` moet nog uit de oorspronkelijke configuratie worden achterhaald; er wordt geen drempel gegokt of nieuw gekozen. De Homey-bron blijft Koelkast keuken temperatuur (`64fc846e-01b0-438a-9114-4498ea8005e7`, `measure_temperature`). Na achterhalen van de grens wordt de oorspronkelijke regel één-op-één vertaald. Geen aanvullende opmerkingen.
