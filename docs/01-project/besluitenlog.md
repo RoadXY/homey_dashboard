@@ -113,3 +113,8 @@ Besluit: **Wateralarm wasmachines!** en **Wateralarm vaatwasser!** krijgen beide
 ## Inventarisatie HA-YAML – meldingsniveau vriezermelding
 
 Besluit: de melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. De bestaande bronkoppeling en voorwaarde blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau CO₂ woonkamer
+
+Besluit: **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. De bestaande drempel (>1200 ppm), bronkoppeling en voorwaarde blijven ongewijzigd. Geen aanvullende opmerkingen.
