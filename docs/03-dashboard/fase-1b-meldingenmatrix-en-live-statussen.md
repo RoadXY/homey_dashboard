@@ -354,3 +354,12 @@ De gebruiker wijst op de methode `getAvailable()` uit de Homey Apps SDK. Deze re
 Voor de technische uitwerking gebruiken we deze methode als bron voor de beschikbaarheidsstatus, voor zover de methode via de gebruikte Homey API/client voor de betreffende apparaten beschikbaar is. We controleren dit in de implementatie en tonen de door Homey geretourneerde status; we leiden geen extra offline-status af uit verouderde meetwaarden. Als de methode voor een apparaat niet beschikbaar is of niet kan worden uitgelezen, registreren en tonen we dat als onbekend/niet vast te stellen.
 
 De eerder gemaakte keuze blijft gelden: controle op uitblijvende of verouderde meetwaarden wordt pas in fase 3 toegevoegd.
+
+
+### 12.5 Gebruikersbesluit – broninventarisatie voor meldingen (11 november 2026)
+
+**Voorlopige keuze gebruiker: optie B – actuele Homey Flows opnieuw onderzoeken.**
+
+Voor het vaststellen van de apparaten en Logic-variabelen die bij dashboardmeldingen betrokken zijn, onderzoeken we voorlopig de actuele Homey Flows opnieuw. De bestaande meldingenmatrix blijft documentatie en referentie, maar wordt niet zonder controle als actuele werkelijkheid aangenomen.
+
+De inventarisatie is uitsluitend read-only: de gebruiker beheert de Homey Flows; er worden geen Flows, apparaten, variabelen of instellingen gewijzigd. De resultaten worden naast de bestaande meldingenmatrix gelegd en eventuele verschillen worden expliciet gerapporteerd.
