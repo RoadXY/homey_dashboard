@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables } from "./homey.js";
+import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications } from "./notifications.js";
 
 const app = Fastify({ logger: true });
@@ -34,6 +34,34 @@ app.get("/api/health", async () => ({
 }));
 
 app.get("/api/homey/status", async () => getHomeyStatus());
+app.get("/api/events", async (request, reply) => {
+  reply.hijack();
+  reply.raw.writeHead(200, {
+    "Content-Type": "text/event-stream; charset=utf-8",
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no",
+  });
+  reply.raw.write(`event: ready\\ndata: ${JSON.stringify({ homey: getHomeyStatus(), connectedAt: new Date().toISOString() })}\\n\\n`);
+
+  const onUpdate = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: homey-update\\ndata: ${JSON.stringify(payload)}\\n\\n`);
+  };
+  const onConnected = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: homey-connected\\ndata: ${JSON.stringify(payload)}\\n\\n`);
+  };
+  const heartbeat = setInterval(() => {
+    if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\\n\\n`);
+  }, 20_000);
+
+  homeyRealtime.on("update", onUpdate);
+  homeyRealtime.on("connected", onConnected);
+  request.raw.on("close", () => {
+    clearInterval(heartbeat);
+    homeyRealtime.off("update", onUpdate);
+    homeyRealtime.off("connected", onConnected);
+  });
+});
 
 app.get("/api/notifications", async (_request, reply) => {
   try {
