@@ -119,3 +119,8 @@ De gebruiker kiest voor niveau **info** voor alle vier temperatuurmeldingen: Sla
 ### Vraag 17 – meldingsniveau tuinhuislamp
 
 De gebruiker kiest voor niveau **info** voor de melding wanneer de tuinhuislamp langer dan vijf minuten aan staat. Geen aanvullende opmerkingen. De duurvoorwaarde blijft configureerbaar in het gedeelde notificatiemodel voor JSON en Blockly.
+
+
+### Vraag 18 – meldingsniveau raam-niet-open-waarschuwingen
+
+De gebruiker kiest voor niveau **info** voor alle vier afzonderlijke meldingen: Raam Tess niet open, Raam Bram niet open, Raam ouders niet open en Dakraam Sem niet open. Geen aanvullende opmerkingen; bestaande voorwaarden en tijdschema's blijven ongewijzigd.
