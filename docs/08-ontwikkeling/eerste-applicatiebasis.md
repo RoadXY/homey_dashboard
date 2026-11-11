@@ -120,3 +120,13 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De Homey API-key wordt alleen door de backend gelezen.
 - Het exacte Homey-adres en de bereikbaarheid over de VLAN-grens moeten vanaf de Ubuntu-server worden getest. Er wordt geen poortnummer verondersteld.
 
+
+
+## Eerste succesvolle Homey Pro 2023-verbinding (11 november 2026)
+- De lokale Homey API-verbinding vanuit de Docker-backend is succesvol getest.
+- `POST /api/homey/connect` retourneerde `state: online`.
+- Homey rapporteerde 128 apparaten en 22 ruimtes.
+- De backend health-check retourneert HTTP 200 via de Vite-proxy.
+- De verbinding werkt over de VLAN-grens; de gebruikte API-key is alleen lokaal in `.env` opgeslagen.
+- De verbindingstest is read-only; er zijn geen apparaten, Flows of Homey-instellingen gewijzigd.
+- Volgende stap: de Homey-inventarisatie uitlezen en de exacte sensor/capability-ID's voor weer en de vier temperatuurtegels vaststellen.
