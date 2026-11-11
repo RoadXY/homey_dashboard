@@ -502,3 +502,8 @@ De gebruiker heeft negen Homey-koppelingen expliciet bevestigd:
 - Raam Sem — `alarm_contact`.
 
 Er zijn geen aanvullende opmerkingen of correcties. Dit bevestigt de apparaatnaam/capability-koppelingen, niet de nog afzonderlijk te valideren samengestelde HA-voorwaarden of exacte apparaat-ID's. De mapping en verdere inventarisatie blijven read-only; Homey-apparaten en instellingen worden niet aangepast.
+
+
+## Gebruikersbesluit – wateralarmen direct tonen (11 november 2026)
+
+De gebruiker kiest voor directe weergave van beide wateralarmmeldingen zodra de betreffende Homey-capability `alarm_water` actief wordt. Er wordt geen vertraging of duurvoorwaarde toegevoegd. Dit geldt voor Wateralarm wasmachines! en Wateralarm vaatwasser!. Homey blijft een read-only databron.
