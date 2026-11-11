@@ -295,3 +295,8 @@ De oorspronkelijke YAML blijft de functionele referentie; nieuw gekozen meldings
 ## Zonnepanelen en historische energiegegevens (12 november 2026)
 
 Het Homey-apparaat **Zonnepanelen** is geïdentificeerd (ID `e743e650-8ac8-477a-b174-bc614fd6a5a2`). De actuele capability `meter_power_today` levert een dagopbrengst in kWh. In de huidige Homey Insights-lijst ontbreekt echter een numerieke historische log voor dit apparaat; alleen de boolean-statuslog is zichtbaar. Logs voor productie/energie van een ander apparaat worden niet gebruikt. Een historische grafiek blijft daarom afhankelijk van het beschikbaar maken van numerieke Insights-registratie of het opzetten van eigen backendhistorie. Details staan in [fase 1B Homey-mapping ronde 2](fase-1b-homey-mapping-ronde-2.md).
+
+
+## Zonnepanelen – Homey Insights bevestigd (12 november 2026)
+
+Correctie op de eerste inventarisatie: voor het apparaat **Zonnepanelen** zijn wel numerieke Insights-logs beschikbaar. De log `energy_power` levert historische vermogenswaarden in W; `meter_power` en `meter_power_today` leveren energie in kWh. Een test met `last24Hours` gaf 288 meetpunten per log, op 5-minutenintervallen. We gebruiken daarom Homey Insights voor de eerste grafiek en hoeven hiervoor geen eigen meetpuntenhistorie in Docker op te slaan. Zie [fase 1B Homey-mapping ronde 2](fase-1b-homey-mapping-ronde-2.md) voor de meetresultaten en de correctie op de eerdere inventarisatie.
