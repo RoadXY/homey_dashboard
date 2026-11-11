@@ -420,3 +420,21 @@ Beide bronnen worden uitsluitend read-only door de dashboardapplicatie uitgeleze
 **Prioriteit is een vaste eigenschap van iedere afzonderlijke melding.** De prioriteit verandert niet dynamisch op basis van de actuele bronwaarde of de uitkomst van een voorwaarde. Wil de gebruiker bijvoorbeeld zowel een normale als een hoge-prioriteitsmelding, dan maakt de gebruiker twee afzonderlijke meldingen met elk een eigen prioriteit en eigen voorwaarden.
 
 De bronkeuze en de prioriteitsinstelling zijn dus twee afzonderlijke configuraties in Blockly. Voor de CO₂-melding wordt op dit moment geen vaste bronkeuze opgelegd; de gebruiker kiest die bij het aanmaken van de melding.
+
+
+### 12.10 Aanvulling gebruiker – eerst JSON-meldingen, Blockly pas later (11 november 2026)
+
+**Volgorde van implementatie bevestigd door gebruiker:**
+
+1. Vertaal eerst de bestaande, voor migratie goedgekeurde dashboardmeldingen uit de huidige Home Assistant-YAML naar JSON-configuratiebestanden.
+2. Laat de dashboardapplicatie deze JSON-configuratie inlezen.
+3. Lees de benodigde apparaatwaarden/capabilities en eventueel door de gebruiker gekozen Homey Logic-variabelen read-only uit Homey.
+4. Evalueer de JSON-voorwaarden intern in de dashboardapplicatie en toon de actieve meldingen.
+5. Test de meldingen en corrigeer de vertaling totdat het gedrag klopt.
+6. Integreer Blockly pas daarna. Blockly wordt een gebruikersinterface om dezelfde JSON-configuratie te lezen, te bewerken en nieuwe meldingen te genereren.
+
+**Belangrijke scope-afbakening:** Blockly is geen voorwaarde voor de eerste werkende meldingen en wordt nu niet geïmplementeerd. Eerst moet de JSON-gedreven meldingenengine functioneren.
+
+De JSON-configuratie is de runtime-configuratiebron voor meldingen. De eerste JSON-bestanden worden opgesteld op basis van de huidige HA-YAML, met inachtneming van de expliciete migratiebesluiten en uitsluitingen in deze documentatie. Home Assistant blijft niet nodig tijdens runtime.
+
+Homey blijft de read-only databron. De dashboardapplicatie voert alle voorwaarden intern uit. Homey Logic-variabelen zijn toegestane invoerbronnen wanneer de configuratie die aanwijst; de gebruiker is verantwoordelijk voor het vullen en actueel houden ervan. Een meldingsprioriteit is statisch per afzonderlijke melding.
