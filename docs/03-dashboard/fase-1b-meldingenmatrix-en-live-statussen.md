@@ -363,3 +363,12 @@ De eerder gemaakte keuze blijft gelden: controle op uitblijvende of verouderde m
 Voor het vaststellen van de apparaten en Logic-variabelen die bij dashboardmeldingen betrokken zijn, onderzoeken we voorlopig de actuele Homey Flows opnieuw. De bestaande meldingenmatrix blijft documentatie en referentie, maar wordt niet zonder controle als actuele werkelijkheid aangenomen.
 
 De inventarisatie is uitsluitend read-only: de gebruiker beheert de Homey Flows; er worden geen Flows, apparaten, variabelen of instellingen gewijzigd. De resultaten worden naast de bestaande meldingenmatrix gelegd en eventuele verschillen worden expliciet gerapporteerd.
+
+
+### 12.6 Correctie gebruikersbesluit – broninventarisatie voor meldingen (11 november 2026)
+
+**Definitieve keuze gebruiker op vraag 4: optie A – bestaande meldingenmatrix gebruiken.**
+
+Dit besluit vervangt de voorlopige keuze B uit paragraaf 12.5. Voor de koppeling tussen dashboardmeldingen en de bijbehorende Homey-apparaten/Logic-variabelen gebruiken we voorlopig de bestaande meldingenmatrix als uitgangspunt. Er wordt dus niet standaard een volledige herinventarisatie van alle actuele Homey Flows uitgevoerd.
+
+Als tijdens de verdere uitwerking een concrete onduidelijkheid of tegenstrijdigheid naar voren komt, kan die gericht worden gecontroleerd in de betreffende Homey Flow. Dit blijft read-only: er worden geen Homey Flows, apparaten, variabelen of instellingen gewijzigd.
