@@ -78,3 +78,8 @@ De melding voor de tuinhuislamp blijft conform de oorspronkelijke regel: lamp la
 ## Inventarisatie HA-YAML – CO₂ woonkamer
 
 Besluit: behoud de oorspronkelijke melding wanneer de CO₂-waarde hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – regenmelding
+
+Besluit: behoud de oorspronkelijke regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
