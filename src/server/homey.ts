@@ -1,6 +1,6 @@
 import { HomeyAPI } from "homey-api";
 
-type HomeyConnectionState = "not-configured" | "connecting" | "online" | "offline";
+type HomeyConnectionState = "not-connected" | "connecting" | "online" | "offline";
 
 type HomeySnapshot = {
   state: HomeyConnectionState;
@@ -12,7 +12,7 @@ type HomeySnapshot = {
 
 let api: Awaited<ReturnType<typeof HomeyAPI.createLocalAPI>> | null = null;
 let snapshot: HomeySnapshot = {
-  state: "not-configured",
+  state: "not-connected",
   checkedAt: null,
   error: null,
   deviceCount: null,
@@ -29,7 +29,7 @@ function getConfig() {
 export function getHomeyStatus(): HomeySnapshot {
   const { address, token } = getConfig();
   if (!address || !token) {
-    return { ...snapshot, state: "not-configured" };
+    return { ...snapshot, state: "not-connected" };
   }
   return { ...snapshot };
 }
@@ -39,7 +39,7 @@ export async function connectHomey(): Promise<HomeySnapshot> {
 
   if (!address || !token) {
     snapshot = {
-      state: "not-configured",
+      state: "not-connected",
       checkedAt: new Date().toISOString(),
       error: null,
       deviceCount: null,
