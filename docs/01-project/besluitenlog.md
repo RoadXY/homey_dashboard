@@ -561,3 +561,11 @@ Daarom gelden voor alle volgende meldingen en uitbreidingen de volgende technisc
 - De melding **Wasmachine staat aan** krijgt het vaste meldingsniveau **info (informatie)**.
 - Er zijn geen aanvullende opmerkingen meegegeven.
 - De bron blijft de read-only boolean Logic-variabele `wasmachine_draait`.
+
+
+## Gebruikersbesluit – droger als actuele statusweergave (11 november 2026)
+
+- De droger wordt weergegeven op basis van de **huidige status**.
+- Er wordt geen afzonderlijke melding/notificatie gegenereerd wanneer de droger klaar is.
+- De eerder gekozen informatie blijft behouden: actuele status, voortgang en resterende tijd.
+- De mapping van machine state, localthings_cycle_active, localthings_progress en localthings_remaining_minutes moet nog technisch worden gevalideerd. Homey blijft een read-only databron.
