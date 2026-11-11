@@ -39,3 +39,7 @@ De tablet communiceert met de backend via HTTP API-verzoeken voor acties en SSE 
 Er komt een afzonderlijk, versiebeheerd API-contract voor gebruik door clients buiten de dashboardwebsite/container. **OpenAPI 3.1** wordt het formele contract; **Swagger UI** wordt de interactieve documentatie- en testinterface. Fastify-integratie via `@fastify/swagger` en `@fastify/swagger-ui` wordt tijdens implementatie gevalideerd. Interne website-endpoints worden niet automatisch onderdeel van de externe API.
 
 Zie [Externe API – contract, documentatie en beheer](externe-api-openapi.md) voor de API-grenzen, voorlopige domeinen, beveiliging, versiebeheer, fase-indeling en implementatievolgorde.
+
+## Fase 5: camerastreams en deurbel-popup
+
+De gewenste deurbel-popup met livevideo en optionele expliciete deuropenactie is opgenomen als fase 5. Homey Pro ondersteunt camerastreams en WebRTC-proxying vanaf firmware v12.12.0, maar de officiële externe API-route om een reeds in Homey geregistreerde stream vanuit onze eigen backend af te spelen is nog niet aangetoond. Zie [Fase 5 – Live camerastreams en deurbel-popup](fase-5-camera-streams-en-deurbel-popup.md) voor onderzoeksresultaten, alternatieve routes, beveiliging en testplan. Er is geen fase-5-code of Homey-configuratie gewijzigd.
