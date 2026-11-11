@@ -13,6 +13,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/config ./config
 RUN chown -R node:node /app
 USER node
 EXPOSE 3000
