@@ -63,8 +63,8 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Muur tablet | Batterijpercentage <25 | Kandidaat: Muur tablet, `measure_battery`. |
 | CO2 woonkamer hoog! | HA-bron: `sensor.eco2` >1200; kaart toont multisensor-CO2 | Homey live `measure_co2`; projectbesluit gebruikt voorlopig Homey-drempels 1000/2000/reset <990. Blockly-configuratie later. |
 | Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Eigen, afzonderlijke schema-instantie voor deze melding. |
-| Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Bovenramenschema migreren; Blockly-herbruikbaarheid onderzoeken. |
-| Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Bovenramenschema migreren; bronwaarden verder mappen. |
+| Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Eigen, afzonderlijke schema-instantie; initiële planning ma–za 07:00–20:00, zo 08:00–20:00. |
+| Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Eigen, afzonderlijke schema-instantie; neerslagbron blijft open/backlog. |
 | Airco keuken | Modus niet off en niet unavailable | Airco keuken: `thermostat_mode`, `onoff`, `target_temperature`. |
 | Airco zolder | Modus niet off | Airco zolder: `thermostat_mode`, `onoff`, `target_temperature`. |
 | Verwarming aan | Remeha verwarmen-binarysensor is on | Gebruiker wil verwarming actief/niet actief tonen; bron `boiler_state` moet nog technisch naar betekenisvolle status worden vertaald. |
@@ -158,7 +158,7 @@ De volgende keuzes zijn expliciet door de gebruiker ingediend. Ze zijn leidend v
 | Zolder koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
 | Kans op neerslag | Migreren – backlog | Gebruiker zoekt een app die regenkans levert |
 | Zon op raam Tess | Niet migreren | Geen |
-| Boven ramen open | Migreren | Onderzoeken of schema reproduceerbaar is en als herbruikbare Blockly-bouwsteen kan dienen |
+| Boven ramen open | Migreren | Vier onafhankelijke schema-instanties; ma–za 07:00–20:00 en zo 08:00–20:00. Blockly-bouwsteen is fase 2. |
 | Slapen Sem | Niet migreren | Geen |
 | Slapen Bram | Niet migreren | Geen |
 
