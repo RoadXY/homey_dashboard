@@ -106,3 +106,12 @@ De gebruiker heeft de volgende apparaatnaam/capability-koppelingen bevestigd:
 - Raam Sem — `alarm_contact`.
 
 Er zijn geen opmerkingen of correcties meegegeven. De exacte apparaat-ID's zijn met deze bevestiging niet vastgelegd. De bevestiging geldt voor de Homey-bronmapping; de oorspronkelijke HA-condities en eventuele samengestelde voorwaarden moeten afzonderlijk behouden en gevalideerd worden. De inventarisatie blijft read-only.
+
+
+### Gebruikersbesluit – wateralarmen direct tonen (11 november 2026)
+
+De gebruiker bevestigt dat beide wateralarmmeldingen direct zichtbaar moeten worden zodra `alarm_water` actief wordt:
+- Wateralarm wasmachines!
+- Wateralarm vaatwasser!
+
+Er geldt geen aanvullende vertraging of minimale activatieduur. De bron blijft read-only; de dashboardapplicatie evalueert de actuele capability-status zelf.
