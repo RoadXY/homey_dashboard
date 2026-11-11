@@ -165,3 +165,7 @@ Homey-apparaat **Raamsdonksveer**, capability `measure_precipitation_probability
 ### Achterdeur open – buitentemperatuurbron bevestigd (12 november 2026)
 
 Homey-apparaat **Weer**, capability `measure_temperature`, is bevestigd als buitentemperatuurbron. Behoud de oorspronkelijke samengestelde voorwaarde: achterdeur open én (temperatuur <18 °C óf >24 °C). Meldingsniveau: **waarschuwing**.
+
+### Zolder koud – Homey-bron en grens bevestigd (12 november 2026)
+
+Homey-apparaat **Temperatuur Sem**, capability `measure_temperature`, is bevestigd als bron voor de zichtbaarheidstrigger. De melding wordt actief bij **<12 °C**. De kaart toont daarnaast de ingestelde temperatuur van de zolder-airco zoals in de oorspronkelijke YAML. Meldingsniveau: **info**.
