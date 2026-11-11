@@ -138,3 +138,8 @@ Besluit: de melding voor de tuinhuislamp die langer dan vijf minuten aan staat k
 ## Inventarisatie HA-YAML – meldingsniveau raam-niet-open-waarschuwingen
 
 Besluit: de vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram niet open**, **Raam ouders niet open** en **Dakraam Sem niet open** krijgen niveau **info**. Hun bestaande voorwaarden en tijdschema's blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau Achterdeur open
+
+Besluit: **Achterdeur open** krijgt niveau **waarschuwing**. De oorspronkelijke gecombineerde voorwaarde (deur open én buitentemperatuur <18 °C of >24 °C) blijft ongewijzigd. Geen aanvullende opmerkingen.
