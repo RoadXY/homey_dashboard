@@ -73,3 +73,8 @@ Voorbeeld tijdelijke Homey-header: `Authorization: Bearer <token>`; content-type
 De gebruiker bevestigt dat de volgende onderdelen uit `ha tablet layout.yml` behouden blijven in de dashboardinventarisatie: droger (status/voortgang/resterende tijd), Truus (werkstatus en ophalen), Remeha (verwarming en warm tapwater), airco keuken en zolder (bedrijfsstatus en ingestelde temperatuur), kans op neerslag (>25%), muurtablet-batterij (<25%), tuinhuislamp (langer dan 5 minuten aan) en CO₂ woonkamer (>1200 ppm). Er zijn bij deze vraag geen onderdelen uitgesloten.
 
 Aanvullende expliciete voorwaarde: de drogerkaart wordt alleen getoond wanneer de droger actief is/draait. De YAML gebruikt hiervoor `sensor.droger_dryer_machine_state == run` als visibility-voorwaarde en toont de geplande eindtijd via `sensor.droger_dryer_completion_time`. Deze oorspronkelijke logica blijft uitgangspunt voor verdere mapping.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 2 (Truus)
+
+De gebruiker kiest ervoor de oorspronkelijke YAML-logica exact te behouden. De gewone Truus-kaart is zichtbaar zolang `sensor.truus_truus_werk_status` niet gelijk is aan `Sleeping`, `Charging`, `Unavailable` of `Standby`. Bij exact `Standby` verschijnt de aparte kaart **‘Truus wil opgehaald worden!’**. Geen aanvullende opmerkingen.
