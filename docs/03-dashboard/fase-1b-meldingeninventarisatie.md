@@ -157,3 +157,7 @@ Voor deze kritieke melding is de migratiegrens vastgesteld op **temperatuur >10 
 ### CO₂ woonkamer hoog! – Homey-bron bevestigd (12 november 2026)
 
 Homey-apparaat **Multisensor woonkamer**, capability `measure_co2`, is bevestigd als bron. De oorspronkelijke YAML-grens **>1200 ppm** blijft behouden. De melding heeft niveau **waarschuwing**.
+
+### Kans op neerslag – Homey-bron en grens bevestigd (12 november 2026)
+
+Homey-apparaat **Raamsdonksveer**, capability `measure_precipitation_probability`, is bevestigd als bron. Behoud de oorspronkelijke YAML-grens **>25%**. Meldingsniveau: **info**.
