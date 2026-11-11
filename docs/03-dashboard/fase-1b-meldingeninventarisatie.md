@@ -150,3 +150,8 @@ Dit besluit verandert de samengestelde voorwaarde voor Achterdeur open niet (con
 ### Gebruikersbesluit – vriezerregel ongewijzigd overnemen (11 november 2026)
 
 Voor **Vriezer keuken warm!** blijft de oorspronkelijke Home Assistant-voorwaarde leidend. De exacte temperatuurdrempel/definitie achter `binary_sensor.vriezer_keuken_temperatuur_hoog` moet nog uit de oorspronkelijke configuratie worden achterhaald; er wordt geen drempel gegokt of nieuw gekozen. De Homey-bron blijft Koelkast keuken temperatuur (`64fc846e-01b0-438a-9114-4498ea8005e7`, `measure_temperature`). Na achterhalen van de grens wordt de oorspronkelijke regel één-op-één vertaald. Geen aanvullende opmerkingen.
+
+
+### Gebruikersbevestiging – type wasmachine-Logic-variabele (11 november 2026)
+
+De gebruiker bevestigt dat `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5d96b9`) een Logic-variabele van het type **Ja/Nee (boolean)** is. Dit is de gekozen statusbron voor Wasmachine staat aan. De dashboardapp leest de variabele read-only uit: `true` betekent draaiend en `false` betekent niet draaiend. Een ontbrekende, ongeldige of niet-beschikbare waarde wordt als onbekend behandeld, nooit stilzwijgend als false. De Homey-Flow/logica die de variabele beheert wordt niet aangepast.
