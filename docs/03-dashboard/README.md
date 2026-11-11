@@ -256,3 +256,7 @@ Voor de eerste proef wordt een afzonderlijke, handmatig bedienbare Homey Logic-v
 
 ## JSON-meldingenengine – eerste proef
 De eerste JSON-proefmelding voor CO₂ woonkamer is geïmplementeerd met de handmatig bedienbare Homey Logic-boolean `dashboard_test_co2_melding`. De server evalueert de JSON-voorwaarde read-only en toont actieve meldingen. Zie [JSON-meldingenproef CO₂](json-meldingen-proef-co2.md) voor het schema, de API, foutafhandeling en teststappen. Eerst volgt de praktijktest op de Ubuntu-server; daarna breiden we de JSON-engine stapsgewijs uit met de overige goedgekeurde HA-condities.
+
+
+## Realtime gegevensupdates
+De Homey-verbinding gebruikt realtime Socket.IO-events voor de dashboardapparaten en Homey Logic-variabelen. De backend stuurt updates door naar de tablet via Server-Sent Events (SSE); de vaste 30-secondenpolling voor de frontend is vervangen door eventgestuurde verversing. Zie [Realtime dashboard updates](realtime-updates.md) voor architectuur, reconnectgedrag en de testchecklist.
