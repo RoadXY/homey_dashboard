@@ -74,7 +74,7 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
 
   if (logicConfigs.length) {
     try {
-      logicVariables = (await getHomeyLogicVariables(logicConfigs.map((config) => config.source.type === "logic-variable" ? config.source.name : "")).then((r) => r.variables);
+      logicVariables = (await getHomeyLogicVariables(logicConfigs.map((config) => config.source.type === "logic-variable" ? config.source.name : ""))).variables;
     } catch { logicError = true; }
   }
   if (deviceConfigs.length) {
