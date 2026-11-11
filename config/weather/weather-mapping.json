@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "homey-weather-main",
+  "enabled": true,
+  "source": {
+    "deviceId": "c7e68c38-1588-4c93-9db8-e854f4d251ab",
+    "conditionCapabilities": [
+      "conditioncode_text",
+      "description"
+    ]
+  },
+  "mappings": [
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Regenachtig", "Rain", "Rainy", "Light rain", "Drizzle", "Showers", "Rain showers"]
+      },
+      "category": "rain"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Zonnig", "Sunny", "Clear", "Clear sky"]
+      },
+      "category": "clear"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Gedeeltelijk bewolkt", "Half bewolkt", "Partly cloudy", "Mostly sunny"]
+      },
+      "category": "partly_cloudy"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Bewolkt", "Geheel bewolkt", "Cloudy", "Overcast"]
+      },
+      "category": "cloudy"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Onweer", "Thunderstorm", "Thunder"]
+      },
+      "category": "thunderstorm"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Sneeuw", "Snow", "Hail", "Hagel", "Sleet", "Ijzel"]
+      },
+      "category": "snow"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Mist", "Nevel", "Fog", "Haze"]
+      },
+      "category": "fog"
+    },
+    {
+      "capabilityId": "conditioncode_text",
+      "match": {
+        "type": "equals",
+        "values": ["Wind", "Winderig", "Windy"]
+      },
+      "category": "wind"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Regenachtig", "Rain", "Rainy", "Light rain", "Drizzle", "Showers", "Rain showers"]
+      },
+      "category": "rain"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Zonnig", "Sunny", "Clear", "Clear sky"]
+      },
+      "category": "clear"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Gedeeltelijk bewolkt", "Half bewolkt", "Partly cloudy", "Mostly sunny"]
+      },
+      "category": "partly_cloudy"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Bewolkt", "Geheel bewolkt", "Cloudy", "Overcast"]
+      },
+      "category": "cloudy"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Onweer", "Thunderstorm", "Thunder"]
+      },
+      "category": "thunderstorm"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Sneeuw", "Snow", "Hail", "Hagel", "Sleet", "Ijzel"]
+      },
+      "category": "snow"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Mist", "Nevel", "Fog", "Haze"]
+      },
+      "category": "fog"
+    },
+    {
+      "capabilityId": "description",
+      "match": {
+        "type": "equals",
+        "values": ["Wind", "Winderig", "Windy"]
+      },
+      "category": "wind"
+    }
+  ],
+  "defaultCategory": "unknown"
+}
