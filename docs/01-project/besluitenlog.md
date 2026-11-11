@@ -98,3 +98,8 @@ Besluit: de vier raamwaarschuwingen blijven afzonderlijke meldingen (raam Tess, 
 ## Inventarisatie HA-YAML – weergave en sortering raamwaarschuwingen
 
 Besluit: de vier raamwaarschuwingen verschijnen als losse meldingen zonder gezamenlijke kop. De al bestaande dashboardregel uit `docs/03-dashboard/README.md` is leidend voor de volgorde: kritiek → waarschuwing → info; binnen hetzelfde niveau nieuwste activeringstijdstip/tijd van binnenkomst eerst. Er wordt niet aanvullend gegroepeerd op ruimte of onderwerp. De vier meldingen blijven afzonderlijke Blockly-bewerkbare regels.
+
+
+## Inventarisatie HA-YAML – meldingsniveau directe contactmeldingen
+
+Besluit: de zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open**, **Grote Bram**, **Grote Tess**, **Grote Ouders open** en **Raam Sem open** krijgen allemaal het niveau **waarschuwing**. Geen aanvullende opmerkingen. De oorspronkelijke voorwaarden en zelfstandige meldingen wijzigen hierdoor niet.
