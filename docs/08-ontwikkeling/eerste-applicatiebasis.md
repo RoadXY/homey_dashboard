@@ -183,3 +183,11 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - Voor Logic-uitlezing is de Homey API-scope `homey.logic.readonly` vereist. De huidige API-key is eerder aangemaakt met alleen apparaat- en zonerechten; maak daarom een nieuwe API-key met de bestaande leesrechten plus Logic read-only en vervang lokaal alleen de waarde van `HOMEY_API_KEY` in `.env`. Deel de sleutel niet in chat of GitHub.
 - De Homey Web API documenteert `api.logic.getVariables()` als read-only endpoint met scope `homey.logic.readonly`. Zie de [Homey API-referentie](https://athombv.github.io/node-homey-api/HomeyAPIV3Local.ManagerLogic.html).
 - De uitbreiding wijzigt geen Homey-apparaten, Logic-waarden, Flows of instellingen.
+
+
+## TypeScript-buildfout Homey Logic-integratie (11 november 2026)
+- Tijdens de Docker-build op Ubuntu faalde `tsc -p tsconfig.server.json` in `src/server/homey.ts`.
+- De geïnstalleerde `homey-api`-types vereisen bij `HomeyAPI.createLocalAPI()` expliciet de parameter `debug`; deze is op `null` gezet omdat de backend geen extra debugfunctie nodig heeft.
+- De type-informatie van `api.logic.getVariables()` werd door TypeScript als `unknown` behandeld. De resultaten worden nu expliciet als lijst van Homey Logic-variabelen getypeerd voordat de twee toegestane variabelen worden gefilterd.
+- Correctie vastgelegd in commit `88d5f33`.
+- Validatie van de nieuwe Docker-build op Ubuntu staat nog open. De bestaande draaiende container is niet als succesvol bijgewerkt beschouwd zolang die build niet volledig slaagt.
