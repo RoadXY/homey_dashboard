@@ -89,17 +89,20 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
     const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
     let value: unknown;
     let sourceType: "boolean" | "number";
-    if (config.source.type === "logic-variable") {
-      sourceType = config.source.expectedType;
+    // Bewaar de discriminated union in een lokale constante zodat TypeScript
+    // de bronvariant ook binnen callbacks (find) correct kan blijven narrowen.
+    const source = config.source;
+    if (source.type === "logic-variable") {
+      sourceType = source.expectedType;
       if (logicError) return { ...base, state: "unknown", reason: "source_unavailable" };
-      const variable = logicVariables.find((item) => item.name === config.source.name);
+      const variable = logicVariables.find((item) => item.name === source.name);
       if (!variable) return { ...base, state: "unknown", reason: "source_missing" };
       if (variable.type.toLowerCase() !== sourceType) return { ...base, state: "unknown", reason: "source_type_mismatch" };
       value = variable.value;
     } else {
-      sourceType = config.source.expectedType;
+      sourceType = source.expectedType;
       if (deviceError) return { ...base, state: "unknown", reason: "source_unavailable" };
-      const reading = deviceReadings.find((item) => item.deviceId === config.source.deviceId && item.capabilityId === config.source.capabilityId);
+      const reading = deviceReadings.find((item) => item.deviceId === source.deviceId && item.capabilityId === source.capabilityId);
       if (!reading) return { ...base, state: "unknown", reason: "source_missing" };
       if (reading.available === false || reading.error) return { ...base, state: "unknown", reason: reading.error ?? "device_unavailable" };
       value = reading.value;
