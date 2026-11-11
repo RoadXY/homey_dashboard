@@ -49,3 +49,8 @@ De gebruiker bevestigt behoud van de YAML-logica: toon de gewone Truus-status wa
 ### Vraag 3 – airco keuken en zolder
 
 De gebruiker kiest: beide airco's alleen tonen wanneer actief; voor beide geldt status niet `off` en niet `unavailable`. De kaarten tonen bedrijfsstatus en ingestelde temperatuur. Geen aanvullende opmerkingen.
+
+
+### Vraag 4 – batterij muurtablet
+
+Behoud de oorspronkelijke regel: de batterijkaart is uitsluitend zichtbaar bij een batterijniveau lager dan 25%. Geen aanvullende opmerkingen.
