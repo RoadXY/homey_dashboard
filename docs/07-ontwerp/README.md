@@ -1,7 +1,7 @@
 # Mockups en ontwerpgoedkeuring
 
 ## Status
-De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeurd, inclusief de correctie dat kritieke meldingen een donker roodgetinte achtergrond krijgen. De instellingenpagina en het volledige functionele ontwerp moeten nog worden besproken en goedgekeurd; implementatie start nog niet.
+De gebruiker heeft de hoofdschermmockup en meldingskaartvormgeving goedgekeurd. De implementatie van het hoofdscherm is gestart. De instellingenpagina en diagnosefunctionaliteit worden binnen fase 1 verder uitgewerkt en gebouwd; de PIN-toegangscontrole is eveneens fase-1-scope.
 
 ## Vastgestelde visuele richting
 - Donkere, rustige en minimalistische basis.
@@ -43,7 +43,7 @@ De gebruiker heeft de hoofdschermmockup en de meldingskaartvormgeving goedgekeur
 2. Functionele beschrijving van meldingen en knoppen.
 3. Open technische keuzes.
 
-Geen implementatie starten voordat de mockups en het functioneel ontwerp expliciet zijn goedgekeurd.
+Deze eerdere startvoorwaarde is ingehaald door het expliciete akkoord van 11 november 2026 om de implementatie van het hoofdscherm te starten. Nieuwe onderdelen worden gebouwd op basis van expliciet goedgekeurde functionele besluiten.
 
 
 ## Spatiëring – aanvullende ontwerpregel (10 november 2026)
