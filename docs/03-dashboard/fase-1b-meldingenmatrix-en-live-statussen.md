@@ -553,3 +553,8 @@ De gebruiker kiest voor **critical (kritiek)** als vast meldingsniveau voor **Vr
 ### 12.6 Gebruikersbesluit – severity wasmachine (11 november 2026)
 
 De gebruiker kiest voor **info (informatie)** als vast meldingsniveau voor **Wasmachine staat aan**. Er zijn geen aanvullende opmerkingen meegegeven. De statusbron blijft de bevestigde boolean Logic-variabele `wasmachine_draait`; deze keuze wijzigt de read-only bronkoppeling of de onbekend-statusafhandeling niet.
+
+
+### 12.7 Gebruikersbesluit – droger als actuele statusweergave (11 november 2026)
+
+De gebruiker kiest voor **weergave van de huidige drogerstatus**. Er hoeft geen afzonderlijke melding/notificatie te worden gegenereerd zodra de droger klaar is. De eerder gekozen dashboardinformatie blijft: actuele status, voortgang en resterende tijd. De bestaande Homey-bronmapping (localthings_cycle_active, localthings_progress, localthings_remaining_minutes en machine state) moet technisch nog worden gevalideerd; de dashboardapp leest deze waarden read-only uit.
