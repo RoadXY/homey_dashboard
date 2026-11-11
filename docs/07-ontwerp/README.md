@@ -283,9 +283,11 @@ Als een HA-voorwaarde niet eenduidig of niet volledig naar het model kan worden 
 - Tablet-landscape is het primaire formaat; aanvullende responsive weergave ondersteunt ontwikkeling en beheer vanaf kleinere schermen.
 
 
-## Voorstel apparaatdiagnose in instellingen (11 november 2026)
+## Fase 1 – apparaatdiagnose in instellingen (besluit 11 november 2026)
 
-Naar aanleiding van de gebruikerssuggestie wordt een centrale diagnosefunctie voorgesteld voor Homey-apparaten en databronnen die dashboardinformatie voeden.
+<badge color="success">Onderdeel van fase 1</badge>
+
+De gebruiker heeft bevestigd dat de centrale diagnosefunctie voor Homey-apparaten en databronnen die dashboardinformatie voeden onderdeel is van fase 1. Zowel de zichtbare waarschuwingen op het hoofddashboard als de diagnosepagina vallen binnen deze fase.
 
 - Op het hoofddashboard verschijnt een compacte algemene waarschuwing wanneer relevante apparaatbronnen problemen hebben; een betrokken tegel of melding krijgt ook een eigen waarschuwing/uitroepteken.
 - Onder **Instellingen → Systeem → Diagnose** komt een overzicht per apparaat/databron met Homey-zone, bereikbaarheid (voor zover beschikbaar), laatste geldige update, betrokken dashboardonderdelen en de gevolgen voor meldingen.
@@ -294,4 +296,4 @@ Naar aanleiding van de gebruikerssuggestie wordt een centrale diagnosefunctie vo
 - Na herstel en een nieuwe geldige meting verdwijnt de actuele waarschuwing automatisch.
 - De diagnosefunctie is uitsluitend read-only en verandert geen Homey-apparaten, Flows of Logic-variabelen.
 
-**Status:** ontwerpvoorstel, nog niet definitief uitgewerkt. De Homey-API-beschikbaarheidssignalen, laatste update-tijdstippen, versheidsgrenzen per datatype en diagnosehistoriek moeten technisch worden onderzocht en vastgelegd. De functionele uitwerking staat ook in hoofdstuk 12 van `fase-1b-meldingenmatrix-en-live-statussen.md`.
+**Uitwerking voor implementatie:** de Homey-API-beschikbaarheidssignalen, laatste update-tijdstippen en versheidsgrenzen per datatype moeten technisch worden onderzocht en vastgelegd. De diagnosehistoriek kan als aparte vervolgbeslissing worden uitgewerkt; de actuele waarschuwing moet in fase 1 automatisch verdwijnen na herstel en een nieuwe geldige meting. De functionele eisen staan ook in hoofdstuk 12 van `fase-1b-meldingenmatrix-en-live-statussen.md`.
