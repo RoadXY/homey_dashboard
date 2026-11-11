@@ -90,3 +90,19 @@ De inventarisatie en mapping zijn read-only. Er worden geen Homey-apparaten, Log
 2. De binnen-scope bronkaarten één voor één aan Homey-bronnen koppelen.
 3. Onbevestigde semantiek en ontbrekende bronnen als bespreekpunten voorleggen.
 4. Na mapping het JSON-voorwaardenmodel en testgevallen vastleggen.
+
+
+## Gebruikersbevestiging – wateralarmen en deur-/raamcontacten (11 november 2026)
+
+De gebruiker heeft de volgende apparaatnaam/capability-koppelingen bevestigd:
+- Water Sensor wasmachines — `alarm_water`.
+- Water sensor vaatwasser — `alarm_water`.
+- Deur tuinhuis — `alarm_contact`.
+- Voordeur — `alarm_contact`.
+- Achterdeur — `alarm_contact`.
+- Onder raam Bram — `alarm_contact`.
+- Onder raam Tess — `alarm_contact`.
+- Ouderslaapkamer onderraam — `alarm_contact`.
+- Raam Sem — `alarm_contact`.
+
+Er zijn geen opmerkingen of correcties meegegeven. De exacte apparaat-ID's zijn met deze bevestiging niet vastgelegd. De bevestiging geldt voor de Homey-bronmapping; de oorspronkelijke HA-condities en eventuele samengestelde voorwaarden moeten afzonderlijk behouden en gevalideerd worden. De inventarisatie blijft read-only.
