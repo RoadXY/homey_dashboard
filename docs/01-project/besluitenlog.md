@@ -68,3 +68,8 @@ De gebruiker besluit dat airco keuken en airco zolder uitsluitend zichtbaar zijn
 ## Inventarisatie HA-YAML – batterij muurtablet
 
 Besluit: behoud de oorspronkelijke zichtbaarheid van de batterijkaart; alleen tonen wanneer het batterijniveau lager is dan 25%. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – tuinhuislamp en Blockly
+
+De melding voor de tuinhuislamp blijft conform de oorspronkelijke regel: lamp langer dan 5 minuten aan. Bij de technische uitwerking moet de duurvoorwaarde configureerbaar zijn in het gedeelde, versieerbare notificatiemodel, dat zowel JSON-configuratie als de toekomstige Blockly-editor gebruikt. Geen afzonderlijke Blockly-evaluator of afwijkende logica.
