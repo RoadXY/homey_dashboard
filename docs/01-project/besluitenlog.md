@@ -123,3 +123,8 @@ Besluit: **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. De bestaa
 ## Inventarisatie HA-YAML – meldingsniveau regenmelding
 
 Besluit: **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. De bestaande Homey-bron en drempel blijven ongewijzigd. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau lage slaapkamer-temperaturen
+
+Besluit: de vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaapkamer** en **Slaapkamer Sem** krijgen allemaal niveau **info**. De bestaande grens van <12 °C en bronkoppelingen blijven ongewijzigd. Geen aanvullende opmerkingen.
