@@ -538,3 +538,8 @@ Er zijn geen aanvullende opmerkingen of uitzonderingen meegegeven. De bevestigde
 Voor **Vriezer keuken warm!** kiest de gebruiker ervoor de oorspronkelijke Home Assistant-voorwaarde ongewijzigd aan te houden. De precieze temperatuurgrens/onderliggende definitie van `binary_sensor.vriezer_keuken_temperatuur_hoog` moet eerst in de oorspronkelijke Home Assistant-configuratie worden achterhaald. Er wordt nu geen nieuwe of veronderstelde drempelwaarde ingevuld.
 
 De gekozen Homey-bron blijft **Koelkast keuken temperatuur**, capability `measure_temperature` (apparaat-ID `64fc846e-01b0-438a-9114-4498ea8005e7`). Zodra de oorspronkelijke grens is vastgesteld, vertalen we de HA-regel één-op-één naar deze Homey-temperatuurbron. Er zijn geen aanvullende opmerkingen meegegeven.
+
+
+### 12.4 Gebruikersbevestiging – type wasmachine-Logic-variabele (11 november 2026)
+
+De gebruiker bevestigt dat de Logic-variabele **`wasmachine_draait`** (`c21929a1-2693-416b-9240-74b4ca5d96b9`) het type **Ja/Nee (boolean)** heeft. Deze variabele is de gekozen statusbron voor **Wasmachine staat aan**. Het dashboard leest de variabele uitsluitend read-only uit; de bestaande Homey-Flow/logica die de variabele beheert blijft ongewijzigd. De statusvoorwaarde is boolean `true` voor draaiend en `false` voor niet draaiend. Onbekende of niet-beschikbare waarden blijven een afzonderlijke onbekende status en worden niet als `false` geïnterpreteerd.
