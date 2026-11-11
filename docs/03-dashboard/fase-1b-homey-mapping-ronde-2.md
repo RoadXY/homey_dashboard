@@ -141,3 +141,7 @@ De gebruiker heeft expliciet gekozen voor **Thermostaat Tess** (`203a126c-1923-4
 
 ### Bevestiging temperatuurbron zolder / slaapkamer Sem
 De gebruiker heeft bevestigd dat de temperatuursensor op slaapkamer Sem bedoeld wordt voor de melding “Zolder koud”. Gebruik Homey-apparaat **Temperatuur Sem**, ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. De meldingsgrens blijft **lager dan 16 °C**. Airco zolder, Rookmelder zolder en CO Sensor op de Voorzolder zijn niet de gekozen bron.
+
+## 10. Gebruikersbesluit – keuken-vriezergrens (12 november 2026)
+
+Voor de melding **Vriezer keuken warm!** wordt een expliciete grenswaarde van **hoger dan 10 °C** gebruikt. De Homey-bron is het apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. Bij een waarde >10 °C is de melding actief; bij ≤10 °C is deze inactief. De melding behoudt niveau **kritiek**. De oorspronkelijke HA-dashboard-YAML verwees naar `binary_sensor.vriezer_keuken_temperatuur_hoog`, maar bevatte zelf geen numerieke grens. De grens van 10 °C is daarom een expliciet nieuw gebruikersbesluit voor de migratie, niet een uit de YAML afgeleide waarde. De Logic-variabele `Vriezer_tempAlarm` wordt hiervoor niet gebruikt.
