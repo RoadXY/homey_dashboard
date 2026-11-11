@@ -158,3 +158,8 @@ De melding voor de tuinhuislamp die langer dan vijf minuten aan staat krijgt het
 ### Vraag 18 – meldingsniveau raam-niet-open-waarschuwingen (12 november 2026)
 
 De vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram niet open**, **Raam ouders niet open** en **Dakraam Sem niet open** krijgen allemaal het niveau **info**. Er zijn geen aanvullende opmerkingen. Hun afzonderlijke voorwaarden en tijdschema's blijven ongewijzigd.
+
+
+### Vraag 19 – meldingsniveau Achterdeur open (12 november 2026)
+
+De melding **Achterdeur open** krijgt het niveau **waarschuwing**. De bestaande gecombineerde voorwaarde blijft ongewijzigd: achterdeur open én (buitentemperatuur <18 °C of >24 °C). Geen aanvullende opmerkingen.
