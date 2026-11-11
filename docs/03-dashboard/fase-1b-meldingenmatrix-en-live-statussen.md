@@ -56,3 +56,13 @@ De gebruiker keurt de voorgestelde set van 16 ondersteunde dashboardcondities go
 Dag/nacht is een afzonderlijke dimensie en wordt niet in deze conditiecodes gecodeerd. Een onbekende code mag de laatst bekende geldige conditie niet overschrijven.
 
 **API-ontwerpvoorstel (nog ter bevestiging):** `POST /api/v1/weather/condition`, JSON-body `{"type":"cloudy"}`, Bearer-token-authenticatie, allowlist-validatie van de 16 codes en een servergegenereerde ontvangsttijd. Bij succes antwoordt de API met HTTP 200 en de geaccepteerde conditie plus `updatedAt`; ongeldige invoer geeft 400 en ontbrekende/ongeldige authenticatie 401. POST is idempotent voor herhaalde updates van dezelfde conditie. De endpointimplementatie en definitieve beveiligingsconfiguratie zijn nog niet gerealiseerd.
+
+
+
+### 12.12 Gebruikersbesluit – benoemde API-tokens via dashboardinstellingen (11 november 2026)
+
+De gebruiker wil in de dashboardinstellingen een beheerplek waar Bearer-tokens met een eigen naam kunnen worden aangemaakt. Deze tokens worden gebruikt door externe clients zoals de tijdelijke Homey Logic HTTP POST-kaart en later de officiële Homey-app. De HTTP-kaart ondersteunt het instellen van headers; de gebruiker vult zelf de Authorization-header en JSON-body in.
+
+Ontwerpuitwerking voor tokenbeheer: toon een lijst met tokennaam en metadata (bijvoorbeeld aanmaakdatum/laatst gebruikt), genereer een cryptografisch willekeurig token, toon de volledige geheime waarde alleen direct na aanmaak en sla uitsluitend een veilige hash op. Bied intrekken/verwijderen en opnieuw genereren aan. Geheimen mogen niet in logs of API-responses terugkomen. Voor de eerste implementatie kan het token toegang geven tot de weerconditie-POST; houd autorisatie uitbreidbaar met scopes/rechten zodat tokens later niet automatisch volledige API-toegang krijgen. De precieze UI, tokenopslag en scope-indeling moeten nog technisch worden uitgewerkt.
+
+Voorbeeld tijdelijke Homey-header: `Authorization: Bearer <token>`; content-type: `application/json`. Voorbeeld body: `{"type":"cloudy"}`. De gebruiker stelt de JSON handmatig in de Logic-kaart samen.
