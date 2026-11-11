@@ -148,7 +148,7 @@ function App() {
               <div className="notification-list">
                 {notifications.filter((item) => item.state === "active").map((item) => (
                   <article className={`notification-card severity-${item.severity}`} key={item.id}>
-                    <span className="notification-level">{item.testOnly ? "TEST · " : ""}{item.severity === "critical" ? "KRITIEK" : item.severity === "warning" ? "WAARSCHUWING" : "INFO"}</span>
+                    <div className="notification-heading"><span className="notification-icon" aria-hidden="true">{item.severity === "critical" ? "!" : item.severity === "warning" ? "⚠" : "i"}</span><span className="notification-level">{item.testOnly ? "TEST · " : ""}{item.severity === "critical" ? "KRITIEK" : item.severity === "warning" ? "WAARSCHUWING" : "INFO"}</span></div>
                     <strong>{item.title}</strong>
                     <span>{item.message}</span>
                   </article>
