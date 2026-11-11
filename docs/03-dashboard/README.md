@@ -237,3 +237,14 @@ De gebruiker heeft bevestigd dat **alle conditionele kaarten** uit de bestaande 
 ## Blockly-bouwstenen
 - [Databron selecteren en voorwaarde vergelijken](blockly-bouwsteen-databron-en-vergelijking.md) – eerste functionele ontwerpschets voor Homey-apparaatwaarden en Logic-variabelen als read-only bronnen, met interne vergelijking en vaste prioriteit per melding.
 - [Tijdschema's per dashboardmelding](blockly-bouwsteen-tijdschema.md) – afzonderlijke, configureerbare tijdschema-instanties.
+
+
+## Implementatievolgorde meldingen
+1. Bestaande, goedgekeurde meldingen uit de Home Assistant-YAML vertalen naar JSON-configuratiebestanden.
+2. JSON-configuratie in de dashboardapplicatie inlezen.
+3. Homey-gegevens en eventueel gekozen Logic-variabelen read-only ophalen.
+4. Voorwaarden intern evalueren en actieve meldingen tonen.
+5. Meldingenengine testen en gedrag corrigeren.
+6. Blockly pas daarna integreren als editor voor dezelfde JSON-configuratie.
+
+De JSON-bestanden vormen de runtime-configuratiebron. Blockly wordt later gebruikt om deze JSON te lezen, te bewerken en nieuwe meldingen te genereren. Zie ook [Fase-1 meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md) en [Blockly databron/vergelijking – toekomstig ontwerp](blockly-bouwsteen-databron-en-vergelijking.md).
