@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings } from "./homey.js";
+import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables } from "./homey.js";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -33,6 +33,21 @@ app.get("/api/homey/readings", async (_request, reply) => {
     return await getHomeyDeviceReadings(ids);
   } catch (error) {
     return reply.code(503).send({ error: error instanceof Error ? error.message : "Uitlezen meetwaarden mislukt" });
+  }
+});
+
+
+app.get("/api/homey/logic", async (_request, reply) => {
+  try {
+    return await getHomeyLogicVariables([
+      "temperatuur_gemiddeld_keuken",
+      "temperatuur_gemiddeld_woonkamer",
+    ]);
+  } catch (error) {
+    return reply.code(503).send({
+      error: error instanceof Error ? error.message : "Uitlezen Homey Logic-variabelen mislukt",
+      hint: "Controleer of de Homey API-key de machtiging homey.logic.readonly heeft.",
+    });
   }
 });
 
