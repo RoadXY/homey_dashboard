@@ -153,3 +153,8 @@ De vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaapkamer** 
 ### Vraag 17 – meldingsniveau tuinhuislamp (12 november 2026)
 
 De melding voor de tuinhuislamp die langer dan vijf minuten aan staat krijgt het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande duurvoorwaarde blijft ongewijzigd en configureerbaar in het gedeelde notificatiemodel.
+
+
+### Vraag 18 – meldingsniveau raam-niet-open-waarschuwingen (12 november 2026)
+
+De vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram niet open**, **Raam ouders niet open** en **Dakraam Sem niet open** krijgen allemaal het niveau **info**. Er zijn geen aanvullende opmerkingen. Hun afzonderlijke voorwaarden en tijdschema's blijven ongewijzigd.
