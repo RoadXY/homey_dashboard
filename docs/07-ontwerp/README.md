@@ -272,3 +272,12 @@ De import van Home Assistant-kaarten legt vanaf fase 1 twee representaties vast:
 De dashboardlogica van fase 1 gebruikt dit model waar een exacte vertaling mogelijk is. De toekomstige Blockly-editor (fase 2) leest hetzelfde model in om de voorwaarden visueel weer te geven en te bewerken. De Blockly-workspace zelf is niet de enige bron van waarheid; het centrale voorwaardenmodel blijft leidend. Het model wordt voorzien van schema-versiebeheer en validatie.
 
 Als een HA-voorwaarde niet eenduidig of niet volledig naar het model kan worden vertaald, wordt die expliciet gemarkeerd voor beoordeling. Er wordt niets stilzwijgend vereenvoudigd, aangepast of weggelaten. De Blockly-editor en de blokkenbibliotheek blijven fase-2-functionaliteit.
+
+
+## Start implementatie hoofdscherm (11 november 2026)
+- De gebruiker heeft expliciet akkoord gegeven om te starten met de bouw van het hoofdscherm.
+- De goedgekeurde ontwerpuitgangspunten blijven leidend: donkere minimalistische stijl, 40/60-kolomverhouding, links klok/datum, weer en vier temperatuurtegels; rechts acht Quick Actions in één rij.
+- De vier temperatuurtegels blijven Woonkamer, Keuken, Sem en Bram; de twee mediakaarten blijven verwijderd.
+- De acht Quick Actions behouden de vastgelegde volgorde. In deze eerste visuele implementatiestap zijn de knoppen uitsluitend presentatief en nog niet bedienbaar; koppeling aan Homey-acties volgt na afzonderlijke technische validatie.
+- De huidige implementatie toont nog geen meldingenpaneel. De meldingenfunctionaliteit is niet onderdeel van deze eerste hoofdschermstap en wordt later volgens de vastgelegde fasering opgepakt.
+- Tablet-landscape is het primaire formaat; aanvullende responsive weergave ondersteunt ontwikkeling en beheer vanaf kleinere schermen.
