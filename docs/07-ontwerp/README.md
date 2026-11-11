@@ -330,3 +330,10 @@ Deze aanvulling verduidelijkt de fase-1-scope en gaat vóór op oudere ontwerpte
 - Detectie van verouderde/uitblijvende gegevens en diepgaandere bron-/Flow-diagnose worden uitgesteld tot fase 3.
 
 Bij tegenstrijdigheid met oudere passages in dit document of in oudere ontwerpnotities is deze scope-aanvulling leidend.
+
+
+### Aanvulling 11 november 2026 – Homey Logic-variabelen als invoer
+
+Homey Logic-variabelen mogen in fase 1 als read-only databron worden gebruikt, naast rechtstreekse apparaat-capabilities. De dashboardapplicatie leest de actuele variabelewaarde en beoordeelt zelf de dashboardvoorwaarde.
+
+De gebruiker is verantwoordelijk voor het correct en tijdig bijwerken van de Logic-variabele, bijvoorbeeld via een eigen Homey Flow. De dashboardapplicatie wijzigt geen Logic-variabelen en voert geen Homey Flows uit. Het gebruik van een door de gebruiker onderhouden Logic-variabele betekent dus niet dat de dashboardlogica in Homey wordt uitgevoerd: de meldingsregel blijft intern in onze applicatie.
