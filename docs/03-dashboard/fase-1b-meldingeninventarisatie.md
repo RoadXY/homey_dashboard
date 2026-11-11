@@ -89,3 +89,8 @@ Toon de vier raamwaarschuwingen als vier losse meldingen, zonder gezamenlijke ko
 ### Vraag 11 – meldingsniveau directe contactmeldingen
 
 De gebruiker kent aan alle zes directe contactmeldingen hetzelfde niveau toe: **waarschuwing**. Het betreft Voordeur open, Deur tuinhuis open, Grote Bram, Grote Tess, Grote Ouders open en Raam Sem open. Geen aanvullende opmerkingen; bronvoorwaarden en afzonderlijke meldingen blijven ongewijzigd.
+
+
+### Vraag 12 – meldingsniveau wateralarmen
+
+De gebruiker kiest voor niveau **kritiek** voor beide afzonderlijke wateralarmen: **Wateralarm wasmachines!** en **Wateralarm vaatwasser!**. Geen aanvullende opmerkingen; de oorspronkelijke voorwaarden blijven ongewijzigd.
