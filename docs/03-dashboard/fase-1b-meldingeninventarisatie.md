@@ -124,3 +124,8 @@ De gebruiker kiest voor niveau **info** voor de melding wanneer de tuinhuislamp 
 ### Vraag 18 – meldingsniveau raam-niet-open-waarschuwingen
 
 De gebruiker kiest voor niveau **info** voor alle vier afzonderlijke meldingen: Raam Tess niet open, Raam Bram niet open, Raam ouders niet open en Dakraam Sem niet open. Geen aanvullende opmerkingen; bestaande voorwaarden en tijdschema's blijven ongewijzigd.
+
+
+### Vraag 19 – meldingsniveau Achterdeur open
+
+De gebruiker kiest voor niveau **waarschuwing** voor **Achterdeur open**. De oorspronkelijke voorwaarde blijft intact: contact open én (buitentemperatuur <18 °C of >24 °C). Geen aanvullende opmerkingen.
