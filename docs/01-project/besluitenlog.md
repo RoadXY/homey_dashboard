@@ -108,3 +108,8 @@ Besluit: de zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open
 ## Inventarisatie HA-YAML – meldingsniveau wateralarmen
 
 Besluit: **Wateralarm wasmachines!** en **Wateralarm vaatwasser!** krijgen beide het meldingsniveau **kritiek**. De meldingen blijven afzonderlijk en behouden de bestaande voorwaarden. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau vriezermelding
+
+Besluit: de melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. De bestaande bronkoppeling en voorwaarde blijven ongewijzigd. Geen aanvullende opmerkingen.
