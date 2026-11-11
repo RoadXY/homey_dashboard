@@ -64,3 +64,8 @@ Behoud de oorspronkelijke melding wanneer de lamp langer dan 5 minuten aan staat
 ### Vraag 6 – CO₂ woonkamer
 
 Behoud de oorspronkelijke regel: melding wanneer de CO₂-waarde hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
+
+
+### Vraag 7 – regenmelding
+
+Behoud de oorspronkelijke regel: regenmelding wanneer de neerslagkans hoger is dan 25%. Geen aanvullende opmerkingen.
