@@ -130,3 +130,18 @@ Daarom gelden voor alle volgende meldingen en uitbreidingen de volgende technisc
 - Nieuwe configuraties krijgen schema-versiebeheer en validatie. Migraties naar een nieuw schema moeten expliciet en reproduceerbaar zijn.
 
 **Belangrijke huidige beperking:** de eerste evaluator is nog een proefimplementatie met een platte enkele voorwaarde (equals/lessThan/greaterThan); device-capability-bronnen zijn daarin momenteel alleen numeriek getypeerd. Dit is nog niet het definitieve Blockly-geschikte model. Voordat de volgende meldingen daadwerkelijk worden geïmplementeerd, wordt het JSON-schema/evaluatiemodel uitgebreid naar de generieke condition tree, inclusief boolean device-capabilities en samengestelde AND/OR-groepen. De bestaande CO₂- en temperatuurconfiguraties moeten daarbij gecontroleerd en zo nodig migratiegewijs omgezet worden, zonder gedragsverandering.
+
+
+### Gebruikersbesluit – deur- en raamcontactmeldingen direct tonen (11 november 2026)
+
+De gebruiker bevestigt dat de volgende eenvoudige contactmeldingen direct zichtbaar moeten worden zodra het contact opent:
+- Voordeur open.
+- Deur tuinhuis open!.
+- Grote Bram.
+- Grote Tess.
+- Grote Ouders open.
+- Raam Sem open.
+
+Er wordt geen aanvullende vertraging of minimale open-duur toegepast. Er zijn geen opmerkingen of uitzonderingen meegegeven. De Homey-`alarm_contact`-capabilities worden uitsluitend read-only uitgelezen.
+
+Dit besluit verandert de samengestelde voorwaarde voor Achterdeur open niet (contact open én buitentemperatuur <18 °C of >24 °C). Evenmin verandert het de afzonderlijke schema- en aanvullende voorwaarden van de vier meldingen over ramen die niet open zijn.
