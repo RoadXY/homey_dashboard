@@ -443,3 +443,10 @@ Op het moment van inventarisatie zijn 128 apparaten, 22 zones, 25 Logic-variabel
 - Het dashboard gebruikt de standaard, door Homey ondersteunde communicatie en poorten; er worden geen eigen of onnodige netwerkpoorten geïntroduceerd.
 - De exacte API-/verbindingsmethode en benodigde poorten worden tijdens de technische verificatie vastgesteld voordat implementatie begint. Dit besluit legt nog geen specifieke poortnummers vast.
 - Homey-authenticatiegegevens blijven uitsluitend aan de serverzijde en worden niet aan de browser of GitHub blootgesteld.
+
+
+## Besluit GitHub-toegang vanaf Ubuntu-server (11 november 2026)
+- De Ubuntu-server haalt de Homey Dashboard-repository op via een afzonderlijke GitHub Deploy Key (SSH), niet via een persoonlijk wachtwoord of persoonlijk toegangstoken.
+- De Deploy Key krijgt uitsluitend leesrechten zolang de server alleen code hoeft te clonen en bij te werken (git clone/git pull).
+- De privésleutel blijft op de Ubuntu-server en wordt niet naar GitHub, de repository of andere systemen gekopieerd. Alleen de publieke sleutel wordt als Deploy Key aan de repository gekoppeld.
+- De sleutel wordt specifiek voor deze repository gebruikt en krijgt een herkenbare SSH-hostalias, zodat andere GitHub-repositories en persoonlijke SSH-sleutels niet onbedoeld worden beïnvloed.
