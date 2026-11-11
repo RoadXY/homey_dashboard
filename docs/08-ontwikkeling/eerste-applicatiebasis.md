@@ -130,3 +130,11 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De verbinding werkt over de VLAN-grens; de gebruikte API-key is alleen lokaal in `.env` opgeslagen.
 - De verbindingstest is read-only; er zijn geen apparaten, Flows of Homey-instellingen gewijzigd.
 - Volgende stap: de Homey-inventarisatie uitlezen en de exacte sensor/capability-ID's voor weer en de vier temperatuurtegels vaststellen.
+
+
+## Herstel backend-startfout bij meetwaardenendpoint (11 november 2026)
+- Na toevoeging van `GET /api/homey/readings` startte de Fastify-backend niet meer.
+- De containerlogs toonden een esbuild-transformatiefout in `src/server/index.ts`: letterlijk opgeslagen `\\n`-tekens waren in de routecode terechtgekomen in plaats van echte regeleinden.
+- Hierdoor kon Vite de API-proxy niet bereiken (`ECONNREFUSED 127.0.0.1:3000)); dit was geen Homey-netwerk- of API-keyprobleem.
+- De routecode is gecorrigeerd in commit `6b14d15` op `phase_1_foundation`.
+- Na ophalen van deze commit moeten de backendroutes opnieuw worden gecontroleerd via `/api/health`, `/api/homey/status` en `/api/homey/readings`.
