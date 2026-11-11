@@ -56,7 +56,7 @@ app.get("/api/events", async (request, reply) => {
 
   homeyRealtime.on("update", onUpdate);
   homeyRealtime.on("connected", onConnected);
-  request.raw.on("close", () => {
+  reply.raw.on("close", () => {
     clearInterval(heartbeat);
     homeyRealtime.off("update", onUpdate);
     homeyRealtime.off("connected", onConnected);
