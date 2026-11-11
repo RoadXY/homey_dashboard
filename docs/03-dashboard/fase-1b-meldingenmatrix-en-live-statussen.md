@@ -168,3 +168,16 @@ De volgende keuzes zijn expliciet door de gebruiker ingediend. Ze zijn leidend v
 | Slapen Bram | Niet migreren | Geen |
 
 Onbeantwoorde onderdelen uit de vragenlijst zijn niet ingevuld; deze blijven open en worden niet als migratiebesluit geïnterpreteerd.
+
+
+## 10. Aanvullende temperatuurbroncontrole en schema-ontwerp
+
+De actuele Homey-apparaatcontrole heeft de volgende kandidaten opgeleverd:
+- **Bram:** Temperatuur Bram (`58f20a55-90b3-49cf-9af0-53a40f6e501c`), `measure_temperature`.
+- **Ouderslaapkamer:** Temperatuur ouderslaapkamer (`6d68c7ba-411f-47c1-9624-2f61a7006795`), `measure_temperature`.
+- **Tess:** twee kandidaten in zone Tess: Thermostaat Tess (`203a126c-1923-4857-abcb-6a727a133099`) en Radiator Tess (`b95a295c-97c3-4188-8643-65c99f950783`), beide met `measure_temperature`. Juiste bron nog te bevestigen.
+- **Zolder:** Airco zolder (`746e2538-bf25-45b0-8e98-3e0100bff811`), Rookmelder zolder (`480cee53-22da-47e0-a9bd-6a64c9b11c40`) en CO Sensor (`6f1b28a0-0641-42d7-8f30-e6d8293c0b34`) leveren alle drie `measure_temperature`. Juiste kamersensor nog te bevestigen.
+
+De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 16 °C** is. De temperatuurbron is voor Tess en zolder nog niet definitief gekozen.
+
+Het functionele ontwerp van de herbruikbare Blockly-bouwsteen staat apart in `blockly-bouwsteen-tijdschema.md`. De bouwsteen `Tijdschema actief?` ondersteunt weekdagen, lokale start-/eindtijd, vensters over middernacht, tijdzonebewust gedrag en hergebruik door meerdere dashboardregels. De exacte weekdagen en tijden van `schedule.boven_ramen_open` moeten nog uit de oorspronkelijke HA-definitie worden bevestigd; er zijn geen tijden verzonnen.
