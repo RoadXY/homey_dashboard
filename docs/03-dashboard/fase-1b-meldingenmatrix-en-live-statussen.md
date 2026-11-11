@@ -123,3 +123,8 @@ De gebruiker kiest ervoor de vier raamwaarschuwingen als vier losse meldingen we
 ### Vraag 11 – meldingsniveau directe contactmeldingen (11 november 2026)
 
 De zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open**, **Grote Bram**, **Grote Tess**, **Grote Ouders open** en **Raam Sem open** krijgen alle het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande voorwaarden en zelfstandige meldingen blijven ongewijzigd.
+
+
+### Vraag 12 – meldingsniveau wateralarmen (12 november 2026)
+
+De twee afzonderlijke meldingen **Wateralarm wasmachines!** en **Wateralarm vaatwasser!** krijgen beide het niveau **kritiek**. Er zijn geen aanvullende opmerkingen. De meldingen blijven afzonderlijk en behouden hun bestaande bronvoorwaarden.
