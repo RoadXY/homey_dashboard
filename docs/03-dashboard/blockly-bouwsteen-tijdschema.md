@@ -8,7 +8,7 @@
 
 Het bovenramenschema is door de gebruiker aangewezen voor migratie. Het moet kunnen bepalen wanneer regels voor bovenramen relevant zijn. Het schema zelf is een tijdvenster/kalenderregel; het mag niet worden verward met Homey-Flow-timeoutvariabelen zoals `regen_ramenOpenTimout` of `regen_deurOpenTimeout`.
 
-De exacte dagen en begin-/eindtijden van het bestaande HA-schema zijn in de huidige projectdocumentatie nog niet vastgelegd. Daarom worden die waarden niet geraden of alvast hard gecodeerd. Ze moeten uit de oorspronkelijke HA-definitie worden overgenomen of door de gebruiker worden aangeleverd.
+De weekplanning is door de gebruiker bevestigd via de Helper-instellingen: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00. Deze waarden vormen de initiële configuratie van elk van de vier onafhankelijke schema-instanties.
 
 ## 2. Voorgestelde Blockly-blokvorm
 
