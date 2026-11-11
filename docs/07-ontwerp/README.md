@@ -344,3 +344,16 @@ De gebruiker is verantwoordelijk voor het correct en tijdig bijwerken van de Log
 Bij het bouwen van een melding kiest de gebruiker zelf de invoerbron in Blockly. Beschikbare bronsoorten zijn een Homey-apparaatwaarde/capability of een Homey Logic-variabele. Beide worden read-only uitgelezen. De gebruiker is verantwoordelijk voor het vullen en actueel houden van zelfgekozen Logic-variabelen.
 
 De prioriteit hoort vast bij de afzonderlijke melding en wordt niet dynamisch aangepast door voorwaarden of bronwaarden. Als verschillende prioriteiten nodig zijn, maakt de gebruiker afzonderlijke meldingen met elk een eigen prioriteit en eigen voorwaarden. Bronkeuze en prioriteit zijn afzonderlijke instellingen.
+
+
+### Aanvulling 11 november 2026 – implementatievolgorde meldingen
+
+De eerste werkende versie van dashboardmeldingen wordt **JSON-gedreven** gebouwd, gebaseerd op de bestaande Home Assistant-YAML en de goedgekeurde migratiebesluiten.
+
+- Eerst maken we JSON-configuratiebestanden voor de bestaande meldingen.
+- De dashboardapplicatie leest deze JSON-bestanden en evalueert de voorwaarden intern op basis van read-only Homey-apparaatgegevens en eventueel geselecteerde Homey Logic-variabelen.
+- De JSON-bestanden vormen de runtime-configuratie voor meldingen; Home Assistant is geen runtime-afhankelijkheid.
+- We testen eerst de JSON-gedreven meldingenengine en het daadwerkelijke gedrag op het dashboard.
+- Blockly wordt pas daarna geïntegreerd als editor om dezelfde JSON-configuratie te lezen, te wijzigen en nieuwe meldingen te genereren.
+
+Blockly-implementatie en Blockly-bouwstenen vallen dus buiten de eerstvolgende implementatiestap. De eerder gemaakte Blockly-ontwerpschetsen zijn toekomstig ontwerp en blokkeren de eerste meldingenrelease niet.
