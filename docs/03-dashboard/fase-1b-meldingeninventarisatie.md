@@ -26,3 +26,9 @@ De weer-icoonmatrix komt te vervallen. Gewenste toekomstige oplossing: een API-e
 De gebruiker keurt de set van 16 dashboardcondities goed: `sunny`, `mostly_sunny`, `partly_cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy_rain`, `showers`, `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet` en `windy`. De Homey Flow-kaart toont Nederlandse labels; de API gebruikt deze vaste Engelse codes. Dag/nacht wordt apart behandeld. Onbekende codes mogen de laatst bekende geldige conditie niet overschrijven.
 
 Als voorlopig API-ontwerp wordt `POST /api/v1/weather/condition` met body `{"type":"cloudy"}` voorgesteld. Bearer-tokenauthenticatie, allowlist-validatie, serverontvangsttijd en HTTP 200/400/401-responses zijn aanbevolen maar nog ter definitieve bevestiging en implementatie.
+
+
+
+### API-authenticatie – gebruikerswens voor tokenbeheer (11 november 2026)
+
+De dashboardinstellingen moeten een beheerplek krijgen om Bearer-tokens met een eigen naam te genereren. De gebruiker kan deze token als Authorization-header meegeven in de Homey Logic HTTP POST-kaart; die kaart ondersteunt headers. De gebruiker stelt de JSON-body zelf samen, bijvoorbeeld `{"type":"cloudy"}`. Tokenbeheer moet veilige eenmalige weergave van de geheime tokenwaarde, veilige hashopslag, intrekken/verwijderen en uitbreidbare rechten/scopes ondersteunen. Technische uitwerking en implementatie staan nog open.
