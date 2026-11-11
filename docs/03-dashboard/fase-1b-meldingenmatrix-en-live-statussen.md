@@ -173,3 +173,8 @@ De twee afzonderlijke meldingen **Lamp Sem staat aan** en **Lamp Bram staat aan*
 ### Vraag 21 – meldingsniveau muurtablet-batterij (12 november 2026)
 
 De melding bij een batterijniveau van de muurtablet lager dan 25% krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande grenswaarde en zichtbaarheid blijven ongewijzigd.
+
+
+### Vraag 22 – meldingsniveau Truus wil opgehaald worden! (12 november 2026)
+
+De melding **Truus wil opgehaald worden!** krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande activeringsvoorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`.
