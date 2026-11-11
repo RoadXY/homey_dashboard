@@ -252,3 +252,7 @@ De JSON-bestanden vormen de runtime-configuratiebron. Blockly wordt later gebrui
 
 ## Eerste JSON-proefmelding – CO₂ test via Logic-variabele
 Voor de eerste proef wordt een afzonderlijke, handmatig bedienbare Homey Logic-variabele voorgesteld: `dashboard_test_co2_melding` (boolean). `true` activeert de testmelding en `false` laat deze verdwijnen. De variabele staat los van de bestaande productievariabele `eco2_woonkamer_status`. De gebruiker beheert deze variabele; de applicatie leest haar alleen. Zie besluit 12.11 in de [meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md).
+
+
+## JSON-meldingenengine – eerste proef
+De eerste JSON-proefmelding voor CO₂ woonkamer is geïmplementeerd met de handmatig bedienbare Homey Logic-boolean `dashboard_test_co2_melding`. De server evalueert de JSON-voorwaarde read-only en toont actieve meldingen. Zie [JSON-meldingenproef CO₂](json-meldingen-proef-co2.md) voor het schema, de API, foutafhandeling en teststappen. Eerst volgt de praktijktest op de Ubuntu-server; daarna breiden we de JSON-engine stapsgewijs uit met de overige goedgekeurde HA-condities.
