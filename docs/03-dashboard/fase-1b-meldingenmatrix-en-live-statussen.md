@@ -178,3 +178,8 @@ De melding bij een batterijniveau van de muurtablet lager dan 25% krijgt het niv
 ### Vraag 22 – meldingsniveau Truus wil opgehaald worden! (12 november 2026)
 
 De melding **Truus wil opgehaald worden!** krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande activeringsvoorwaarde blijft ongewijzigd: de werkstatus van Truus is exact `Standby`.
+
+
+### Vraag 23 – meldingsniveau Zolder koud (12 november 2026)
+
+De afzonderlijke melding **Zolder koud** krijgt het niveau **info**, gelijk aan de vier slaapkamer-temperatuurmeldingen. Er zijn geen aanvullende opmerkingen. De oorspronkelijke bronvoorwaarde via `binary_sensor.temperatuur_zolder_laag` blijft behouden; de zichtbare kaart verwijst naar `climate.airco_zolder_thermostaat`. De precieze Homey-vertaling van deze afgeleide HA-sensor moet nog worden vastgesteld.
