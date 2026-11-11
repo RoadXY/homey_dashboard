@@ -304,3 +304,16 @@ Deze functie wordt in fase 1 gebouwd als generieke betrouwbaarheid-/diagnoselaag
 - De PIN-beveiliging geldt voor iedere route naar de instellingen, dus ook voor deze snelkoppeling vanuit de meldingenheader. Er mag geen alternatieve onbeveiligde route bestaan.
 - De eerdere omschrijving van een tekstuele/uitgeschreven rode headerwaarschuwing vervalt en wordt door deze pictogram-only variant vervangen.
 - **Fase-indeling PIN:** de bestaande ontwerpdocumentatie die bij dit besluit is gecontroleerd, legt de fase voor de PIN-beveiliging niet expliciet vast. Om de door de gebruiker vereiste toegangsbescherming te waarborgen, valt minimaal het PIN-invoerscherm en de toegangscontrole voor Instellingen binnen fase 1. Uitgebreider PIN-beheer kan alleen naar een latere fase worden verplaatst als dat afzonderlijk wordt besloten.
+
+
+### 12.1 Gebruikersbesluit – detectiemethode offline apparaten (11 november 2026)
+
+**Keuze gebruiker: optie A – uitsluitend Homey-status.**
+
+Voor fase 1 controleren we de door Homey beschikbaar gestelde apparaat-/verbindingsstatus om vast te stellen of een apparaat offline is. We voeren in fase 1 dus geen aanvullende controle uit op de ouderdom van meetwaarden of het uitblijven van nieuwe gegevens.
+
+De gecombineerde methode (Homey-status plus controle op tijdige nieuwe gegevens; eerder optie C) wordt door de gebruiker expliciet doorgeschoven naar **fase 3**.
+
+**Technische randvoorwaarde:** tijdens de technische validatie moet worden vastgesteld welke apparaatbeschikbaarheidsstatus de gebruikte Homey API daadwerkelijk levert en hoe betrouwbaar die is. Als voor een apparaat geen bruikbare status beschikbaar is, mag het dashboard niet zelf een offline-status verzinnen; dit wordt als beperking/onbekend geregistreerd en aan de gebruiker getoond. Deze beperking mag niet stilzwijgend worden opgelost door alsnog de fase-3-methode toe te passen.
+
+De reeds vastgelegde regel blijft gelden dat een ontbrekende of ongeldige waarde niet als normale/inactieve melding mag worden gepresenteerd. De precieze behandeling van ontbrekende waarden zonder expliciete offline-status wordt in de volgende ontwerpvragen uitgewerkt.
