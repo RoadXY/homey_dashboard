@@ -31,7 +31,7 @@ body {
 .connection { display: inline-flex; align-items: center; gap: 8px; color: #a3abb6; font-size: clamp(13px, .82vw, 16px); }
 .connection i, .server-dot { width: 7px; height: 7px; border-radius: 50%; background: #d3a75b; display: inline-block; flex: 0 0 auto; }
 .connection.online i, .server-dot { background: #7bbd91; box-shadow: 0 0 12px rgba(123,189,145,.35); }
-.clock { width: 100%; text-align: center; font-size: clamp(92px, 10vw, 184px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: auto 0 7px; }
+.clock { width: 100%; text-align: center; font-size: clamp(108px, 11.5vw, 210px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: auto 0 7px; }
 .date { color: #aab1bc; font-size: clamp(17px, 1.4vw, 24px); text-transform: capitalize; text-align: center; }
 .clock-bottom { color: #7c8592; font-size: clamp(12px, .82vw, 15px); margin-top: 22px; justify-content: flex-start; }
 .clock-bottom .server-dot { margin-left: auto; }
@@ -45,7 +45,7 @@ body {
 .weather-details span { color: #8992a0; font-size: clamp(12px, .8vw, 15px); }
 .weather-details strong { color: #d9dde3; font-size: clamp(15px, 1vw, 18px); font-weight: 550; }
 .temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
-.temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; justify-content: flex-start; }
+.temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
 .temperature-tile strong { margin: auto 0; font-size: clamp(38px,3.8vw,62px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
 .right-column { position: relative; }
@@ -72,9 +72,8 @@ body {
 }
 .notifications-panel:before { left: 0; }
 .notifications-panel:after { right: 0; }
-.notifications-heading { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; padding: 2px 2px 14px; border-bottom: 1px solid rgba(255,255,255,.07); }
-.notifications-heading h1 { margin: 7px 0 0; font-size: clamp(27px,2.3vw,36px); font-weight: 500; letter-spacing: -.045em; }
-.notification-count { color: #78818e; font-size: 18px; font-variant-numeric: tabular-nums; }
+.notifications-heading { display: flex; align-items: center; justify-content: flex-start; flex: 0 0 auto; padding: 2px 2px 14px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.notifications-heading h1 { margin: 0; font-size: clamp(27px,2.3vw,36px); font-weight: 500; letter-spacing: -.045em; }
 .notifications-content { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: clamp(14px,1.3vw,20px) 0; }
 .empty-state { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding: 24px; color: #8b94a1; }
 .empty-mark { color: #aab4c2; font-size: 42px; line-height: 1; opacity: .7; }
