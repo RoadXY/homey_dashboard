@@ -1,4 +1,5 @@
 import { HomeyAPI } from "homey-api";
+import { EventEmitter } from "node:events";
 
 type HomeyConnectionState = "not-connected" | "connecting" | "online" | "offline";
 
@@ -11,6 +12,8 @@ type HomeySnapshot = {
 };
 
 let api: Awaited<ReturnType<typeof HomeyAPI.createLocalAPI>> | null = null;
+export const homeyRealtime = new EventEmitter();
+let realtimeSetupFor: unknown = null;
 let snapshot: HomeySnapshot = {
   state: "not-connected",
   checkedAt: null,
@@ -18,6 +21,70 @@ let snapshot: HomeySnapshot = {
   deviceCount: null,
   zoneCount: null,
 };
+
+const dashboardDeviceIds = [
+  "2c7a4148-1042-4dd5-80d4-81d07bcf66ed",
+  "5f6616bc-e761-4462-a648-e3ed1f07e5c9",
+  "2d5302a8-5be9-47ca-b858-59693523fd93",
+  "42b24797-915e-4d2d-bbe9-c7ee7c6378b4",
+  "a9cc989a-8672-4bb6-9da0-c0893a02d2f5",
+  "ba9336e2-f4ed-417c-bba6-3fafb735e61a",
+  "58f20a55-90b3-49cf-9af0-53a40f6e501c",
+  "c7e68c38-1588-4c93-9db8-e854f4d251ab",
+];
+
+async function setupRealtimeSubscriptions(): Promise<void> {
+  if (!api || realtimeSetupFor === api) return;
+  const currentApi = api;
+  await Promise.all([currentApi.devices.connect(), currentApi.logic.connect()]);
+  const devices = await currentApi.devices.getDevices();
+  let subscriptions = 0;
+
+  for (const deviceId of dashboardDeviceIds) {
+    const device = (devices as Record<string, any>)[deviceId];
+    if (!device || !Array.isArray(device.capabilities)) continue;
+    for (const capabilityId of device.capabilities as string[]) {
+      try {
+        device.makeCapabilityInstance(capabilityId, (value: unknown) => {
+          homeyRealtime.emit("update", {
+            source: "device",
+            deviceId,
+            capabilityId,
+            value,
+            changedAt: new Date().toISOString(),
+          });
+        });
+        subscriptions += 1;
+      } catch (error) {
+        // Unsupported or temporarily unavailable capabilities must not stop
+        // the remaining subscriptions from being registered.
+        console.warn("Homey realtime capability subscription failed", { deviceId, capabilityId, error });
+      }
+    }
+  }
+
+  const logicManager = currentApi.logic as unknown as {
+    on: (event: string, listener: (variable: { id?: string; name?: string; type?: string; value?: unknown }) => void) => void;
+  };
+  logicManager.on("variable.update", (variable) => {
+    homeyRealtime.emit("update", {
+      source: "logic",
+      variableId: variable.id,
+      variableName: variable.name,
+      value: variable.value,
+      changedAt: new Date().toISOString(),
+    });
+  });
+  logicManager.on("variable.create", (variable) => {
+    homeyRealtime.emit("update", { source: "logic", variableName: variable.name, changedAt: new Date().toISOString() });
+  });
+  logicManager.on("variable.delete", (variable) => {
+    homeyRealtime.emit("update", { source: "logic", variableName: variable.name, changedAt: new Date().toISOString() });
+  });
+
+  realtimeSetupFor = currentApi;
+  homeyRealtime.emit("connected", { subscriptions, changedAt: new Date().toISOString() });
+}
 
 function getConfig() {
   return {
