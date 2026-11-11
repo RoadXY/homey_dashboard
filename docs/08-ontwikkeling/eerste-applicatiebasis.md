@@ -156,3 +156,8 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De drie keuken-radiatorwaarden worden niet als kamergemiddelde gekozen; eerst moet de Homey Logic-variabele `temperatuur_gemiddeld_keuken` onderzocht worden.
 - Aandachtspunt: in dezelfde testsessie retourneerde `/api/homey/status` de status `not-configured`, terwijl `/api/homey/readings` meetwaarden kon uitlezen. Dit is een inconsistentie die vóór weergave van de Homey-status in de UI onderzocht moet worden.
 - De uitlezing is read-only; er zijn geen Homey-apparaten, Flows of instellingen gewijzigd.
+
+
+## Bevestiging Homey-status na eerste meetwaardenaanvraag (11 november 2026)
+- Een vervolgaanvraag op `GET /api/homey/status` retourneerde `state: online`, `deviceCount: 128` en `zoneCount: 22`.
+- De eerdere `not-configured`-status was de initiële toestand vóór de eerste aanvraag die de Homey-verbinding automatisch tot stand bracht; er is geen blijvende statusinconsistentie vastgesteld.
