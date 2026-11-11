@@ -110,3 +110,26 @@ De Homey-Flow-timeoutvariabelen mogen niet als vervanging voor het oorspronkelij
 ## 8. Volgende stap
 
 Zoek de ontbrekende temperatuursensor(en) en ontwerp de herbruikbare schema-bouwsteen voor `schedule.boven_ramen_open`. Zet neerslagkans op de backlog tot de gebruiker een geschikte weer-app/databron heeft gekozen. Niet-migreren-onderdelen worden uitgesloten van de nieuwe dashboardimplementatie, maar blijven traceerbaar in de historische HA-referentie.
+
+
+## 9. Aanvullende temperatuurbroncontrole na migratiekeuzes
+
+Een nieuwe actuele apparaatcontrole heeft de volgende kandidaten opgeleverd:
+
+### Tess
+- **Thermostaat Tess**, ID `203a126c-1923-4857-abcb-6a727a133099`, zone Eerste verdieping > Tess, heeft `measure_temperature = 16 °C` en `target_temperature = 12 °C`.
+- **Radiator Tess**, ID `b95a295c-97c3-4188-8643-65c99f950783`, dezelfde zone, heeft eveneens `measure_temperature = 16 °C` en `target_temperature = 12 °C`.
+- Beide zijn thermostaat-/radiatorapparaten, niet een expliciet benoemde losse temperatuursensor. De juiste bron voor de HA-kaart “Slaapkamer Tess koud” is daarom nog niet eenduidig vastgesteld.
+
+### Zolder
+- **Airco zolder**, ID `746e2538-bf25-45b0-8e98-3e0100bff811`, zone Zolder > Voorzolder, heeft `measure_temperature = 19 °C`.
+- **Rookmelder zolder**, ID `480cee53-22da-47e0-a9bd-6a64c9b11c40`, zone Zolder > Voorzolder, heeft `measure_temperature = 20,2 °C`.
+- **CO Sensor**, ID `6f1b28a0-0641-42d7-8f30-e6d8293c0b34`, zone Zolder > Voorzolder, heeft `measure_temperature = 19,6 °C`.
+- De oorspronkelijke omschrijving zegt “temperatuursensor in deze kamer”; uit de namen/zonelocaties alleen blijkt niet welke hiervan bedoeld is. Geen van deze kandidaten wordt zonder bevestiging als de juiste bron gekozen.
+
+### Bram en ouderslaapkamer bevestigd
+- **Temperatuur Bram**, ID `58f20a55-90b3-49cf-9af0-53a40f6e501c`, `measure_temperature = 17,4 °C`.
+- **Temperatuur ouderslaapkamer**, ID `6d68c7ba-411f-47c1-9624-2f61a7006795`, `measure_temperature = 16,1 °C`.
+- Deze apparaatnamen en zones passen direct bij de door de gebruiker bedoelde kamertemperatuurbronnen.
+
+De waarden hierboven zijn momentopnames tijdens de inventarisatie. De dashboardregel voor alle vier kamers blijft exact **temperatuur <16 °C**. De twee nog onduidelijke bronnen (Tess en zolder) blijven open totdat de juiste meetbron is bevestigd.
