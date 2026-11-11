@@ -202,7 +202,7 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
 
   const notifications = configs.map((config): DashboardNotification => {
     const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
-    if ("operator" in config.condition) {
+    if (isConditionGroup(config.condition)) {
       const result = evaluateNode(config.condition, values);
       return { ...base, ...result };
     }
