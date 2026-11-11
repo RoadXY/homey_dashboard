@@ -83,3 +83,8 @@ De gebruiker kiest ervoor de oorspronkelijke YAML-logica exact te behouden. De g
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 3 (airco's)
 
 De gebruiker kiest ervoor beide aircokaarten uitsluitend te tonen wanneer de airco actief is. Dit vervangt het oorspronkelijke verschil in zichtbaarheid tussen keuken en zolder: beide moeten een status anders dan `off` en `unavailable` hebben. Beide kaarten tonen bedrijfsstatus en ingestelde temperatuur. Geen aanvullende opmerkingen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 4 (muurtablet-batterij)
+
+De gebruiker bevestigt de oorspronkelijke zichtbaarheid: toon de batterijkaart uitsluitend wanneer het batterijniveau lager is dan 25%. Geen aanvullende opmerkingen.
