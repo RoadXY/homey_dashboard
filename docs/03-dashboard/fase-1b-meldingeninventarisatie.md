@@ -160,3 +160,8 @@ De gebruiker bevestigt dat `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5
 ### Gebruikersbesluit – severity vriezer (11 november 2026)
 
 Voor **Vriezer keuken warm!** is het meldingsniveau **critical (kritiek)** gekozen. Er zijn geen aanvullende opmerkingen. Dit legt alleen de severity vast; de oorspronkelijke temperatuurvoorwaarde en exacte drempel blijven nog te achterhalen.
+
+
+### Gebruikersbesluit – severity wasmachine (11 november 2026)
+
+Voor **Wasmachine staat aan** is het meldingsniveau **info (informatie)** gekozen. Er zijn geen aanvullende opmerkingen. De bron blijft de read-only boolean Logic-variabele `wasmachine_draait`.
