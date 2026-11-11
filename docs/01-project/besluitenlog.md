@@ -486,3 +486,19 @@ De gekozen severity (critical/warning/info) blijft inhoudelijke metadata van de 
 - De eerste visuele controle liet zien dat de 4px linkerrand als een losse gele streep naast een waarschuwing werd ervaren.
 - De overgebleven linkerrand uit de oude meldingskaartstijl is daarom verwijderd. Meldingsniveaus worden voortaan door het volledige rustige kleurvlak, de subtiele kaartomranding, het pictogram en de tekstkleur onderscheiden.
 - Deze correctie geldt voor alle severity-niveaus en blijft via semantische thematokens aanpasbaar.
+
+
+## Gebruikersbevestiging Homey-bronnen – wateralarmen en deur-/raamcontacten (11 november 2026)
+
+De gebruiker heeft negen Homey-koppelingen expliciet bevestigd:
+- Water Sensor wasmachines — `alarm_water`.
+- Water sensor vaatwasser — `alarm_water`.
+- Deur tuinhuis — `alarm_contact`.
+- Voordeur — `alarm_contact`.
+- Achterdeur — `alarm_contact`.
+- Onder raam Bram — `alarm_contact`.
+- Onder raam Tess — `alarm_contact`.
+- Ouderslaapkamer onderraam — `alarm_contact`.
+- Raam Sem — `alarm_contact`.
+
+Er zijn geen aanvullende opmerkingen of correcties. Dit bevestigt de apparaatnaam/capability-koppelingen, niet de nog afzonderlijk te valideren samengestelde HA-voorwaarden of exacte apparaat-ID's. De mapping en verdere inventarisatie blijven read-only; Homey-apparaten en instellingen worden niet aangepast.
