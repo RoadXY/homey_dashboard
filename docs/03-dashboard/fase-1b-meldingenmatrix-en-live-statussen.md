@@ -48,10 +48,10 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Voordeur open | Contactstatus is `on` | Kandidaat: Voordeur, `alarm_contact`. |
 | Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Slaap-/schema-afhankelijkheid Sem is expliciet niet migreren; kaart/regel niet overnemen. |
 | Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Slaap-/schema-afhankelijkheid Bram is expliciet niet migreren; kaart/regel niet overnemen. |
-| Slaapkamer Bram koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur Bram, `measure_temperature`. |
-| Slaapkamer Tess koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Thermostaat Tess**, `203a126c-1923-4857-abcb-6a727a133099`, capability `measure_temperature`. |
-| Ouderslaapkamer koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur ouderslaapkamer, `measure_temperature`. |
-| Zolder koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron **Temperatuur Sem** (slaapkamer Sem), `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. |
+| Slaapkamer Bram koud | Temperatuursensor in de kamer <12 °C | Migreren; Homey-bron Temperatuur Bram, `measure_temperature`. |
+| Slaapkamer Tess koud | Temperatuursensor in de kamer <12 °C | Migreren; Homey-bron **Thermostaat Tess**, `203a126c-1923-4857-abcb-6a727a133099`, capability `measure_temperature`. |
+| Ouderslaapkamer koud | Temperatuursensor in de kamer <12 °C | Migreren; Homey-bron Temperatuur ouderslaapkamer, `measure_temperature`. |
+| Zolder koud | Temperatuursensor in de kamer <12 °C | Migreren; Homey-bron **Temperatuur Sem** (slaapkamer Sem), `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. |
 | Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | **Door gebruiker bevestigd:** Koelkast keuken temperatuur (`64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. |
 | Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Gebruiker kiest dashboardinformatie: status, voortgang en resterende tijd. Homey-bron: machine state, `localthings_cycle_active`, `localthings_progress`, `localthings_remaining_minutes`; exacte statuswaarden/templatevertaling nog technisch valideren. Geen energiekosten-tegel gevraagd. |
 | Wasmachine staat aan | `binary_sensor.wasmachine` is on | **Gebruikerskeuze:** Logic-variabele `wasmachine_draait` (`c21929a1-2693-416b-9240-74b4ca5d96b9`) als statusbron. Deze is Flow-afhankelijk; dashboard leest de variabele uitsluitend read-only. |
@@ -123,7 +123,7 @@ De volgende instellingen moeten in de latere Blockly-regelbewerker configureerba
 - Meldingstitel, omschrijving, prioriteit en eventueel icoon.
 - Configureerbare schema-/tijdvensterbouwstenen; elke melding krijgt een eigen schema-instantie, met gedeelde evaluatiecode.
 
-De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze. De temperatuurdrempel van 16 °C is eveneens een expliciet gekozen beginregel en moet later configureerbaar blijven.
+De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze. De temperatuurdrempel van 12 °C is eveneens een expliciet gekozen beginregel en moet later configureerbaar blijven.
 
 ## 7. Openstaande bronmappings
 
@@ -152,10 +152,10 @@ De volgende keuzes zijn expliciet door de gebruiker ingediend. Ze zijn leidend v
 | Pixel 7 Pro | Niet migreren | Geen |
 | SM-F966B | Niet migreren | Geen |
 | Moto G60S | Niet migreren | Geen |
-| Slaapkamer Bram koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
-| Slaapkamer Tess koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
-| Ouderslaapkamer koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
-| Zolder koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
+| Slaapkamer Bram koud | Migreren | Kamertemperatuursensor lager dan 12 °C |
+| Slaapkamer Tess koud | Migreren | Kamertemperatuursensor lager dan 12 °C |
+| Ouderslaapkamer koud | Migreren | Kamertemperatuursensor lager dan 12 °C |
+| Zolder koud | Migreren | Kamertemperatuursensor lager dan 12 °C |
 | Kans op neerslag | Migreren – backlog | Gebruiker zoekt een app die regenkans levert |
 | Zon op raam Tess | Niet migreren | Geen |
 | Boven ramen open | Migreren | Vier onafhankelijke schema-instanties; ma–za 07:00–20:00 en zo 08:00–20:00. Blockly-bouwsteen is fase 2. |
@@ -173,17 +173,17 @@ De actuele Homey-apparaatcontrole heeft de volgende kandidaten opgeleverd:
 - **Tess:** de gebruiker heeft **Thermostaat Tess** (`203a126c-1923-4857-abcb-6a727a133099`) bevestigd als bron; gebruik `measure_temperature`. Radiator Tess is niet geselecteerd.
 - **Zolder:** Airco zolder (`746e2538-bf25-45b0-8e98-3e0100bff811`), Rookmelder zolder (`480cee53-22da-47e0-a9bd-6a64c9b11c40`) en CO Sensor (`6f1b28a0-0641-42d7-8f30-e6d8293c0b34`) leveren alle drie `measure_temperature`. Juiste kamersensor nog te bevestigen.
 
-De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 16 °C** is. De temperatuurbronnen voor Tess en slaapkamer Sem zijn door de gebruiker bevestigd.
+De vier regels blijven inhoudelijk gelijk: toon de melding als de bedoelde kamertemperatuur **lager dan 12 °C** is. De temperatuurbronnen voor Tess en slaapkamer Sem zijn door de gebruiker bevestigd.
 
 Het functionele ontwerp van de Blockly-tijdschema's staat apart in `blockly-bouwsteen-tijdschema.md`. De vier onafhankelijke schema-instanties voor de raam-meldingen zijn bevestigd: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00.
 
 
 ### 10.1 Gebruikersbevestiging Tess
-Thermostaat Tess (`203a126c-1923-4857-abcb-6a727a133099`) is de gekozen bron voor “Slaapkamer Tess koud”. De dashboardregel blijft **temperatuur <16 °C**.
+Thermostaat Tess (`203a126c-1923-4857-abcb-6a727a133099`) is de gekozen bron voor “Slaapkamer Tess koud”. De dashboardregel blijft **temperatuur <12 °C**.
 
 
 ### 10.2 Gebruikersbevestiging zolder / slaapkamer Sem
-Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkamer Sem: **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`). De regel blijft **temperatuur <16 °C**.
+Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkamer Sem: **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`). De regel blijft **temperatuur <12 °C**.
 
 
 ### 10.3 Opschoning openstaande mappinglijst
@@ -464,3 +464,14 @@ De eerste CO₂-proefmelding is als JSON-configuratie toegevoegd in `config/noti
 De server leest JSON-configuraties uit `config/notifications/`, haalt de genoemde Logic-variabelen read-only op en evalueert de booleanvoorwaarde intern. De nieuwe endpoint is `GET /api/notifications`. De frontend toont actieve meldingen en toont bij ontbrekende, ongeldige of onbereikbare bron een onbekende status; onbekend wordt niet gelijkgesteld aan onwaar.
 
 De eerste evaluator ondersteunt bewust alleen de boolean-gelijkheidsvoorwaarde die nodig is voor deze proef. Numerieke vergelijkingen en volledige HA-condition trees volgen pas in vervolgstappen. De implementatie en handmatige testprocedure staan in [JSON-meldingenproef CO₂](json-meldingen-proef-co2.md). De Docker-build en runtime-test op de Ubuntu-server moeten nog worden uitgevoerd.
+
+
+### 12.13 Gebruikerscorrectie – temperatuurdrempel slaapkamers (11 november 2026)
+
+De gebruiker heeft de eerder vastgelegde temperatuurdrempel van **16 °C** gecorrigeerd naar **12 °C**. Voor alle vier de meldingen geldt voortaan strikt **lager dan 12 °C**:
+- Slaapkamer Bram – Temperatuur Bram.
+- Slaapkamer Tess – Thermostaat Tess.
+- Ouderslaapkamer – Temperatuur ouderslaapkamer.
+- Zolder – Temperatuur Sem (slaapkamer Sem).
+
+De grens is exclusief: exact 12,0 °C activeert de melding niet; waarden onder 12,0 °C wel. Deze correctie vervangt de eerdere 16 °C-vermelding in deze meldingenmatrix.
