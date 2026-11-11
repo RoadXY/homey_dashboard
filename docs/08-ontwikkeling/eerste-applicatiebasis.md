@@ -233,3 +233,13 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De triggers reageren op temperatuurwijzigingen. Daardoor kan de flow van de nog online sensor blijven draaien als de andere sensor offline is, mits de formule een ontbrekende/ongeldige beginwaarde veilig afhandelt.
 - Terminologie: de huidige formule is een exponentieel voortschrijdend gemiddelde met een vaste weging van 50% (EMA-achtig), niet een tijdvenster-rolling-average.
 - Er zijn geen Homey-flows, apparaten of Logic-variabelen gewijzigd. Herstelontwerp en eventuele aanpassing wachten op expliciete goedkeuring van de gebruiker.
+
+
+## Tijdelijke veilige toestand temperatuur-gemiddelden (11 november 2026)
+- De gebruiker heeft handmatig numerieke startwaarden ingesteld voor beide Logic-variabelen en de vier temperatuur-gemiddeldeflows uitgeschakeld om onbedoelde overschrijving tijdens ontwikkeling te voorkomen.
+- Read-only controle via Homey Logic API bevestigt:
+  - `temperatuur_gemiddeld_woonkamer`: type `number`, waarde `22`.
+  - `temperatuur_gemiddeld_keuken`: type `number`, waarde `21`.
+- Dit zijn handmatig ingestelde tijdelijke waarden en mogen niet als gevalideerde actuele kamertemperaturen worden beschouwd.
+- De vier flows blijven uitgeschakeld totdat de berekeningslogica is herzien en expliciet door de gebruiker is goedgekeurd.
+- De dashboardintegratie kan de variabelen nu als numerieke waarden uitlezen. De definitieve keuze tussen een 50/50 exponentieel voortschrijdend gemiddelde en een rolling average over een tijdvenster is nog niet gemaakt.
