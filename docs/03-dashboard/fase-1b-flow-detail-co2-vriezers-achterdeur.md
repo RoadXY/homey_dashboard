@@ -26,7 +26,7 @@ Deze ronde heeft de Advanced Flow-details read-only uit Homey opgehaald. De flow
 - Op de actuele Homey-device-inventarisatie stond de vriezertemperatuur op -22,6 °C.
 
 ## 3. Vriezer keuken: temperatuur hoog
-- Flow-ID: `df1738b7-5e41-41d0-a651-325984` (zie opmerking hieronder).
+- Flow-ID: `df1738b7-5e41-41d0-a651-7c9f6537`.
 - Status: enabled=true, broken=false.
 - Device-ID uit de Flow: `64fc846e-01b0-438a-9114-4498ea8005e7`; device capability `measure_temperature`.
 - Waarschuwingsgrenzen: boven 10 °C en boven 14 °C; bij de tweede tak wordt een 5-minuten countdown/herhaling gebruikt.
