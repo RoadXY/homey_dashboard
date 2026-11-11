@@ -203,3 +203,7 @@ De gebruiker bevestigt Homey-apparaat **Weer**, capability `measure_temperature`
 ### Gebruikersbevestiging – Zolder koud (12 november 2026)
 
 De gebruiker bevestigt **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`, als bron voor de melding. Behoud de afgesproken grens **<12 °C**. De oorspronkelijke kaartverwijzing naar `climate.airco_zolder_thermostaat` blijft onderdeel van de weergave. Meldingsniveau blijft **info**.
+
+### Gebruikersbesluit – schema bovenramen (12 november 2026)
+
+`schedule.boven_ramen_open` wordt gereproduceerd als herbruikbare Blockly-bouwsteen met instelbare dagen en tijden. De raamwaarschuwingen blijven hun oorspronkelijke YAML-condities volgen.
