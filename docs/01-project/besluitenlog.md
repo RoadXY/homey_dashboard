@@ -460,3 +460,12 @@ De gebruiker heeft de visuele richting voor meldingsniveaus bevestigd:
 - **Informatie:** kleurstelling nog niet vastgesteld; hiervoor wordt eerst de gebruiker geraadpleegd.
 
 De bestaande frontend toont al de niveau-labels KRITIEK, WAARSCHUWING en INFO en kent CSS-klassen per severity, maar de huidige uitvoering onderscheidt de niveaus hoofdzakelijk met een gekleurde linkerrand. De volledige kleurvlakken, niveau-iconen en definitieve styling moeten nog worden geïmplementeerd. De prioriteit blijft een vaste eigenschap per melding.
+
+
+### Aanvulling meldingsniveaus – INFO en toekomstige thema's (11 november 2026)
+
+De gebruiker heeft de voorgestelde blauwe accentkleur voor **INFO** nog niet vastgesteld. INFO behoudt voorlopig de neutrale/bestaande stijl van de huidige dashboardinterface; er wordt nu geen aparte blauwe kleurstelling ingevoerd.
+
+**Voorbereiding op toekomstige dashboardthema's is verplicht:** meldingskaarten en hun niveaustyling mogen niet afhankelijk worden van hardgecodeerde kleuren per component. De implementatie gebruikt semantische thematokens/CSS custom properties voor onder meer kaartachtergrond, tekst, pictogram, rand en severity-accenten. De huidige donkere interface levert de eerste set tokenwaarden. In een latere fase moeten thema's deze tokens kunnen overschrijven, zodat kritieke en waarschuwingsmeldingen in elk thema herkenbaar, consistent en voldoende contrastrijk blijven. INFO volgt voorlopig de neutrale tokens van het actieve thema.
+
+De gekozen severity (critical/warning/info) blijft inhoudelijke metadata van de melding; alleen de visuele presentatie wordt door het actieve thema bepaald. Zo blijft de meldingslogica onafhankelijk van de themakeuze.
