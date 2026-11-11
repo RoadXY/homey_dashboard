@@ -103,3 +103,8 @@ Besluit: de vier raamwaarschuwingen verschijnen als losse meldingen zonder gezam
 ## Inventarisatie HA-YAML – meldingsniveau directe contactmeldingen
 
 Besluit: de zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open**, **Grote Bram**, **Grote Tess**, **Grote Ouders open** en **Raam Sem open** krijgen allemaal het niveau **waarschuwing**. Geen aanvullende opmerkingen. De oorspronkelijke voorwaarden en zelfstandige meldingen wijzigen hierdoor niet.
+
+
+## Inventarisatie HA-YAML – meldingsniveau wateralarmen
+
+Besluit: **Wateralarm wasmachines!** en **Wateralarm vaatwasser!** krijgen beide het meldingsniveau **kritiek**. De meldingen blijven afzonderlijk en behouden de bestaande voorwaarden. Geen aanvullende opmerkingen.
