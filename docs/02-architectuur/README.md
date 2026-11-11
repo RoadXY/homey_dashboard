@@ -59,3 +59,29 @@ Deze conventie geldt voor alle toekomstige projectbestanden en uitbreidingen, ni
 ## Weerbronmapping
 
 Weergegevens worden via een JSON-profiel aan vaste interne weercategorieën gekoppeld. De backend doet de providervertaling; de frontend kent uitsluitend de canonieke categorieën. Onbekende waarden blijven expliciet `unknown`. De toekomstige instellingen-GUI moet hetzelfde JSON-profiel beheren en wordt niet automatisch onderdeel van de fase-4 externe event-API. Zie [Weather condition mapping](../03-dashboard/weather-mapping.md).
+
+## Interface localization and language selection (11 November 2026)
+
+The dashboard uses i18n and separates interface translations from Homey-provided user content.
+
+### Language resolution
+
+1. Read the configured language from Homey through a supported, documented interface. The exact API field/property must be technically verified.
+2. In automatic mode, use the Homey locale when it is supported by the dashboard translation resources.
+3. If Homey language detection fails or the locale is unsupported, use Dutch (`nl-NL`) as the fallback. The UI must not claim that a locale was detected when it was not.
+4. A manual language selection in **Settings → System → Language** overrides Homey.
+5. Persist the manual override in dashboard configuration so it survives container restarts.
+6. The user can select **Automatic** to clear the override and follow Homey language again.
+
+The settings menu must visibly distinguish **Automatic (Homey: <language>)** from a manually selected language.
+
+### Translation architecture
+
+- Use `i18next` with `react-i18next` for React interface translations, after dependency/build validation.
+- Translation resources are organized by locale, with stable English translation keys and JSON property names.
+- Dutch (`nl-NL`) is the initial supported locale and the fallback.
+- Additional locales are added as translation resources; component code must not contain locale-specific interface strings.
+- Date, time, number, and unit formatting follows the effective locale where appropriate.
+- Homey device names, zone names, Flow names, Logic variable names, and other user-defined values are displayed unchanged and are not passed through translation dictionaries.
+
+This localization architecture is independent of provider mappings such as weather condition normalization. Technical identifiers, APIs, JSON schemas, and code remain English.
