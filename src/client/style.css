@@ -3,6 +3,33 @@
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #f1f2f4; background: #101216; font-synthesis: none; text-rendering: optimizeLegibility;
+
+  /* Semantische thematokens: thema's overschrijven deze waarden, componenten niet. */
+  --notification-card-background: rgba(35,39,47,.82);
+  --notification-card-border: rgba(255,255,255,.09);
+  --notification-title-color: #f0f2f5;
+  --notification-message-color: #b5bdc8;
+  --notification-label-color: #b8c0cc;
+  --notification-icon-size: 1.25rem;
+
+  --severity-critical-background: #382326;
+  --severity-critical-border: #754047;
+  --severity-critical-accent: #e18b91;
+  --severity-critical-text: #f0b4b7;
+  --severity-critical-icon: #f0a0a5;
+
+  --severity-warning-background: #393222;
+  --severity-warning-border: #75613a;
+  --severity-warning-accent: #c9a65d;
+  --severity-warning-text: #ead49a;
+  --severity-warning-icon: #f0d080;
+
+  /* INFO blijft bewust neutraal binnen het actieve thema. */
+  --severity-info-background: var(--notification-card-background);
+  --severity-info-border: var(--notification-card-border);
+  --severity-info-accent: var(--notification-label-color);
+  --severity-info-text: var(--notification-message-color);
+  --severity-info-icon: var(--notification-label-color);
 }
 html, body, #root { width: 100%; min-width: 320px; height: 100%; min-height: 100%; margin: 0; }
 body {
@@ -133,12 +160,38 @@ body {
 .notification-list { display: flex; flex-direction: column; gap: 12px; }
 .notification-card {
   display: flex; flex-direction: column; gap: 8px; padding: clamp(16px,1.4vw,22px);
-  border: 1px solid rgba(255,255,255,.09); border-left-width: 4px; border-radius: 13px;
-  background: rgba(35,39,47,.82);
+  border: 1px solid var(--severity-info-border); border-left-width: 4px; border-radius: 13px;
+  background: var(--severity-info-background); color: var(--severity-info-text);
 }
-.notification-card strong { color: #f0f2f5; font-size: clamp(19px,1.5vw,25px); font-weight: 550; }
-.notification-card > span:last-child { color: #b5bdc8; font-size: clamp(14px,1.05vw,18px); line-height: 1.45; }
-.notification-level { color: #b8c0cc; font-size: 11px; font-weight: 750; letter-spacing: .14em; }
-.severity-warning { border-left-color: #d3a65d; }
-.severity-critical { border-left-color: #d46c6c; }
-.severity-info { border-left-color: #7c9bbd; }
+.notification-card strong { color: var(--notification-title-color); font-size: clamp(19px,1.5vw,25px); font-weight: 550; }
+.notification-card > span:last-child { color: var(--severity-info-text); font-size: clamp(14px,1.05vw,18px); line-height: 1.45; }
+.notification-heading { display: flex; align-items: center; gap: 9px; min-height: 22px; }
+.notification-icon { display: inline-grid; place-items: center; width: 22px; height: 22px; font-size: var(--notification-icon-size); line-height: 1; font-weight: 800; }
+.notification-level { color: var(--notification-label-color); font-size: 11px; font-weight: 750; letter-spacing: .14em; }
+.severity-critical {
+  background: var(--severity-critical-background);
+  border-color: var(--severity-critical-border);
+  border-left-color: var(--severity-critical-accent);
+}
+.severity-critical .notification-level,
+.severity-critical .notification-icon,
+.severity-critical > span:last-child { color: var(--severity-critical-text); }
+.severity-critical .notification-icon { color: var(--severity-critical-icon); }
+.severity-warning {
+  background: var(--severity-warning-background);
+  border-color: var(--severity-warning-border);
+  border-left-color: var(--severity-warning-accent);
+}
+.severity-warning .notification-level,
+.severity-warning .notification-icon,
+.severity-warning > span:last-child { color: var(--severity-warning-text); }
+.severity-warning .notification-icon { color: var(--severity-warning-icon); }
+.severity-info {
+  background: var(--severity-info-background);
+  border-color: var(--severity-info-border);
+  border-left-color: var(--severity-info-accent);
+}
+.severity-info .notification-level,
+.severity-info .notification-icon,
+.severity-info > span:last-child { color: var(--severity-info-text); }
+
