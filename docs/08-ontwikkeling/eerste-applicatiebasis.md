@@ -168,3 +168,9 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - Reden: voor de dashboardgebruiker beschrijft `not-connected` duidelijker dat Homey op dat moment niet verbonden is; `not-configured` suggereerde ten onrechte dat de integratie niet ingericht was.
 - De overige statussen blijven `connecting`, `online` en `offline`.
 - Codewijziging: `src/server/homey.ts`, commit `475f85f`.
+
+
+### Validatie statuslabel op Ubuntu (11 november 2026)
+- De gebruiker heeft commit `b48e482` opgehaald en de dashboardcontainer herstart.
+- `GET /api/homey/status` retourneerde HTTP 200 met `state: not-connected`, zonder foutmelding.
+- Daarmee is de nieuwe initiële statusbenaming op de Ubuntu-server gevalideerd.
