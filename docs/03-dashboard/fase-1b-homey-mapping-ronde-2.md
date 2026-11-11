@@ -119,7 +119,7 @@ Een nieuwe actuele apparaatcontrole heeft de volgende kandidaten opgeleverd:
 ### Tess
 - **Thermostaat Tess**, ID `203a126c-1923-4857-abcb-6a727a133099`, zone Eerste verdieping > Tess, heeft `measure_temperature = 16 °C` en `target_temperature = 12 °C`.
 - **Radiator Tess**, ID `b95a295c-97c3-4188-8643-65c99f950783`, dezelfde zone, heeft eveneens `measure_temperature = 16 °C` en `target_temperature = 12 °C`.
-- Beide zijn thermostaat-/radiatorapparaten, niet een expliciet benoemde losse temperatuursensor. De juiste bron voor de HA-kaart “Slaapkamer Tess koud” is daarom nog niet eenduidig vastgesteld.
+- De gebruiker heeft bevestigd dat **Thermostaat Tess** de bron is voor de HA-kaart “Slaapkamer Tess koud”. **Radiator Tess** is niet geselecteerd.
 
 ### Zolder
 - **Airco zolder**, ID `746e2538-bf25-45b0-8e98-3e0100bff811`, zone Zolder > Voorzolder, heeft `measure_temperature = 19 °C`.
@@ -132,4 +132,8 @@ Een nieuwe actuele apparaatcontrole heeft de volgende kandidaten opgeleverd:
 - **Temperatuur ouderslaapkamer**, ID `6d68c7ba-411f-47c1-9624-2f61a7006795`, `measure_temperature = 16,1 °C`.
 - Deze apparaatnamen en zones passen direct bij de door de gebruiker bedoelde kamertemperatuurbronnen.
 
-De waarden hierboven zijn momentopnames tijdens de inventarisatie. De dashboardregel voor alle vier kamers blijft exact **temperatuur <16 °C**. De twee nog onduidelijke bronnen (Tess en zolder) blijven open totdat de juiste meetbron is bevestigd.
+De waarden hierboven zijn momentopnames tijdens de inventarisatie. De dashboardregel voor alle vier kamers blijft exact **temperatuur <16 °C**. De bron voor Tess is door de gebruiker bevestigd als **Thermostaat Tess**. Alleen de zolderbron blijft nog open.
+
+
+### Bevestiging temperatuurbron Tess
+De gebruiker heeft expliciet gekozen voor **Thermostaat Tess** (`203a126c-1923-4857-abcb-6a727a133099`) als bron voor de melding “Slaapkamer Tess koud”. Gebruik de capability `measure_temperature` en de ingestelde grens **lager dan 16 °C**. Radiator Tess is niet de gekozen bron.
