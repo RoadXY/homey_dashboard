@@ -148,3 +148,8 @@ De melding **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. 
 ### Vraag 16 – meldingsniveau lage slaapkamer-temperaturen (12 november 2026)
 
 De vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaapkamer** en **Slaapkamer Sem** (elk bij temperatuur <12 °C) krijgen het niveau **info**. Er zijn geen aanvullende opmerkingen. De vier meldingen en hun bestaande bronkoppelingen en grenswaarden blijven afzonderlijk behouden.
+
+
+### Vraag 17 – meldingsniveau tuinhuislamp (12 november 2026)
+
+De melding voor de tuinhuislamp die langer dan vijf minuten aan staat krijgt het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande duurvoorwaarde blijft ongewijzigd en configureerbaar in het gedeelde notificatiemodel.
