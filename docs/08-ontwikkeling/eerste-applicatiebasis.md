@@ -174,3 +174,12 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De gebruiker heeft commit `b48e482` opgehaald en de dashboardcontainer herstart.
 - `GET /api/homey/status` retourneerde HTTP 200 met `state: not-connected`, zonder foutmelding.
 - Daarmee is de nieuwe initiële statusbenaming op de Ubuntu-server gevalideerd.
+
+
+## Uitbreiding Homey-uitlezing: weer en Logic-gemiddelden (11 november 2026)
+- `GET /api/homey/readings` leest voor het apparaat `Weer` nu alle relevante aanwezige weer-capabilities uit: temperatuur, gevoelstemperatuur, min/max, luchtvochtigheid, luchtdruk, bewolking, zicht, wind, neerslag, sneeuw, zonsopkomst/-ondergang en conditie/omschrijving.
+- Voor de overige geselecteerde apparaten blijft de meetwaardenroute beperkt tot temperatuur en gevoelstemperatuur.
+- Nieuw read-only endpoint: `GET /api/homey/logic`. Dit retourneert uitsluitend de twee dashboardgemiddelden `temperatuur_gemiddeld_keuken` en `temperatuur_gemiddeld_woonkamer`.
+- Voor Logic-uitlezing is de Homey API-scope `homey.logic.readonly` vereist. De huidige API-key is eerder aangemaakt met alleen apparaat- en zonerechten; maak daarom een nieuwe API-key met de bestaande leesrechten plus Logic read-only en vervang lokaal alleen de waarde van `HOMEY_API_KEY` in `.env`. Deel de sleutel niet in chat of GitHub.
+- De Homey Web API documenteert `api.logic.getVariables()` als read-only endpoint met scope `homey.logic.readonly`. Zie de [Homey API-referentie](https://athombv.github.io/node-homey-api/HomeyAPIV3Local.ManagerLogic.html).
+- De uitbreiding wijzigt geen Homey-apparaten, Logic-waarden, Flows of instellingen.
