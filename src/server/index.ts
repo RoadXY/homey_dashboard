@@ -59,10 +59,12 @@ app.get("/api/events", async (_request, reply) => {
 
   homeyRealtime.on("update", onUpdate);
   homeyRealtime.on("connected", onConnected);
+  homeyRealtime.on("disconnected", onDisconnected);
   reply.raw.on("close", () => {
     clearInterval(heartbeat);
     homeyRealtime.off("update", onUpdate);
     homeyRealtime.off("connected", onConnected);
+    homeyRealtime.off("disconnected", onDisconnected);
   });
 });
 
