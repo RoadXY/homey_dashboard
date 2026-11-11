@@ -16,3 +16,14 @@ De exacte semantiek van de ketelstatus is voor de dashboardtegel functioneel vol
 
 
 **Afbakening dashboardweergave:** de gebruiker bevestigt dat we bij het bestaande plan blijven. Alleen de twee afgesproken statussen (verwarming/ketel en tapwater) worden weergegeven. `DHW_mode` wordt niet als aparte status of tegel opgenomen.
+
+
+### 12.9 Gebruikersbesluit – regenwaarschijnlijkheid via Open-Meteo-bron (11 november 2026)
+
+De gebruiker bevestigt voor de bestaande regenmelding de Homey-bron **Raamsdonksveer**, apparaat-ID `b2fa37bb-45e2-4fda-87b7-24dcecf64420`, driver `homey:app:com.spkes.openMeteo:weather`. De regenwaarschijnlijkheid wordt gelezen uit capability `measure_precipitation_probability` (number). De getoonde waarde in de aangeleverde screenshot is 80; dit is een momentopname. De bestaande regel blijft **groter dan 25%**. De bron wordt read-only uitgelezen door de dashboardintegratie.
+
+### 12.10 Gebruikersbesluit – weerconditie via Homey-flowkaart naar dashboard-API (11 november 2026)
+
+De eerder besproken weer-icoonmatrix als lokale vertaallaag vervalt. In plaats daarvan biedt de dashboardcontainer een API-endpoint aan waarop de toekomstige Homey-app de actuele, door de gebruiker gekozen weerconditie kan doorgeven. De toekomstige Homey-app krijgt hiervoor een Flow-kaart met de actie **‘Zet huidige weerconditie naar’** en een dropdown met alle weercondities die het dashboard ondersteunt. De gebruiker kan in Homey zelf de actuele conditie uit diens eigen weerprovider bepalen en via deze kaart naar het dashboard sturen.
+
+Het dashboard gebruikt de ontvangen, ondersteunde conditie voor de weergave. De lijst met canonieke ondersteunde condities, API-contract, authenticatie, validatie, foutafhandeling en gedrag bij ontbrekende/verouderde updates moeten nog technisch worden ontworpen. De Homey-app is toekomstig werk; dit besluit legt de gewenste architectuur en gebruikerservaring vast, niet een reeds geïmplementeerd endpoint of Flow-kaart.
