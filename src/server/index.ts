@@ -42,16 +42,16 @@ app.get("/api/events", async (request, reply) => {
     Connection: "keep-alive",
     "X-Accel-Buffering": "no",
   });
-  reply.raw.write(`event: ready\\ndata: ${JSON.stringify({ homey: getHomeyStatus(), connectedAt: new Date().toISOString() })}\\n\\n`);
+  reply.raw.write(`event: ready\ndata: ${JSON.stringify({ homey: getHomeyStatus(), connectedAt: new Date().toISOString() })}\n\n`);
 
   const onUpdate = (payload: unknown) => {
-    if (!reply.raw.destroyed) reply.raw.write(`event: homey-update\\ndata: ${JSON.stringify(payload)}\\n\\n`);
+    if (!reply.raw.destroyed) reply.raw.write(`event: homey-update\ndata: ${JSON.stringify(payload)}\n\n`);
   };
   const onConnected = (payload: unknown) => {
-    if (!reply.raw.destroyed) reply.raw.write(`event: homey-connected\\ndata: ${JSON.stringify(payload)}\\n\\n`);
+    if (!reply.raw.destroyed) reply.raw.write(`event: homey-connected\ndata: ${JSON.stringify(payload)}\n\n`);
   };
   const heartbeat = setInterval(() => {
-    if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\\n\\n`);
+    if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\n\n`);
   }, 20_000);
 
   homeyRealtime.on("update", onUpdate);
