@@ -79,3 +79,8 @@ Besluit: alle meldingen moeten later via Blockly bewerkbaar zijn. Alle grenswaar
 ### Vraag 9 – vier raamwaarschuwingen
 
 Behoud vier afzonderlijke meldingen: raam Tess, raam Bram, raam ouders en dakraam Sem. Elke melding is volledig zelfstandig bewerkbaar via Blockly, met eigen voorwaarden en tijdschema. Geen aanvullende opmerkingen.
+
+
+### Vraag 10 – weergave raamwaarschuwingen
+
+Toon de vier raamwaarschuwingen als vier losse meldingen, zonder gezamenlijke kop. Pas de bestaande dashboardbrede sorteervolgorde toe: kritiek, waarschuwing, info; binnen hetzelfde niveau nieuwste activering/tijd van binnenkomst eerst. Er komt geen aanvullende groepering op ruimte of onderwerp. De vier regels blijven zelfstandig bewerkbaar.
