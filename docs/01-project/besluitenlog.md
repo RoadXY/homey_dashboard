@@ -175,3 +175,7 @@ Voor **CO₂ woonkamer hoog!** wordt Homey-apparaat **Multisensor woonkamer** me
 ## Gebruikersbevestiging – Kans op neerslag (12 november 2026)
 
 Voor de melding **Kans op neerslag** gebruikt het dashboard Homey-apparaat **Raamsdonksveer** (ID `b2fa37bb-45e2-4fda-87b7-24dcecf64420`), capability `measure_precipitation_probability`. De oorspronkelijke grens **meer dan 25%** blijft behouden. De melding is actief bij >25% en inactief bij ≤25%. Het eerder vastgestelde meldingsniveau blijft **info**.
+
+## Gebruikersbevestiging – buitentemperatuurbron Achterdeur open (12 november 2026)
+
+Voor **Achterdeur open** wordt Homey-apparaat **Weer** met capability `measure_temperature` gebruikt als buitentemperatuurbron. De oorspronkelijke YAML-voorwaarde blijft ongewijzigd: achterdeurcontact open én (buitentemperatuur <18 °C óf >24 °C). De temperatuurgrenzen vormen een OR-groep; deze wordt via AND gecombineerd met het open deurcontact. Het meldingsniveau blijft **waarschuwing**.
