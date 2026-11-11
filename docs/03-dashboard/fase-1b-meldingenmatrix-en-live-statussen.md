@@ -199,3 +199,7 @@ De gebruiker bevestigt **Raamsdonksveer** (ID `b2fa37bb-45e2-4fda-87b7-24dcecf64
 ### Gebruikersbevestiging – bron buitentemperatuur Achterdeur open (12 november 2026)
 
 De gebruiker bevestigt Homey-apparaat **Weer**, capability `measure_temperature`, als buitentemperatuurbron voor **Achterdeur open**. De oorspronkelijke YAML-voorwaarde blijft: contact achterdeur open én (buitentemperatuur <18 °C óf >24 °C). Meldingsniveau blijft **waarschuwing**.
+
+### Gebruikersbevestiging – Zolder koud (12 november 2026)
+
+De gebruiker bevestigt **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`, als bron voor de melding. Behoud de afgesproken grens **<12 °C**. De oorspronkelijke kaartverwijzing naar `climate.airco_zolder_thermostaat` blijft onderdeel van de weergave. Meldingsniveau blijft **info**.
