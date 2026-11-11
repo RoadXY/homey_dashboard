@@ -167,3 +167,7 @@ Besluit: **Zolder koud** krijgt niveau **info**, overeenkomstig de vier slaapkam
 ## Gebruikersbesluit – grenswaarde Vriezer keuken warm! (12 november 2026)
 
 Voor de kritieke melding **Vriezer keuken warm!** geldt in de dashboardmigratie: activeer bij een Homey-temperatuur van **meer dan 10 °C** en deactiveer bij **10 °C of lager**. De gekozen bron is Homey-apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. De oorspronkelijke HA-dashboard-YAML bevatte een binaire zichtbaarheidstrigger (`binary_sensor.vriezer_keuken_temperatuur_hoog`) maar geen numerieke grens; 10 °C is een nieuw gebruikersbesluit. De Logic-variabele `Vriezer_tempAlarm` wordt niet als bron gebruikt.
+
+## Gebruikersbevestiging – CO₂ woonkamer hoog! (12 november 2026)
+
+Voor **CO₂ woonkamer hoog!** wordt Homey-apparaat **Multisensor woonkamer** met capability `measure_co2` gebruikt. De oorspronkelijke YAML-activeringsgrens blijft **hoger dan 1200 ppm**. De melding is actief bij >1200 ppm en inactief bij ≤1200 ppm. Het eerder vastgestelde meldingsniveau blijft **waarschuwing**.
