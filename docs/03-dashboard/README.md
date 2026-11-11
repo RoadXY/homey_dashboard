@@ -260,3 +260,8 @@ De eerste JSON-proefmelding voor CO₂ woonkamer is geïmplementeerd met de hand
 
 ## Realtime gegevensupdates
 De Homey-verbinding gebruikt realtime Socket.IO-events voor de dashboardapparaten en Homey Logic-variabelen. De backend stuurt updates door naar de tablet via Server-Sent Events (SSE); de vaste 30-secondenpolling voor de frontend is vervangen door eventgestuurde verversing. Zie [Realtime dashboard updates](realtime-updates.md) voor architectuur, reconnectgedrag en de testchecklist.
+
+
+## Uitbreiding JSON-meldingen – slaapkamer-temperaturen (11 november 2026)
+
+De JSON-engine is uitgebreid met numerieke voorwaarden op read-only Homey-device-capabilities. De vier slaapkamer-meldingen zijn toegevoegd met de door de gebruiker gecorrigeerde grens **<12 °C**. Zie [JSON-meldingenengine – CO₂-proef en temperatuuruitbreiding](json-meldingen-proef-co2.md) en de [fase-1 meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md). Na GitHub-update volgt nog de Docker-build en praktijktest op de Ubuntu-server.
