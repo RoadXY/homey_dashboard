@@ -92,20 +92,22 @@ export async function getHomeyInventory() {
     api.zones.getZones(),
   ]);
 
-  const zoneList = Object.values(zones).map((zone) => ({
-    id: zone.id,
-    name: zone.name,
-    parent: zone.parent,
-  }));
+  const zoneList = Object.values(zones).map((zone) => {
+    const item = zone as unknown as Record<string, unknown>;
+    return { id: item.id, name: item.name, parent: item.parent };
+  });
 
-  const deviceList = Object.values(devices).map((device) => ({
-    id: device.id,
-    name: device.name,
-    zone: device.zone,
-    class: device.class,
-    available: device.available,
-    capabilities: device.capabilities,
-  }));
+  const deviceList = Object.values(devices).map((device) => {
+    const item = device as unknown as Record<string, unknown>;
+    return {
+      id: item.id,
+      name: item.name,
+      zone: item.zone,
+      class: item.class,
+      available: item.available,
+      capabilities: item.capabilities,
+    };
+  });
 
   return {
     retrievedAt: new Date().toISOString(),
