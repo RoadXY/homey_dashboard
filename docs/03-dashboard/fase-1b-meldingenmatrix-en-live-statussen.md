@@ -207,3 +207,7 @@ De gebruiker bevestigt **Temperatuur Sem** (`ba9336e2-f4ed-417c-bba6-3fafb735e61
 ### Gebruikersbesluit – schema bovenramen (12 november 2026)
 
 `schedule.boven_ramen_open` wordt gereproduceerd als herbruikbare Blockly-bouwsteen met instelbare dagen en tijden. De raamwaarschuwingen blijven hun oorspronkelijke YAML-condities volgen.
+
+### Bronbevestiging – wateralarm wasmachine (12 november 2026)
+
+De gebruiker bevestigt de afzonderlijke Homey-**Water sensor wasmachine** met capability `alarm_water` als bron voor **Wateralarm wasmachines!**. De wasmachine zelf is niet de gekozen bron. De oorspronkelijke YAML-voorwaarde en het niveau **kritiek** blijven behouden. Apparaat-ID/actuele waarde moeten nog uit de Homey-inventarisatie worden bevestigd.
