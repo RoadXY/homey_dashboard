@@ -40,8 +40,9 @@ function App() {
       .then((data) => setNotifications(data.notifications))
       .catch(() => setNotifications([{ id: "notifications-load-error", title: "Meldingen niet beschikbaar", message: "De meldingsconfiguratie kon niet worden ingelezen.", severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     try {
-      const [statusResponse, readingsResponse, logicResponse] = await Promise.all([
+      const [statusResponse, readingsResponse, logicResponse, weatherResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
+        fetch("/api/weather").catch(() => null),
       ]);
       if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error("Homey-gegevens tijdelijk niet beschikbaar");
       const [statusData, readingsData, logicData] = await Promise.all([
