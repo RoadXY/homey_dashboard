@@ -59,3 +59,8 @@ Behoud de oorspronkelijke regel: de batterijkaart is uitsluitend zichtbaar bij e
 ### Vraag 5 – lamp tuinhuis
 
 Behoud de oorspronkelijke melding wanneer de lamp langer dan 5 minuten aan staat. Houd rekening met de toekomstige Blockly-editor: leg de duurvoorwaarde configureerbaar vast in het gedeelde versieerbare notificatiemodel, zodat JSON-configuratie en Blockly dezelfde backend-evaluator gebruiken.
+
+
+### Vraag 6 – CO₂ woonkamer
+
+Behoud de oorspronkelijke regel: melding wanneer de CO₂-waarde hoger is dan 1200 ppm. Geen aanvullende opmerkingen.
