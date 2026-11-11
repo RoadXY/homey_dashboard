@@ -143,3 +143,8 @@ De melding **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. Er zijn
 ### Vraag 15 – meldingsniveau regenmelding (12 november 2026)
 
 De melding **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande Homey-bron en drempel blijven ongewijzigd.
+
+
+### Vraag 16 – meldingsniveau lage slaapkamer-temperaturen (12 november 2026)
+
+De vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaapkamer** en **Slaapkamer Sem** (elk bij temperatuur <12 °C) krijgen het niveau **info**. Er zijn geen aanvullende opmerkingen. De vier meldingen en hun bestaande bronkoppelingen en grenswaarden blijven afzonderlijk behouden.
