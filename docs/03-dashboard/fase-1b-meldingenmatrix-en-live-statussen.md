@@ -138,3 +138,8 @@ De melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. Er zijn geen 
 ### Vraag 14 – meldingsniveau CO₂ woonkamer (12 november 2026)
 
 De melding **CO₂ woonkamer hoog!** krijgt het niveau **waarschuwing**. Er zijn geen aanvullende opmerkingen. De bestaande drempel (>1200 ppm), bron en voorwaarden blijven ongewijzigd.
+
+
+### Vraag 15 – meldingsniveau regenmelding (12 november 2026)
+
+De melding **Kans op neerslag** (neerslagkans >25%) krijgt het niveau **info**. Er zijn geen aanvullende opmerkingen. De bestaande Homey-bron en drempel blijven ongewijzigd.
