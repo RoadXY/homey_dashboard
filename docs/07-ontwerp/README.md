@@ -316,3 +316,17 @@ De diagnosewaarschuwing in de header is uitsluitend een **rood uitroepteken in e
 Het pictogram is aanklikbaar, maar opent niet rechtstreeks de diagnosepagina. Eerst moet de gebruiker de instellingen-PIN invoeren. Na succesvolle invoer opent **Instellingen → Systeem → Diagnose**. Iedere route naar Instellingen moet dezelfde PIN-controle afdwingen; de headerlink mag deze beveiliging niet omzeilen.
 
 De fase-indeling van de PIN was in de geraadpleegde bestaande documentatie niet expliciet terug te vinden. Omdat de gebruiker eist dat Instellingen altijd met PIN beschermd zijn en de diagnosepagina in fase 1 valt, wordt de minimale PIN-toegangscontrole (PIN-prompt en beveiligde route naar Instellingen) eveneens onderdeel van fase 1. Uitgebreider PIN-beheer of aanvullende beveiligingsopties kunnen eventueel later worden uitgewerkt, mits de basisbeveiliging in fase 1 aanwezig is.
+
+
+### Aanvulling 11 november 2026 – fase 1: Homey als databron, logica intern
+
+Deze aanvulling verduidelijkt de fase-1-scope en gaat vóór op oudere ontwerptekst die spreekt over het beoordelen van verouderde meetwaarden of het controleren van Homey Flows.
+
+- Homey Pro 2023 is de waarheid voor de actuele apparaatstatus en de gegevens die het dashboard uitleest.
+- De dashboardapplicatie voert alle dashboardvoorwaarden, vergelijkingen en meldingslogica zelf uit. Eenvoudige regels worden intern gebouwd en moeten waar passend later via Blockly configureerbaar zijn.
+- Homey Flows worden niet gebruikt als uitvoeringsmechanisme of runtime-afhankelijkheid voor dashboardlogica. We starten of wijzigen geen Homey Flows.
+- De bestaande meldingenmatrix is de functionele referentie voor de gewenste meldingen; de regels worden intern in de dashboardapplicatie gerealiseerd.
+- Voor fase 1 gebruiken we Homey's beschikbaarheidsstatus via `getAvailable()`, voor zover deze via de gebruikte API/client uitleesbaar is. We leiden online/offline niet af uit Flow-uitkomsten of uit de ouderdom van meetwaarden.
+- Detectie van verouderde/uitblijvende gegevens en diepgaandere bron-/Flow-diagnose worden uitgesteld tot fase 3.
+
+Bij tegenstrijdigheid met oudere passages in dit document of in oudere ontwerpnotities is deze scope-aanvulling leidend.
