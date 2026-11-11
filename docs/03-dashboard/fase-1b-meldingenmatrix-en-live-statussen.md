@@ -128,3 +128,8 @@ De zes directe contactmeldingen **Voordeur open**, **Deur tuinhuis open**, **Gro
 ### Vraag 12 – meldingsniveau wateralarmen (12 november 2026)
 
 De twee afzonderlijke meldingen **Wateralarm wasmachines!** en **Wateralarm vaatwasser!** krijgen beide het niveau **kritiek**. Er zijn geen aanvullende opmerkingen. De meldingen blijven afzonderlijk en behouden hun bestaande bronvoorwaarden.
+
+
+### Vraag 13 – meldingsniveau vriezer keuken (12 november 2026)
+
+De melding **Vriezer keuken warm!** krijgt het niveau **kritiek**. Er zijn geen aanvullende opmerkingen. De eerder vastgelegde Homey-bron en bestaande bronvoorwaarde blijven ongewijzigd.
