@@ -40,14 +40,14 @@ Een onbekende waarde wordt nadrukkelijk niet als `false` geïnterpreteerd. Allee
 
 - `GET /api/notifications`: leest JSON-configuraties in en retourneert de geëvalueerde meldingsstatussen.
 - De endpoint gebruikt dezelfde read-only Homey Logic-uitleesfunctie als de bestaande Logic-integratie.
-- De frontend ververst meldingen met de bestaande interval van 30 seconden.
+- De frontend ververst meldingen eventgestuurd via SSE zodra Homey Logic een variabele-update meldt. De browser ontvangt updates via `/api/events`; zie [Realtime dashboard updates](realtime-updates.md).
 
 ## Teststappen na deploy
 
 1. Maak in Homey de boolean `dashboard_test_co2_melding` aan.
 2. Zet de variabele op `false`; de testmelding hoort niet zichtbaar te zijn.
-3. Zet de variabele op `true`; de waarschuwing **TEST · WAARSCHUWING – CO₂ woonkamer** hoort binnen maximaal één verversinterval zichtbaar te worden.
-4. Zet de variabele terug op `false`; de melding hoort binnen maximaal één verversinterval te verdwijnen.
+3. Zet de variabele op `true`; de waarschuwing **TEST · WAARSCHUWING – CO₂ woonkamer** hoort kort na de Homey-update zichtbaar te worden.
+4. Zet de variabele terug op `false`; de melding hoort kort na de Homey-update te verdwijnen.
 5. Controleer aanvullend dat een ontbrekende of ongeldige bron als onbekend wordt getoond, niet als inactief.
 
 ## Grenzen van deze eerste versie
