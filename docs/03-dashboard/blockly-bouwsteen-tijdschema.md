@@ -85,14 +85,32 @@ attributes:
   friendly_name: Boven ramen open
 ```
 
-Deze momentopname bevestigt:
-- De entiteit had status `on` op het moment van uitlezen.
-- De laatst geregistreerde statuswijziging was op 11 november 2026 om 06:00:00.001 UTC.
-- Home Assistant rapporteerde 11 november 2026 om 20:00 uur (offset `+01:00`) als `next_event`.
-- De entiteit heeft de vriendelijke naam `Boven ramen open` en attribuut `editable: true`.
+Deze momentopname bevestigt dat de entiteit op dat moment `on` was en dat Home Assistant 20:00 uur (offset `+01:00`) als volgende omschakeling rapporteerde. De statusmomentopname bevat op zichzelf geen volledig weekpatroon.
 
-**Belangrijke bronbeperking:** dit is de actuele status plus attributen van de schedule-entiteit, niet de onderliggende terugkerende schedule-configuratie. De momentopname bevat geen weekdagen, starttijd, volledige eindtijdregel, datumgrenzen of uitzonderingsdagen. De precieze herhalingsregels zijn dus nog niet vastgesteld. De waarde `next_event` is één volgende omschakeling en is op zichzelf onvoldoende om het volledige weekpatroon te reconstrueren.
+### 8.1 Terugkerende weekplanning bevestigd via Helper-instellingen
 
-Voor de exacte migratie is nog steeds de configuratie-definitie van `schedule.boven_ramen_open` nodig (bijvoorbeeld de relevante volledige YAML-configuratie uit Home Assistant, niet alleen de state/attributes-weergave). Tot die bron beschikbaar is, blijven concrete dagen en terugkerende tijden onbekend en worden ze niet ingevuld op basis van aannames.
+Een screenshot van de Helper-instellingen voor `schedule.boven_ramen_open`, aangeleverd door de gebruiker op 11 november 2026, toont de volgende wekelijkse tijdblokken:
 
-De Blockly-bouwsteen kan intussen wel rekening houden met de bevestigde entiteitssemantiek: een benoemd schema met een actuele boolean-status en een mogelijk beschikbaar volgend omslagmoment. De precieze weekdag-/tijdinstellingen en hun evaluatie blijven afhankelijk van de ontbrekende configuratiebron.
+| Weekdag | Start | Einde |
+|---|---:|---:|
+| Maandag | 07:00 | 20:00 |
+| Dinsdag | 07:00 | 20:00 |
+| Woensdag | 07:00 | 20:00 |
+| Donderdag | 07:00 | 20:00 |
+| Vrijdag | 07:00 | 20:00 |
+| Zaterdag | 07:00 | 20:00 |
+| Zondag | 08:00 | 20:00 |
+
+Dit is de concrete planning die we voor de migratie aanhouden. De screenshot toont één dagelijks tijdvenster per weekdag. Er zijn in deze weergave geen aanvullende tijdvensters of datumuitzonderingen zichtbaar; eventuele elders ingestelde uitzonderingslogica is hiermee niet vastgesteld.
+
+### 8.2 Gevolgen voor de Blockly-bouwsteen
+
+De initiële configuratie van het herbruikbare schema wordt:
+- Naam: **Boven ramen open**
+- Maandag t/m zaterdag: **07:00–20:00**
+- Zondag: **08:00–20:00**
+- Uitgang: boolean actief/inactief op basis van de lokale datum en tijd.
+
+De evaluator moet de tijdzone van de dashboardconfiguratie gebruiken en correct omgaan met zomer-/wintertijd. De bestaande vier raamregels blijven het schema als gedeelde boolean-voorwaarde gebruiken. Het schema stuurt geen Homey-apparaten of Flows aan.
+
+De eerder voorgestelde Blockly-bouwsteen blijft aanpasbaar: de gebruiker moet later de tijden en dagen kunnen wijzigen zonder code aan te passen.
