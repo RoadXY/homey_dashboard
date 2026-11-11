@@ -54,3 +54,8 @@ De gebruiker kiest: beide airco's alleen tonen wanneer actief; voor beide geldt 
 ### Vraag 4 – batterij muurtablet
 
 Behoud de oorspronkelijke regel: de batterijkaart is uitsluitend zichtbaar bij een batterijniveau lager dan 25%. Geen aanvullende opmerkingen.
+
+
+### Vraag 5 – lamp tuinhuis
+
+Behoud de oorspronkelijke melding wanneer de lamp langer dan 5 minuten aan staat. Houd rekening met de toekomstige Blockly-editor: leg de duurvoorwaarde configureerbaar vast in het gedeelde versieerbare notificatiemodel, zodat JSON-configuratie en Blockly dezelfde backend-evaluator gebruiken.
