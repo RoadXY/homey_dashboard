@@ -53,9 +53,24 @@ function App() {
   }, []);
   React.useEffect(() => {
     const clock = window.setInterval(() => setNow(new Date()), 1000);
+    let refreshTimer = 0;
+    const scheduleRefresh = () => {
+      window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => void refresh(), 150);
+    };
+
     void refresh();
-    const dataRefresh = window.setInterval(() => void refresh(), 30_000);
-    return () => { window.clearInterval(clock); window.clearInterval(dataRefresh); };
+    const stream = new EventSource("/api/events");
+    stream.addEventListener("homey-update", scheduleRefresh);
+    stream.addEventListener("homey-connected", scheduleRefresh);
+
+    return () => {
+      window.clearInterval(clock);
+      window.clearTimeout(refreshTimer);
+      stream.removeEventListener("homey-update", scheduleRefresh);
+      stream.removeEventListener("homey-connected", scheduleRefresh);
+      stream.close();
+    };
   }, [refresh]);
   const devices = readings?.devices ?? [];
   const findDevice = (part: string) => devices.find((device) => device.name?.toLowerCase().includes(part.toLowerCase()));
