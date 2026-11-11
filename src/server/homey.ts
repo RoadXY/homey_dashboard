@@ -34,6 +34,8 @@ const dashboardDeviceIds = [
   "a9cc989a-8672-4bb6-9da0-c0893a02d2f5",
   "ba9336e2-f4ed-417c-bba6-3fafb735e61a",
   "58f20a55-90b3-49cf-9af0-53a40f6e501c",
+  "203a126c-1923-4857-abcb-6a727a133099",
+  "6d68c7ba-411f-47c1-9624-2f61a7006795",
   "c7e68c38-1588-4c93-9db8-e854f4d251ab",
 ];
 
