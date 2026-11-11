@@ -29,7 +29,8 @@ function App() {
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
-  const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);\n  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
+  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
   const [loadError, setLoadError] = React.useState("");
   const refresh = React.useCallback(async () => {
     void fetch("/api/notifications")
