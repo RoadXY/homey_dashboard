@@ -133,3 +133,8 @@ Besluit: de vier meldingen **Slaapkamer Bram**, **Slaapkamer Tess**, **Ouderslaa
 ## Inventarisatie HA-YAML – meldingsniveau tuinhuislamp
 
 Besluit: de melding voor de tuinhuislamp die langer dan vijf minuten aan staat krijgt niveau **info**. De bestaande duurvoorwaarde blijft ongewijzigd en configureerbaar in het gedeelde notificatiemodel. Geen aanvullende opmerkingen.
+
+
+## Inventarisatie HA-YAML – meldingsniveau raam-niet-open-waarschuwingen
+
+Besluit: de vier afzonderlijke meldingen **Raam Tess niet open**, **Raam Bram niet open**, **Raam ouders niet open** en **Dakraam Sem niet open** krijgen niveau **info**. Hun bestaande voorwaarden en tijdschema's blijven ongewijzigd. Geen aanvullende opmerkingen.
