@@ -108,3 +108,10 @@ De eerder besproken CO₂-waarden (waarschuwing vanaf 1000 ppm, kritiek vanaf 20
 - Bronkeuze en meldingsprioriteit zijn afzonderlijke instellingen.
 - De gebruiker kan verschillende meldingen met verschillende vaste prioriteiten aanmaken.
 - Ongeldige datatype-/operatorcombinaties worden in de editor voorkomen.
+
+
+## 9. Implementatievolgorde – bewust uitgesteld
+
+Deze bouwsteen wordt **niet** geïmplementeerd voordat de eerste JSON-gedreven meldingen werken. Eerst worden de bestaande goedgekeurde meldingen uit de Home Assistant-YAML naar JSON-configuratie vertaald en door de dashboardapplicatie uitgevoerd. Daarna wordt Blockly als editor op die bestaande JSON-configuratie aangesloten, zodat Blockly configuraties kan lezen, bewerken en genereren.
+
+Deze schets beschrijft dus het latere Blockly-doel en is geen opdracht om nu al Blockly te bouwen.
