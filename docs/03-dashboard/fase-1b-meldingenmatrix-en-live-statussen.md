@@ -191,3 +191,7 @@ De gebruiker stelt voor de melding **Vriezer keuken warm!** een vaste startgrens
 ### Gebruikersbevestiging – CO₂ woonkamer hoog! (12 november 2026)
 
 De gebruiker bevestigt Homey-apparaat **Multisensor woonkamer**, capability `measure_co2`, als bron voor **CO₂ woonkamer hoog!**. Behoud de oorspronkelijke activeringsgrens **>1200 ppm**. Bij >1200 ppm actief; bij ≤1200 ppm inactief. Het eerder gekozen meldingsniveau **waarschuwing** blijft van kracht.
+
+### Gebruikersbevestiging – Kans op neerslag (12 november 2026)
+
+De gebruiker bevestigt **Raamsdonksveer** (ID `b2fa37bb-45e2-4fda-87b7-24dcecf64420`), capability `measure_precipitation_probability`, als Homey-bron. De oorspronkelijke grens **>25%** blijft behouden: actief bij >25%, inactief bij ≤25%. Meldingsniveau blijft **info**.
