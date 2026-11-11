@@ -248,3 +248,7 @@ De gebruiker heeft bevestigd dat **alle conditionele kaarten** uit de bestaande 
 6. Blockly pas daarna integreren als editor voor dezelfde JSON-configuratie.
 
 De JSON-bestanden vormen de runtime-configuratiebron. Blockly wordt later gebruikt om deze JSON te lezen, te bewerken en nieuwe meldingen te genereren. Zie ook [Fase-1 meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md) en [Blockly databron/vergelijking – toekomstig ontwerp](blockly-bouwsteen-databron-en-vergelijking.md).
+
+
+## Eerste JSON-proefmelding – CO₂ test via Logic-variabele
+Voor de eerste proef wordt een afzonderlijke, handmatig bedienbare Homey Logic-variabele voorgesteld: `dashboard_test_co2_melding` (boolean). `true` activeert de testmelding en `false` laat deze verdwijnen. De variabele staat los van de bestaande productievariabele `eco2_woonkamer_status`. De gebruiker beheert deze variabele; de applicatie leest haar alleen. Zie besluit 12.11 in de [meldingenmatrix](fase-1b-meldingenmatrix-en-live-statussen.md).
