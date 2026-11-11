@@ -26,7 +26,8 @@ function App() {
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
-  const [logic, setLogic] = React.useState<LogicResponse | null>(null);\n  const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
+  const [logic, setLogic] = React.useState<LogicResponse | null>(null);
+  const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [lastUpdated, setLastUpdated] = React.useState<Date | null>(null);
   const [loadError, setLoadError] = React.useState("");
   const refresh = React.useCallback(async () => {
