@@ -202,3 +202,16 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - Docker-healthstatus: `starting` tijdens de startperiode, daarna `healthy` bij succesvolle readiness-controles of `unhealthy` na opeenvolgende mislukte controles. De containerstatus (bijvoorbeeld `running` of `exited`) blijft hiervan een afzonderlijk gegeven.
 - Codewijzigingen: `src/server/index.ts` (783faa1), `compose.yaml` (993d0c6), `Dockerfile` (7965bc6).
 - Ubuntu-validatie met `docker compose ps`, `docker inspect` en de health-endpoints moet nog worden uitgevoerd.
+
+
+### Validatie Docker-healthcheck op Ubuntu (11 november 2026)
+- De gebruiker heeft commit `d01c0ca` opgehaald en de ontwikkelcontainer opnieuw gebouwd; de Docker-build is succesvol afgerond.
+- `docker inspect` rapporteerde `Status=running Health=healthy` voor `homey_dashboard-dashboard-1`.
+- `GET /api/health/live` retourneerde HTTP 200 met `status: ok`.
+- `GET /api/health/ready` retourneerde HTTP 200 met `status: ready`.
+- De healthcheck is daarmee op de Ubuntu-ontwikkelcontainer gevalideerd. Homey was na de containerstart nog `not-connected`; dit heeft de Docker-healthstatus niet beïnvloed, zoals ontworpen.
+- Portainer-weergave is nog niet afzonderlijk gecontroleerd.
+
+### Open punt Homey Logic-waarden
+- `GET /api/homey/logic` vindt beide verwachte variabelen (`temperatuur_gemiddeld_woonkamer` en `temperatuur_gemiddeld_keuken`), maar retourneert voor beide `value: null`.
+- De Homey Logic API-route werkt dus op naam/id-niveau, maar de werkelijke waarden zijn nog niet bevestigd. Dit punt blijft open voor nader onderzoek; `null` mag niet als een temperatuurwaarde worden geïnterpreteerd.
