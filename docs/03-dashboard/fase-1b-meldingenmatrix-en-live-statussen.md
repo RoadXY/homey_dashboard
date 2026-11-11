@@ -183,3 +183,7 @@ De melding **Truus wil opgehaald worden!** krijgt het niveau **waarschuwing**. E
 ### Vraag 23 – meldingsniveau Zolder koud (12 november 2026)
 
 De afzonderlijke melding **Zolder koud** krijgt het niveau **info**, gelijk aan de vier slaapkamer-temperatuurmeldingen. Er zijn geen aanvullende opmerkingen. De oorspronkelijke bronvoorwaarde via `binary_sensor.temperatuur_zolder_laag` blijft behouden; de zichtbare kaart verwijst naar `climate.airco_zolder_thermostaat`. De precieze Homey-vertaling van deze afgeleide HA-sensor moet nog worden vastgesteld.
+
+### Gebruikersbesluit – grenswaarde Vriezer keuken warm! (12 november 2026)
+
+De gebruiker stelt voor de melding **Vriezer keuken warm!** een vaste startgrens van **>10 °C** vast. Gebruik Homey-apparaat **Koelkast keuken temperatuur** (ID `64fc846e-01b0-438a-9114-4498ea8005e7`), capability `measure_temperature`. Bij >10 °C actief; bij ≤10 °C inactief. Meldingsniveau blijft **kritiek**. De oorspronkelijke YAML bevatte alleen de verwijzing naar `binary_sensor.vriezer_keuken_temperatuur_hoog` en geen numerieke grens; 10 °C is dus een expliciet migratiebesluit. De Logic-variabele `Vriezer_tempAlarm` is niet nodig voor deze implementatie.
