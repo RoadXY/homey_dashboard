@@ -501,3 +501,18 @@ De gebruiker heeft geen aanvullende opmerkingen of correcties meegegeven. De oor
 ### 12.1 Gebruikersbesluit – activeringsmoment wateralarmen (11 november 2026)
 
 Voor beide wateralarmmeldingen kiest de gebruiker voor **directe weergave** zodra de Homey-capability `alarm_water` actief wordt. Er wordt geen extra vertraging of duurvoorwaarde toegevoegd. De oorspronkelijke voorwaarde `state is on` blijft behouden.
+
+
+## Compatibiliteit toekomstige Blockly-editor – randvoorwaarde voor alle nieuwe meldingen (11 november 2026)
+
+De gebruiker benadrukt dat de huidige JSON-meldingen vanaf het begin compatibel moeten worden ontworpen met de toekomstige Blockly-editor.
+
+Daarom gelden voor alle volgende meldingen en uitbreidingen de volgende technische randvoorwaarden:
+- JSON blijft de versiebeheerde, centrale representatie van iedere melding en voorwaarde; Blockly wordt later een editor/visualisatie van dit model en introduceert geen tweede, afwijkende runtime-logica.
+- Voorwaarden worden opgeslagen als een generieke, versieerbare condition tree/AST met expliciete operatoren, operands en bronverwijzingen. Ook eenvoudige voorwaarden worden in diezelfde structuur vastgelegd, zodat ze later met AND/OR, state-is/state-is-not, vergelijkingen, tijdschema's en duurvoorwaarden gecombineerd kunnen worden.
+- Bronselectie (Homey-apparaat-capability of Logic-variabele), meldingmetadata (titel, tekst, severity, ingeschakeld) en voorwaardestructuur blijven logisch gescheiden.
+- Blockly moet bestaande JSON-regels zonder informatieverlies kunnen inlezen, weergeven, bewerken en opnieuw opslaan. Onbekende of nog niet ondersteunde operatoren mogen niet stilzwijgend worden verwijderd of vereenvoudigd.
+- Evaluatie van JSON en evaluatie na Blockly-bewerking gebruiken dezelfde backend-evaluator. Blockly genereert/bewerkt configuratie; het voert geen aparte conditielogica uit.
+- Nieuwe configuraties krijgen schema-versiebeheer en validatie. Migraties naar een nieuw schema moeten expliciet en reproduceerbaar zijn.
+
+**Belangrijke huidige beperking:** de eerste evaluator is nog een proefimplementatie met een platte enkele voorwaarde (equals/lessThan/greaterThan); device-capability-bronnen zijn daarin momenteel alleen numeriek getypeerd. Dit is nog niet het definitieve Blockly-geschikte model. Voordat de volgende meldingen daadwerkelijk worden geïmplementeerd, wordt het JSON-schema/evaluatiemodel uitgebreid naar de generieke condition tree, inclusief boolean device-capabilities en samengestelde AND/OR-groepen. De bestaande CO₂- en temperatuurconfiguraties moeten daarbij gecontroleerd en zo nodig migratiegewijs omgezet worden, zonder gedragsverandering.
