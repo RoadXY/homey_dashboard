@@ -138,3 +138,21 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - Hierdoor kon Vite de API-proxy niet bereiken (`ECONNREFUSED 127.0.0.1:3000)); dit was geen Homey-netwerk- of API-keyprobleem.
 - De routecode is gecorrigeerd in commit `6b14d15` op `phase_1_foundation`.
 - Na ophalen van deze commit moeten de backendroutes opnieuw worden gecontroleerd via `/api/health`, `/api/homey/status` en `/api/homey/readings`.
+
+
+## Eerste succesvolle uitlezing van Homey-meetwaarden (11 november 2026)
+- Na herstel van de TypeScript-syntaxisfout geeft `GET /api/health` HTTP 200.
+- `GET /api/homey/readings` geeft HTTP 200 en levert actuele waarden voor de geselecteerde apparaten.
+- Geobserveerde waarden tijdens de test:
+  - Multisensor woonkamer: 22,0 °C.
+  - Woonkamer thermostaat: 20,4 °C.
+  - Radiator keuken 1: 15,4 °C.
+  - Radiator keuken 2: 16,1 °C.
+  - Radiator keuken 3: 10,8 °C.
+  - Temperatuur Sem: 16,5 °C.
+  - Temperatuur Bram: 17,4 °C.
+  - Weer: 5,5 °C; gevoelstemperatuur 3,5 °C.
+- Voor de woonkamer is de multisensor voorlopig de voorkeursbron. Voor Sem en Bram zijn de gelijknamige temperatuursensoren de voorkeursbron.
+- De drie keuken-radiatorwaarden worden niet als kamergemiddelde gekozen; eerst moet de Homey Logic-variabele `temperatuur_gemiddeld_keuken` onderzocht worden.
+- Aandachtspunt: in dezelfde testsessie retourneerde `/api/homey/status` de status `not-configured`, terwijl `/api/homey/readings` meetwaarden kon uitlezen. Dit is een inconsistentie die vóór weergave van de Homey-status in de UI onderzocht moet worden.
+- De uitlezing is read-only; er zijn geen Homey-apparaten, Flows of instellingen gewijzigd.
