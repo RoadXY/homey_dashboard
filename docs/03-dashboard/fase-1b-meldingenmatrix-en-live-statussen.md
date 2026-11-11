@@ -88,3 +88,8 @@ De gebruiker kiest ervoor beide aircokaarten uitsluitend te tonen wanneer de air
 ### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 4 (muurtablet-batterij)
 
 De gebruiker bevestigt de oorspronkelijke zichtbaarheid: toon de batterijkaart uitsluitend wanneer het batterijniveau lager is dan 25%. Geen aanvullende opmerkingen.
+
+
+### Inventarisatie oorspronkelijke Home Assistant YAML – antwoord vraag 5 (tuinhuislamp)
+
+De gebruiker bevestigt de oorspronkelijke regel: toon een melding wanneer de lamp in het tuinhuis langer dan 5 minuten aan staat. Aanvullende eis: houd bij de uitwerking rekening met de toekomstige Blockly-editor. De configureerbare tijdsduur/duurvoorwaarde moet daarom onderdeel zijn van het gedeelde, versieerbare notificatiemodel dat zowel JSON-configuratie als Blockly gebruikt; Blockly krijgt geen aparte evaluator of afwijkende regelimplementatie.
