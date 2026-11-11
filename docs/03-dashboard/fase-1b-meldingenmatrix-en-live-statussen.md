@@ -317,3 +317,18 @@ De gecombineerde methode (Homey-status plus controle op tijdige nieuwe gegevens;
 **Technische randvoorwaarde:** tijdens de technische validatie moet worden vastgesteld welke apparaatbeschikbaarheidsstatus de gebruikte Homey API daadwerkelijk levert en hoe betrouwbaar die is. Als voor een apparaat geen bruikbare status beschikbaar is, mag het dashboard niet zelf een offline-status verzinnen; dit wordt als beperking/onbekend geregistreerd en aan de gebruiker getoond. Deze beperking mag niet stilzwijgend worden opgelost door alsnog de fase-3-methode toe te passen.
 
 De reeds vastgelegde regel blijft gelden dat een ontbrekende of ongeldige waarde niet als normale/inactieve melding mag worden gepresenteerd. De precieze behandeling van ontbrekende waarden zonder expliciete offline-status wordt in de volgende ontwerpvragen uitgewerkt.
+
+
+### 12.2 Gebruikersbesluit – ontbrekende apparaatstatus in Homey (11 november 2026)
+
+**Keuze gebruiker: optie D – eerst per apparaat onderzoeken.**
+
+We brengen per relevant Homey-apparaat in kaart of de gebruikte Homey API een expliciete en bruikbare beschikbaarheidsstatus levert. Op basis van die inventarisatie bepalen we hoe de status in het dashboard wordt weergegeven.
+
+Er wordt geen algemene aanname toegepast dat een ontbrekende status gelijkstaat aan offline of online. Ook wordt de fase-3-methode (controle op verouderde of uitblijvende meetwaarden) niet voortijdig ingevoerd.
+
+De uitkomst van de inventarisatie moet per apparaat vastleggen:
+- of de API een beschikbaarheidsstatus aanbiedt;
+- welke waarde(n) of signalen beschikbaar zijn;
+- of de betekenis voldoende duidelijk is om online/offline te tonen;
+- hoe het dashboard de situatie weergeeft als de status ontbreekt of niet eenduidig is.
