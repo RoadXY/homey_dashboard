@@ -100,3 +100,17 @@ body {
   .action-card { height: 96px; }
   .right-column { min-height: 600px; }
 }
+
+
+.notification-list { display: flex; flex-direction: column; gap: 12px; }
+.notification-card {
+  display: flex; flex-direction: column; gap: 8px; padding: clamp(16px,1.4vw,22px);
+  border: 1px solid rgba(255,255,255,.09); border-left-width: 4px; border-radius: 13px;
+  background: rgba(35,39,47,.82);
+}
+.notification-card strong { color: #f0f2f5; font-size: clamp(19px,1.5vw,25px); font-weight: 550; }
+.notification-card > span:last-child { color: #b5bdc8; font-size: clamp(14px,1.05vw,18px); line-height: 1.45; }
+.notification-level { color: #b8c0cc; font-size: 11px; font-weight: 750; letter-spacing: .14em; }
+.severity-warning { border-left-color: #d3a65d; }
+.severity-critical { border-left-color: #d46c6c; }
+.severity-info { border-left-color: #7c9bbd; }
