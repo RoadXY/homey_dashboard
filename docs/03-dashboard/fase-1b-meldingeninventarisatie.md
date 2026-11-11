@@ -44,3 +44,8 @@ Voor de droger geldt expliciet: alleen tonen als deze actief is/draait. In de oo
 ### Vraag 2 – Truus: oorspronkelijke zichtbaarheid behouden
 
 De gebruiker bevestigt behoud van de YAML-logica: toon de gewone Truus-status wanneer de werkstatus niet `Sleeping`, `Charging`, `Unavailable` of `Standby` is. Toon de aparte melding **‘Truus wil opgehaald worden!’** wanneer de status exact `Standby` is. Geen aanvullende opmerkingen.
+
+
+### Vraag 3 – airco keuken en zolder
+
+De gebruiker kiest: beide airco's alleen tonen wanneer actief; voor beide geldt status niet `off` en niet `unavailable`. De kaarten tonen bedrijfsstatus en ingestelde temperatuur. Geen aanvullende opmerkingen.
