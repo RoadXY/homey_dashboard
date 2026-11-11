@@ -241,3 +241,41 @@ Read-only momentopname van Homey-apparaat **Remeha ketel** (ed9e603f-0930-4a37-8
 | measure_temperature.return | 21.4 °C |
 
 De snapshot is consistent met geen actieve verwarmingsvraag en geen actieve warmwatervraag op dat meetmoment (boiler_state=false, DHW_state=false, DHW_mode=off). De ruwe statuscode 0 en foutcode 255 zijn nog niet semantisch gedecodeerd en worden niet als fout of normale status geïnterpreteerd zonder aanvullende broninformatie. Voor de dashboardindicatoren gebruiken we primair de booleans boiler_state en DHW_state; DHW_mode kan als aanvullende context dienen. Een momentopname bewijst nog niet alle mogelijke toestanden.
+
+
+## 12. Voorstel – apparaatdiagnose en betrouwbaarheid van dashboardmeldingen (11 november 2026)
+
+**Status:** ontwerpvoorstel op basis van gebruikerssuggestie; uitwerking en exacte presentatie moeten nog worden bevestigd.
+
+Het dashboard moet zichtbaar maken wanneer een Homey-apparaat niet bereikbaar is of wanneer een noodzakelijke bronwaarde ontbreekt/verouderd is. Een gebruiker mag een onbepaalbare status niet aanzien voor een normale of inactieve status.
+
+### Hoofddashboard
+- Toon een compacte, niet-dominante algemene waarschuwing wanneer één of meer relevante databronnen een probleem hebben.
+- Toon daarnaast een waarschuwing/uitroepteken bij de betreffende tegel of melding wanneer die specifieke informatie hierdoor niet betrouwbaar kan worden bepaald.
+- Vermeld een aantal aandachtspunten als er meerdere problemen zijn.
+- Geen foutstatus tonen op basis van alleen een ontbrekende waarde voordat de oorzaak is vastgesteld; onderscheid apparaat-offline, ontbrekende capability/waarde, verouderde data en tijdelijke verbindingsfout.
+
+### Instellingen – Systeem – Diagnose
+Een diagnosepagina geeft per betrokken Homey-apparaat of databron ten minste:
+- apparaatnaam en Homey-zone;
+- bereikbaarheid/verbindingsstatus, voor zover Homey die betrouwbaar beschikbaar stelt;
+- laatste succesvolle gegevensupdate en ouderdom van de waarde;
+- betrokken dashboardtegel, live-status of meldingsregel;
+- het concrete gevolg, bijvoorbeeld: “De melding Vriezer keuken warm kan momenteel niet worden bepaald”;
+- huidige probleemstatus en herstelstatus.
+
+### Betrouwbaarheids- en evaluatieregels
+1. Een ontbrekende, ongeldige of te oude bronwaarde wordt **onbekend/onbeschikbaar**, nooit automatisch false, uit of normaal.
+2. Als een melding afhankelijk is van een onbekende waarde, wordt de uitkomst **niet te bepalen** en wordt dit als diagnoseprobleem geregistreerd. De melding mag niet stilzwijgend als inactief worden beschouwd.
+3. Wanneer een regel meerdere bronnen gebruikt, moet de diagnose aangeven welke bron(nen) de evaluatie blokkeren.
+4. Een waarde geldt alleen als verouderd op basis van een expliciete, per datatype/capability vastgelegde versheidsgrens. Die grenzen zijn nog te ontwerpen; er wordt niet één willekeurige timeout voor alle apparaten gebruikt.
+5. Na herstel en een nieuwe geldige meting verdwijnt de actuele waarschuwing automatisch. Een eventueel diagnose-/herstelhistoriek kan afzonderlijk worden bewaard; bewaartermijn nog te bepalen.
+6. De diagnosefunctie blijft read-only: geen apparaten, Homey-Flows of Logic-variabelen aanpassen of opnieuw starten.
+
+### Nog technisch te onderzoeken
+- Welke online-/availability-informatie de Homey API per apparaat/capability daadwerkelijk levert en hoe betrouwbaar die is.
+- Hoe laatste update-tijdstippen en ontbrekende waarden per capability kunnen worden vastgesteld.
+- Welke versheidsgrenzen passend zijn voor temperatuur, contactstatus, machine-status, Logic-variabelen en weersinformatie.
+- Hoe een apparaatprobleem wordt gekoppeld aan alle dashboardonderdelen en meldingsregels die ervan afhankelijk zijn.
+
+Dit voorstel geldt als een generieke betrouwbaarheid-/diagnoselaag naast de bestaande HA-meldingenmatrix. Het wijzigt de oorspronkelijke HA-condities of de gekozen Homey-bronmappings niet.
