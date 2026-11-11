@@ -25,14 +25,10 @@ body {
 .eyebrow { color: #929aa7; font-size: clamp(12px, .78vw, 15px); font-weight: 700; letter-spacing: .17em; }
 .clock-card {
   flex: 1.12; min-height: 0; padding: clamp(18px, 2vw, 30px);
-  display: flex; flex-direction: column; justify-content: space-between;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
 }
-.clock-top, .clock-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.connection { display: inline-flex; align-items: center; gap: 8px; color: #a3abb6; font-size: clamp(13px, .82vw, 16px); }
-.connection i, .server-dot { width: 7px; height: 7px; border-radius: 50%; background: #d3a75b; display: inline-block; flex: 0 0 auto; }
-.connection.online i, .server-dot { background: #7bbd91; box-shadow: 0 0 12px rgba(123,189,145,.35); }
-.clock { width: 100%; text-align: center; font-size: clamp(108px, 11.5vw, 210px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: auto 0 7px; }
-.date { color: #aab1bc; font-size: clamp(17px, 1.4vw, 24px); text-transform: capitalize; text-align: center; }
+.connection-warning { color: #e1a0a0; font-size: clamp(14px, 1vw, 18px); text-align: center; }
+.clock { width: 100%; text-align: center; font-size: clamp(120px, 13.5vw, 250px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: auto 0 7px; }
 .clock-bottom { color: #7c8592; font-size: clamp(12px, .82vw, 15px); margin-top: 22px; justify-content: flex-start; }
 .clock-bottom .server-dot { margin-left: auto; }
 .weather-card { flex: .72; min-height: 0; padding: clamp(16px, 1.55vw, 24px); display: flex; flex-direction: column; justify-content: space-between; }
@@ -47,7 +43,7 @@ body {
 .temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
 .temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
-.temperature-tile strong { margin: auto 0; font-size: clamp(38px,3.8vw,62px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.temperature-tile strong { margin: auto 0; font-size: clamp(48px,4.6vw,78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
 .right-column { position: relative; }
 .actions-grid { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: clamp(6px,.62vw,10px); flex: 0 0 auto; }
 .action-card {
