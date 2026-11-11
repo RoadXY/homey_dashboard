@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getHomeyLogicVariables } from "./homey.js";
 
@@ -33,18 +33,26 @@ export type DashboardNotification = {
 
 async function loadConfigs(): Promise<NotificationConfig[]> {
   const directory = join(process.cwd(), "config", "notifications");
-  const file = await readFile(join(directory, "co2-woonkamer-test.json"), "utf8");
-  const config = JSON.parse(file) as NotificationConfig;
-  if (
-    config.schemaVersion !== 1 ||
-    !config.id ||
-    !config.title ||
-    config.source?.type !== "logic-variable" ||
-    config.condition?.operator !== "equals"
-  ) {
-    throw new Error("Ongeldige meldingsconfiguratie: co2-woonkamer-test.json");
-  }
-  return [config];
+  const filenames = (await readdir(directory)).filter((filename) => filename.endsWith(".json")).sort();
+  const configs = await Promise.all(filenames.map(async (filename) => {
+    const file = await readFile(join(directory, filename), "utf8");
+    const config = JSON.parse(file) as NotificationConfig;
+    if (
+      config.schemaVersion !== 1 ||
+      !config.id ||
+      !config.title ||
+      config.source?.type !== "logic-variable" ||
+      config.condition?.operator !== "equals" ||
+      typeof config.condition.value !== "boolean" ||
+      !["critical", "warning", "info"].includes(config.severity)
+    ) {
+      throw new Error(`Ongeldige meldingsconfiguratie: ${filename}`);
+    }
+    return config;
+  }));
+  const ids = configs.map((config) => config.id);
+  if (new Set(ids).size !== ids.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+  return configs;
 }
 
 export async function getDashboardNotifications(): Promise<{
