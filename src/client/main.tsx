@@ -57,13 +57,17 @@ function App() {
   const weatherText = capability(weather, "conditioncode_text") ?? capability(weather, "description");
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const timeText = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
+  const dateText = new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const updateText = lastUpdated ? new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(lastUpdated) : "—";
   const homeyOnline = homey?.state === "online";
   return (
     <main className="dashboard">
       <section className="left-column" aria-label="Tijd, weer en temperaturen">
         <article className="card clock-card">
-          <div className="clock">{timeText}</div>
+          <div className="clock-content">
+            <div className="clock">{timeText}</div>
+            <div className="date">{dateText}</div>
+          </div>
           {(loadError || (homey !== null && !homeyOnline)) && (
             <div className="connection-warning" role="status">
               {loadError ? "Verbinding met de dashboardserver mislukt" : "Verbinding met Homey Pro mislukt"}
