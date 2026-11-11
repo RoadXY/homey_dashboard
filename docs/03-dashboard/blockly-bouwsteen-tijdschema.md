@@ -62,3 +62,18 @@ Uitgang:
 ## 7. Relatie met temperatuurregels
 
 De vier koude-kamermeldingen hebben een aparte, expliciete voorwaarde: temperatuur **lager dan 16 °C**. Deze drempel wordt als configureerbare numerieke waarde gemodelleerd. Het tijdschema “Boven ramen open” wordt niet automatisch op de koude-kamermeldingen toegepast.
+
+
+## 8. Broncontrole – 11 november 2026
+
+De projectbaseline `ha-baseline-analyse.md` bevestigt dat `schedule.boven_ramen_open` als `on`-voorwaarde voorkomt in de meldingen:
+- Raam Tess niet open
+- Raam Bram niet open
+- Raam Ouders niet open
+- Dakraam Sem niet open
+
+De baseline-analyse beschrijft alleen het gebruik van de schedule-entiteit in de condition tree. Zij bevat niet de onderliggende schedule-configuratie met weekdagen, begin-/eindtijden of eventuele uitzonderingen. De oorspronkelijke bron `tablet_home_assistant.yml` is op dit moment niet beschikbaar via de gekoppelde projectbestanden of als bestand in de repository.
+
+**Blokkade voor exacte reconstructie:** de oorspronkelijke YAML (of alleen de volledige definitie van `schedule.boven_ramen_open`) is nodig. Tot die bron beschikbaar is, blijven de concrete tijden/dagen onbekend en worden ze niet ingevuld op basis van aannames.
+
+Na ontvangst wordt alleen de schedule-definitie uitgelezen en vastgelegd; daarna vertalen we de precieze configuratie naar het herbruikbare Blockly-blok en testen we de randgevallen.
