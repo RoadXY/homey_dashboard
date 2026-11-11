@@ -27,3 +27,32 @@ De gebruiker bevestigt voor de bestaande regenmelding de Homey-bron **Raamsdonks
 De eerder besproken weer-icoonmatrix als lokale vertaallaag vervalt. In plaats daarvan biedt de dashboardcontainer een API-endpoint aan waarop de toekomstige Homey-app de actuele, door de gebruiker gekozen weerconditie kan doorgeven. De toekomstige Homey-app krijgt hiervoor een Flow-kaart met de actie **‘Zet huidige weerconditie naar’** en een dropdown met alle weercondities die het dashboard ondersteunt. De gebruiker kan in Homey zelf de actuele conditie uit diens eigen weerprovider bepalen en via deze kaart naar het dashboard sturen.
 
 Het dashboard gebruikt de ontvangen, ondersteunde conditie voor de weergave. De lijst met canonieke ondersteunde condities, API-contract, authenticatie, validatie, foutafhandeling en gedrag bij ontbrekende/verouderde updates moeten nog technisch worden ontworpen. De Homey-app is toekomstig werk; dit besluit legt de gewenste architectuur en gebruikerservaring vast, niet een reeds geïmplementeerd endpoint of Flow-kaart.
+
+
+
+### 12.11 Gebruikersakkoord – canonieke weercondities en API-contract (11 november 2026)
+
+De gebruiker keurt de voorgestelde set van 16 ondersteunde dashboardcondities goed. Deze codes vormen de canonieke API-enum; Homey toont later Nederlandse labels in de Flow-dropdown en verstuurt de Engelse code:
+
+| Code | Label |
+|---|---|
+| `sunny` | Zonnig |
+| `mostly_sunny` | Overwegend zonnig |
+| `partly_cloudy` | Half bewolkt |
+| `cloudy` | Bewolkt |
+| `overcast` | Zwaar bewolkt |
+| `fog` | Mist |
+| `drizzle` | Motregen |
+| `rain` | Regen |
+| `heavy_rain` | Zware regen |
+| `showers` | Regenbuien |
+| `thunderstorm` | Onweer |
+| `hail` | Hagel |
+| `snow` | Sneeuw |
+| `snow_showers` | Sneeuwbuien |
+| `sleet` | Natte sneeuw / ijzel |
+| `windy` | Veel wind |
+
+Dag/nacht is een afzonderlijke dimensie en wordt niet in deze conditiecodes gecodeerd. Een onbekende code mag de laatst bekende geldige conditie niet overschrijven.
+
+**API-ontwerpvoorstel (nog ter bevestiging):** `POST /api/v1/weather/condition`, JSON-body `{"type":"cloudy"}`, Bearer-token-authenticatie, allowlist-validatie van de 16 codes en een servergegenereerde ontvangsttijd. Bij succes antwoordt de API met HTTP 200 en de geaccepteerde conditie plus `updatedAt`; ongeldige invoer geeft 400 en ontbrekende/ongeldige authenticatie 401. POST is idempotent voor herhaalde updates van dezelfde conditie. De endpointimplementatie en definitieve beveiligingsconfiguratie zijn nog niet gerealiseerd.
