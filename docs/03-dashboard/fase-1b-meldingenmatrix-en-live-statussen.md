@@ -41,7 +41,7 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 |---|---|---|
 | Grote Bram | Contactstatus is `on` | Kandidaat: Onder raam Bram, `alarm_contact`; fysieke match nog bevestigen. |
 | Grote Tess | Contactstatus is `on` | Kandidaat: Onder raam Tess, `alarm_contact`; fysieke match nog bevestigen. |
-| Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Bovenramenschema wordt gemigreerd; zon-op-raamconditie wordt niet gemigreerd. HA-conditie moet daarop worden aangepast door de expliciete migratiekeuze. |
+| Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Eigen schema-instantie voor deze melding; zon-op-raamconditie wordt niet gemigreerd. HA-conditie wordt aangepast volgens de expliciete migratiekeuze. |
 | Grote Ouders open | Contactstatus is `on` | Kandidaat: Ouderslaapkamer onderraam, `alarm_contact`. |
 | Raam Sem open | Contactstatus is `on` | Kandidaat: Raam Sem, `alarm_contact`. |
 | Achterdeur open | Contact `on` én (buitentemperatuur <18 OF >24) | Contact en weerwaarde beschikbaar. Behoud de HA-absolute buitentemperatuurvoorwaarde; niet vervangen door Homey-temperatuurverschil. |
@@ -62,7 +62,7 @@ Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-
 | Moto G60S | Batterijpercentage <15 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
 | Muur tablet | Batterijpercentage <25 | Kandidaat: Muur tablet, `measure_battery`. |
 | CO2 woonkamer hoog! | HA-bron: `sensor.eco2` >1200; kaart toont multisensor-CO2 | Homey live `measure_co2`; projectbesluit gebruikt voorlopig Homey-drempels 1000/2000/reset <990. Blockly-configuratie later. |
-| Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Bovenramenschema migreren; Blockly-herbruikbaarheid onderzoeken. |
+| Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Eigen, afzonderlijke schema-instantie voor deze melding. |
 | Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Bovenramenschema migreren; Blockly-herbruikbaarheid onderzoeken. |
 | Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Bovenramenschema migreren; bronwaarden verder mappen. |
 | Airco keuken | Modus niet off en niet unavailable | Airco keuken: `thermostat_mode`, `onoff`, `target_temperature`. |
@@ -121,13 +121,12 @@ De volgende instellingen moeten in de latere Blockly-regelbewerker configureerba
 - Weerstatus in/uit een lijst.
 - Welke bronwaarde wordt getoond en welke voorwaarde de kaart zichtbaar maakt.
 - Meldingstitel, omschrijving, prioriteit en eventueel icoon.
-- Herbruikbare schema-/tijdvensterbouwstenen, waaronder het bovenramenschema.
+- Configureerbare schema-/tijdvensterbouwstenen; elke melding krijgt een eigen schema-instantie, met gedeelde evaluatiecode.
 
 De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze. De temperatuurdrempel van 16 °C is eveneens een expliciet gekozen beginregel en moet later configureerbaar blijven.
 
 ## 7. Openstaande bronmappings
 
-1. Reproductie van `schedule.boven_ramen_open`: exacte weekdagen en tijden uit de oorspronkelijke HA-definitie vastleggen en vertalen naar de herbruikbare Blockly-bouwsteen.
 2. Neerslagkans >25: wachten op keuze/beschikbaarheid van een app/databron.
 3. Keuken-vriezer: semantische relatie tussen HA-entity en Homey-device Koelkast keuken temperatuur bevestigen.
 4. Droger: exacte Homey-statuswaarden en de HA-completion-time-template valideren.
@@ -191,3 +190,18 @@ Voor de melding “Zolder koud” gebruiken we de temperatuursensor op slaapkame
 
 ### 10.3 Opschoning openstaande mappinglijst
 De temperatuurbronnen voor Tess en slaapkamer Sem zijn nu bevestigd. De oude voorlopige vermeldingen in de oorspronkelijke meldingenmatrix zijn bijgewerkt. Ze staan niet langer op de openstaande mappinglijst. De resterende mappingvragen zijn schema, neerslagkans, keuken-vriezer, droger, Remeha en wasmachine.
+
+
+### 10.4 Gebruikersbesluit – schema's per melding
+
+De gebruiker heeft verduidelijkt dat de planning niet als één gedeeld schema door vier meldingen moet worden gebruikt. We nemen de planning **vier keer afzonderlijk** over: één zelfstandige schema-instantie per raam-melding:
+- Raam Tess niet open
+- Raam Bram niet open
+- Raam Ouders niet open
+- Dakraam Sem niet open
+
+Alle vier krijgen bij de migratie dezelfde beginconfiguratie uit Home Assistant:
+- Maandag t/m zaterdag: 07:00–20:00
+- Zondag: 08:00–20:00
+
+De vier instanties blijven daarna onafhankelijk wijzigbaar. Dit maakt het later eenvoudiger om per melding een eigen schema naar Blockly te importeren en aan te passen. De implementatie mag één gedeelde technische evaluator gebruiken; dat betekent nadrukkelijk niet dat de vier meldingen één gedeelde schema-configuratie gebruiken.
