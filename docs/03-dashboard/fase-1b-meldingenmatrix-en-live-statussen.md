@@ -35,50 +35,50 @@ De oorspronkelijke HA-weergave had één zichtbaarheidstrigger boven 1200 ppm. D
 
 ## 3. Meldingenmatrix – oorspronkelijke Home Assistant-kaarten
 
-Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-analyse.md`. De Homey-koppeling is een databronmapping, geen overname van de Homey-Flow-notificatie.
+Onderstaande lijst volgt de functionele kaarten en voorwaarden uit `ha-baseline-analyse.md`. De Homey-koppeling is een databronmapping, geen overname van de Homey-Flow-notificatie. De expliciete migratiebesluiten in hoofdstuk 9 zijn leidend en kunnen onderdelen hieronder uitsluiten of verfijnen.
 
 | HA-kaart / melding | Oorspronkelijke zichtbaarheid / conditie | Homey-databron of mappingstatus |
 |---|---|---|
 | Grote Bram | Contactstatus is `on` | Kandidaat: Onder raam Bram, `alarm_contact`; fysieke match nog bevestigen. |
 | Grote Tess | Contactstatus is `on` | Kandidaat: Onder raam Tess, `alarm_contact`; fysieke match nog bevestigen. |
-| Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Raam-, airco- en weerbronnen deels aanwezig; schema en zonconditie nog niet gekoppeld. |
+| Raam Tess niet open | Contact `off`; `schedule.boven_ramen_open` aan; zolder-airco niet cool/unavailable/heat; buitentemperatuur >18 én zon op raam Tess is off | Bovenramenschema wordt gemigreerd; zon-op-raamconditie wordt niet gemigreerd. HA-conditie moet daarop worden aangepast door de expliciete migratiekeuze. |
 | Grote Ouders open | Contactstatus is `on` | Kandidaat: Ouderslaapkamer onderraam, `alarm_contact`. |
 | Raam Sem open | Contactstatus is `on` | Kandidaat: Raam Sem, `alarm_contact`. |
 | Achterdeur open | Contact `on` én (buitentemperatuur <18 OF >24) | Contact en weerwaarde beschikbaar. Behoud de HA-absolute buitentemperatuurvoorwaarde; niet vervangen door Homey-temperatuurverschil. |
 | Voordeur open | Contactstatus is `on` | Kandidaat: Voordeur, `alarm_contact`. |
-| Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Lamp `onoff` beschikbaar; schema nog niet gekoppeld. |
-| Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Lamp `onoff` beschikbaar; schema nog niet gekoppeld. |
-| Slaapkamer Bram koud | `binary_sensor.temperatuur_bram_laag` is on | Temperatuursensor kandidaat aanwezig; exacte bronconditie/threshold nog koppelen. |
-| Slaapkamer Tess koud | `binary_sensor.temperatuur_tess_laag` is on | Temperatuursensor kandidaat aanwezig; exacte bronconditie/threshold nog koppelen. |
-| Ouderslaapkamer koud | `binary_sensor.temperatuur_ouders_laag` is on | Temperatuurbron nog exact koppelen. |
-| Zolder koud | `binary_sensor.temperatuur_zolder_laag` is on; kaart toont zolder-airco | Temperatuur-/aircobronnen aanwezig; lage-temperatuur-binarystatus nog koppelen. |
-| Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | Homey-device-ID uit Flow bekend, maar apparaatnaam/zone en relatie met HA-koelkastentity moeten nog bevestigd worden. |
+| Lamp Sem staat aan | `schedule.slapen_sem` aan én lamp aan | Slaap-/schema-afhankelijkheid Sem is expliciet niet migreren; kaart/regel niet overnemen. |
+| Lamp Bram staat aan | `schedule.slapen_bram` aan én lamp aan | Slaap-/schema-afhankelijkheid Bram is expliciet niet migreren; kaart/regel niet overnemen. |
+| Slaapkamer Bram koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur Bram, `measure_temperature`. |
+| Slaapkamer Tess koud | Temperatuursensor in de kamer <16 °C | Migreren; exacte Homey-temperatuursensor nog identificeren. |
+| Ouderslaapkamer koud | Temperatuursensor in de kamer <16 °C | Migreren; Homey-bron Temperatuur ouderslaapkamer, `measure_temperature`. |
+| Zolder koud | Temperatuursensor in de kamer <16 °C | Migreren; exacte bedoelde zoldertemperatuursensor nog bevestigen. |
+| Vriezer keuken warm! | `binary_sensor.vriezer_keuken_temperatuur_hoog` is on | Homey-device-ID bekend als Koelkast keuken temperatuur; semantische relatie nog verifiëren. |
 | Wasdroger klaar om | Droger machine state is `run`; template toont completion-time als HH:mm | Droger-capabilities beschikbaar; statewaarde en templatevertaling nog valideren. Behoud de HA-voorwaarde, niet Flow-push. |
 | Wasmachine staat aan | `binary_sensor.wasmachine` is on | Kandidaat: `wasmachine_draait` en/of vermogen. Exacte HA-afgeleide status eerst semantisch mappen. |
-| Galaxy A54 | Batterijpercentage <20 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
-| Telefoon batterij (SM-S721B) | Batterijpercentage <20 OF state-entiteit full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
-| Pixel 7 Pro | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
-| SM-F966B | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
-| Moto G60S | Batterijpercentage <15 OF batterijstatus full | Telefoonbron nog niet in Homey-inventarisatie gekoppeld. |
+| Galaxy A54 | Batterijpercentage <20 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
+| Telefoon batterij (SM-S721B) | Batterijpercentage <20 OF state-entiteit full | **Niet migreren** op verzoek gebruiker. |
+| Pixel 7 Pro | Batterijpercentage <15 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
+| SM-F966B | Batterijpercentage <15 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
+| Moto G60S | Batterijpercentage <15 OF batterijstatus full | **Niet migreren** op verzoek gebruiker. |
 | Muur tablet | Batterijpercentage <25 | Kandidaat: Muur tablet, `measure_battery`. |
 | CO2 woonkamer hoog! | HA-bron: `sensor.eco2` >1200; kaart toont multisensor-CO2 | Homey live `measure_co2`; projectbesluit gebruikt voorlopig Homey-drempels 1000/2000/reset <990. Blockly-configuratie later. |
-| Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Contact kandidaat aanwezig; schema- en gevoelstemperatuurmapping nog verifiëren. |
-| Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Contact kandidaat aanwezig; schema- en gevoelstemperatuurmapping nog verifiëren. |
-| Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Contact, weer, regen en airco deels beschikbaar; schema- en statusmapping nog verifiëren. |
+| Raam Bram niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Bovenramenschema migreren; Blockly-herbruikbaarheid onderzoeken. |
+| Raam Ouders niet open | Contact `off`; boven-ramenschema aan; gevoelstemperatuur <18 | Bovenramenschema migreren; Blockly-herbruikbaarheid onderzoeken. |
+| Dakraam Sem niet open | Contact `off`; boven-ramenschema aan; weerstatus niet in opgegeven regen-/sneeuwlijst; zolder-airco niet cool/heat; neerslag <0,1 | Bovenramenschema migreren; bronwaarden verder mappen. |
 | Airco keuken | Modus niet off en niet unavailable | Airco keuken: `thermostat_mode`, `onoff`, `target_temperature`. |
 | Airco zolder | Modus niet off | Airco zolder: `thermostat_mode`, `onoff`, `target_temperature`. |
 | Verwarming aan | Remeha verwarmen-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
 | Warm water | Remeha huishoudelijk-warmwater-binarysensor is on | Remeha capability aanwezig; betekenis van statuscode nog verifiëren. |
-| Bak voorraam voeding! | Conductivity <350; kaart toont aparte voedingssensor | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
-| Bak voorraam water! | Vochtigheid <15 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
-| Paradijsvogelplant water! | Vochtigheid <15 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
-| Paradijsvogelplant voeding! | Conductivity <350 | Plant-device/capability nog niet in Homey-inventarisatie bevestigd. |
-| Kans op neerslag | Neerslagkans >25 | Homey-weather state bevat geen expliciete neerslagkans; aanvullende databron of capability nodig. |
+| Bak voorraam voeding! | Conductivity <350; kaart toont aparte voedingssensor | **Niet migreren** op verzoek gebruiker. |
+| Bak voorraam water! | Vochtigheid <15 | **Niet migreren** op verzoek gebruiker. |
+| Paradijsvogelplant water! | Vochtigheid <15 | **Niet migreren** op verzoek gebruiker. |
+| Paradijsvogelplant voeding! | Conductivity <350 | **Niet migreren** op verzoek gebruiker. |
+| Kans op neerslag | Neerslagkans >25 | **Migreren – backlog**. Homey-weather state bevat geen expliciete neerslagkans; gebruiker zoekt een app/databron met regenkans. |
 | Truus | Werkstatus niet Sleeping, Charging, Unavailable of Standby | Truus: `measure_work_status`; statuswaarden rechtstreeks gebruiken en exacte strings behouden. |
 | Truus wil opgehaald worden! | Werkstatus is Standby | Truus: `measure_work_status`; exacte statuswaarde. |
 | Tuinhuis lamp | Switch is on gedurende 5 minuten | Tuinhuis lamp `onoff`; duurvoorwaarde van 5 minuten behouden. |
 | Wateralarm wasmachines! | Watersensorstatus is on | Water Sensor wasmachines `alarm_water`; actuele capability beschikbaar. |
-| Wateralarm vaatwasser! | Watersensorstatus is on | Vaatwasser-watersensor nog exact koppelen. |
+| Wateralarm vaatwasser! | Watersensorstatus is on | Water sensor vaatwasser `alarm_water`; actuele capability beschikbaar. |
 | Deur tuinhuis open! | Contactstatus is on | Deur tuinhuis `alarm_contact`. |
 
 De twee mediaspelerkaarten uit de HA-YAML zijn in de eerdere projectbesluiten uitgesloten van de nieuwe dashboardweergave; deze keuze blijft apart van de meldingenmatrix.
@@ -91,14 +91,13 @@ Deze gegevens kunnen als compacte status of waarde worden getoond, ook wanneer e
 |---|---|---|
 | Woonkamer- en keukentemperatuur | Reeds gemapte sensoren/Logic-waarde | Temperatuurtegels op hoofddashboard. |
 | Bram, Tess, ouders, zolder | Temperatuurcapabilities na mapping | Waarde tonen wanneer bijbehorende HA-kaart actief is. |
-| Weer | Weer-device: temperatuur, gevoelstemperatuur, actuele regen, conditie, wind | Weerkaart; neerslagkans blijft apart open. |
+| Weer | Weer-device: temperatuur, gevoelstemperatuur, actuele regen, conditie, wind | Weerkaart; neerslagkans blijft backlog. |
 | Deuren en ramen | Individuele `alarm_contact` | Actuele open/dichtstatus, gebruikt voor HA-condities. |
 | Wasmachine | Live vermogen en/of gemapte status | Alleen als de bronsemantiek overeenkomt met HA-binarysensor. |
 | Droger | Machine state, cycle active, progress, remaining minutes | Status en resterende tijd na validatie. |
 | Truus | `measure_work_status`, `measure_docked`, `measure_battery` | Werkstatus, dockstatus en accupercentage afzonderlijk. |
 | Airco's | `thermostat_mode`, `onoff`, `target_temperature` | Actuele modus en doeltemperatuur. |
 | Remeha | `boiler_state`, `DHW_state`, `DHW_mode` | Pas tonen nadat de statuscodes zijn vertaald. |
-| Plant sensoren | Nog te koppelen | Meldingen pas activeren na bronmapping. |
 
 ## 5. Wat we nadrukkelijk niet overnemen uit Homey-Flows
 
@@ -122,26 +121,50 @@ De volgende instellingen moeten in de latere Blockly-regelbewerker configureerba
 - Weerstatus in/uit een lijst.
 - Welke bronwaarde wordt getoond en welke voorwaarde de kaart zichtbaar maakt.
 - Meldingstitel, omschrijving, prioriteit en eventueel icoon.
+- Herbruikbare schema-/tijdvensterbouwstenen, waaronder het bovenramenschema.
 
-De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze.
+De CO2-waarden 1000/2000/990 zijn dus initiële configuratiewaarden, geen hard gecodeerde onwijzigbare productkeuze. De temperatuurdrempel van 16 °C is eveneens een expliciet gekozen beginregel en moet later configureerbaar blijven.
 
 ## 7. Openstaande bronmappings
 
-1. Schema's `schedule.boven_ramen_open`, `schedule.slapen_sem` en `schedule.slapen_bram`.
-2. Zonconditie `zon_staat_op_raam_tess`.
-3. Fysieke mapping van de Bram-/Tess-raamcontacten.
-4. Lage-temperatuur-binarysensoren voor Bram, Tess, ouders en zolder.
+1. Temperatuursensor Tess.
+2. Exacte bedoelde temperatuursensor voor zolder.
+3. Reproductie van `schedule.boven_ramen_open` en de herbruikbare Blockly-schema-bouwsteen.
+4. Neerslagkans >25: wachten op keuze/beschikbaarheid van een app/databron.
 5. Keuken-vriezer device-ID en relatie met HA-entity die `koelkast` in de naam heeft.
 6. Exacte Homey-statuswaarden voor droger en de HA-completion-time-template.
-7. Vaatwasser-wateralarm.
-8. Telefoonbatterijen.
-9. Plantvochtigheid en conductivity.
-10. Neerslagkans >25.
-11. Remeha-statuscodevertaling.
-12. Exacte semantische bron van de wasmachine-binarysensor.
+7. Remeha-statuscodevertaling.
+8. Exacte semantische bron van de wasmachine-binarysensor.
 
-Deze punten zijn mappingwerk; ze zijn geen reden om de oorspronkelijke HA-condities te vervangen door Flow-notificatiegedrag.
+De volgende onderdelen zijn door de gebruiker expliciet uitgesloten en gelden dus niet meer als open migratiemapping: plantensensoren, vijf telefoonbatterijen, zon op raam Tess, schema slapen Sem en schema slapen Bram.
 
 ## 8. Volgende stap
 
-Werk de open bronmappings systematisch af vanuit de oorspronkelijke HA-YAML. Daarna maken we een regelmodel dat deze condities exact kan representeren en dat later door Blockly kan worden aangepast. Pas daarna koppelen we de regels aan de dashboardweergave.
+Werk de open bronmappings af. Onderzoek daarnaast of het bovenramenschema als herbruikbare Blockly-bouwsteen kan worden gereproduceerd. Neerslagkans blijft op de backlog totdat een passende databron is gekozen. Daarna kan het regelmodel de gemigreerde HA-condition trees representeren en configureerbaar maken.
+
+## 9. Gebruikersbesluiten – migratievragenlijst
+
+De volgende keuzes zijn expliciet door de gebruiker ingediend. Ze zijn leidend voor ontwerp en implementatie; niet-gemigreerde onderdelen blijven alleen in de historische HA-referentie staan.
+
+| Onderdeel | Besluit | Opmerking / uitwerking |
+|---|---|---|
+| Bak voorraam – voedingswaarde | Niet migreren | Geen |
+| Bak voorraam – vochtigheid | Niet migreren | Geen |
+| Paradijsvogelplant – vochtigheid | Niet migreren | Geen |
+| Paradijsvogelplant – voedingswaarde | Niet migreren | Geen |
+| Galaxy A54 | Niet migreren | Geen |
+| SM-S721B | Niet migreren | Geen |
+| Pixel 7 Pro | Niet migreren | Geen |
+| SM-F966B | Niet migreren | Geen |
+| Moto G60S | Niet migreren | Geen |
+| Slaapkamer Bram koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
+| Slaapkamer Tess koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
+| Ouderslaapkamer koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
+| Zolder koud | Migreren | Kamertemperatuursensor lager dan 16 °C |
+| Kans op neerslag | Migreren – backlog | Gebruiker zoekt een app die regenkans levert |
+| Zon op raam Tess | Niet migreren | Geen |
+| Boven ramen open | Migreren | Onderzoeken of schema reproduceerbaar is en als herbruikbare Blockly-bouwsteen kan dienen |
+| Slapen Sem | Niet migreren | Geen |
+| Slapen Bram | Niet migreren | Geen |
+
+Onbeantwoorde onderdelen uit de vragenlijst zijn niet ingevuld; deze blijven open en worden niet als migratiebesluit geïnterpreteerd.
