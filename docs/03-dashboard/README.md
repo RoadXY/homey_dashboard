@@ -11,10 +11,10 @@
 ## Linkerzijde
 - Grote klok met tijd in 24-uursnotatie (standaard); tijdnotatie wordt later instelbaar.
 - Datum wordt standaard voluit getoond inclusief weekdag en maandnaam; datum- en weekdagpresentatie worden later instelbaar.
-- Weer met groot icoon naast buitentemperatuur.
+- Weer met een bij de actuele conditie passend icoon naast de buitentemperatuur.\n- Weericonen ondersteunen onder meer zonnig, halfbewolkt, bewolkt, regen/buien, onweer, sneeuw/hagel, mist/nevel en wind. De iconen gebruiken een rustige monochrome grijstint en uitsluitend subtiele beweging; bij systeeminstelling ‘minder beweging’ staat animatie uit.
 - Weersinformatie bevat gevoelstemperatuur, wind, neerslag, luchtvochtigheid en een korte weersomschrijving.
 - Weersomschrijving bestaat uit een weericoon met korte tekst.
-- Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.
+- Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.\n- De Homey-gegevens worden eventgestuurd bijgewerkt via de realtimeverbinding; de footer toont daarom geen vaste verversingsinterval of laatste-updateklok.
 - Maximaal vier door de gebruiker geselecteerde kamertemperaturen, weergegeven als afzonderlijke temperatuurtegels.
 - Temperatuurtegels tonen uitsluitend de ruimtenaam en temperatuur; temperatuur-iconen zijn verwijderd.
 - De ruimtenaam en temperatuurwaarde worden hierdoor groter weergegeven. De vaste tegelafmetingen en 2×2-indeling blijven ongewijzigd.
