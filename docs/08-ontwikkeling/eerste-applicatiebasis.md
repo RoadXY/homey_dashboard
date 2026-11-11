@@ -161,3 +161,10 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 ## Bevestiging Homey-status na eerste meetwaardenaanvraag (11 november 2026)
 - Een vervolgaanvraag op `GET /api/homey/status` retourneerde `state: online`, `deviceCount: 128` en `zoneCount: 22`.
 - De eerdere `not-configured`-status was de initiële toestand vóór de eerste aanvraag die de Homey-verbinding automatisch tot stand bracht; er is geen blijvende statusinconsistentie vastgesteld.
+
+
+## Terminologie Homey-verbindingsstatus (11 november 2026)
+- De initiële status en de status wanneer de Homey-configuratie ontbreekt gebruiken voortaan `not-connected` in plaats van `not-configured`.
+- Reden: voor de dashboardgebruiker beschrijft `not-connected` duidelijker dat Homey op dat moment niet verbonden is; `not-configured` suggereerde ten onrechte dat de integratie niet ingericht was.
+- De overige statussen blijven `connecting`, `online` en `offline`.
+- Codewijziging: `src/server/homey.ts`, commit `475f85f`.
