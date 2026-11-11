@@ -125,15 +125,19 @@ Een nieuwe actuele apparaatcontrole heeft de volgende kandidaten opgeleverd:
 - **Airco zolder**, ID `746e2538-bf25-45b0-8e98-3e0100bff811`, zone Zolder > Voorzolder, heeft `measure_temperature = 19 °C`.
 - **Rookmelder zolder**, ID `480cee53-22da-47e0-a9bd-6a64c9b11c40`, zone Zolder > Voorzolder, heeft `measure_temperature = 20,2 °C`.
 - **CO Sensor**, ID `6f1b28a0-0641-42d7-8f30-e6d8293c0b34`, zone Zolder > Voorzolder, heeft `measure_temperature = 19,6 °C`.
-- De oorspronkelijke omschrijving zegt “temperatuursensor in deze kamer”; uit de namen/zonelocaties alleen blijkt niet welke hiervan bedoeld is. Geen van deze kandidaten wordt zonder bevestiging als de juiste bron gekozen.
+- De gebruiker heeft verduidelijkt dat met de zolderbron de temperatuursensor op slaapkamer Sem wordt bedoeld: **Temperatuur Sem**, ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, zone Zolder > Sem, capability `measure_temperature` (momentopname tijdens inventarisatie: 16,5 °C). De sensoren op de Voorzolder zijn hiervoor niet bedoeld.
 
 ### Bram en ouderslaapkamer bevestigd
 - **Temperatuur Bram**, ID `58f20a55-90b3-49cf-9af0-53a40f6e501c`, `measure_temperature = 17,4 °C`.
 - **Temperatuur ouderslaapkamer**, ID `6d68c7ba-411f-47c1-9624-2f61a7006795`, `measure_temperature = 16,1 °C`.
 - Deze apparaatnamen en zones passen direct bij de door de gebruiker bedoelde kamertemperatuurbronnen.
 
-De waarden hierboven zijn momentopnames tijdens de inventarisatie. De dashboardregel voor alle vier kamers blijft exact **temperatuur <16 °C**. De bron voor Tess is door de gebruiker bevestigd als **Thermostaat Tess**. Alleen de zolderbron blijft nog open.
+De waarden hierboven zijn momentopnames tijdens de inventarisatie. De dashboardregel voor alle vier kamers blijft exact **temperatuur <16 °C**. De bron voor Tess is door de gebruiker bevestigd als **Thermostaat Tess**. De zolderbron is door de gebruiker bevestigd als **Temperatuur Sem**.
 
 
 ### Bevestiging temperatuurbron Tess
 De gebruiker heeft expliciet gekozen voor **Thermostaat Tess** (`203a126c-1923-4857-abcb-6a727a133099`) als bron voor de melding “Slaapkamer Tess koud”. Gebruik de capability `measure_temperature` en de ingestelde grens **lager dan 16 °C**. Radiator Tess is niet de gekozen bron.
+
+
+### Bevestiging temperatuurbron zolder / slaapkamer Sem
+De gebruiker heeft bevestigd dat de temperatuursensor op slaapkamer Sem bedoeld wordt voor de melding “Zolder koud”. Gebruik Homey-apparaat **Temperatuur Sem**, ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`, capability `measure_temperature`. De meldingsgrens blijft **lager dan 16 °C**. Airco zolder, Rookmelder zolder en CO Sensor op de Voorzolder zijn niet de gekozen bron.
