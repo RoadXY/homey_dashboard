@@ -169,3 +169,15 @@ Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in H
 ### Wasmachine-wateralarm – gebruikersbevestiging (12 november 2026)
 
 Voor de afzonderlijke melding **Wateralarm wasmachines!** bevestigt de gebruiker de afzonderlijke Homey-**Water sensor wasmachine** met capability `alarm_water` als bron. Gebruik dus niet de wasmachine zelf als wateralarmbron. De exacte apparaat-ID en actuele waarde zijn in deze bevestiging niet vastgelegd; die blijven te verifiëren in de Homey-inventarisatie. De bestaande YAML-voorwaarde en het meldingsniveau **kritiek** blijven ongewijzigd.
+
+
+## 16. Zonnepanelen – historische gegevensinventarisatie (12 november 2026)
+
+De gebruiker heeft het Homey-apparaat **Zonnepanelen** aangewezen. De actuele Homey-inventarisatie bevestigt:
+- Apparaat-ID: `e743e650-8ac8-477a-b174-bc614fd6a5a2`.
+- Type: `solarpanel`; zone: **Thuis > Dak**.
+- Relevante actuele capabilities/waarden in de inventarisatiesnapshot: `measure_power = 0` W, `meter_power_today = 2.5` kWh en `meter_power = 13443.572` kWh.
+
+De Insights-loglijst is eveneens gecontroleerd. Voor dit exacte apparaat-ID is momenteel alleen de boolean-log `onoff` / **Stroomproductie** aanwezig. Er zijn in de huidige Insights-inventarisatie geen numerieke historische logs voor `measure_power`, `meter_power` of `meter_power_today` gevonden. Andere logs met titels als **Power Produced** en **Energy Produced** horen bij een ander Homey-apparaat-ID en worden nadrukkelijk niet aan de zonnepanelen gekoppeld.
+
+Conclusie: de actuele dagopbrengst kan uit de capability `meter_power_today` worden getoond, maar een historische productiecurve voor dit apparaat is met de momenteel zichtbare Insights-logs nog niet beschikbaar. Voordat een grafiek wordt gebouwd, moet worden vastgesteld of de zonnepanelenintegratie deze numerieke capabilities naar Homey Insights kan registreren of dat een eigen backendhistorie nodig is. Geen gegevens van een ander apparaat mogen als vervanging worden gebruikt.
