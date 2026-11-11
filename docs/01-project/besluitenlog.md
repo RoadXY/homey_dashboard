@@ -179,3 +179,7 @@ Voor de melding **Kans op neerslag** gebruikt het dashboard Homey-apparaat **Raa
 ## Gebruikersbevestiging – buitentemperatuurbron Achterdeur open (12 november 2026)
 
 Voor **Achterdeur open** wordt Homey-apparaat **Weer** met capability `measure_temperature` gebruikt als buitentemperatuurbron. De oorspronkelijke YAML-voorwaarde blijft ongewijzigd: achterdeurcontact open én (buitentemperatuur <18 °C óf >24 °C). De temperatuurgrenzen vormen een OR-groep; deze wordt via AND gecombineerd met het open deurcontact. Het meldingsniveau blijft **waarschuwing**.
+
+## Gebruikersbevestiging – Zolder koud (12 november 2026)
+
+Voor **Zolder koud** gebruikt het dashboard Homey-apparaat **Temperatuur Sem** (ID `ba9336e2-f4ed-417c-bba6-3fafb735e61a`), capability `measure_temperature`. De melding is actief bij een temperatuur **lager dan 12 °C**. De oorspronkelijke kaartverwijzing naar de ingestelde temperatuur van `climate.airco_zolder_thermostaat` blijft behouden voor de weergave. Het eerder vastgestelde meldingsniveau blijft **info**.
