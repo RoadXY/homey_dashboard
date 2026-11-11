@@ -281,3 +281,12 @@ De JSON-engine is uitgebreid met numerieke voorwaarden op read-only Homey-device
 - The initial supported interface locales are English (`en`) and Dutch (`nl-NL`). English is the canonical source locale for interface strings and the universal fallback. Every new or changed interface string must be added to the English and Dutch translation resources together; neither locale may be knowingly left incomplete. Translation-key parity must be checked during validation/build so missing Dutch entries are caught before release. Additional locales can be added by providing complete translation resources without changing component logic.
 
 The exact Homey API/property used to retrieve the configured language must be verified during implementation. If Homey does not expose it through the supported API, automatic mode must report that it cannot detect the Homey language and use the English fallback; it must not silently claim a detected locale.
+
+
+## Leidende bron voor functionele logica (12 november 2026)
+
+De gebruiker bevestigt expliciet dat de oorspronkelijke Home Assistant-YAML strikt leidend is voor alle dashboardfunctionaliteit die uit die configuratie wordt gemigreerd. Homey-Flows worden niet gebruikt als bron om dashboardvoorwaarden, drempelwaarden, uitzonderingen, timers of meldingsgedrag af te leiden of te wijzigen.
+
+Homey wordt uitsluitend gebruikt als read-only gegevensbron voor actuele apparaatwaarden, capabilities en Logic-waarden die nodig zijn om de oorspronkelijke YAML-condities in het dashboard uit te voeren. Als een YAML-bron of afgeleide voorwaarde niet rechtstreeks beschikbaar is in Homey, wordt dit als open mapping-/implementatiepunt vastgelegd. Er wordt geen Homey-Flow-logica als vervanging aangenomen en er worden geen ontbrekende voorwaarden of drempelwaarden geraden.
+
+De oorspronkelijke YAML blijft de functionele referentie; nieuw gekozen meldingsniveaus en expliciete dashboardontwerpbesluiten zijn aanvullende presentatiemetadata en wijzigen de YAML-bronvoorwaarden niet.
