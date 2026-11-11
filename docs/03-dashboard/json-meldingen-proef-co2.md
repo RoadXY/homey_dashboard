@@ -86,3 +86,71 @@ De gebruiker heeft `~/bin/homey-dashboard-update.sh` uitgevoerd. Git bijgewerkt 
 Dit is gecorrigeerd door `config.source` eerst in een lokale constante `source` vast te leggen en binnen de betreffende branch uitsluitend die constante te gebruiken. De correctie is vastgelegd in commit `53741671ab3853f5beba35fda7fca54bc510b3b9`.
 
 **Status:** de codecorrectie staat op GitHub. De Docker-build en runtime zijn na deze correctie nog niet opnieuw gevalideerd. Voer daarom het updatescript opnieuw uit; pas na een geslaagde build en start kunnen we de vier temperatuurmeldingen en de CO₂-proef functioneel testen.
+
+## Uitbreiding – generieke AND/OR-conditieboom (12 november 2026)
+
+De meldingenengine ondersteunt nu naast het bestaande schema met één bron en één vergelijking ook een geneste conditieboom. Een groep gebruikt `and` of `or` en bevat één of meer kinderen. Elk blad bevat een eigen read-only Homey-bron en vergelijking. Daardoor kunnen combinaties uit de oorspronkelijke YAML rechtstreeks worden gemodelleerd zonder de logica af te vlakken.
+
+Voorbeeldstructuur (schematisch):
+
+```json
+{
+  "schemaVersion": 1,
+  "id": "voorbeeld",
+  "title": "Voorbeeld",
+  "message": "Voorbeeldconditie",
+  "severity": "warning",
+  "enabled": true,
+  "condition": {
+    "operator": "and",
+    "conditions": [
+      {
+        "source": {
+          "type": "device-capability",
+          "deviceId": "<homey-device-id>",
+          "capabilityId": "alarm_contact",
+          "expectedType": "boolean"
+        },
+        "condition": { "operator": "equals", "value": true }
+      },
+      {
+        "operator": "or",
+        "conditions": [
+          {
+            "source": {
+              "type": "device-capability",
+              "deviceId": "<weather-device-id>",
+              "capabilityId": "measure_temperature",
+              "expectedType": "number"
+            },
+            "condition": { "operator": "lessThan", "value": 18 }
+          },
+          {
+            "source": {
+              "type": "device-capability",
+              "deviceId": "<weather-device-id>",
+              "capabilityId": "measure_temperature",
+              "expectedType": "number"
+            },
+            "condition": { "operator": "greaterThan", "value": 24 }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+De bestaande vlakke configuraties blijven compatibel; migratie naar de boomstructuur gebeurt per melding. Bronnen die in meerdere bladeren voorkomen worden één keer opgehaald.
+
+### Onbekende waarden en logica
+
+De evaluator gebruikt drie uitkomsten: `active`, `inactive` en `unknown`. AND/OR-combinaties volgen drie-waardige logica:
+- AND is inactief zodra minimaal één kind aantoonbaar inactief is; anders onbekend zodra een kind onbekend is; alleen actief als alle kinderen actief zijn.
+- OR is actief zodra minimaal één kind aantoonbaar actief is; anders onbekend zodra een kind onbekend is; alleen inactief als alle kinderen inactief zijn.
+
+Een onbekende bron wordt dus nooit als een normale `false`-waarde geïnterpreteerd. Een groep kan alleen een definitieve uitkomst krijgen als de bekende kinderen die uitkomst logisch al bepalen.
+
+### Validatie
+
+Er zijn unit tests toegevoegd voor AND, OR en de omgang met onbekende waarden. De nieuwe code en tests staan op GitHub. De TypeScript-build, Docker-build en praktijktest op de Ubuntu-server moeten nog worden uitgevoerd; dit is dus nog geen als gevalideerd beschouwde runtime-release.
