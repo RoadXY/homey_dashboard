@@ -490,3 +490,30 @@ body {
 .quick-flow-option-icon svg { width:25px; height:25px; }
 
 .quick-catalog-warning { margin:0 0 12px; padding:10px 12px; border:1px solid rgba(245,181,74,.4); border-radius:9px; background:rgba(128,82,18,.18); color:#ffd58a; font-size:13px; line-height:1.4; overflow-wrap:anywhere; }
+
+
+/* Measurement tile editor */
+.dashboard-settings-tabs { display:flex; flex-direction:row; gap:10px; margin-bottom:16px; padding:10px; }
+.dashboard-settings-tabs button,.measurement-tile-tabs button,.measurement-source-types button {
+  border:1px solid var(--surface-card-border); border-radius:10px; padding:10px 14px;
+  color:var(--text-secondary); background:rgba(255,255,255,.035); cursor:pointer;
+}
+.dashboard-settings-tabs button.active,.measurement-tile-tabs button.active,.measurement-source-types button.active {
+  color:var(--text-primary); border-color:var(--action-active-border); background:var(--action-active-background);
+}
+.measurement-editor { display:flex; flex-direction:column; gap:16px; }
+.measurement-editor > p { color:var(--text-secondary); margin:0; }
+.measurement-tile-tabs,.measurement-source-types { display:flex; flex-wrap:wrap; gap:8px; }
+.measurement-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.measurement-fields label { display:flex; flex-direction:column; gap:7px; color:var(--text-secondary); font-size:14px; }
+.measurement-fields label:first-child { grid-column:1/-1; }
+.measurement-fields input,.measurement-fields select {
+  width:100%; min-width:0; border:1px solid var(--surface-card-border); border-radius:9px;
+  background:#171b22; color:var(--text-primary); padding:11px 12px; font:inherit;
+}
+.measurement-source-types { grid-column:1/-1; }
+.measurement-source-note { grid-column:1/-1; color:var(--text-muted); font-size:13px; margin:0; }
+.measurement-preview { border:1px solid var(--surface-card-border); border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px; background:var(--surface-card-background); }
+.measurement-preview span { color:var(--text-muted); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+.measurement-preview strong { color:var(--text-primary); font-size:18px; }
+@media (max-width: 720px) { .measurement-fields { grid-template-columns:1fr; } .measurement-fields label:first-child { grid-column:auto; } }
