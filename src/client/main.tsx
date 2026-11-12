@@ -139,7 +139,7 @@ function App() {
       const isSettingsRoute = window.location.pathname.startsWith("/settings");
       setSettingsOpen(isSettingsRoute);
       setSettingsPath(window.location.pathname);
-      if (!isSettingsRoute) { setSettingsUnlocked(false); return; }
+      if (!isSettingsRoute) { void fetch("/api/settings/logout", { method: "POST" }); setSettingsUnlocked(false); return; }
       void fetch("/api/settings/session").then(response => {
         if (response.ok) { setSettingsUnlocked(true); setPin(""); setPinError(""); lastSessionRefresh.current = 0; }
         else { setSettingsUnlocked(false);  }
