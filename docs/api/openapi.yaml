@@ -149,9 +149,48 @@ paths:
                 type: object
                 properties:
                   unlocked: {type: boolean}
-                  sessionToken: {type: string}
         '401': {description: Invalid PIN}
         '503': {description: SETTINGS_PIN is not configured}
+  /api/settings/session:
+    get:
+      tags: [Settings (internal)]
+      operationId: getSettingsSession
+      summary: Check whether the browser has a valid settings session
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Settings session is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated: {type: boolean, const: true}
+                  idleTimeoutSeconds: {type: integer, const: 1800}
+        '401': {description: Settings session missing or expired}
+  /api/settings/session/refresh:
+    post:
+      tags: [Settings (internal)]
+      operationId: refreshSettingsSession
+      summary: Extend the sliding settings session after user activity
+      security:
+        - SettingsCookie: []
+      parameters:
+        - name: x-settings-activity
+          in: header
+          required: true
+          schema: {type: string, const: "1"}
+      responses:
+        '200': {description: Settings session extended}
+        '401': {description: Settings session missing or expired}
+  /api/settings/logout:
+    post:
+      tags: [Settings (internal)]
+      operationId: logoutSettings
+      summary: Clear the settings session cookie
+      responses:
+        '200': {description: Settings session cookie cleared}
   /api/settings/language:
     get:
       tags: [Settings (internal)]
@@ -171,8 +210,8 @@ paths:
       tags: [Settings (internal)]
       operationId: listWeatherApiTokens
       summary: List managed weather API tokens without revealing their secrets
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: Token metadata
@@ -189,8 +228,8 @@ paths:
       tags: [Settings (internal)]
       operationId: createWeatherApiToken
       summary: Create a named weather API Bearer token; the secret is returned once
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -218,8 +257,8 @@ paths:
       tags: [Settings (internal)]
       operationId: revokeWeatherApiToken
       summary: Revoke a managed weather API token
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
         - name: id
           in: path
           required: true
@@ -233,8 +272,8 @@ paths:
       tags: [Settings (internal)]
       operationId: getGeneralSettings
       summary: Get general settings
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: General settings
@@ -246,8 +285,8 @@ paths:
       tags: [Settings (internal)]
       operationId: saveGeneralSettings
       summary: Save general settings
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -369,8 +408,8 @@ paths:
       operationId: getQuickActionSettings
       summary: Get Quick Action configuration
       security: []
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200': {description: Saved configuration}
         '401': {description: Settings session required}
@@ -378,8 +417,8 @@ paths:
       tags: [Settings (internal)]
       operationId: saveQuickActionSettings
       summary: Save all eight Quick Actions
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -394,8 +433,8 @@ paths:
       tags: [Settings (internal)]
       operationId: getQuickActionCatalog
       summary: Get selectable Homey Flows, devices and writable capabilities
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: Homey selection catalog. Individual manager failures are returned as warnings; successfully loaded sources remain available.
@@ -496,18 +535,16 @@ paths:
         '500': {description: Condition could not be persisted}
 components:
   securitySchemes:
+    SettingsCookie:
+      type: apiKey
+      in: cookie
+      name: homey_settings
+      description: HttpOnly SameSite=Strict cookie with a sliding 30-minute inactivity expiry.
     WeatherBearer:
       type: http
       scheme: bearer
       bearerFormat: opaque token
       description: Create and revoke named tokens in PIN-protected Settings. Only token hashes are stored; the secret is shown once. WEATHER_API_TOKEN remains a temporary migration fallback.
-  parameters:
-    SettingsSession:
-      name: x-settings-session
-      in: header
-      required: true
-      schema: {type: string}
-      description: Short-lived session token returned by POST /api/settings/unlock.
   schemas:
     WeatherCondition:
       type: string
