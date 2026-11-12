@@ -82,5 +82,16 @@
   "actions.livingLights": "Woonkamerverlichting uit",
   "actions.moodLights": "Sfeerverlichting",
   "actions.tv": "TV-modus",
-  "actions.bedtime": "Bedtijd"
+  "actions.bedtime": "Bedtijd",
+  "settings.homeyLanguage": "Homey-taal",
+  "rooms.living": "Woonkamer",
+  "rooms.kitchen": "Keuken",
+  "rooms.sem": "Sem",
+  "rooms.bram": "Bram",
+  "footer.devices": "apparaten",
+  "footer.rooms": "ruimtes",
+  "homey.offline": "offline",
+  "homey.connecting": "verbinden",
+  "homey.notConnected": "niet verbonden",
+  "homey.unknown": "onbekend"
 }
