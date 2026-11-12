@@ -288,3 +288,14 @@ Dit is een vastgelegd ontwerpbesluit; de statusgestuurde tegelweergave en de nie
 - De configuratie toont de beschikbare wijzigbare boolean-capabilities van het gekozen apparaat; elke Quick Action bedient precies één capability.
 - De huidige implementatie gebruikt periodiek uitlezen als betrouwbare terugval voor apparaten buiten de bestaande vaste realtime-subscriptielijst. Dit geeft maximaal circa vijf seconden vertraging bij externe wijzigingen; een latere uitbreiding kan dynamische Homey-realtime-abonnementen toevoegen.
 - Implementatie is gebouwd en CI-getest; runtime-test met echte Homey-apparaten moet na deployment plaatsvinden.
+
+
+### Quick Actions – correctie live status en boolean-bediening (12 november 2026)
+
+Naar aanleiding van de eerste praktijktest zijn twee tekortkomingen gecorrigeerd:
+
+- De actuele status wordt niet langer uit de mogelijk gecachete `capabilitiesObj.value` gelezen. De backend vraagt de geselecteerde capability nu expliciet op via `api.devices.getCapabilityValue({ deviceId, capabilityId })`. Dit geldt zowel voor de dashboardstatus als voor de bronwaarde van Toggle.
+- Na het schrijven van een boolean-waarde wordt de capability opnieuw bij Homey uitgelezen; de API-respons bevat de bevestigde waarde.
+- Bij het selecteren van een andere boolean-capability wordt de bedieningsmodus expliciet op **Uitzetten** gezet. Zo kan een eerder gekozen modus van een andere capability niet onbedoeld worden overgenomen.
+- De bestaande apparaatinstantie-methode `device.setCapabilityValue({ capabilityId, value })` blijft de schrijfroute; de booleanwaarde wordt expliciet gevalideerd voordat deze naar Homey gaat.
+- Deze correctie is door GitHub Actions gebouwd en gevalideerd; de praktijktest op de Ubuntu-server moet na deployment opnieuw worden uitgevoerd, met zowel aan- als uitzetten en statuswijzigingen vanuit Homey.
