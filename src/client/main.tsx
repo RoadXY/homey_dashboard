@@ -24,8 +24,8 @@ const actions = [
 function capability(device: HomeyDevice | undefined, id: string): unknown {
   return device?.readings?.find((reading) => reading.capabilityId === id)?.value;
 }
-function temperature(value: unknown): string {
-  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(1).replace(".", ",")}°` : "—";
+function temperature(value: unknown, locale: "nl" | "en" = "nl"): string {
+  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(1).replace(".", locale === "nl" ? "," : ".")}°` : "—";
 }
 function App() {
   const [now, setNow] = React.useState(() => new Date());
@@ -153,21 +153,21 @@ function App() {
           <div className="weather-main">
             <div>
               <div className="eyebrow">{t("weather.outside")}</div>
-              <div className="weather-temp">{temperature(capability(weather, "measure_temperature"))}</div>
+              <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
               <div className="weather-description">{typeof weatherText === "string" ? weatherText : t("weather.loading")}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
           </div>
           <div className="weather-details">
-            <div><span>{t("weather.feelsLike")}</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"))}</strong></div>
+            <div><span>{t("weather.feelsLike")}</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"), locale)}</strong></div>
             <div><span>{t("weather.wind")}</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
           </div>
         </article>
         <section className="temperature-grid" aria-label={t("rooms.aria")}>
-          <TemperatureTile label={t("rooms.living")} value={temperature(capability(livingRoomSensor, "measure_temperature"))} />
-          <TemperatureTile label={t("rooms.kitchen")} value={temperature(logicValue("temperatuur_gemiddeld_keuken"))} />
-          <TemperatureTile label={t("rooms.sem")} value={temperature(capability(semSensor, "measure_temperature"))} />
-          <TemperatureTile label={t("rooms.bram")} value={temperature(capability(bramSensor, "measure_temperature"))} />
+          <TemperatureTile label={t("rooms.living")} value={temperature(capability(livingRoomSensor, "measure_temperature"), locale)} />
+          <TemperatureTile label={t("rooms.kitchen")} value={temperature(logicValue("temperatuur_gemiddeld_keuken"), locale)} />
+          <TemperatureTile label={t("rooms.sem")} value={temperature(capability(semSensor, "measure_temperature"), locale)} />
+          <TemperatureTile label={t("rooms.bram")} value={temperature(capability(bramSensor, "measure_temperature"), locale)} />
         </section>
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
@@ -188,8 +188,8 @@ function App() {
                 {notifications.filter((item) => item.state === "active").map((item) => (
                   <article className={`notification-card severity-${item.severity}`} key={item.id}>
                     <div className="notification-heading"><span className="notification-icon" aria-hidden="true">{item.severity === "critical" ? "!" : item.severity === "warning" ? "⚠" : "i"}</span><span className="notification-level">{item.testOnly ? t("notifications.test") : ""}{item.severity === "critical" ? t("notifications.critical") : item.severity === "warning" ? t("notifications.warning") : t("notifications.info")}</span></div>
-                    <strong>{item.title}</strong>
-                    <span>{item.message}</span>
+                    <strong>{translate(locale, `notifications.${item.id}.title`) === `notifications.${item.id}.title` ? item.title : t(`notifications.${item.id}.title`)}</strong>
+                    <span>{translate(locale, `notifications.${item.id}.message`) === `notifications.${item.id}.message` ? item.message : t(`notifications.${item.id}.message`)}</span>
                   </article>
                 ))}
               </div>
