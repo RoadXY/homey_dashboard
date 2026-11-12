@@ -372,3 +372,11 @@ De eerste implementatiestap staat op branch phase_1_foundation:
 - Dat een apparaat dat offline gaat of een verwijderde capability geen andere tegel of dashboardsectie blokkeert.
 
 Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-build en daarna de praktijktest op de Homey Pro 2023 slagen.
+
+
+### Dashboard-instellingen – navigatie vereenvoudigd (12 november 2026)
+
+- De bovenste navigatiebalk met de tabs **Quick Actions** en **Meetwaardetegels** is verwijderd; deze was dubbelop naast de sectieknoppen in de pagina.
+- De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Temperatuurtegels** opent de configuratie van de vier meetwaardetegels en **Snelle acties** opent de configuratie van de acht Quick Actions.
+- De actieve sectieknop wordt visueel gemarkeerd. De navigatie werkt op beide pagina's, zodat tussen de twee onderdelen heen en weer kan worden geschakeld.
+- De knop **Weer** blijft voorlopig een niet-actieve aanduiding; de instellingenpagina voor weer valt buiten deze wijziging.
