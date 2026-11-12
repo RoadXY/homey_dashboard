@@ -447,3 +447,33 @@ The current Fastify backend routes include:
 - `GET /api/weather`, `GET /api/notifications`
 
 This is the inventory observed in `src/server/index.ts` on 12 November 2026; it must be refreshed when routes are added, removed or changed. The weather write endpoint is planned, not yet implemented.
+
+
+## Implementatie OpenAPI, Swagger UI en weercondities API (12 november 2026)
+
+### OpenAPI en Swagger UI
+
+- De centrale specificatie staat in docs/api/openapi.yaml (OpenAPI 3.1.0) en beschrijft alle huidige Fastify HTTP-routes, inclusief interne frontend/backend-routes.
+- docs/api/index.html laadt Swagger UI 5 vanaf unpkg en toont de specificatie als doorzoekbare documentatie.
+- docs/api/events.md beschrijft de SSE-eventnamen en stream.
+- .github/workflows/pages.yml publiceert de inhoud van docs/api naar GitHub Pages bij wijzigingen. De workflow voert eerst Redocly lint uit op de OpenAPI-specificatie.
+- Eenmalige repository-instelling: GitHub → Settings → Pages → Build and deployment → Source: GitHub Actions.
+- GitHub Pages is bedoeld voor lezen/zoeken. Try it out tegen een LAN-server is niet gegarandeerd door HTTPS/CORS/Private Network Access.
+
+### Weercondities API
+
+- Geïmplementeerd: GET /api/v1/weather/conditions retourneert de toegestane lijst; POST /api/v1/weather/conditions schrijft de actuele conditie.
+- Request: { "condition": "cloudy" }. Alleen de volgende canonieke codes worden geaccepteerd: sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy.
+- POST vereist Authorization: Bearer <token>. De token wordt via WEATHER_API_TOKEN uit de lokale .env gelezen. De code vergelijkt SHA-256-digests met een timing-safe vergelijking; het token wordt niet in de datafolder opgeslagen of gelogd.
+- Als WEATHER_API_TOKEN ontbreekt, antwoordt de write-route met HTTP 503. Ontbrekende/ongeldige Bearer-token geeft HTTP 401; onbekende conditie HTTP 400.
+- De laatst ontvangen conditie wordt opgeslagen in DATA_DIR/weather/condition.json en blijft actief tot een volgende geldige update. Er is bewust geen TTL/automatische vervaltijd; de gebruiker beheert updatefrequentie in Homey Flow.
+- GET /api/weather geeft een API-ingestelde conditie voorrang op de bestaande Homey-capabilitymapping. Als nog geen API-conditie is opgeslagen, blijft de Homey-mapping de fallback.
+- De dashboardweergave gebruikt i18n-labels voor de 16 canonieke codes in Nederlands en Engels. De bestaande legacy Homey-mapping wordt compatibel vertaald naar canonieke codes.
+- De bestaande Settings POST is aanvullend beveiligd met de korte instellingen-sessieheader; OpenAPI beschrijft deze beveiliging.
+
+### Eenmalige configuratie en validatie
+
+- Voeg lokaal in .env een sterke willekeurige waarde toe als WEATHER_API_TOKEN; genereer bijvoorbeeld met openssl rand -hex 32. Deel of commit deze waarde nooit.
+- Docker-build/redeploy is nodig om deze nieuwe code te installeren. De actuele conditie zelf blijft in het bestaande persistente datavolume staan.
+- Nog te valideren op de Ubuntu-server: Docker-build, healthcheck, GET lijst, POST met geldige token, POST zonder/ongeldige token, afwijzen onbekende enum, persistentie na containerrestart en weergave op dashboard.
+- De toekomstige Homey-app is niet onderdeel van deze implementatie.
