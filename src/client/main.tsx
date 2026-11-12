@@ -255,14 +255,14 @@ const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "s
 function homeyLanguageName(language: string, locale: string): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale.toLowerCase().startsWith("nl") ? 0 : 1] ?? language.toUpperCase(); }
 
 const quickActionDefaults: QuickAction[] = [
-  { id: "qmusic", name: "", icon: "♫", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "foute-uur", name: "", icon: "♫", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "blinds", name: "", icon: "⌃", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "birthday", name: "", icon: "✦", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "living-lights", name: "", icon: "◌", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "mood-lights", name: "", icon: "✧", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "tv", name: "", icon: "▣", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "qmusic", name: "", icon: "music", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "foute-uur", name: "", icon: "music", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "blinds", name: "", icon: "blinds", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "birthday", name: "", icon: "party-popper", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "living-lights", name: "", icon: "lightbulb", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "mood-lights", name: "", icon: "star-four-points", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "tv", name: "", icon: "television", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "bedtime", name: "", icon: "moon-waning-crescent", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
 ];
 type MdiIconMeta = { id: string; name?: string; aliases?: string[] };
 type MdiIconChoice = { name: string; keywords: string[] };
@@ -333,6 +333,9 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [flowSearch, setFlowSearch] = React.useState("");
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
   const [iconSearch, setIconSearch] = React.useState("");
+  const iconQuery = iconSearch.trim().toLocaleLowerCase();
+  const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
+  const visibleIcons = matchingIcons.slice(0, 120);
   const dirty = JSON.stringify(items) !== JSON.stringify(saved);
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
@@ -413,12 +416,12 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <div className="mdi-picker">
           <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder="Zoek MDI-iconen, bijvoorbeeld muziek, licht of raam…" aria-label="Zoek MDI-iconen" /></div>
           <div className="quick-icon-picker">
-            {quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).map(icon =>
+            {visibleIcons.map(icon =>
               <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={selected.icon === icon.name ? "active" : ""} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
             )}
-            {quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).length === 0 && <div className="mdi-no-results">Geen MDI-iconen gevonden.</div>}
+            {matchingIcons.length === 0 && <div className="mdi-no-results">Geen MDI-iconen gevonden.</div>}
           </div>
-          <div className="mdi-picker-count">{quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).length} iconen</div>
+          <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · verfijn je zoekopdracht" : ""}</div>
         </div>
         <label>{t("settings.actionType")}
           <select value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
