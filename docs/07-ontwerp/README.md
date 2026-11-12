@@ -357,3 +357,43 @@ De eerste werkende versie van dashboardmeldingen wordt **JSON-gedreven** gebouwd
 - Blockly wordt pas daarna geïntegreerd als editor om dezelfde JSON-configuratie te lezen, te wijzigen en nieuwe meldingen te genereren.
 
 Blockly-implementatie en Blockly-bouwstenen vallen dus buiten de eerstvolgende implementatiestap. De eerder gemaakte Blockly-ontwerpschetsen zijn toekomstig ontwerp en blokkeren de eerste meldingenrelease niet.
+
+
+## Definitieve visuele referentie – Instellingen > Algemeen (12 november 2026)
+
+De gebruiker heeft de aangeleverde screenshot (65819.png) expliciet aangewezen als de gewenste vormgeving en indeling voor de eerste instellingenpagina **Algemeen**. Deze screenshot is vanaf nu de leidende visuele referentie voor de implementatie van deze pagina. Dit concretiseert en vervangt de eerdere algemene layoutbeschrijving waar die afwijkt.
+
+### Paginaopbouw
+- Bovenaan een vaste horizontale header: links het Homey Dashboard-logo/label en scheiding, daarna navigatiepad met Home-icoon en **Dashboard**; rechts datum, tijd en de blauwe knop **Settings** zoals in de screenshot.
+- Linker zijbalk met kop **Settings** en navigatie-items **General**, **Dashboard**, **Devices**, **Homey** en **System**. De actieve categorie krijgt een blauwe gevulde selectie. Onderaan staan productnaam en versie.
+- Rechter contentgebied met pictogram, titel **Settings > General** en een korte toelichting.
+- Bovenste contentrij bestaat uit twee kaarten naast elkaar: **Language** links en **Date and time** rechts.
+- Daaronder staat één brede kaart **System status**.
+- Onderaan rechts staan de acties **Restore defaults** en **Save**.
+- Behoud de donkere blauw/antraciet basis, dunne subtiele randen en scheidingslijnen, witte tekst, blauwe primaire actie en functionele statuskleuren zoals getoond. Geen extra decoratieve onderdelen toevoegen.
+
+### Inhoud kaart Language
+- Instelling **Dashboard language** met keuze **Automatic (Dutch)** als voorbeeld van de automatische Homey-taal.
+- Informatieve blauwe melding dat de automatische stand de taalinstelling van Homey volgt.
+- Statusregel met gedetecteerde Homey-taal en beschikbaarheidsstatus.
+- De taalnaam en status zijn dynamische gegevens; de screenshotwaarden zijn voorbeeldinhoud, geen vast te coderen Homey-status.
+
+### Inhoud kaart Date and time
+- **Date format** als instelbare keuze.
+- **Time format** als instelbare keuze, waaronder 24-uursnotatie.
+- **First day of the week** als instelbare keuze.
+- De getoonde datum, tijd en maandag als eerste weekdag zijn voorbeeld-/referentiewaarden uit de screenshot en gelden als standaard alleen waar de reeds vastgelegde instellingen dat bevestigen.
+
+### Inhoud kaart System status
+- Eén brede tabelachtige lijst met de rijen **Homey connection**, **Dashboard service** en **System**.
+- Per rij: statusicoon, omschrijving, actuele status en aanvullende versie-/uptime-informatie waar beschikbaar.
+- Een informatieve voetnoot kan een beperking van de Homey API toelichten, zoals het niet kunnen uitlezen van de Wi-Fi-status. Toon dit alleen als de beperking technisch bevestigd is.
+- De voorbeeldwaarden Connected, Running, Healthy, versienummers en uptime uit de mockup zijn geen statische teksten; toon de werkelijke runtimegegevens.
+
+### Opslaan en herstellen
+- **Save** is de primaire actie en slaat alle gewijzigde instellingen op.
+- **Restore defaults** herstelt de standaardinstellingen; dit moet als bewuste gebruikersactie worden behandeld.
+- De bestaande afspraak blijft gelden dat bij verlaten met niet-opgeslagen wijzigingen eerst een bevestiging verschijnt met **Save**, **Discard** of **Stay**.
+
+### Navigatie-opmerking ter verificatie
+De screenshot toont in de zijbalk vijf categorieën (**General, Dashboard, Devices, Homey, System**) en geen afzonderlijke categorie **Notifications**. Eerdere documentatie noemt zes categorieën, waaronder **Meldingen**. Dit verschil is zichtbaar vastgelegd en wordt niet stilzwijgend opgelost door een categorie te verwijderen of toe te voegen; de screenshot is leidend voor de vormgeving van deze eerste pagina, terwijl de navigatie-indeling voor de volledige instellingen nog volgens de bestaande afspraken moet worden afgestemd.
