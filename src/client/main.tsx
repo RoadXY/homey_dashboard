@@ -282,8 +282,13 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const selectedFlow = selected.type === "flow"
     ? catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)
     : undefined;
+  const flowQuery = flowSearch.trim().toLocaleLowerCase();
+  const matchingFlows = catalog.flows.filter(flow => {
+    const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
+    return !flowQuery || searchable.includes(flowQuery);
+  });
   const selectedActionValid = selected.type === "flow"
-    ? Boolean(selectedFlow)
+    ? Boolean(selectedFlow && (!flowPickerOpen || !flowQuery || matchingFlows.some(flow => flow.id === selected.flowId && flow.type === selected.flowType)))
     : Boolean(selectedDevice?.available && selectedCapability);
   const actionName = (item: QuickAction) => item.name.trim() || t(quickActionDefaults.find(entry => entry.id === item.id)?.id === "qmusic" ? "actions.qmusic" : item.id === "foute-uur" ? "actions.fouteUur" : item.id === "blinds" ? "actions.blinds" : item.id === "birthday" ? "actions.birthday" : item.id === "living-lights" ? "actions.livingLights" : item.id === "mood-lights" ? "actions.moodLights" : item.id === "tv" ? "actions.tv" : "actions.bedtime");
   React.useEffect(() => {
@@ -368,29 +373,18 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
                 <input autoFocus type="search" className="quick-flow-search" value={flowSearch}
                   onChange={event => setFlowSearch(event.target.value)}
                   placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
-                {flowSearch && <button type="button" className="quick-flow-clear" onClick={() => setFlowSearch("")} aria-label={t("settings.clearSearch")}>×</button>}
               </div>
               <div className="quick-flow-results">
-                {catalog.flows.filter(flow => {
-                  const query = flowSearch.trim().toLocaleLowerCase();
-                  const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
-                  return !query || searchable.includes(query);
-                }).map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
+                {matchingFlows.map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
                   className={"quick-flow-option" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name">{flow.name}</span>
                   {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
                 </button>)}
-                {catalog.flows.filter(flow => {
-                  const query = flowSearch.trim().toLocaleLowerCase();
-                  return !query || (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase().includes(query);
-                }).length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
+                {matchingFlows.length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
               </div>
-              <div className="quick-flow-footer">{catalog.flows.filter(flow => {
-                const query = flowSearch.trim().toLocaleLowerCase();
-                return !query || (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase().includes(query);
-              }).length} {t("settings.flowResults")}</div>
+              <div className="quick-flow-footer">{matchingFlows.length} {t("settings.flowResults")}</div>
             </div>}
           </div>
         </> : <>
