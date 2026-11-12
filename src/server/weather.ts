@@ -24,7 +24,7 @@ export async function setWeatherCondition(condition: WeatherCategory): Promise<S
   if (!(WEATHER_CONDITIONS as readonly string[]).includes(condition)) throw new Error("Unsupported weather condition.");
   const value: StoredWeatherCondition = { condition, receivedAt: new Date().toISOString() };
   await mkdir(dirname(conditionFile), { recursive: true });
-  await writeFile(conditionFile, JSON.stringify(value, null, 2) + "\\n", { mode: 0o600 });
+  await writeFile(conditionFile, JSON.stringify(value, null, 2) + "\n", { mode: 0o600 });
   return value;
 }
 
