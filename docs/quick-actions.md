@@ -41,3 +41,7 @@ De wijzigingen zijn naar GitHub gepusht. Er is vanuit deze wijziging geen Docker
 5. Dat opslaan en herstarten de configuratie behouden.
 
 De zoekfunctie kan alleen Flows tonen die door Homey in de bestaande catalogus worden teruggegeven.
+
+
+## UX-correctie Flow-selectie
+De Flow-selectie is een eigen dropdown geworden in plaats van een los zoekveld boven een native HTML-select. De zoekregel verschijnt nu pas wanneer de gebruiker de Flow-keuzelijst opent en staat boven de filterbare lijst in hetzelfde dropdownvenster. Filteren gebeurt op gedeeltelijke tekst, hoofdletterongevoelig, en ook op de beschikbare icon-tekst en Flow-type. Flow-regels tonen een pictogram; als Homey geen bruikbaar pictogram aanlevert, wordt een standaardpictogram gebruikt voor standaard- en Advanced Flows.
