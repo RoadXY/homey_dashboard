@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
-import { resolveLocale, translate } from "./i18n";
+import { automaticLanguageLabel, availableLanguages, resolveLocale, translate } from "./i18n";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -282,7 +282,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
-          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automatic")} ({t("settings.homeyLanguage")})</option><option value="nl-NL">Nederlands</option><option value="en">English</option></select></label>
+          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{automaticLanguageLabel}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
           <div className="language-info"><div>ℹ <span><strong>{t("settings.automatic")}</strong><br/>{t("settings.autoDescription")}</span></div><div>● <span>{t("settings.detectedHomey")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("settings.notAvailable")}</strong></span><em>{status?.homeyLanguage ? t("settings.detected") : t("settings.fallback")}</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
