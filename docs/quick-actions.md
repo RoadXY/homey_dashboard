@@ -67,3 +67,9 @@ Niet-beschikbare menu-items blijven disabled en krijgen expliciet `pointer-event
 - Op desktop/tablet worden de acht acties getoond in een raster van vier kolommen en twee rijen.
 - De actie-iconen en labels zijn vergroot en de kaartinhoud is gecentreerd.
 - Op smalle telefoons wordt het raster twee kolommen breed zodat labels en aanraakvlakken leesbaar en bruikbaar blijven.
+
+## Dashboard-layout: meldingen, footer en klok
+- Actieve meldingen worden op brede schermen in twee kolommen weergegeven, met een subtiele verticale scheidingslijn.
+- Op smalle telefoons schakelt de meldingenlijst terug naar één kolom voor leesbaarheid.
+- De footer met "HOMEY DASHBOARD" en apparaat-/ruimteaantallen is uit het meldingenpaneel verwijderd om verticale ruimte vrij te maken.
+- De klokkaart krijgt een vaste hoogte die overeenkomt met de totale hoogte van twee Quick Actions-kaartrijen inclusief tussenruimte. De kloktypografie schaalt mee met de kleinere kaart.
