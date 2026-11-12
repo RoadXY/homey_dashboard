@@ -231,12 +231,6 @@ function App() {
               </div>
             )}
           </div>
-          <div className="panel-footer">
-            <span>HOMEY DASHBOARD</span>
-            <span className="panel-meta">
-              {homeyOnline ? `${homey?.deviceCount ?? "—"} ${t("footer.devices")} · ${homey?.zoneCount ?? "—"} ${t("footer.rooms")}` : t("footer.homeyOffline")}
-            </span>
-          </div>
         </section>
       </section>
     </main>
