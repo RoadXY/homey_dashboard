@@ -346,6 +346,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [messageIsError, setMessageIsError] = React.useState(false);
   const [flowSearch, setFlowSearch] = React.useState("");
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
   const [deviceSearch, setDeviceSearch] = React.useState("");
@@ -385,7 +386,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
     ]).then(([configuration, options]) => {
       if (!active) return;
       const normalizedActions = configuration.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
-    }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); })
+    }).catch(error => { if (active) { setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); setMessageIsError(true); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
@@ -402,13 +403,13 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
     updateSelected({ capabilityId, value });
   };
   const save = async () => {
-    setSaving(true); setMessage("");
+    setSaving(true); setMessage(""); setMessageIsError(false);
     try {
       const response = await fetch("/api/settings/dashboard-actions", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ actions: items }) });
       const data = await response.json() as { actions?: QuickAction[]; error?: string };
       if (!response.ok || !data.actions) throw new Error(data.error ?? t("settings.saveError"));
-      const normalizedActions = data.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setMessage(t("settings.quickActionsSaved"));
-    } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); }
+      const normalizedActions = data.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setMessage(t("settings.quickActionsSaved")); setMessageIsError(false);
+    } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); setMessageIsError(true); }
     finally { setSaving(false); }
   };
   const formatValue = (value: unknown, units: string) => value === null || value === undefined ? "—" : String(value) + (units ? " " + units : "");
@@ -522,7 +523,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
       </section>}
     </div>
-    <div className="settings-bottom"><span className="save-message" role="status">{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
   </div>;
 }
 
