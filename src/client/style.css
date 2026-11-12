@@ -24,6 +24,17 @@
   --action-active-icon: #55c5ff;
   --action-active-shadow: inset 0 0 0 1px rgba(95,198,255,.22), 0 0 18px rgba(0,132,220,.16);
 
+  /* Navigatieknoppen: één gedeelde basis voor sectie-/tabnavigatie. */
+  --nav-button-background: rgba(15,34,54,.68);
+  --nav-button-border: rgba(146,173,204,.14);
+  --nav-button-text: #e2eaf4;
+  --nav-button-hover-border: rgba(22,132,255,.65);
+  --nav-button-active-background: #0874ed;
+  --nav-button-active-border: #1684ff;
+  --nav-button-active-text: #ffffff;
+  --nav-button-radius: 11px;
+  --nav-button-min-height: 52px;
+
   --notification-card-background: rgba(35,39,47,.82);
   --notification-card-border: rgba(255,255,255,.09);
   --notification-title-color: #f0f2f5;
@@ -389,11 +400,12 @@ body {
 .quick-settings-page .settings-title { display:flex; align-items:center; gap:18px; }
 .quick-settings-page .settings-title h1 { margin:0 0 8px; font-size:29px; }
 .quick-settings-page .settings-title p { margin:0; }
-.quick-tabs { display:flex; align-items:stretch; gap:4px; width:min(690px,100%); min-height:52px; }
-.quick-tabs span,.quick-tabs button { display:flex; align-items:center; justify-content:center; flex:1; padding:0 16px; border:1px solid rgba(146,173,204,.14); border-radius:11px; background:rgba(15,34,54,.68); color:#e2eaf4; font:inherit; font-weight:500; }
-.quick-tabs button { cursor:pointer; }
-.quick-tabs button:hover { border-color:rgba(22,132,255,.65); }
-.quick-tabs button.active { background:#0874ed; border-color:#1684ff; color:white; }
+.quick-tabs { display:flex; align-items:stretch; gap:6px; width:min(690px,100%); min-height:var(--nav-button-min-height); }
+.quick-tabs span,.quick-tabs button { display:flex; align-items:center; justify-content:center; flex:1; min-height:var(--nav-button-min-height); padding:0 16px; border:1px solid var(--nav-button-border); border-radius:var(--nav-button-radius); background:var(--nav-button-background); color:var(--nav-button-text); font:inherit; font-weight:600; }
+.quick-tabs button { cursor:pointer; transition:background-color .15s ease,border-color .15s ease,color .15s ease; }
+.quick-tabs button:hover { border-color:var(--nav-button-hover-border); }
+.quick-tabs button.active { background:var(--nav-button-active-background); border-color:var(--nav-button-active-border); color:var(--nav-button-active-text); }
+.quick-tabs button:focus-visible { outline:2px solid var(--nav-button-active-border); outline-offset:2px; }
 .quick-workspace { position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start; min-height:560px; }
 .quick-list-card,.quick-preview-card { min-height:480px; }
 .quick-card-description { color:#c3d0df; margin:-5px 0 17px; line-height:1.4; }
