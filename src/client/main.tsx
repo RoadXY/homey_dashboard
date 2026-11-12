@@ -247,7 +247,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
 function homeyLanguageName(language: string, locale: string): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale.toLowerCase().startsWith("nl") ? 0 : 1] ?? language.toUpperCase(); }
-function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
+function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {\n  const [page, setPage] = React.useState<"general" | "dashboard">("general");
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -356,11 +356,11 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     </header>
     <aside className="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),"Homey",t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+(index===0?"active":"")} disabled={index!==0}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
+      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+((page==="general"&&index===0)||(page==="dashboard"&&index===1)?"active":"")} disabled={index>1} onClick={()=>setPage(index===1?"dashboard":"general")}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
-      <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
+      {page === "general" ? <>\n      <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
           <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{automaticLanguageLabel}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
@@ -394,7 +394,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-    </section>
+      </> : <QuickActionsSettingsPage session={session} locale={locale} t={t} />}\n    </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
