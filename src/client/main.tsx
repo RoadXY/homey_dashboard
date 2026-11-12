@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
+import { resolveLocale, translate } from "./i18n";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -29,6 +30,7 @@ function temperature(value: unknown): string {
 function App() {
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
+  const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
@@ -47,11 +49,11 @@ function App() {
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([{ id: "notifications-load-error", title: "Meldingen niet beschikbaar", message: "De meldingsconfiguratie kon niet worden ingelezen.", severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
+      .catch(() => setNotifications([{ id: "notifications-load-error", title: t("notifications.loadErrorTitle"), message: t("notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     try {
-      const [statusResponse, readingsResponse, logicResponse, weatherResponse] = await Promise.all([
+      const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
-        fetch("/api/weather").catch(() => null),
+        fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null),
       ]);
       if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error("Homey-gegevens tijdelijk niet beschikbaar");
       const [statusData, readingsData, logicData] = await Promise.all([
@@ -59,6 +61,10 @@ function App() {
         logicResponse.json() as Promise<LogicResponse>,
       ]);
       setHomey(statusData); setReadings(readingsData); setLogic(logicData);
+      if (languageResponse?.ok) {
+        const preference = await languageResponse.json() as { language?: string };
+        if (typeof preference.language === "string") setDashboardLanguage(preference.language);
+      }
       if (weatherResponse?.ok) {
         setWeatherCondition(await weatherResponse.json() as WeatherConditionResponse);
       } else {
@@ -104,6 +110,8 @@ function App() {
   const timeText = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const dateText = new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const homeyOnline = homey?.state === "online";
+  const locale = resolveLocale(dashboardLanguage, (homey as (HomeyStatus & { homeyLanguage?: string }) | null)?.homeyLanguage);
+  const t = (key: string) => translate(locale, key);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = window.setTimeout(() => { setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
@@ -124,41 +132,41 @@ function App() {
       }} />;
   return (
     <main className="dashboard">
-      <section className="left-column" aria-label="Tijd, weer en temperaturen">
-        <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title="Houd ingedrukt voor instellingen">
+      <section className="left-column" aria-label={t("dashboard.aria")}>
+        <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title={t("dashboard.holdSettings")}>
           <div className="clock-content">
             <div className="clock">{timeText}</div>
             <div className="date">{dateText}</div>
           </div>
           {(loadError || (homey !== null && !homeyOnline)) && (
             <div className="connection-warning" role="status">
-              {loadError ? "Verbinding met de dashboardserver mislukt" : "Verbinding met Homey Pro mislukt"}
+              {loadError ? t("dashboard.serverError") : t("dashboard.homeyError")}
             </div>
           )}
         </article>
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              <div className="eyebrow">BUITEN · WEER</div>
+              <div className="eyebrow">{t("weather.outside")}</div>
               <div className="weather-temp">{temperature(capability(weather, "measure_temperature"))}</div>
-              <div className="weather-description">{typeof weatherText === "string" ? weatherText : "Weergegevens laden…"}</div>
+              <div className="weather-description">{typeof weatherText === "string" ? weatherText : t("weather.loading")}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
           </div>
           <div className="weather-details">
-            <div><span>Gevoel</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"))}</strong></div>
-            <div><span>Wind</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
+            <div><span>{t("weather.feelsLike")}</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"))}</strong></div>
+            <div><span>{t("weather.wind")}</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
           </div>
         </article>
-        <section className="temperature-grid" aria-label="Temperaturen in huis">
+        <section className="temperature-grid" aria-label={t("rooms.aria")}>
           <TemperatureTile label="Woonkamer" value={temperature(capability(livingRoomSensor, "measure_temperature"))} />
           <TemperatureTile label="Keuken" value={temperature(logicValue("temperatuur_gemiddeld_keuken"))} />
           <TemperatureTile label="Sem" value={temperature(capability(semSensor, "measure_temperature"))} />
           <TemperatureTile label="Bram" value={temperature(capability(bramSensor, "measure_temperature"))} />
         </section>
       </section>
-      <section className="right-column" aria-label="Acties en meldingen">
-        <div className="actions-grid" aria-label="Snelle acties">
+      <section className="right-column" aria-label={t("notifications.aria")}>
+        <div className="actions-grid" aria-label={t("actions.aria")}>
           {actions.map((action, index) => (
             <div className="action-card" key={action.name}>
               <span className="action-index">{String(index + 1).padStart(2, "0")}</span>
@@ -167,14 +175,14 @@ function App() {
             </div>
           ))}
         </div>
-        <section className="notifications-panel" aria-label="Meldingen">
+        <section className="notifications-panel" aria-label={t("notifications.aria")}>
           <div className="notifications-heading"><h1>Meldingen</h1></div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
                 {notifications.filter((item) => item.state === "active").map((item) => (
                   <article className={`notification-card severity-${item.severity}`} key={item.id}>
-                    <div className="notification-heading"><span className="notification-icon" aria-hidden="true">{item.severity === "critical" ? "!" : item.severity === "warning" ? "⚠" : "i"}</span><span className="notification-level">{item.testOnly ? "TEST · " : ""}{item.severity === "critical" ? "KRITIEK" : item.severity === "warning" ? "WAARSCHUWING" : "INFO"}</span></div>
+                    <div className="notification-heading"><span className="notification-icon" aria-hidden="true">{item.severity === "critical" ? "!" : item.severity === "warning" ? "⚠" : "i"}</span><span className="notification-level">{item.testOnly ? t("notifications.test") : ""}{item.severity === "critical" ? t("notifications.critical") : item.severity === "warning" ? t("notifications.warning") : t("notifications.info")}</span></div>
                     <strong>{item.title}</strong>
                     <span>{item.message}</span>
                   </article>
@@ -189,15 +197,15 @@ function App() {
             ) : (
               <div className="empty-state">
                 <span className="empty-mark" aria-hidden="true">◇</span>
-                <strong>{loadError ? "Gegevens tijdelijk niet beschikbaar" : "Geen actieve meldingen"}</strong>
-                <span>{loadError || "Alle dashboardmeldingen zijn momenteel inactief."}</span>
+                <strong>{loadError ? t("notifications.unavailableTitle") : t("notifications.noneTitle")}</strong>
+                <span>{loadError || t("notifications.noneMessage")}</span>
               </div>
             )}
           </div>
           <div className="panel-footer">
             <span>HOMEY DASHBOARD</span>
             <span className="panel-meta">
-              {homeyOnline ? `${homey?.deviceCount ?? "—"} apparaten · ${homey?.zoneCount ?? "—"} ruimtes` : "Homey niet verbonden"}
+              {homeyOnline ? `${homey?.deviceCount ?? "—"} apparaten · ${homey?.zoneCount ?? "—"} ruimtes` : t("footer.homeyOffline")}
             </span>
           </div>
         </section>
@@ -209,7 +217,7 @@ function App() {
 function SettingsPinGate({ pin, setPin, error, onCancel, onUnlock }: { pin: string; setPin: (value: string) => void; error: string; onCancel: () => void; onUnlock: () => void }) {
   return <main className="settings-gate"><form className="pin-card" onSubmit={(event) => { event.preventDefault(); onUnlock(); }}>
     <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div>
-    <h1>Instellingen beveiligd</h1><p>Voer de instellingen-PIN in om verder te gaan.</p>
+    <h1>{translate("nl", "settings.lockedTitle")}</h1><p>{translate("nl", "settings.pinPrompt")}</p>
     <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
     <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>Terug naar dashboard</button><button className="primary-button" type="submit">Ontgrendelen</button></div>
@@ -249,47 +257,44 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); }
   };
   const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
-  const restore = () => { setSettings({ ...initialSettings }); setMessage("Standaardwaarden hersteld. Klik op Save om ze toe te passen."); };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+"u", String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? "maandag 27 januari 2025" : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
-  const isDutch = settings.language === "nl-NL" || (settings.language === "automatic" && status?.homeyLanguage?.toLowerCase().startsWith("nl") === true);
-  const t = (nl: string, en: string) => isDutch ? nl : en;
-  const languageName = (code: string) => isDutch
-    ? ({ nl: "Nederlands", en: "Engels", de: "Duits", fr: "Frans" }[code.toLowerCase().split("-")[0]] ?? code.toUpperCase())
-    : homeyLanguageName(code);
+  const locale = resolveLocale(settings.language, status?.homeyLanguage);
+  const t = (key: string) => translate(locale, key);
+  const languageName = (code: string) => homeyLanguageName(code);
   return <main className="settings-shell">
     <header className="settings-topbar">
-      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span> {t("Dashboard", "Dashboard")}</span></button>
+      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span> {t("settings.dashboard")}</span></button>
     </header>
     <aside className="settings-sidebar">
-      <h2>{t("Instellingen", "Settings")}</h2>
-      {[t("Algemeen","General"),t("Dashboard","Dashboard"),t("Apparaten","Devices"),"Homey",t("Systeem","System")].map((name,index)=><button key={name} className={"settings-nav "+(index===0?"active":"")} disabled={index!==0}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
+      <h2>{t("settings.navTitle")}</h2>
+      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),"Homey",t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+(index===0?"active":"")} disabled={index!==0}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
-      <div className="settings-title"><p>{t("Basisinstellingen voor taal, datum, tijd en systeeminformatie.", "Basic settings for language, date, time and system information.")}</p></div>
+      <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
-        <section className="settings-card language-card"><h2><span>◎</span>{t("Taal","Language")}</h2>
-          <label className="setting-row"><span>{t("Dashboardtaal","Dashboard language")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">Automatisch (Homey-taal)</option><option value="nl-NL">Nederlands</option><option value="en">Engels</option></select></label>
-          <div className="language-info"><div>ℹ <span><strong>{t("Automatisch","Automatic")}</strong><br/>{t("Gebruikt de Homey-taal wanneer detectie wordt ondersteund. Anders valt het dashboard terug op Engels.","Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.")}</span></div><div>● <span>{t("Gedetecteerde Homey-taal:","Detected Homey language:")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("Niet beschikbaar — controleer Homey API-rechten","Not available — check Homey API permissions")}</strong></span><em>{status?.homeyLanguage ? t("Gedetecteerd","Detected") : t("Terugval","Fallback")}</em></div></div>
+        <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
+          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automatic")} (Homey language)</option><option value="nl-NL">Nederlands</option><option value="en">English</option></select></label>
+          <div className="language-info"><div>ℹ <span><strong>{t("settings.automatic")}</strong><br/>{t("settings.autoDescription")}</span></div><div>● <span>{t("settings.detectedHomey")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("settings.notAvailable")}</strong></span><em>{status?.homeyLanguage ? t("settings.detected") : t("settings.fallback")}</em></div></div>
         </section>
-        <section className="settings-card date-card"><h2><span>▢</span>{t("Datum en tijd","Date and time")}</h2>
-          <label className="setting-row"><span>{t("Datumnotatie","Date format")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">{t("Voluit","Long")} ({datePreview})</option></select></label>
-          <label className="setting-row"><span>{t("Tijdnotatie","Time format")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">24-uurs (10:24)</option><option value="12h">12-uurs (10:24 AM)</option></select></label>
-          <label className="setting-row"><span>{t("Eerste dag van de week","First day of the week")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("Maandag","Monday")}</option><option value="sunday">{t("Zondag","Sunday")}</option></select></label>
+        <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
+          <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
+          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
-      <section className="settings-card system-card"><h2><span>▤</span>{t("Systeemstatus","System status")}</h2>
+      <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
         <div className="status-table">
-          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("Homey-verbinding","Homey connection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("Verbonden","Connected"):status?.homey.state ?? t("Onbekend","Unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>{t("Dashboardservice","Dashboard service")}</span><strong className="status-pill ok">{t("Actief","Running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>{t("Systeem","System")}</span><strong className="status-pill ok">{t("Gezond","Healthy")}</strong><span className="status-detail">{t("Actief sinds:","Uptime:")} {uptime(status?.uptimeSeconds)}</span></div>
+          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state ?? t("settings.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
       </section>
-      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("Laden…","Loading…"):message}</span><button className="secondary-button" onClick={restore}>⟳ &nbsp;{t("Standaardwaarden herstellen","Restore defaults")}</button><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("Opslaan","Save")}</button></div>
+      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
     </section>
-    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("Niet-opgeslagen wijzigingen","Unsaved changes")}</h2><p>{t("Wil je de wijzigingen opslaan voordat je weggaat?","Do you want to save your changes before leaving?")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("Blijven","Stay")}</button><button className="secondary-button" onClick={onBack}>{t("Verwerpen","Discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("Opslaan","Save")}</button></div></section></div>}
+    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
 
