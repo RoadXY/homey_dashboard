@@ -378,3 +378,38 @@ De gebruiker heeft verduidelijkt dat de labels in de screenshot `OUTSIDE · WEAT
 - De huidige voorbeeldlabels worden in de dashboardcomponent als niet-vertaalde waarden getoond; dit is een tijdelijke weergave totdat de dynamische Homey-/gebruikersconfiguratiebron wordt aangesloten.
 - Weercondities zoals Cloudy/Bewolkt en vaste interface-elementen zoals Feels like/Gevoel blijven wel i18n-vertalingen, omdat dit door de applicatie bepaalde interface-/presentatietekst is.
 - Bij toekomstige mapping van Homey-ruimtes en handmatige labels worden de bronwaarden ongewijzigd weergegeven, ongeacht de dashboardtaal.
+
+
+## Weather condition input API – OpenAPI and Swagger UI (12 november 2026)
+
+### Intended integration
+
+The dashboard will expose a versioned write endpoint, `POST /api/v1/weather/condition`, for setting the current weather condition. It will be usable by a user/test client first and by a future Homey app later. The user selects a condition from a fixed supported list; arbitrary provider-specific strings are not accepted.
+
+### Contract and documentation
+
+- Define the request and response contract in an OpenAPI 3.x specification.
+- Serve an interactive Swagger UI page from the dashboard backend so users can inspect and test the endpoint.
+- Swagger UI is the interactive documentation client; OpenAPI is the source-of-truth API contract.
+- The API request carries the canonical English enum code. Localized display labels belong in the dashboard i18n files and in the future Homey Flow dropdown; translated labels must never be sent as API values.
+
+### Approved canonical condition codes
+
+`sunny`, `mostly_sunny`, `partly_cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy_rain`, `showers`, `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet`, `windy`.
+
+Day/night is a separate display dimension and is not part of this condition enum.
+
+### Authentication direction
+
+Use named Bearer tokens managed through Settings. Store only a secure token hash, show the secret only once at creation, support revocation, never log token values, and initially scope tokens to the weather-condition write endpoint. Exact token scopes and storage implementation remain to be designed.
+
+### Pending technical decisions
+
+- Exact request body and response schema, including server-generated received timestamp.
+- HTTP status codes and error format.
+- Swagger UI route and whether it is enabled on all network interfaces or restricted to trusted LAN/admin access.
+- Persistence model for the latest condition and behavior after restart.
+- Expiry/staleness behavior when no update arrives, and whether a valid API update supersedes the current Homey capability mapping.
+- Whether/how the legacy `GET /api/weather` response should expose the canonical condition and source metadata.
+
+This section records the approved direction, not a claim that the endpoint, OpenAPI specification, Swagger UI or Homey app have already been implemented.
