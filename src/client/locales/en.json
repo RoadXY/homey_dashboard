@@ -82,5 +82,16 @@
   "actions.livingLights": "Living room lights off",
   "actions.moodLights": "Mood lighting",
   "actions.tv": "TV mode",
-  "actions.bedtime": "Bedtime"
+  "actions.bedtime": "Bedtime",
+  "settings.homeyLanguage": "Homey language",
+  "rooms.living": "Living room",
+  "rooms.kitchen": "Kitchen",
+  "rooms.sem": "Sem",
+  "rooms.bram": "Bram",
+  "footer.devices": "devices",
+  "footer.rooms": "zones",
+  "homey.offline": "offline",
+  "homey.connecting": "connecting",
+  "homey.notConnected": "not connected",
+  "homey.unknown": "unknown"
 }
