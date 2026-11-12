@@ -443,6 +443,13 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const update = (patch: Partial<MeasurementTile>) => setTiles(current => current.map(tile => tile.id === selected.id ? { ...tile, ...patch } : tile));
   const devices = catalog.devices.filter(device => device.zone === zoneId);
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
+  const sourceDescription = (tile: MeasurementTile) => {
+    if (!tile.source) return "Geen bron geselecteerd";
+    if (tile.source.type === "logic") return catalog.variables.find(variable => variable.id === tile.source?.variableId)?.name ?? "Logic-variabele";
+    const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
+    const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
+    return [device?.name, capability?.title].filter(Boolean).join(" · ") || "Apparaatbron";
+  };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
     try {
@@ -453,26 +460,41 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); setIsError(true); }
     finally { setSaving(false); }
   };
-  return <>
+  return <div className="quick-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon">▦</div><div><h1>{t("settings.dashboard")}</h1><p>Configureer de vier meetwaardetegels op het dashboard.</p></div></div>
     <div className="quick-tabs"><button type="button" className="active">♙ &nbsp;{t("settings.temperatureTiles")}</button><span>☁ &nbsp;{t("settings.weatherTab")}</span><button type="button" onClick={() => onNavigate("/settings/dashboard/quick-actions")}>ϟ &nbsp;{t("settings.quickActions")}</button></div>
-    <section className="settings-card system-card measurement-editor">
-    <h2>Meetwaardetegels</h2>
-    <p>Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
-    <div className="measurement-tile-tabs">{tiles.map((tile, index) => <button key={tile.id} className={tile.id === selectedId ? "active" : ""} onClick={() => setSelectedId(tile.id)}>{index + 1}. {tile.name || "Tegel"}</button>)}</div>
-    {selected && <div className="measurement-fields">
-      <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
-      <div className="measurement-source-types"><button className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
-      {sourceType === "device" ? <>
-        <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
-        <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
-        <label>Meetwaarde<select disabled={!chosenDevice} value={selected?.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
-      </> : <label>Numerieke Logic-variabele<select value={selected?.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
-      <p className="measurement-source-note">De eenheid en precisie worden automatisch uit Homey-capabilitymetadata gelezen wanneer die beschikbaar zijn. Logic-variabelen tonen geen eenheid.</p>
-    </div>}
-    <div className="measurement-preview"><span>Voorbeeld op dashboard</span><strong>{selected?.name || "Naam"} · {selected?.source ? "Bron geselecteerd" : "Geen bron geselecteerd"}</strong></div>
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "Opslaan"}</button></div>
-    </section>
-  </>;
+    <div className="quick-workspace measurement-workspace">
+      <section className="settings-card quick-list-card measurement-list-card">
+        <h2><span>♙</span>Meetwaardetegels</h2>
+        <p className="quick-card-description">Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
+        <div className="quick-action-list measurement-tile-list">
+          {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => setSelectedId(tile.id)}>
+            <span className="quick-action-number">{index + 1}</span><MdiIcon name="thermometer" className="quick-action-icon"/><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
+          </button>)}
+        </div>
+        {selected && <div className="measurement-inline-editor">
+          <h3>Tegel {tiles.findIndex(tile => tile.id === selected.id) + 1} configureren</h3>
+          <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
+          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
+          {sourceType === "device" ? <>
+            <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
+            <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+            <label>Meetwaarde<select disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
+          </> : <label>Numerieke Logic-variabele<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+          <p className="measurement-source-note">Eenheid en precisie komen automatisch uit Homey-metadata wanneer beschikbaar. Logic-variabelen tonen geen eenheid.</p>
+        </div>}
+        <div className="quick-info">ⓘ <span>Selecteer een tegel om de naam en Homey-meetbron aan te passen.</span></div>
+      </section>
+      <section className="settings-card quick-preview-card">
+        <h2><span>◎</span>{t("settings.preview")}</h2>
+        <p className="quick-card-description">Zo worden de meetwaardetegels op het dashboard weergegeven.</p>
+        <div className="quick-preview-grid measurement-preview-grid">
+          {tiles.map(tile => <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name="thermometer"/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">—</span><small>{sourceDescription(tile)}</small></div>)}
+        </div>
+      </section>
+    </div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
+  </div>;
 }
 
 function DashboardSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
