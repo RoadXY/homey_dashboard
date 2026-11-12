@@ -269,7 +269,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>Language</h2>
           <label className="setting-row"><span>Dashboard language</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">Automatic (Homey language)</option><option value="nl-NL">Dutch</option><option value="en">English</option></select></label>
-          <div className="language-info"><div>ℹ <span><strong>Automatic</strong><br/>Follows the language setting of Homey.</span></div><div>● <span>Detected Homey language: <strong>Not available through current API</strong></span><em>Fallback</em></div></div>
+          <div className="language-info"><div>ℹ <span><strong>Automatic</strong><br/>Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.</span></div><div>● <span>Detected Homey language: <strong>Not available through current API</strong></span><em>Fallback</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>▢</span>Date and time</h2>
           <label className="setting-row"><span>Date format</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">Long ({datePreview})</option></select></label>
