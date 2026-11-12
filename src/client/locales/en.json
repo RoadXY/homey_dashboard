@@ -116,5 +116,7 @@
   "weather.condition.snow": "Snow",
   "weather.condition.fog": "Fog",
   "weather.condition.wind": "Windy",
-  "weather.condition.unknown": "Weather unavailable"
+  "weather.condition.unknown": "Weather unavailable",
+  "notifications.notifications-load-error.title": "Notifications unavailable",
+  "notifications.notifications-load-error.message": "The notification configuration could not be loaded."
 }
