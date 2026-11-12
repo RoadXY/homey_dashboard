@@ -116,5 +116,7 @@
   "weather.condition.snow": "Sneeuw",
   "weather.condition.fog": "Mist",
   "weather.condition.wind": "Winderig",
-  "weather.condition.unknown": "Weer niet beschikbaar"
+  "weather.condition.unknown": "Weer niet beschikbaar",
+  "notifications.notifications-load-error.title": "Meldingen niet beschikbaar",
+  "notifications.notifications-load-error.message": "De meldingsconfiguratie kon niet worden ingelezen."
 }
