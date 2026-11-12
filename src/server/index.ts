@@ -40,6 +40,16 @@ app.get("/api/health", async () => ({
 
 app.get("/api/homey/status", async () => getHomeyStatus());
 
+app.post("/api/settings/unlock", async (request, reply) => {
+  const configuredPin = process.env.SETTINGS_PIN?.trim();
+  if (!configuredPin) return reply.code(503).send({ error: "Instellingen-PIN is nog niet geconfigureerd (SETTINGS_PIN)." });
+  const body = request.body as { pin?: unknown } | undefined;
+  if (typeof body?.pin !== "string" || body.pin !== configuredPin) {
+    return reply.code(401).send({ error: "Onjuiste PIN." });
+  }
+  return { unlocked: true };
+});
+
 app.get("/api/settings/general", async () => readDashboardSettings());
 
 app.post("/api/settings/general", async (request, reply) => {
@@ -65,7 +75,7 @@ app.get("/api/system/status", async () => {
     homey: getHomeyStatus(),
     service: "running",
     version,
-    updatedAt: new Date((process.env.BUILD_TIMESTAMP ?? "").trim() || Date.now()).toISOString(),
+    updatedAt: new Date().toISOString(),
     uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
     memory: { totalBytes: os.totalmem(), freeBytes: os.freemem(), usedBytes: os.totalmem() - os.freemem() },
     storage,
