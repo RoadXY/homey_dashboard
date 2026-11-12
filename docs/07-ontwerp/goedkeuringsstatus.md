@@ -27,3 +27,12 @@ Een goedgekeurd functioneel besluit betekent niet automatisch dat een mockupafbe
 ### Implementatiestatus – Instellingen General (12 november 2026)
 
 De eerste frontendversie van General, de persistente instellingen-API, systeemstatus-API en server-side PIN-verificatie staan op `phase_1_foundation`. De vormgeving volgt de door de gebruiker aangewezen screenshot. <badge color="warning">Build nog niet gevalideerd</badge> De lokale `.env` moet `SETTINGS_PIN` bevatten; daarna volgt Docker-build en visuele praktijktest.
+
+
+## Update 12 november 2026 – Instellingen Dashboard / Quick Actions
+
+| Scherm/onderdeel | Status | Wat is goedgekeurd | Wat staat nog open |
+|---|---|---|---|
+| Instellingen – Dashboard – Quick Actions | **Functioneel en visueel referentiebeeld bevestigd** | Twee editorvarianten (Flow en apparaat), naam/pictogram, apparaatgebonden acties dynamisch tonen, acht knoppen, preview, expliciet Opslaan; geen Restore defaults | Implementatie, capability-mapping, Homey-uitvoering, foutafhandeling en praktijktest |
+
+De twee door de gebruiker aangeleverde afbeeldingen op 12 november 2026 zijn de leidende referentie voor de Quick Actions-editor. De tweede afbeelding toont Flow-selectie; de eerste toont apparaatselectie met een actie die bij het apparaat hoort. De bestaande acht projectknoppen en hun volgorde blijven behouden; mockupteksten zijn alleen voorbeelden.
