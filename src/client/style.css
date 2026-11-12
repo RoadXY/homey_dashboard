@@ -211,10 +211,19 @@ body {
 .settings-top-label { padding:10px 17px; border-radius:9px; background:#123b67; color:#37b8ff; font-weight:650; }
 .settings-sidebar { grid-column:1; grid-row:2; display:flex; flex-direction:column; padding:38px 18px 24px; border-right:1px solid rgba(155,182,212,.25); background:rgba(10,22,38,.72); }
 .settings-sidebar h2 { margin:0 0 20px 20px; font-size:21px; }
-.settings-nav { height:50px; display:flex; align-items:center; gap:18px; border:0; border-radius:9px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin-bottom:7px; }
-.settings-nav span { width:22px; font-size:23px; text-align:center; }
+.settings-nav { min-height:50px; display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:999px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
+.settings-nav span { width:22px; flex:0 0 22px; font-size:23px; text-align:center; }
 .settings-nav.active { background:#0965d7; color:white; }
 .settings-nav:disabled { opacity:1; cursor:default; }
+.settings-nav:focus-visible { outline:2px solid #8fc8ff; outline-offset:2px; }
+@media (hover:hover) and (pointer:fine) {
+  .settings-nav:not(:disabled):hover { border-color:rgba(160,205,245,.8); box-shadow:inset 0 0 0 1px rgba(160,205,245,.12); }
+  .settings-nav.active:hover { background:#0965d7; border-color:rgba(160,205,245,.9); }
+}
+@media (hover:none), (pointer:coarse) {
+  .settings-nav { min-height:52px; padding-top:10px; padding-bottom:10px; }
+  .settings-nav:not(:disabled):active:not(.active) { background:rgba(28,76,119,.55); }
+}
 .sidebar-product { margin-top:auto; display:flex; gap:14px; align-items:center; padding:8px 20px; color:#c0ccda; font-size:15px; line-height:1.5; }
 .settings-content { grid-column:2; grid-row:2; min-width:0; min-height:0; overflow:auto; padding:26px 30px 24px 20px; display:flex; flex-direction:column; gap:24px; }
 .settings-title { display:block; padding:0; text-align:left; }
