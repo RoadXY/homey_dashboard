@@ -354,3 +354,17 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - Deze architectuur vereist wel een eenmalige deployment van de nieuwe applicatiecode en Compose-mount. De eerstvolgende update na deze commit moet dus nog met het normale updatescript worden gebouwd. Daarna kunnen taalbestanden onafhankelijk van de image worden aangepast.
 - Het volume is read-only in de container; wijzigingen worden op de Ubuntu-host gedaan. Alleen JSON-bestanden met toegestane locale-bestandsnamen worden via de API beschikbaar gesteld.
 - De endpointvalidatie, werking van de bind mount en volledige Docker-build moeten op Ubuntu nog worden getest. Tot die validatie is afgerond, geldt de runtime-taaluitbreiding als geïmplementeerd maar nog niet operationeel bevestigd.
+
+
+## Vertalingen onderbrengen in bestaand persistent datavolume (12 november 2026)
+
+De eerdere aanpak met een aparte bind mount vanaf `src/client/locales` is vervangen. De gebruiker wees erop dat de productiecontainer al het named volume `dashboard_data` op `/app/data` gebruikt. De vertalingen zijn daarom ondergebracht in dat bestaande volume.
+
+- Definitieve runtime-locatie: `/app/data/locales` (in Docker named volume `homey_dashboard_dashboard_data`).
+- Bij de image-build worden de standaardbestanden uit `src/client/locales` gekopieerd naar `/app/default-locales`.
+- Bij containerstart maakt de backend `/app/data/locales` aan en kopieert alleen ontbrekende standaardbestanden. Bestaande bestanden worden nooit overschreven; eigen vertalingen blijven dus behouden bij herstarts en image-updates.
+- De productiecompose heeft geen aparte locale-bind-mount meer. De API leest registry en vertalingen uit `DATA_DIR/locales` en stuurt `Cache-Control: no-store` mee.
+- Een nieuwe taal toevoegen of een vertaling wijzigen vereist alleen het bijwerken van JSON-bestanden in het bestaande volume en een containerrestart; geen Docker-image rebuild.
+- Voor het plaatsen/bijwerken van bestanden vanaf Ubuntu kan `docker cp` worden gebruikt naar `/app/data/locales/` in de dashboardcontainer. De Engelstalige `src/client/locales/README.txt` beschrijft de werkwijze.
+- Eenmalige implementatie/deployment van deze wijziging vereist wel een Docker-build zodat de runtimebestanden en initialisatiecode beschikbaar zijn.
+- Nog te valideren op Ubuntu: initialisatie van de bestanden in het bestaande volume, API-responses, containerrestart en behoud van aangepaste bestanden.
