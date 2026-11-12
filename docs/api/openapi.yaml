@@ -259,6 +259,7 @@ paths:
       summary: Revoke a managed weather API token
       security:
         - SettingsCookie: []
+      parameters:
         - name: id
           in: path
           required: true
