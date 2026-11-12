@@ -224,3 +224,18 @@ De huidige Homey-capabilitymapping in `src/server/weather.ts` is bestaande funct
 - De toekomstige Homey-app/integratie-endpoints worden afzonderlijk als externe integratie-API gegroepeerd en krijgen expliciete compatibiliteits-/versieafspraken.
 - Swagger UI is de interactieve documentatie-interface. GitHub Pages mag de statische documentatie en OpenAPI-specificatie hosten. De Try it out-functie op GitHub Pages wordt niet als gegarandeerd beschouwd voor een API op het lokale LAN; browser-origin, HTTPS, CORS en Private Network Access kunnen dit blokkeren. De lokale Swagger UI of API-client blijft de testoptie.
 - Server-Sent Events `GET /api/events` worden ook gedocumenteerd, inclusief eventnamen en payloadschema's; OpenAPI beschrijft de HTTP-route, met aanvullende documentatie voor de event-stream.
+
+
+## Implementatiebesluit – OpenAPI en weercondities API (12 november 2026)
+
+De eerste implementatie is toegevoegd op phase_1_foundation:
+
+- OpenAPI 3.1-specificatie: docs/api/openapi.yaml.
+- Swagger UI statische frontend: docs/api/index.html, bedoeld voor doorzoeken/inzicht.
+- GitHub Pages publicatieworkflow: .github/workflows/pages.yml, inclusief OpenAPI-lintstap.
+- Weercondities endpoint: GET en POST /api/v1/weather/conditions.
+- POST gebruikt Bearer-authenticatie via de lokale omgevingsvariabele WEATHER_API_TOKEN; deze eerste versie gebruikt één serverconfiguratietoken. Beheer van meerdere benoemde tokens via Settings blijft toekomstig werk.
+- Condities worden persistent opgeslagen in DATA_DIR/weather/condition.json; geen automatische TTL. Homey Flow is verantwoordelijk voor updatefrequentie.
+- API-conditie heeft voorrang op de bestaande Homey-weermapping; zonder API-conditie blijft de Homey-bron actief.
+
+De code en documentatie zijn gecommit, maar Docker-build/runtimegedrag en GitHub Pages-publicatie moeten nog door de gebruiker/CI worden gevalideerd. Zie de technische documentatie voor teststappen.
