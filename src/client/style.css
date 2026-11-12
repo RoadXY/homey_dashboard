@@ -274,3 +274,38 @@ body {
 .token-list-row > div { display: grid; gap: 4px; min-width: 0; }
 .token-list-row small { color: var(--muted, #94a3b8); }
 @media (max-width: 700px) { .token-create-row { align-items: stretch; flex-direction: column; } .token-list-row { align-items: flex-start; } }
+
+
+/* Weather API token form: compact, contained within its settings card. */
+.weather-token-card { flex: 0 0 auto; }
+.token-create-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: end;
+  gap: 8px 12px;
+  min-height: 0;
+  margin-top: 14px;
+}
+.token-create-row > label { grid-column: 1 / -1; }
+.token-create-row > input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(151,178,209,.32);
+  border-radius: 9px;
+  background: #101d2d;
+  color: #e9eff7;
+  font: inherit;
+  font-size: 16px;
+}
+.token-create-row > input::placeholder { color: #8190a2; }
+.token-create-row > button { min-height: 48px; white-space: nowrap; }
+.token-list { min-width: 0; }
+@media (max-width: 620px) {
+  .token-create-row { grid-template-columns: minmax(0, 1fr); }
+  .token-create-row > label { grid-column: 1; }
+  .token-create-row > button { width: 100%; }
+}
