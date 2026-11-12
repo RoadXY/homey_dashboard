@@ -12,9 +12,9 @@ ENV NODE_ENV=production
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev && npm cache clean --force
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/config ./config
-RUN chown -R node:node /app
+COPY --chown=node:node --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/config ./config
+RUN mkdir -p /app/data && chown node:node /app/data
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
