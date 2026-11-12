@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
-import { automaticLanguageLabel, availableLanguages, resolveLocale, translate } from "./i18n";
+import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -336,4 +336,6 @@ function WeatherIcon({ category }: { category: WeatherCategory }) {
 function TemperatureTile({ label, value }: { label: string; value: string }) {
   return <article className="card temperature-tile"><span className="temperature-label">{label}</span><strong>{value}</strong></article>;
 }
-ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
+void loadTranslations().finally(() => {
+  ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
+});
