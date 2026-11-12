@@ -346,6 +346,69 @@ paths:
               schema: {$ref: '#/components/schemas/GenericObject'}
         '500':
           description: Notification configuration could not be loaded
+  /api/dashboard/quick-actions:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardQuickActions
+      summary: Get the eight configured dashboard Quick Actions
+      responses:
+        '200':
+          description: Saved Quick Action configuration
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/settings/dashboard-actions:
+    get:
+      tags: [Settings (internal)]
+      operationId: getQuickActionSettings
+      summary: Get Quick Action configuration
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      responses:
+        '200': {description: Saved configuration}
+        '401': {description: Settings session required}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveQuickActionSettings
+      summary: Save all eight Quick Actions
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/GenericObject'}
+      responses:
+        '200': {description: Configuration saved}
+        '400': {description: Invalid configuration}
+        '401': {description: Settings session required}
+  /api/settings/quick-action-catalog:
+    get:
+      tags: [Settings (internal)]
+      operationId: getQuickActionCatalog
+      summary: Get selectable Homey Flows, devices and writable capabilities
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      responses:
+        '200': {description: Homey selection catalog}
+        '401': {description: Settings session required}
+        '503': {description: Homey is unavailable}
+  /api/homey/quick-actions/{id}/execute:
+    post:
+      tags: [Homey (internal)]
+      operationId: executeQuickAction
+      summary: Execute a saved Quick Action
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Homey action accepted}
+        '404': {description: Quick Action not found}
+        '409': {description: Quick Action is not configured}
+        '502': {description: Homey rejected the action}
   /api/v1/weather/conditions:
     get:
       tags: [Integrations]
