@@ -217,11 +217,11 @@ body {
 .settings-nav:disabled { opacity:1; cursor:default; }
 .sidebar-product { margin-top:auto; display:flex; gap:14px; align-items:center; padding:8px 20px; color:#c0ccda; font-size:15px; line-height:1.5; }
 .settings-content { grid-column:2; grid-row:2; min-width:0; min-height:0; overflow:auto; padding:26px 30px 24px 20px; display:flex; flex-direction:column; gap:24px; }
-.settings-title { display:flex; align-items:flex-start; gap:24px; padding:0 8px; }
+.settings-title { display:block; padding:0; text-align:left; }
 .title-icon { font-size:38px; line-height:1; }
 .settings-title h1 { margin:0; font-size:29px; line-height:1.15; letter-spacing:-.025em; }
 .settings-title h1 span { color:#aab8c9; padding:0 8px; }
-.settings-title p { margin:8px 0 0; color:#d0d8e3; font-size:17px; }
+.settings-title p { margin:0; color:#d0d8e3; font-size:17px; text-align:left; }
 .settings-top-cards { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
 .settings-card { min-width:0; border:1px solid rgba(146,173,204,.16); border-radius:15px; background:linear-gradient(145deg,rgba(20,36,54,.9),rgba(15,29,45,.94)); box-shadow:0 12px 28px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.025); padding:18px 22px; }
 .settings-card h2 { display:flex; align-items:center; gap:16px; font-size:21px; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid rgba(164,190,218,.14); }
