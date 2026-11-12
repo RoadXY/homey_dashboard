@@ -365,11 +365,11 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const flowQuery = flowSearch.trim().toLocaleLowerCase();
   const deviceQuery = deviceSearch.trim().toLocaleLowerCase();
   const matchingDevices = catalog.devices.filter(device =>
-    (device.name + " " + (device.zone ?? "") + " " + device.id).toLocaleLowerCase().includes(deviceQuery)
+    (deviceDisplayName(device) + " " + device.id).toLocaleLowerCase().includes(deviceQuery)
   );
-  const selectedDeviceLabel = selectedDevice
-    ? selectedDevice.name + (selectedDevice.zone ? " · " + selectedDevice.zone : "")
-    : t("settings.selectDevice");
+  const displayDeviceZone = (zone: string | undefined) => zone && !/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(zone) ? zone : "";
+  const deviceDisplayName = (device: QuickActionCatalog["devices"][number]) => device.name + (displayDeviceZone(device.zone) ? " · " + displayDeviceZone(device.zone) : "");
+  const selectedDeviceLabel = selectedDevice ? deviceDisplayName(selectedDevice) : t("settings.selectDevice");
   const matchingFlows = catalog.flows.filter(flow => {
     const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
     return !flowQuery || searchable.includes(flowQuery);
@@ -505,7 +505,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
                   className={"quick-flow-option" + (device.id === selected.deviceId ? " selected" : "")}
                   key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
                   <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
-                  <span className="quick-flow-option-name">{device.name}{device.zone ? " · " + device.zone : ""}</span>
+                  <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
                   {!device.available && <span className="quick-flow-type">Offline</span>}
                 </button>)}
                 {matchingDevices.length === 0 && <div className="quick-flow-empty">Geen apparaten gevonden.</div>}
