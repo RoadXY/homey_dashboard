@@ -306,3 +306,27 @@ Naar aanleiding van de eerste praktijktest zijn twee tekortkomingen gecorrigeerd
 - Het bewerkingspaneel wordt niet langer absoluut boven de Quick Actions-werkruimte geplaatst. Het staat nu als afzonderlijk paneel onder de lijst en preview, over de beschikbare werkruimtebreedte.
 - Hierdoor kan de achtergrond en schaduw van het editorpaneel de Quick Action-lijst niet meer optisch donkerder maken. Alleen de geselecteerde rij krijgt de geselecteerde stijl.
 - Dit is uitsluitend een frontend-layoutcorrectie; selectie-, opslag- en Homey-bedieningslogica blijven ongewijzigd.
+
+
+### Thema-voorbereiding fase 5 – eerste styling-audit (12 november 2026)
+
+#### Quick Actions – blauwe actieve gradient
+- De actieve Quick Action-tegel gebruikt een expliciete blauwe gradient met een heldere blauwe rand, een subtiele blauwe gloed en een lichtblauw pictogram, overeenkomstig de aangeleverde dashboardmockup.
+- Alleen `.action-card.is-active` gebruikt deze blauwe actieve stijl. Niet-actieve tegels behouden hun neutrale antracietstijl. De actieve stijl blijft gekoppeld aan de bestaande statuswaarde van de gekozen Homey-capability.
+- De kleuren en effecten zijn ondergebracht in semantische CSS-variabelen (`--action-active-*`); componentregels verwijzen naar tokens in plaats van eigen kleurwaarden.
+
+#### Huidige themabaarheid – bevindingen
+- Er bestond al een beperkte tokenbasis voor meldingskaarten en meldingsniveaus. Die blijft behouden.
+- De dashboardachtergrond, algemene kaarten, tekstkleuren en Quick Action-tegels hebben nu eveneens een eerste semantische tokenlaag.
+- De rest van de stylesheet bevat nog vaste kleurwaarden, onder meer in instellingen, navigatie, formulieren, statuslabels, iconenpicker en Flow-picker. De volledige interface is daarom nog niet themabaar en dit wordt nadrukkelijk niet als afgerond voor fase 5 beschouwd.
+- De fase-5-uitwerking moet alle visuele componenten via semantische tokens laten werken. Thema's moeten tokens centraal overschrijven; componenten mogen geen thema-specifieke kleurwaarden bevatten.
+
+#### Richtlijn voor fase 5
+- Introduceer een expliciete thema-identificatie op de applicatieroot (bijvoorbeeld een data-attribuut) en definieer per thema dezelfde tokencontracten.
+- Scheid structurele componentstyling van thematische waarden: layout, afmetingen, typografie en interactie blijven componentregels; kleuren, gradients, borders, schaduwen en focusaccenten komen uit tokens.
+- Neem zowel het hoofddashboard als alle instellingenpagina's, editors, dropdowns, modals, meldingen, statussen en interactieve toestanden mee.
+- Voorzie naast normale en actieve Quick Action-tegels ook hover-, focus-visible-, disabled- en loading-toestanden per thema. Statussemantiek (aan/uit/onbekend) moet herkenbaar blijven en mag niet uitsluitend van kleur afhangen.
+- Voeg per thema contrast- en regressietests toe op tablet en desktop. De Homey-stijl en de aangeleverde donkere mockup zijn visuele referenties, maar de definitieve themalijst en thema-instellingen worden pas in fase 5 vastgesteld.
+
+#### Scope van deze wijziging
+Deze wijziging legt de eerste tokens vast en past de blauwe actieve Quick Action-gradient toe. Er wordt nog geen themawisselaar of definitieve themastructuur geïmplementeerd; dat blijft onderdeel van fase 5.
