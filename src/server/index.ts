@@ -6,6 +6,7 @@ import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings
 import { getDashboardNotifications } from "./notifications.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
+import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
@@ -147,6 +148,28 @@ app.post("/api/settings/general", async (request, reply) => {
   }
 });
 
+app.get("/api/settings/weather-tokens", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return { tokens: await listWeatherTokens() };
+});
+
+app.post<{ Body: { name?: unknown } }>("/api/settings/weather-tokens", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (typeof request.body?.name !== "string") return reply.code(400).send({ error: "Geef een tokennaam op." });
+  try {
+    const created = await createWeatherToken(request.body.name);
+    return reply.code(201).send(created);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Token aanmaken mislukt." });
+  }
+});
+
+app.delete<{ Params: { id: string } }>("/api/settings/weather-tokens/:id", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  const revoked = await revokeWeatherToken(request.params.id);
+  return revoked ? reply.code(204).send() : reply.code(404).send({ error: "Token niet gevonden." });
+});
+
 app.get("/api/system/status", async () => {
   let version = "onbekend";
   try {
@@ -207,12 +230,15 @@ app.get("/api/events", async (_request, reply) => {
 });
 
 
-function hasWeatherApiToken(request: { headers: Record<string, string | string[] | undefined> }): boolean {
-  const configured = process.env.WEATHER_API_TOKEN;
+async function hasWeatherApiToken(request: { headers: Record<string, string | string[] | undefined> }): Promise<boolean> {
   const authorization = request.headers.authorization;
-  if (!configured || typeof authorization !== "string" || !authorization.startsWith("Bearer ")) return false;
+  if (typeof authorization !== "string" || !authorization.startsWith("Bearer ")) return false;
   const supplied = authorization.slice(7);
-  const expectedHash = createHash("sha256").update(configured).digest();
+  if (await isValidWeatherToken(supplied)) return true;
+  // Temporary compatibility for the original single-token .env configuration.
+  const legacyToken = process.env.WEATHER_API_TOKEN;
+  if (!legacyToken) return false;
+  const expectedHash = createHash("sha256").update(legacyToken).digest();
   const suppliedHash = createHash("sha256").update(supplied).digest();
   return timingSafeEqual(expectedHash, suppliedHash);
 }
@@ -222,9 +248,7 @@ app.get("/api/v1/weather/conditions", async () => ({
 }));
 
 app.post<{ Body: { condition?: unknown } }>("/api/v1/weather/conditions", async (request, reply) => {
-  if (!hasWeatherApiToken(request)) return reply.code(process.env.WEATHER_API_TOKEN ? 401 : 503).send({
-    error: process.env.WEATHER_API_TOKEN ? "A valid Bearer token is required." : "Weather API is not configured.",
-  });
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
   const condition = request.body?.condition;
   if (typeof condition !== "string" || !(WEATHER_CONDITIONS as readonly string[]).includes(condition)) {
     return reply.code(400).send({
