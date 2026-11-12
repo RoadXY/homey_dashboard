@@ -327,12 +327,12 @@ paths:
       summary: Get the weather condition currently displayed
       responses:
         '200':
-          description: Current displayed condition. API-set conditions take precedence over the Homey capability mapping.
+          description: Current displayed condition received through the Weather API. No Homey capability fallback is used.
           content:
             application/json:
               schema: {$ref: '#/components/schemas/WeatherState'}
         '500':
-          description: Weather mapping could not be loaded
+          description: Weather state could not be loaded
   /api/notifications:
     get:
       tags: [Notifications (internal)]
@@ -445,8 +445,7 @@ components:
           type: string
           enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy, unknown]
         conditionText: {type: [string, 'null']}
-        sourceCapability: {type: [string, 'null']}
-        source: {type: string, enum: [homey, api]}
+        source: {type: string, const: api}
         receivedAt: {type: string, format: date-time}
         reason: {type: string}
     Health:
