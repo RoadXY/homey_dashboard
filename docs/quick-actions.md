@@ -124,3 +124,4 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De lijst toont de apparaatnaam en optioneel de zone; niet-beschikbare apparaten krijgen een duidelijke Offline-indicator.
 - Na selectie sluit de lijst en wordt de bijbehorende eerste capability als uitgangspunt gekozen, zoals bij de bestaande apparaatselectielogica.
 - De lijst heeft een eigen scrollgebied en een teller met het aantal overeenkomende apparaten, zodat deze ook bij grote Homey-installaties bruikbaar blijft.
+- Net als bij de Flow-zoeker wordt **Toepassen** geblokkeerd wanneer de apparaatzoeker openstaat met een zoekterm die het momenteel geselecteerde apparaat niet meer bevat.
