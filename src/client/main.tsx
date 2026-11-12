@@ -245,6 +245,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   const [newToken, setNewToken] = React.useState("");
   const [tokenBusy, setTokenBusy] = React.useState(false);
   const [tokenMessage, setTokenMessage] = React.useState("");
+  const [tokenCopyStatus, setTokenCopyStatus] = React.useState<"success" | "error" | "">("");
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
   const t = (key: string) => translate(locale, key);
@@ -268,7 +269,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   };
   React.useEffect(() => { void loadWeatherTokens().catch(error => setTokenMessage(error instanceof Error ? error.message : t("settings.tokensLoadError"))); }, []);
   const createToken = async () => {
-    setTokenBusy(true); setTokenMessage(""); setNewToken("");
+    setTokenBusy(true); setTokenMessage(""); setTokenCopyStatus(""); setNewToken("");
     try {
       const response = await fetch("/api/settings/weather-tokens", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ name: tokenName }) });
       const data = await response.json() as { token?: string; info?: WeatherTokenInfo; error?: string };
@@ -286,7 +287,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       } else {
         throw new Error("Clipboard API unavailable");
       }
-      setTokenMessage(t("settings.tokenCopySuccess"));
+      setTokenCopyStatus("success");
     } catch {
       // Clipboard API is unavailable on plain HTTP LAN origins. Use the legacy
       // selection-based copy command as a fallback for trusted local networks.
@@ -306,7 +307,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
         if (!copied) throw new Error("Copy command failed");
         setTokenMessage(t("settings.tokenCopySuccess"));
       } catch {
-        setTokenMessage(t("settings.tokenCopyError"));
+        setTokenCopyStatus("error");
       }
     }
   };
@@ -365,7 +366,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
           <input id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
           <button className="primary-button" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
         </div>
-        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><button className="secondary-button" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button></div>}
+        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><div className="token-copy-actions"><button className="secondary-button" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button>{tokenCopyStatus && <span className={"token-copy-feedback " + tokenCopyStatus} role="status" aria-live="polite">{tokenCopyStatus === "success" ? t("settings.tokenCopySuccess") : t("settings.tokenCopyError")}</span>}</div></div>}
         <div className="token-list">
           {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
         </div>
