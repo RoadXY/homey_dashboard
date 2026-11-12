@@ -253,3 +253,18 @@ Op basis van de tablet-screenshot is het tokennaamveld teruggebracht tot een nor
 ## GitHub Pages – diagnose workflowfout (12 november 2026)
 
 De GitHub Actions-log van run 43250294307 (job 131293937025) bevestigt dat de fout optreedt in **Configure GitHub Pages**, vóór OpenAPI-lint, artifact-upload en deployment. GitHub retourneert eerst 404 bij het ophalen van de Pages-site en daarna **Resource not accessible by integration** bij het aanmaken ervan. De workflowtoken heeft wel Pages: write, maar mag de Pages-site niet via deze API aanmaken. Daarom probeert de workflow Pages niet langer automatisch in te schakelen. Een repository-eigenaar moet de Pages-site eenmalig handmatig activeren via Settings → Pages en de bron op GitHub Actions zetten. Daarna kan de workflow opnieuw worden uitgevoerd. Dit is een repository-instelling/rechtenprobleem, geen fout in de OpenAPI-specificatie.
+
+
+## Definitief besluit – Weather API is enige bron voor de weerconditie (12 november 2026)
+
+De gebruiker kiest ervoor om uitsluitend de Weather API te gebruiken voor het bepalen en tonen van de weerconditie.
+
+- Alleen `POST /api/v1/weather/conditions` kan de actieve canonieke conditie instellen; de bestaande Bearer-tokenvalidatie, enum-validatie en persistente opslag blijven van kracht.
+- `GET /api/weather` leest uitsluitend de laatst geldig via de API opgeslagen conditie.
+- Als nog geen geldige API-update is ontvangen, toont het dashboard de vertaalde status `unknown`; er is geen terugval naar Homey-waarden.
+- De Homey-capabilities `conditioncode_text` en `description` worden niet meer gebruikt voor conditietekst, conditieclassificatie of het weericoon. Homey blijft wel de bron voor aanvullende meetwaarden zoals buitentemperatuur, gevoelstemperatuur en wind.
+- De JSON-configuratie `config/weather/weather-mapping.json` en de bijbehorende backendmapping zijn verwijderd.
+- De laatst ontvangen geldige API-conditie blijft actief tot een volgende geldige update; geen TTL of automatische vervaltijd. Homey Flow/integratie is verantwoordelijk voor de updatefrequentie.
+- De legacy i18n-sleutels `weather.condition.clear` en `weather.condition.wind` zijn niet meer nodig, omdat ze geen canonieke API-condities zijn. Ze worden ook uit bestaande persistente locale-bestanden verwijderd bij de eerstvolgende containerstart; alle overige eigen vertalingen blijven behouden.
+
+Dit besluit vervangt de eerdere implementatiekeuze waarbij de Homey-capabilitymapping als fallback actief bleef.
