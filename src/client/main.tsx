@@ -21,12 +21,6 @@ type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"
 type QuickActionCatalog = { devices: QuickActionDevice[]; flows: QuickActionFlow[] };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
-const actions = [
-  { key: "actions.qmusic", icon: "♫" }, { key: "actions.fouteUur", icon: "♫" },
-  { key: "actions.blinds", icon: "⌃" }, { key: "actions.birthday", icon: "✦" },
-  { key: "actions.livingLights", icon: "◌" }, { key: "actions.moodLights", icon: "✧" },
-  { key: "actions.tv", icon: "▣" }, { key: "actions.bedtime", icon: "☾" },
-];
 function capability(device: HomeyDevice | undefined, id: string): unknown {
   return device?.readings?.find((reading) => reading.capabilityId === id)?.value;
 }
@@ -192,13 +186,23 @@ function App() {
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
         <div className="actions-grid" aria-label={t("actions.aria")}>
-          {actions.map((action, index) => (
-            <div className="action-card" key={action.key}>
-              <span className="action-index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="action-mark" aria-hidden="true">{action.icon}</span>
-              <span className="action-label">{t(action.key)}</span>
-            </div>
-          ))}
+          {quickActions.map((action, index) => {
+            const defaultLabels: Record<string, string> = {
+              "qmusic": "actions.qmusic", "foute-uur": "actions.fouteUur", "blinds": "actions.blinds",
+              "birthday": "actions.birthday", "living-lights": "actions.livingLights",
+              "mood-lights": "actions.moodLights", "tv": "actions.tv", "bedtime": "actions.bedtime"
+            };
+            const label = action.name.trim() || t(defaultLabels[action.id] ?? "settings.quickActions");
+            return (
+              <button className="action-card" key={action.id} type="button"
+                onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
+                aria-label={label} title={label}>
+                <span className="action-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="action-mark" aria-hidden="true">{action.icon}</span>
+                <span className="action-label">{label}</span>
+              </button>
+            );
+          })}
         </div>
         {actionError && <div className="action-error" role="alert">{actionError}</div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
@@ -274,6 +278,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [flowSearch, setFlowSearch] = React.useState("");
   const dirty = JSON.stringify(items) !== JSON.stringify(saved);
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
@@ -346,12 +351,21 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
             <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
           </select>
         </label>
-        {selected.type === "flow" ? <label>{t("settings.homeyFlow")}
-          <select value={selected.flowType + ":" + selected.flowId} onChange={event => { const [flowType, ...id] = event.target.value.split(":"); updateSelected({ flowType: flowType as "standard" | "advanced", flowId: id.join(":") }); }}>
-            <option value="standard:">{t("settings.selectFlow")}</option>
-            {catalog.flows.map(flow => <option key={flow.type + flow.id} value={flow.type + ":" + flow.id}>{flow.name}{flow.type === "advanced" ? " · Advanced" : ""}</option>)}
-          </select>
-        </label> : <>
+        {selected.type === "flow" ? <>
+          <label>{t("settings.homeyFlow")}
+            <input type="search" className="quick-flow-search" value={flowSearch}
+              onChange={event => setFlowSearch(event.target.value)}
+              placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
+            <select value={selected.flowType + ":" + selected.flowId} onChange={event => { const [flowType, ...id] = event.target.value.split(":"); updateSelected({ flowType: flowType as "standard" | "advanced", flowId: id.join(":") }); }}>
+              <option value="standard:">{t("settings.selectFlow")}</option>
+              {catalog.flows.filter(flow => {
+                const query = flowSearch.trim().toLocaleLowerCase();
+                return !query || flow.name.toLocaleLowerCase().includes(query) || (flow.type + ":" + flow.id) === (selected.flowType + ":" + selected.flowId);
+              }).map(flow => <option key={flow.type + flow.id} value={flow.type + ":" + flow.id}>{flow.name}{flow.type === "advanced" ? " · Advanced" : ""}</option>)}
+            </select>
+            {flowSearch.trim() && <span className="quick-flow-count">{catalog.flows.filter(flow => flow.name.toLocaleLowerCase().includes(flowSearch.trim().toLocaleLowerCase())).length} {t("settings.flowResults")}</span>}
+          </label>
+        </> : <>
           <label>{t("settings.device")}<select value={selected.deviceId} onChange={event => selectDevice(event.target.value)}><option value="">{t("settings.selectDevice")}</option>{catalog.devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.zone ? " · " + device.zone : ""}</option>)}</select></label>
           <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
           {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? false)} onChange={event => updateSelected({ value: event.target.value === "true" })}><option value="true">{t("settings.turnOn")}</option><option value="false">{t("settings.turnOff")}</option></select></label>}
