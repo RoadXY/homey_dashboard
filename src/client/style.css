@@ -390,8 +390,10 @@ body {
 .quick-settings-page .settings-title h1 { margin:0 0 8px; font-size:29px; }
 .quick-settings-page .settings-title p { margin:0; }
 .quick-tabs { display:flex; align-items:stretch; gap:4px; width:min(690px,100%); min-height:52px; }
-.quick-tabs span,.quick-tabs strong { display:flex; align-items:center; justify-content:center; flex:1; padding:0 16px; border:1px solid rgba(146,173,204,.14); border-radius:11px; background:rgba(15,34,54,.68); color:#e2eaf4; font-weight:500; }
-.quick-tabs strong { background:#0874ed; border-color:#1684ff; color:white; }
+.quick-tabs span,.quick-tabs button { display:flex; align-items:center; justify-content:center; flex:1; padding:0 16px; border:1px solid rgba(146,173,204,.14); border-radius:11px; background:rgba(15,34,54,.68); color:#e2eaf4; font:inherit; font-weight:500; }
+.quick-tabs button { cursor:pointer; }
+.quick-tabs button:hover { border-color:rgba(22,132,255,.65); }
+.quick-tabs button.active { background:#0874ed; border-color:#1684ff; color:white; }
 .quick-workspace { position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start; min-height:560px; }
 .quick-list-card,.quick-preview-card { min-height:480px; }
 .quick-card-description { color:#c3d0df; margin:-5px 0 17px; line-height:1.4; }
