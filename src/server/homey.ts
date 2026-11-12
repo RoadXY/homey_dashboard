@@ -470,7 +470,16 @@ export async function getQuickActionStatuses(actions: Array<{ id: string; type: 
       continue;
     }
     const descriptor = device.capabilitiesObj?.[action.capabilityId] as Record<string, any> | undefined;
-    statuses[action.id] = descriptor?.type === "boolean" && typeof descriptor.value === "boolean" ? descriptor.value : null;
+    if (descriptor?.type !== "boolean") {
+      statuses[action.id] = null;
+      continue;
+    }
+    try {
+      const value = await api!.devices.getCapabilityValue({ deviceId: action.deviceId, capabilityId: action.capabilityId });
+      statuses[action.id] = typeof value === "boolean" ? value : null;
+    } catch {
+      statuses[action.id] = null;
+    }
   }
   return statuses;
 }
@@ -506,7 +515,7 @@ export async function executeQuickAction(input: {
   let value = input.value;
   if (type === "boolean") {
     if (input.booleanMode === "toggle") {
-      const currentValue = descriptor.value;
+      const currentValue = await api.devices.getCapabilityValue({ deviceId: input.deviceId, capabilityId: input.capabilityId });
       if (typeof currentValue !== "boolean") throw new Error("De actuele aan/uit-status van Homey is onbekend; Toggle is niet uitgevoerd.");
       value = !currentValue;
     } else if (input.booleanMode === "on") value = true;
@@ -524,6 +533,10 @@ export async function executeQuickAction(input: {
   }
   if (type === "string" && typeof value !== "string") throw new Error("Deze actie verwacht tekst.");
   if (!["boolean", "number", "enum", "string"].includes(type)) throw new Error("Dit type apparaatbediening wordt niet ondersteund.");
+  if (type === "boolean" && typeof value !== "boolean") throw new Error("De aan/uit-opdracht bevat geen geldige boolean-waarde.");
   await (device as any).setCapabilityValue({ capabilityId: input.capabilityId, value });
-  return { executed: true, type: "device", value };
+  const confirmedValue = type === "boolean"
+    ? await api.devices.getCapabilityValue({ deviceId: input.deviceId, capabilityId: input.capabilityId })
+    : value;
+  return { executed: true, type: "device", value: confirmedValue };
 }
