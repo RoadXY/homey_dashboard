@@ -124,7 +124,10 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const homeyOnline = homey?.state === "online";
-  const refreshQuickActionStatuses = async () => {\n    try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { setQuickActionStatuses({}); }\n  };\n  const executeAction = async (id: string) => {
+  const refreshQuickActionStatuses = async () => {
+    try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { /* Keep the last known Homey state when a poll temporarily fails. */ }
+  };
+  const executeAction = async (id: string) => {
     if (executingAction) return;
     setExecutingAction(id); setActionError("");
     try {
@@ -134,7 +137,12 @@ function App() {
     } catch (error) { setActionError(error instanceof Error ? error.message : t("actions.executeError")); }
     finally { setExecutingAction(""); }
   };
-  React.useEffect(() => {\n    if (settingsOpen || !quickActions.some(action => action.type === "device" && action.capabilityId)) return;\n    const timer = window.setInterval(() => void refreshQuickActionStatuses(), 5000);\n    return () => window.clearInterval(timer);\n  }, [settingsOpen, quickActions]);\n  const locale = resolveLocale(dashboardLanguage, homeyLanguage);
+  React.useEffect(() => {
+    if (settingsOpen || !quickActions.some(action => action.type === "device" && action.capabilityId)) return;
+    const timer = window.setInterval(() => void refreshQuickActionStatuses(), 5000);
+    return () => window.clearInterval(timer);
+  }, [settingsOpen, quickActions]);
+  const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
     const syncRoute = () => {
@@ -307,13 +315,13 @@ function homeyLanguageName(language: string, locale: string): string { const nam
 
 const quickActionDefaults: QuickAction[] = [
   { id: "qmusic", name: "", icon: "music-note", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
-  { id: "foute-uur", name: "", icon: "music-note", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "blinds", name: "", icon: "blinds", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "birthday", name: "", icon: "party-popper", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "living-lights", name: "", icon: "lightbulb", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "mood-lights", name: "", icon: "star-four-points", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "tv", name: "", icon: "television", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "bedtime", name: "", icon: "moon-waning-crescent", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "foute-uur", name: "", icon: "music-note", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "blinds", name: "", icon: "blinds", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "birthday", name: "", icon: "party-popper", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "living-lights", name: "", icon: "lightbulb", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "mood-lights", name: "", icon: "star-four-points", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "tv", name: "", icon: "television", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "bedtime", name: "", icon: "moon-waning-crescent", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
 ];
 type MdiIconMeta = { name: string; aliases?: string[] };
 type MdiIconChoice = { name: string; keywords: string[] };
