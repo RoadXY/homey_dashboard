@@ -530,3 +530,18 @@ De kopieerknop gebruikte eerst uitsluitend navigator.clipboard.writeText. Dit is
 ### Inline kopieerbevestiging voor Weather API-token (12 november 2026)
 
 Na kopiëren toont de tokenkaart direct naast de knop een afgeronde statusmelding. Succes wordt groen weergegeven; een mislukte kopieerpoging rood. De meldingen gebruiken de bestaande i18n-sleutels settings.tokenCopySuccess en settings.tokenCopyError in nl.json en en.json, met aria-live statusfeedback. De melding wordt bij het starten van een nieuwe tokenactie gewist.
+
+
+## Correctie – uitsluitend Weather API voor de conditie (12 november 2026)
+
+De gebruiker heeft besloten dat de Weather API de enige bron voor de weergegeven weerconditie is. De eerdere Homey-capabilitymapping is volledig verwijderd uit de runtime en de configuratiefile is uit de repository verwijderd.
+
+- `src/server/weather.ts` leest nu uitsluitend `DATA_DIR/weather/condition.json`; zonder opgeslagen conditie retourneert `GET /api/weather` `category: unknown`, `source: api` en `reason: condition_not_received`.
+- De frontend gebruikt uitsluitend de canonieke API-code voor het i18n-label en weericoon. De Homey-tekstvelden `conditioncode_text` en `description` worden niet meer als fallback gebruikt.
+- Homey blijft aanvullende weermeetwaarden leveren, waaronder temperatuur, gevoelstemperatuur en wind.
+- De OpenAPI-beschrijving van `GET /api/weather` is aangepast naar de API-only bron.
+- De ongebruikte vertaalkeys `weather.condition.clear` en `weather.condition.wind` zijn uit de standaard Nederlandse en Engelse catalogi verwijderd.
+- Bij de eerstvolgende containerstart worden precies deze twee verouderde keys ook uit bestaande persistente locale-catalogi verwijderd; overige door de gebruiker aangepaste vertalingen blijven behouden.
+- De oude mappingdocumentatie is vervangen door de actuele API-only werkwijze in `docs/03-dashboard/weather-mapping.md`.
+
+De runtimewijziging moet nog via de productie-update worden uitgerold en op de Ubuntu-server worden getest. Na deployment toont het dashboard `Weer niet beschikbaar` / `Weather unavailable` totdat Homey of een andere integratie een geldige API-update verstuurt.
