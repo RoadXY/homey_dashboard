@@ -46,7 +46,7 @@ function App() {
   const refresh = React.useCallback(async () => {
     void fetch("/api/notifications")
       .then(async (response) => {
-        if (!response.ok) throw new Error("Meldingen ophalen mislukt");
+        if (!response.ok) throw new Error("notifications.loadErrorMessage");
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
@@ -76,7 +76,7 @@ function App() {
         setWeatherCondition({ retrievedAt: new Date().toISOString(), category: "unknown", conditionText: null, sourceCapability: null, reason: "source_unavailable" });
       }
       setLoadError("");
-    } catch (error) { setLoadError(error instanceof Error ? error.message : "Gegevens ophalen mislukt"); }
+    } catch (error) { setLoadError(error instanceof Error ? error.message : "settings.loadDataError"); }
   }, []);
   React.useEffect(() => {
     const clock = window.setInterval(() => setNow(new Date()), 1000);
@@ -154,7 +154,7 @@ function App() {
             <div>
               <div className="eyebrow">{t("weather.outside")}</div>
               <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
-              <div className="weather-description">{typeof weatherText === "string" ? weatherText : t("weather.loading")}</div>
+              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : typeof weatherText === "string" && locale === "nl" ? weatherText : t("weather.condition.unknown")}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
           </div>
