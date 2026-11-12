@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, homeyRealtime } from "./homey.js";
+import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications } from "./notifications.js";
 import { getDashboardWeather } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
@@ -86,8 +86,10 @@ app.get("/api/system/status", async () => {
     const fs = await statfs(process.env.DATA_DIR ?? join(process.cwd(), "data"));
     storage = { totalBytes: Number(fs.blocks * fs.bsize), freeBytes: Number(fs.bavail * fs.bsize) };
   } catch { /* data volume may not exist until first save */ }
+  const homeyLanguage = await getHomeyLanguage();
   return {
     homey: getHomeyStatus(),
+    homeyLanguage,
     service: "running",
     version,
     updatedAt: new Date().toISOString(),
