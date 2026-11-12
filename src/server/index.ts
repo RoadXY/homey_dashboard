@@ -109,6 +109,7 @@ app.get("/api/settings/general", async (request, reply) => {
 });
 
 app.post("/api/settings/general", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
     return await saveDashboardSettings(request.body);
   } catch (error) {
