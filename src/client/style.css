@@ -103,16 +103,15 @@ body {
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
 .temperature-tile strong { margin: auto 0; font-size: clamp(48px,4.6vw,78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
 .right-column { position: relative; }
-.actions-grid { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: clamp(6px,.62vw,10px); flex: 0 0 auto; }
+.actions-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: clamp(10px,1vw,16px); flex: 0 0 auto; }
 .action-card {
-  min-width: 0; height: clamp(108px, 13vh, 148px); padding: 11px 6px 12px;
-  display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center;
-  border: 1px solid rgba(255,255,255,.075); border-radius: 14px;
+  min-width: 0; min-height: clamp(132px,16vh,176px); padding: 18px 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center;
+  border: 1px solid rgba(255,255,255,.075); border-radius: 16px;
   background: linear-gradient(145deg, rgba(39,43,51,.95), rgba(26,29,35,.98)); color: #d8dce2;
 }
-.action-index { color: #727b88; font-size: 11px; align-self: flex-start; padding-left: 4px; }
-.action-mark { color: #c0c7d1; font-size: clamp(30px,2.7vw,42px); line-height: 1; }
-.action-label { font-size: clamp(12px,.9vw,15px); line-height: 1.2; overflow-wrap: anywhere; }
+.action-mark { color: #c0c7d1; font-size: clamp(42px,4vw,58px); line-height: 1; }
+.action-label { font-size: clamp(16px,1.2vw,20px); line-height: 1.25; overflow-wrap: anywhere; }
 .notifications-panel {
   flex: 1 1 auto; min-height: 0; overflow: hidden; position: relative;
   display: flex; flex-direction: column; padding: clamp(16px,1.55vw,24px);
@@ -151,8 +150,8 @@ body {
   .temperature-grid { min-height: 250px; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(110px,1fr)); }
   .panel-footer { align-items: flex-start; flex-direction: column; gap: 7px; }
   .panel-meta { text-align: left; }
-  .actions-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
-  .action-card { height: 96px; }
+  .actions-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .action-card { min-height: 124px; }
   .right-column { min-height: 600px; }
 }
 
