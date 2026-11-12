@@ -191,3 +191,19 @@ Het oorspronkelijke Home Assistant-schema `schedule.boven_ramen_open` wordt in H
 ## Wateralarm wasmachine – bronkeuze (12 november 2026)
 
 Voor **Wateralarm wasmachines!** is de afzonderlijke Homey-**Water sensor wasmachine** met capability `alarm_water` bevestigd als bron. De wasmachine zelf wordt niet als wateralarmbron gebruikt. De oorspronkelijke YAML-voorwaarde blijft leidend en het meldingsniveau blijft **kritiek**. Exact apparaat-ID en actuele waarde moeten nog in de Homey-inventarisatie worden geverifieerd.
+
+
+## Verduidelijking – weerconditie via gedocumenteerde API (12 november 2026)
+
+De gebruiker bevestigt de gewenste werkwijze voor het weerconditieveld:
+
+- De dashboardcontainer biedt een versieerbaar endpoint `POST /api/v1/weather/condition` waarmee een gebruiker of toekomstige Homey-app de actuele conditie instelt.
+- Het endpoint wordt beschreven met een OpenAPI 3.x-specificatie. Swagger UI wordt beschikbaar gemaakt als interactieve API-documentatie/testinterface. OpenAPI is het machineleesbare contract; Swagger UI is de gebruikersinterface voor dat contract.
+- De gebruiker kiest een waarde uit de vaste lijst van 16 reeds goedgekeurde canonieke codes: `sunny`, `mostly_sunny`, `partly_cloudy`, `cloudy`, `overcast`, `fog`, `drizzle`, `rain`, `heavy_rain`, `showers`, `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet`, `windy`.
+- API-clients sturen uitsluitend de canonieke code; de dashboardinterface vertaalt de zichtbare labels via de bestaande i18n-catalogi. De conditie zelf is dus een gestandaardiseerde waarde en geen vrije Homey-tekst.
+- De toekomstige Homey-app biedt dezelfde vaste lijst als Flow-dropdown en stuurt de gekozen code naar het endpoint. De gebruiker kan het endpoint eerder ook rechtstreeks vanuit een Homey Logic HTTP POST-kaart of Swagger UI testen.
+- Dag/nacht blijft een afzonderlijke dimensie en maakt geen deel uit van de conditie-enum.
+- De eerder vastgelegde beveiligingsrichting blijft gelden: benoemde Bearer-tokens, alleen de hash opslaan, geheim alleen bij aanmaak tonen, intrekken mogelijk maken en de eerste token beperken tot de weerconditie-API.
+- Het endpoint, OpenAPI-document, Swagger UI, tokenbeheer en de toekomstige Homey-app zijn nog niet geïmplementeerd. HTTP-statuscodes, request-schema, token-scopes, opslag en stale-updatebeleid moeten bij de technische uitwerking worden vastgelegd.
+
+De huidige Homey-capabilitymapping in `src/server/weather.ts` is bestaande functionaliteit en wordt niet stilzwijgend als het nieuwe push-contract beschouwd. Bij implementatie moet expliciet worden bepaald hoe de API-ingestelde conditie de dashboardweergave overneemt en hoe fallback/bronuitval werkt.
