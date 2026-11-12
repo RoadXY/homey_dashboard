@@ -368,3 +368,13 @@ De eerdere aanpak met een aparte bind mount vanaf `src/client/locales` is vervan
 - Voor het plaatsen/bijwerken van bestanden vanaf Ubuntu kan `docker cp` worden gebruikt naar `/app/data/locales/` in de dashboardcontainer. De Engelstalige `src/client/locales/README.txt` beschrijft de werkwijze.
 - Eenmalige implementatie/deployment van deze wijziging vereist wel een Docker-build zodat de runtimebestanden en initialisatiecode beschikbaar zijn.
 - Nog te valideren op Ubuntu: initialisatie van de bestanden in het bestaande volume, API-responses, containerrestart en behoud van aangepaste bestanden.
+
+
+## i18n-afbakening voor Homey- en gebruikerslabels (12 november 2026)
+
+De gebruiker heeft verduidelijkt dat de labels in de screenshot `OUTSIDE · WEATHER`, `Living room`, `Kitchen`, `Sem` en `Bram` geen vaste interfacevertalingen zijn. Deze waarden komen uiteindelijk uit Homey of worden handmatig door de gebruiker ingesteld. Daarom horen ze niet in de i18n-catalogi.
+
+- De genoemde labels zijn uit `nl.json` en `en.json` verwijderd.
+- De huidige voorbeeldlabels worden in de dashboardcomponent als niet-vertaalde waarden getoond; dit is een tijdelijke weergave totdat de dynamische Homey-/gebruikersconfiguratiebron wordt aangesloten.
+- Weercondities zoals Cloudy/Bewolkt en vaste interface-elementen zoals Feels like/Gevoel blijven wel i18n-vertalingen, omdat dit door de applicatie bepaalde interface-/presentatietekst is.
+- Bij toekomstige mapping van Homey-ruimtes en handmatige labels worden de bronwaarden ongewijzigd weergegeven, ongeacht de dashboardtaal.
