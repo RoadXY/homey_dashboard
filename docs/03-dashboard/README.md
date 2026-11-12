@@ -300,3 +300,25 @@ Het Homey-apparaat **Zonnepanelen** is geïdentificeerd (ID `e743e650-8ac8-477a-
 ## Zonnepanelen – Homey Insights bevestigd (12 november 2026)
 
 Correctie op de eerste inventarisatie: voor het apparaat **Zonnepanelen** zijn wel numerieke Insights-logs beschikbaar. De log `energy_power` levert historische vermogenswaarden in W; `meter_power` en `meter_power_today` leveren energie in kWh. Een test met `last24Hours` gaf 288 meetpunten per log, op 5-minutenintervallen. We gebruiken daarom Homey Insights voor de eerste grafiek en hoeven hiervoor geen eigen meetpuntenhistorie in Docker op te slaan. Zie [fase 1B Homey-mapping ronde 2](fase-1b-homey-mapping-ronde-2.md) voor de meetresultaten en de correctie op de eerdere inventarisatie.
+
+
+## Quick Actions – instellingenontwerp bevestigd (12 november 2026)
+
+De gebruiker heeft de twee aangeleverde mockups bevestigd als functionele/visuele referentie voor **Instellingen → Dashboard → Quick Actions**. De twee screenshots tonen de twee varianten van dezelfde editor: directe apparaatbediening en het starten van een Homey Flow.
+
+### Functionele afspraken
+- Er zijn precies acht configureerbare Quick Actions; de bestaande volgorde en labels uit de projectconfiguratie blijven het uitgangspunt.
+- Per knop zijn minimaal naam, pictogram en actietype configureerbaar.
+- Actietype **Flow**: selecteer een bestaande Homey Flow; de knop start die Flow.
+- Actietype **Apparaat**: selecteer een Homey-apparaat en daarna een door dat apparaat ondersteunde, wijzigbare capability/actie. De beschikbare acties worden dynamisch bepaald op basis van het gekozen apparaat; er worden geen niet-ondersteunde bedieningselementen getoond.
+- De apparaatbediening wijzigt uitsluitend de geselecteerde capability-waarde; Homey blijft de uitvoerende bron. De dashboardconfiguratie wordt lokaal in de persistente DATA_DIR opgeslagen.
+- De preview toont de acht knoppen zoals ze op het hoofdscherm verschijnen.
+- De gebruiker slaat wijzigingen expliciet op via **Opslaan**. Er komt geen knop **Restore defaults** op deze pagina.
+- De editor volgt de donkere instellingenstijl en de aangeleverde mockups. De lijst met acht knoppen, editor en preview zijn de leidende indeling.
+
+### Scope / validatie
+- Flow-selectie gebruikt bestaande Homey Flows; het dashboard maakt of wijzigt geen Flows.
+- Apparaatacties worden alleen aangeboden als de capability daadwerkelijk beschikbaar en wijzigbaar is. Read-only meetwaarden worden niet als bediening aangeboden.
+- Opslaan van instellingen en uitvoeren van een Quick Action zijn gescheiden handelingen. Alleen het indrukken van een knop op het hoofdscherm voert een Homey-actie uit.
+- De mockup-voorbeelden (zoals Woonkamer aan/uit en Film modus) zijn voorbeelden en vervangen niet de acht bestaande projectknopnamen.
+- De implementatie moet getest worden met ten minste één Flow-knop en één apparaatknop, inclusief Homey-offline-/actie-foutafhandeling.
