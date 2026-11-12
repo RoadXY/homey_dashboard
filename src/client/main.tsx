@@ -461,7 +461,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
             <button type="button" className="quick-flow-trigger" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
-              <span className="quick-flow-trigger-name">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.name ?? t("settings.selectFlow")) : t("settings.selectFlow")}</span>
+              <span className="quick-flow-trigger-name" title={selectedFlow?.name}>{selectedFlow?.name ?? t("settings.selectFlow")}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
             {flowPickerOpen && <div className="quick-flow-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
@@ -476,7 +476,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
                   className={"quick-flow-option" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
-                  <span className="quick-flow-option-name">{flow.name}</span>
+                  <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
                   {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
                 </button>)}
                 {matchingFlows.length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
