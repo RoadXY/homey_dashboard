@@ -117,7 +117,7 @@ function App() {
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
   const timeText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
-  const dateText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
+  const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = window.setTimeout(() => { setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
@@ -155,7 +155,7 @@ function App() {
             <div>
               <div className="eyebrow">{t("weather.outside")}</div>
               <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
-              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : typeof weatherText === "string" && locale === "nl" ? weatherText : t("weather.condition.unknown")}</div>
+              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : typeof weatherText === "string" && locale.toLowerCase().startsWith("nl") ? weatherText : t("weather.condition.unknown")}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
           </div>
