@@ -43,8 +43,8 @@ function App() {
   const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(() => window.location.pathname.startsWith("/settings"));
+  const [settingsPath, setSettingsPath] = React.useState(() => window.location.pathname);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
-  const [settingsSession, setSettingsSession] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [pinError, setPinError] = React.useState("");
   const settingsIdleTimer = React.useRef<number | null>(null);
@@ -138,10 +138,11 @@ function App() {
     const syncRoute = () => {
       const isSettingsRoute = window.location.pathname.startsWith("/settings");
       setSettingsOpen(isSettingsRoute);
-      if (!isSettingsRoute) { setSettingsUnlocked(false); setSettingsSession(""); return; }
+      setSettingsPath(window.location.pathname);
+      if (!isSettingsRoute) { setSettingsUnlocked(false); return; }
       void fetch("/api/settings/session").then(response => {
         if (response.ok) { setSettingsUnlocked(true); setPinError(""); }
-        else { setSettingsUnlocked(false); setSettingsSession(""); }
+        else { setSettingsUnlocked(false);  }
       }).catch(() => { setSettingsUnlocked(false); setSettingsSession(""); });
     };
     window.addEventListener("popstate", syncRoute);
@@ -187,15 +188,15 @@ function App() {
   const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
-    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
+    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); setSettingsPath("/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
   };
   const cancelSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage session={settingsSession} onNavigate={path => window.history.pushState({}, "", path)} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} initialPage={window.location.pathname.includes("/settings/dashboard") ? "dashboard" : "general"} />
-    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsOpen(false); }} onUnlock={async () => {
+    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : "general"} />
+    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
           if (!response.ok) throw new Error(translate(locale, "settings.pinDenied"));
@@ -385,7 +386,7 @@ function normalizeQuickActionIcon(icon: string): string {
 }
 
 
-function QuickActionsSettingsPage({ session, locale, t }: { session: string; locale: string; t: (key: string) => string }) {
+function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: string) => string }) {
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
@@ -431,7 +432,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
     let active = true;
     Promise.all([
       fetch("/api/settings/dashboard-actions", {}).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
-      fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
+      fetch("/api/settings/quick-action-catalog", {}).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
       const normalizedActions = configuration.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
@@ -576,7 +577,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, session, initialPage, onNavigate }: { onBack: () => void; session: string; initialPage: "general" | "dashboard"; onNavigate: (path: string) => void }) {
+function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard"; onNavigate: (path: string) => void }) {
   const [page, setPage] = React.useState<"general" | "dashboard">(initialPage);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
@@ -597,7 +598,7 @@ function GeneralSettingsPage({ onBack, session, initialPage, onNavigate }: { onB
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
+      fetch("/api/settings/general", { headers: {} }).then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
       fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("settings.statusError"); return r.json() as Promise<SystemStatus>; })
     ]).then(([prefs, system]) => {
       if (!active) return;
@@ -616,7 +617,7 @@ function GeneralSettingsPage({ onBack, session, initialPage, onNavigate }: { onB
   const createToken = async () => {
     setTokenBusy(true); setTokenMessage(""); setTokenCopyStatus(""); setNewToken("");
     try {
-      const response = await fetch("/api/settings/weather-tokens", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ name: tokenName }) });
+      const response = await fetch("/api/settings/weather-tokens", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: tokenName }) });
       const data = await response.json() as { token?: string; info?: WeatherTokenInfo; error?: string };
       if (!response.ok || !data.token || !data.info) throw new Error(data.error ?? t("settings.tokenCreateError"));
       setNewToken(data.token); setTokenName(""); setWeatherTokens(current => [...current, data.info!]);
@@ -726,7 +727,7 @@ function GeneralSettingsPage({ onBack, session, initialPage, onNavigate }: { onB
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : <QuickActionsSettingsPage session={session} locale={locale} t={t} />}
+      </> : <QuickActionsSettingsPage locale={locale} t={t} />}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
