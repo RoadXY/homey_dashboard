@@ -21,6 +21,14 @@ type MeasurementTile = { id: string; name: string; source: MeasurementTileSource
 type MeasurementSourceCatalog = { zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; units: string; decimals: number | null }[] }[]; variables: { id: string; name: string; type: "number" }[] };
 type MeasurementTileValue = { id: string; value: number | null; units: string; decimals: number | null; available: boolean };
 type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
+function formatMeasurementValue(reading: MeasurementTileValue | undefined, locale: string = "nl"): string {
+  if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return "—";
+  const number = reading.decimals === null
+    ? String(reading.value)
+    : reading.value.toFixed(reading.decimals);
+  const localized = locale.toLowerCase().startsWith("nl") ? number.replace(".", ",") : number;
+  return localized + (reading.units ? " " + reading.units : "");
+}
 type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null; booleanMode: "on" | "off" | "toggle" };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
@@ -124,9 +132,6 @@ function App() {
   }, [refresh]);
   const devices = readings?.devices ?? [];
   const findDevice = (part: string) => devices.find((device) => device.name?.toLowerCase().includes(part.toLowerCase()));
-  const livingRoomSensor = findDevice("multisensor woonkamer");
-  const semSensor = findDevice("temperatuur sem");
-  const bramSensor = findDevice("temperatuur bram");
   const weather = findDevice("weer");
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
@@ -255,10 +260,10 @@ function App() {
           </div>
         </article>
         <section className="temperature-grid" aria-label="Temperature sensors">
-          <TemperatureTile label="Living room" value={temperature(capability(livingRoomSensor, "measure_temperature"), locale)} />
-          <TemperatureTile label="Kitchen" value={temperature(logicValue("temperatuur_gemiddeld_keuken"), locale)} />
-          <TemperatureTile label="Sem" value={temperature(capability(semSensor, "measure_temperature"), locale)} />
-          <TemperatureTile label="Bram" value={temperature(capability(bramSensor, "measure_temperature"), locale)} />
+          {(measurementTileData?.tiles ?? []).map(tile => {
+            const reading = measurementTileData?.values.find(value => value.id === tile.id);
+            return <TemperatureTile key={tile.id} label={tile.name} value={formatMeasurementValue(reading, locale)} />;
+          })}
         </section>
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
@@ -422,6 +427,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
+  const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
   const dirty = JSON.stringify(tiles) !== JSON.stringify(saved);
   const selected = tiles.find(tile => tile.id === selectedId) ?? tiles[0];
   React.useEffect(() => {
@@ -433,6 +439,16 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
       .catch(error => { if (active) { setMessage(error instanceof Error ? error.message : "Laden mislukt."); setIsError(true); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
+  }, []);
+  React.useEffect(() => {
+    let active = true;
+    const poll = () => fetch("/api/dashboard/measurement-tiles")
+      .then(async response => { if (!response.ok) throw new Error("Meetwaarden tijdelijk niet beschikbaar."); return response.json() as Promise<MeasurementTileResponse>; })
+      .then(data => { if (active) setPreviewData(data); })
+      .catch(() => undefined);
+    void poll();
+    const timer = window.setInterval(() => void poll(), 5000);
+    return () => { active = false; window.clearInterval(timer); };
   }, []);
   const zonePath = (id: string | null): string => {
     if (!id) return "";
@@ -489,7 +505,12 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <h2><span>◎</span>{t("settings.preview")}</h2>
         <p className="quick-card-description">Zo worden de meetwaardetegels op het dashboard weergegeven.</p>
         <div className="quick-preview-grid measurement-preview-grid">
-          {tiles.map(tile => <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name="thermometer"/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">—</span><small>{sourceDescription(tile)}</small></div>)}
+          {tiles.map(tile => {
+            const savedTile = previewData?.tiles.find(item => item.id === tile.id);
+            const sameSource = JSON.stringify(savedTile?.source ?? null) === JSON.stringify(tile.source ?? null);
+            const reading = sameSource ? previewData?.values.find(item => item.id === tile.id) : undefined;
+            return <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name="thermometer"/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
+          })}
         </div>
       </section>
     </div>
