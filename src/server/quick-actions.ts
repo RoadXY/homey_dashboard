@@ -18,13 +18,13 @@ export type QuickAction = {
 
 const defaults: QuickAction[] = [
   { id: "qmusic", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
-  { id: "foute-uur", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "blinds", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "birthday", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "living-lights", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "mood-lights", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "tv", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "bedtime", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "foute-uur", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "blinds", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "birthday", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "living-lights", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "mood-lights", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "tv", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
+  { id: "bedtime", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
 ];
 
 const settingsFile = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "dashboard-actions.json");
