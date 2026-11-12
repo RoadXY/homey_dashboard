@@ -139,4 +139,6 @@
   "settings.tokensLoadError": "Could not load tokens.",
   "settings.tokenCreateError": "Could not create token.",
   "settings.tokenRevokeError": "Could not revoke token."
+  "settings.tokenCopySuccess": "Token copied to clipboard.",
+  "settings.tokenCopyError": "Copy failed. Select and copy the token manually.",
 }
