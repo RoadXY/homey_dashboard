@@ -50,7 +50,7 @@ function App() {
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([{ id: "notifications-load-error", title: t("notifications.loadErrorTitle"), message: t("notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
+      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
@@ -112,11 +112,11 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const weatherText = capability(weather, "conditioncode_text") ?? capability(weather, "description");
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
-  const timeText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
-  const dateText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const homeyOnline = homey?.state === "online";
   const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
+  const timeText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
+  const dateText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = window.setTimeout(() => { setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
@@ -164,10 +164,10 @@ function App() {
           </div>
         </article>
         <section className="temperature-grid" aria-label={t("rooms.aria")}>
-          <TemperatureTile label="Woonkamer" value={temperature(capability(livingRoomSensor, "measure_temperature"))} />
-          <TemperatureTile label="Keuken" value={temperature(logicValue("temperatuur_gemiddeld_keuken"))} />
-          <TemperatureTile label="Sem" value={temperature(capability(semSensor, "measure_temperature"))} />
-          <TemperatureTile label="Bram" value={temperature(capability(bramSensor, "measure_temperature"))} />
+          <TemperatureTile label={t("rooms.living")} value={temperature(capability(livingRoomSensor, "measure_temperature"))} />
+          <TemperatureTile label={t("rooms.kitchen")} value={temperature(logicValue("temperatuur_gemiddeld_keuken"))} />
+          <TemperatureTile label={t("rooms.sem")} value={temperature(capability(semSensor, "measure_temperature"))} />
+          <TemperatureTile label={t("rooms.bram")} value={temperature(capability(bramSensor, "measure_temperature"))} />
         </section>
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
@@ -210,7 +210,7 @@ function App() {
           <div className="panel-footer">
             <span>HOMEY DASHBOARD</span>
             <span className="panel-meta">
-              {homeyOnline ? `${homey?.deviceCount ?? "—"} apparaten · ${homey?.zoneCount ?? "—"} ruimtes` : t("footer.homeyOffline")}
+              {homeyOnline ? `${homey?.deviceCount ?? "—"} ${t("footer.devices")} · ${homey?.zoneCount ?? "—"} ${t("footer.rooms")}` : t("footer.homeyOffline")}
             </span>
           </div>
         </section>
@@ -292,7 +292,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       </div>
       <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
         <div className="status-table">
-          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state ?? t("settings.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
+          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
