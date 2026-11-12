@@ -168,5 +168,6 @@
   "settings.quickActionsSaved": "Quick actions saved.",
   "settings.quickActionsLoadError": "Failed to load quick actions.",
   "settings.quickActionsCatalogError": "Failed to load Homey devices and Flows.",
-  "actions.executeError": "The Homey action could not be executed."
+  "actions.executeError": "The Homey action could not be executed.",
+  "settings.cancel": "Cancel"
 }
