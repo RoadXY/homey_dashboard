@@ -168,5 +168,6 @@
   "settings.quickActionsSaved": "Quick Actions opgeslagen.",
   "settings.quickActionsLoadError": "Quick Actions laden mislukt.",
   "settings.quickActionsCatalogError": "Homey-apparaten en Flows laden mislukt.",
-  "actions.executeError": "De Homey-actie kon niet worden uitgevoerd."
+  "actions.executeError": "De Homey-actie kon niet worden uitgevoerd.",
+  "settings.cancel": "Annuleren"
 }
