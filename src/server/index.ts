@@ -62,6 +62,11 @@ app.post("/api/settings/unlock", async (request, reply) => {
   return { unlocked: true, sessionToken };
 });
 
+app.get("/api/settings/language", async () => {
+  const settings = await readDashboardSettings();
+  return { language: settings.language };
+});
+
 app.get("/api/settings/general", async (request, reply) => {
   if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   return readDashboardSettings();
