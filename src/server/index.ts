@@ -65,7 +65,7 @@ app.post("/api/settings/unlock", async (request, reply) => {
 
 const dataDirectory = process.env.DATA_DIR ?? join(process.cwd(), "data");
 const localeDirectory = join(dataDirectory, "locales");
-const defaultLocaleDirectory = join(process.cwd(), "default-locales");
+const defaultLocaleDirectory = existsSync(join(process.cwd(), "default-locales"))\n  ? join(process.cwd(), "default-locales")\n  : join(process.cwd(), "src", "client", "locales");
 
 async function initializeLocaleFiles(): Promise<void> {
   await mkdir(localeDirectory, { recursive: true });
