@@ -186,7 +186,7 @@ function App() {
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
         <div className="actions-grid" aria-label={t("actions.aria")}>
-          {quickActions.map((action, index) => {
+          {quickActions.map((action) => {
             const defaultLabels: Record<string, string> = {
               "qmusic": "actions.qmusic", "foute-uur": "actions.fouteUur", "blinds": "actions.blinds",
               "birthday": "actions.birthday", "living-lights": "actions.livingLights",
