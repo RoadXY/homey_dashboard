@@ -18,3 +18,9 @@ Swagger UI is intended primarily for browsing and searching. Its "Try it out" fe
 - `POST /api/v1/weather/conditions`: set the persistent current condition using `Authorization: Bearer <WEATHER_API_TOKEN>` and JSON `{"condition":"cloudy"}`.
 
 The last valid condition remains active until replaced. The dashboard does not apply a TTL; the Homey Flow owner controls update cadence.
+
+## Weather API token management
+
+Named Bearer tokens are created and revoked from the PIN-protected Settings screen. Each token is scoped to weather-condition writes. The server stores only a SHA-256 hash; the full token is returned once at creation and cannot be retrieved later. The Settings API requires the short-lived `x-settings-session` header. Revocation takes effect immediately.
+
+The initial `WEATHER_API_TOKEN` environment variable remains temporarily accepted for backward compatibility. After creating and testing a managed token, remove that legacy variable from the private `.env` file and restart the container.
