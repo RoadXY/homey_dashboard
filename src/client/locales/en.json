@@ -107,5 +107,14 @@
   "notifications.zolder-koud.title": "Attic cold",
   "notifications.zolder-koud.message": "The temperature in the attic is below 12 °C.",
   "notifications.heading": "Notifications",
-  "notifications.unavailableMessage": "Dashboard data could not be retrieved temporarily."
+  "notifications.unavailableMessage": "Dashboard data could not be retrieved temporarily.",
+  "weather.condition.clear": "Clear",
+  "weather.condition.partly_cloudy": "Partly cloudy",
+  "weather.condition.cloudy": "Cloudy",
+  "weather.condition.rain": "Rain",
+  "weather.condition.thunderstorm": "Thunderstorm",
+  "weather.condition.snow": "Snow",
+  "weather.condition.fog": "Fog",
+  "weather.condition.wind": "Windy",
+  "weather.condition.unknown": "Weather unavailable"
 }
