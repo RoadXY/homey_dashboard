@@ -22,3 +22,8 @@ Een goedgekeurd functioneel besluit betekent niet automatisch dat een mockupafbe
 | Scherm/onderdeel | Status | Wat is goedgekeurd | Wat staat nog open |
 |---|---|---|---|
 | Instellingen – Algemeen | <strong>Visuele referentie expliciet aangewezen</strong> | De door de gebruiker aangeleverde screenshot 65819.png is de leidende visuele referentie: header, linker navigatie, Language- en Date and time-kaarten, brede System status-kaart en acties Restore defaults / Save | Technische databronnen voor statusvelden; definitieve keuze over verschil in navigatiecategorieën t.o.v. oudere zes-categorie-afspraak |
+
+
+### Implementatiestatus – Instellingen General (12 november 2026)
+
+De eerste frontendversie van General, de persistente instellingen-API, systeemstatus-API en server-side PIN-verificatie staan op `phase_1_foundation`. De vormgeving volgt de door de gebruiker aangewezen screenshot. <badge color="warning">Build nog niet gevalideerd</badge> De lokale `.env` moet `SETTINGS_PIN` bevatten; daarna volgt Docker-build en visuele praktijktest.
