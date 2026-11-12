@@ -276,3 +276,15 @@ Toggle wordt server-side uitgevoerd op basis van de actuele Homey-waarde, niet o
 Deze drie bedieningsopties gelden voor wijzigbare boolean-capabilities. Numerieke en enum-capabilities behouden hun passende waarde-/keuzebediening en krijgen niet automatisch Toggle-gedrag of een aan/uit-kleur. Een dimbare lamp gebruikt voor de status de gekozen boolean-capability (bijvoorbeeld `onoff`); de dimwaarde zelf bepaalt niet of de tegel als aan of uit wordt weergegeven.
 
 Dit is een vastgelegd ontwerpbesluit; de statusgestuurde tegelweergave en de nieuwe Toggle-uitvoering moeten nog worden geïmplementeerd en getest.
+
+
+### Implementatie Quick Actions: Homey-status en Toggle (12 november 2026)
+
+- De configuratie van een boolean-capability biedt drie keuzes: Aanzetten (`true`), Uitzetten (`false`) en Wisselen (Toggle).
+- Bestaande opgeslagen Quick Actions blijven compatibel: ontbreekt de nieuwe `booleanMode`-eigenschap, dan wordt de oude ingestelde boolean-waarde gebruikt als Aanzetten/Uitzetten.
+- Toggle wordt door de backend uitgevoerd. De backend haalt de actuele Homey-capabilitywaarde op, weigert te schakelen als deze geen boolean is en schrijft daarna de omgekeerde waarde.
+- De dashboard-API levert per apparaatactie de actuele boolean-status van de gekozen capability. De browser ververst deze status iedere vijf seconden en direct na een actie.
+- Alleen een actuele `true`-status krijgt de blauwe actieve tegelstijl. `false`, onbekende status, niet-beschikbaar apparaat en Flow-acties krijgen geen actieve stijl.
+- De configuratie toont de beschikbare wijzigbare boolean-capabilities van het gekozen apparaat; elke Quick Action bedient precies één capability.
+- De huidige implementatie gebruikt periodiek uitlezen als betrouwbare terugval voor apparaten buiten de bestaande vaste realtime-subscriptielijst. Dit geeft maximaal circa vijf seconden vertraging bij externe wijzigingen; een latere uitbreiding kan dynamische Homey-realtime-abonnementen toevoegen.
+- Implementatie is gebouwd en CI-getest; runtime-test met echte Homey-apparaten moet na deployment plaatsvinden.
