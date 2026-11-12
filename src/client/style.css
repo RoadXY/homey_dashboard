@@ -110,6 +110,12 @@ body {
   border: 1px solid rgba(255,255,255,.075); border-radius: 16px;
   background: linear-gradient(145deg, rgba(39,43,51,.95), rgba(26,29,35,.98)); color: #d8dce2;
 }
+.action-card.is-active {
+  border-color: rgba(55, 157, 255, .82);
+  background: linear-gradient(145deg, rgba(19, 69, 111, .96), rgba(13, 48, 79, .98));
+  box-shadow: inset 0 0 0 1px rgba(55, 157, 255, .18), 0 0 18px rgba(25, 132, 230, .12);
+}
+.action-card.is-active .action-mark { color: #55aeff; }
 .action-mark { color: #c0c7d1; font-size: clamp(42px,4vw,58px); line-height: 1; }
 .action-label { font-size: clamp(16px,1.2vw,20px); line-height: 1.25; overflow-wrap: anywhere; }
 .notifications-panel {
