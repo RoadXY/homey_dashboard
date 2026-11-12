@@ -253,38 +253,43 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+"u", String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? "maandag 27 januari 2025" : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
+  const isDutch = settings.language === "nl-NL" || (settings.language === "automatic" && status?.homeyLanguage?.toLowerCase().startsWith("nl") === true);
+  const t = (nl: string, en: string) => isDutch ? nl : en;
+  const languageName = (code: string) => isDutch
+    ? ({ nl: "Nederlands", en: "Engels", de: "Duits", fr: "Frans" }[code.toLowerCase().split("-")[0]] ?? code.toUpperCase())
+    : homeyLanguageName(code);
   return <main className="settings-shell">
     <header className="settings-topbar">
-      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span>Dashboard</span></button>
+      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span> {t("Dashboard", "Dashboard")}</span></button>
     </header>
     <aside className="settings-sidebar">
-      <h2>Settings</h2>
-      {["General","Dashboard","Devices","Homey","System"].map((name,index)=><button key={name} className={"settings-nav "+(index===0?"active":"")} disabled={index!==0}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
+      <h2>{t("Instellingen", "Settings")}</h2>
+      {[t("Algemeen","General"),t("Dashboard","Dashboard"),t("Apparaten","Devices"),"Homey",t("Systeem","System")].map((name,index)=><button key={name} className={"settings-nav "+(index===0?"active":"")} disabled={index!==0}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
-      <div className="settings-title"><p>Basic settings for language, date, time and system information.</p></div>
+      <div className="settings-title"><p>{t("Basisinstellingen voor taal, datum, tijd en systeeminformatie.", "Basic settings for language, date, time and system information.")}</p></div>
       <div className="settings-top-cards">
-        <section className="settings-card language-card"><h2><span>◎</span>Language</h2>
-          <label className="setting-row"><span>Dashboard language</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">Automatic (Homey language)</option><option value="nl-NL">Dutch</option><option value="en">English</option></select></label>
-          <div className="language-info"><div>ℹ <span><strong>Automatic</strong><br/>Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.</span></div><div>● <span>Detected Homey language: <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${homeyLanguageName(status.homeyLanguage)})` : "Not available — check Homey API permissions"}</strong></span><em>{status?.homeyLanguage ? "Detected" : "Fallback"}</em></div></div>
+        <section className="settings-card language-card"><h2><span>◎</span>{t("Taal","Language")}</h2>
+          <label className="setting-row"><span>{t("Dashboardtaal","Dashboard language")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">Automatisch (Homey-taal)</option><option value="nl-NL">Nederlands</option><option value="en">Engels</option></select></label>
+          <div className="language-info"><div>ℹ <span><strong>{t("Automatisch","Automatic")}</strong><br/>{t("Gebruikt de Homey-taal wanneer detectie wordt ondersteund. Anders valt het dashboard terug op Engels.","Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.")}</span></div><div>● <span>{t("Gedetecteerde Homey-taal:","Detected Homey language:")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("Niet beschikbaar — controleer Homey API-rechten","Not available — check Homey API permissions")}</strong></span><em>{status?.homeyLanguage ? t("Gedetecteerd","Detected") : t("Terugval","Fallback")}</em></div></div>
         </section>
-        <section className="settings-card date-card"><h2><span>▢</span>Date and time</h2>
-          <label className="setting-row"><span>Date format</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">Long ({datePreview})</option></select></label>
-          <label className="setting-row"><span>Time format</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">24-hour (10:24)</option><option value="12h">12-hour (10:24 AM)</option></select></label>
-          <label className="setting-row"><span>First day of the week</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">Monday</option><option value="sunday">Sunday</option></select></label>
+        <section className="settings-card date-card"><h2><span>▢</span>{t("Datum en tijd","Date and time")}</h2>
+          <label className="setting-row"><span>{t("Datumnotatie","Date format")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">{t("Voluit","Long")} ({datePreview})</option></select></label>
+          <label className="setting-row"><span>{t("Tijdnotatie","Time format")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">24-uurs (10:24)</option><option value="12h">12-uurs (10:24 AM)</option></select></label>
+          <label className="setting-row"><span>{t("Eerste dag van de week","First day of the week")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("Maandag","Monday")}</option><option value="sunday">{t("Zondag","Sunday")}</option></select></label>
         </section>
       </div>
-      <section className="settings-card system-card"><h2><span>▤</span>System status</h2>
+      <section className="settings-card system-card"><h2><span>▤</span>{t("Systeemstatus","System status")}</h2>
         <div className="status-table">
-          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>Homey connection</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?"Connected":status?.homey.state ?? "Unknown"}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>Dashboard service</span><strong className="status-pill ok">Running</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>System</span><strong className="status-pill ok">Healthy</strong><span className="status-detail">Uptime: {uptime(status?.uptimeSeconds)}</span></div>
+          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("Homey-verbinding","Homey connection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("Verbonden","Connected"):status?.homey.state ?? t("Onbekend","Unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("Dashboardservice","Dashboard service")}</span><strong className="status-pill ok">{t("Actief","Running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("Systeem","System")}</span><strong className="status-pill ok">{t("Gezond","Healthy")}</strong><span className="status-detail">{t("Actief sinds:","Uptime:")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
       </section>
-      <div className="settings-bottom"><span className="save-message" role="status">{busy?"Loading…":message}</span><button className="secondary-button" onClick={restore}>⟳ &nbsp;Restore defaults</button><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;Save</button></div>
+      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("Laden…","Loading…"):message}</span><button className="secondary-button" onClick={restore}>⟳ &nbsp;{t("Standaardwaarden herstellen","Restore defaults")}</button><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("Opslaan","Save")}</button></div>
     </section>
-    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>Unsaved changes</h2><p>Do you want to save your changes before leaving?</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>Stay</button><button className="secondary-button" onClick={onBack}>Discard</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>Save</button></div></section></div>}
+    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("Niet-opgeslagen wijzigingen","Unsaved changes")}</h2><p>{t("Wil je de wijzigingen opslaan voordat je weggaat?","Do you want to save your changes before leaving?")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("Blijven","Stay")}</button><button className="secondary-button" onClick={onBack}>{t("Verwerpen","Discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("Opslaan","Save")}</button></div></section></div>}
   </main>;
 }
 
