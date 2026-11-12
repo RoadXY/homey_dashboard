@@ -153,7 +153,7 @@ function App() {
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              <div className="eyebrow">{t("weather.outside")}</div>
+              <div className="eyebrow">OUTSIDE · WEATHER</div>
               <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
               <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : typeof weatherText === "string" && locale.toLowerCase().startsWith("nl") ? weatherText : t("weather.condition.unknown")}</div>
             </div>
@@ -164,11 +164,11 @@ function App() {
             <div><span>{t("weather.wind")}</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
           </div>
         </article>
-        <section className="temperature-grid" aria-label={t("rooms.aria")}>
-          <TemperatureTile label={t("rooms.living")} value={temperature(capability(livingRoomSensor, "measure_temperature"), locale)} />
-          <TemperatureTile label={t("rooms.kitchen")} value={temperature(logicValue("temperatuur_gemiddeld_keuken"), locale)} />
-          <TemperatureTile label={t("rooms.sem")} value={temperature(capability(semSensor, "measure_temperature"), locale)} />
-          <TemperatureTile label={t("rooms.bram")} value={temperature(capability(bramSensor, "measure_temperature"), locale)} />
+        <section className="temperature-grid" aria-label="Temperature sensors">
+          <TemperatureTile label="Living room" value={temperature(capability(livingRoomSensor, "measure_temperature"), locale)} />
+          <TemperatureTile label="Kitchen" value={temperature(logicValue("temperatuur_gemiddeld_keuken"), locale)} />
+          <TemperatureTile label="Sem" value={temperature(capability(semSensor, "measure_temperature"), locale)} />
+          <TemperatureTile label="Bram" value={temperature(capability(bramSensor, "measure_temperature"), locale)} />
         </section>
       </section>
       <section className="right-column" aria-label={t("notifications.aria")}>
