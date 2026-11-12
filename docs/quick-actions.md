@@ -81,3 +81,9 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De Quick Actions-editor staat standaard gesloten wanneer de instellingenpagina Dashboard wordt geopend. De gebruiker opent de editor door expliciet een actie uit de lijst te selecteren.
 - De actieve optie in de linker instellingen-navigatie gebruikt afgeronde rechthoekige hoeken (14 px), passend bij de kaart- en knopvormgeving in de rest van de interface, in plaats van een capsule/pill-vorm.
 - De bestaande blauwe actieve achtergrond, hover-omlijning en touchvriendelijke afmetingen blijven behouden.
+
+## Live synchronisatie van instellingen naar dashboard-schermen
+- De server publiceert na succesvol opslaan van Algemene instellingen of Quick Actions een `settings-updated`-event via het bestaande Server-Sent Events-endpoint `/api/events`.
+- Alle open dashboardclients luisteren naar dit event en halen de actuele dashboardgegevens opnieuw op.
+- Hierdoor worden bijvoorbeeld gewijzigde Quick Actions en taal-/datum-/tijdvoorkeuren op de tablet bijgewerkt zodra ze op een andere computer zijn opgeslagen, zonder handmatige refresh of volledige browserreload.
+- SSE-clients worden bij verbreken van de verbinding automatisch opnieuw verbonden door de browser; na reconnect stuurt het bestaande `ready`-event opnieuw een data-refresh aan.
