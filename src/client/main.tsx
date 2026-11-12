@@ -16,10 +16,10 @@ type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h"
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
 const actions = [
-  { name: "Q-Music", icon: "♫" }, { name: "Q-Music Foute Uur", icon: "♫" },
-  { name: "Rolluiken openen", icon: "⌃" }, { name: "Verjaardagmodus", icon: "✦" },
-  { name: "Woonkamerverlichting uit", icon: "◌" }, { name: "Sfeerverlichting", icon: "✧" },
-  { name: "TV-modus", icon: "▣" }, { name: "Bedtijd", icon: "☾" },
+  { key: "actions.qmusic", icon: "♫" }, { key: "actions.fouteUur", icon: "♫" },
+  { key: "actions.blinds", icon: "⌃" }, { key: "actions.birthday", icon: "✦" },
+  { key: "actions.livingLights", icon: "◌" }, { key: "actions.moodLights", icon: "✧" },
+  { key: "actions.tv", icon: "▣" }, { key: "actions.bedtime", icon: "☾" },
 ];
 function capability(device: HomeyDevice | undefined, id: string): unknown {
   return device?.readings?.find((reading) => reading.capabilityId === id)?.value;
@@ -31,6 +31,7 @@ function App() {
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
+  const [homeyLanguage, setHomeyLanguage] = React.useState<string | null>(null);
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
@@ -51,9 +52,9 @@ function App() {
       .then((data) => setNotifications(data.notifications))
       .catch(() => setNotifications([{ id: "notifications-load-error", title: t("notifications.loadErrorTitle"), message: t("notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     try {
-      const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse] = await Promise.all([
+      const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
-        fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null),
+        fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
       ]);
       if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error("Homey-gegevens tijdelijk niet beschikbaar");
       const [statusData, readingsData, logicData] = await Promise.all([
@@ -61,6 +62,10 @@ function App() {
         logicResponse.json() as Promise<LogicResponse>,
       ]);
       setHomey(statusData); setReadings(readingsData); setLogic(logicData);
+      if (systemResponse?.ok) {
+        const system = await systemResponse.json() as { homeyLanguage?: string | null };
+        setHomeyLanguage(system.homeyLanguage ?? null);
+      }
       if (languageResponse?.ok) {
         const preference = await languageResponse.json() as { language?: string };
         if (typeof preference.language === "string") setDashboardLanguage(preference.language);
@@ -107,10 +112,10 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const weatherText = capability(weather, "conditioncode_text") ?? capability(weather, "description");
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
-  const timeText = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
-  const dateText = new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
+  const timeText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
+  const dateText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const homeyOnline = homey?.state === "online";
-  const locale = resolveLocale(dashboardLanguage, (homey as (HomeyStatus & { homeyLanguage?: string }) | null)?.homeyLanguage);
+  const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
@@ -168,10 +173,10 @@ function App() {
       <section className="right-column" aria-label={t("notifications.aria")}>
         <div className="actions-grid" aria-label={t("actions.aria")}>
           {actions.map((action, index) => (
-            <div className="action-card" key={action.name}>
+            <div className="action-card" key={action.key}>
               <span className="action-index">{String(index + 1).padStart(2, "0")}</span>
               <span className="action-mark" aria-hidden="true">{action.icon}</span>
-              <span className="action-label">{action.name}</span>
+              <span className="action-label">{t(action.key)}</span>
             </div>
           ))}
         </div>
@@ -217,10 +222,10 @@ function App() {
 function SettingsPinGate({ pin, setPin, error, onCancel, onUnlock }: { pin: string; setPin: (value: string) => void; error: string; onCancel: () => void; onUnlock: () => void }) {
   return <main className="settings-gate"><form className="pin-card" onSubmit={(event) => { event.preventDefault(); onUnlock(); }}>
     <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div>
-    <h1>{translate("nl", "settings.lockedTitle")}</h1><p>{translate("nl", "settings.pinPrompt")}</p>
+    <h1>{translate("en", "settings.lockedTitle")}</h1><p>{translate("en", "settings.pinPrompt")}</p>
     <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
-    <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>Terug naar dashboard</button><button className="primary-button" type="submit">Ontgrendelen</button></div>
+    <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>{translate("en", "settings.back")}</button><button className="primary-button" type="submit">{translate("en", "settings.unlock")}</button></div>
   </form></main>;
 }
 
@@ -237,8 +242,8 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error("Instellingen laden mislukt"); return r.json() as Promise<GeneralSettings>; }),
-      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("Systeemstatus laden mislukt"); return r.json() as Promise<SystemStatus>; })
+      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error(translate("en", "settings.loadError")); return r.json() as Promise<GeneralSettings>; }),
+      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error(translate("en", "settings.statusError")); return r.json() as Promise<SystemStatus>; })
     ]).then(([prefs, system]) => {
       if (!active) return;
       setSettings(prefs); setSaved(prefs); setStatus(system);
@@ -252,13 +257,13 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     try {
       const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify(settings) });
       const result = await response.json() as GeneralSettings & { error?: string };
-      if (!response.ok) throw new Error(result.error || "Opslaan mislukt.");
-      setSettings(result); setSaved(result); setMessage("Instellingen opgeslagen.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); }
+      if (!response.ok) throw new Error(result.error || translate(locale, "settings.saveError"));
+      setSettings(result); setSaved(result); setMessage(translate(locale, "settings.saved"));
+    } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+"u", String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
-  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? "maandag 27 januari 2025" : "27-01-2025";
+  const datePreview = settings.dateFormat === "iso" ? (settings.language === "en" ? "2025-01-27" : "2025-01-27") : settings.dateFormat === "long" ? (settings.language === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
   const t = (key: string) => translate(locale, key);
@@ -276,11 +281,11 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
-          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automatic")} (Homey language)</option><option value="nl-NL">Nederlands</option><option value="en">English</option></select></label>
+          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automatic")} ({t("settings.homeyLanguage")})</option><option value="nl-NL">Nederlands</option><option value="en">English</option></select></label>
           <div className="language-info"><div>ℹ <span><strong>{t("settings.automatic")}</strong><br/>{t("settings.autoDescription")}</span></div><div>● <span>{t("settings.detectedHomey")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("settings.notAvailable")}</strong></span><em>{status?.homeyLanguage ? t("settings.detected") : t("settings.fallback")}</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
-          <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
+          <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">{t("settings.shortDate")} ({datePreview})</option><option value="iso">{t("settings.isoDate")} ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
           <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
           <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
