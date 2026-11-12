@@ -459,6 +459,8 @@ body {
 .quick-device-picker .quick-flow-trigger-icon { font-size:20px; }
 .quick-device-menu { bottom:auto; top:calc(100% + 5px); max-height:min(58vh,480px); }
 .quick-device-menu .quick-flow-results { min-height:0; }
-.quick-device-menu .quick-flow-option { border-radius:9px; }
+.quick-device-menu .quick-flow-option { min-height:62px; margin:6px 6px; padding:12px 14px; gap:13px; border-radius:10px; }
+.quick-device-menu .quick-flow-option-icon { flex-basis:34px; font-size:25px; }
+.quick-device-menu .quick-flow-option-icon svg { width:25px; height:25px; }
 
 .quick-catalog-warning { margin:0 0 12px; padding:10px 12px; border:1px solid rgba(245,181,74,.4); border-radius:9px; background:rgba(128,82,18,.18); color:#ffd58a; font-size:13px; line-height:1.4; overflow-wrap:anywhere; }
