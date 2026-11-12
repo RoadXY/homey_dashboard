@@ -58,3 +58,6 @@ De Flow-selectie is een eigen dropdown geworden in plaats van een los zoekveld b
 - De actieve pagina behoudt de bestaande blauwe achtergrondkleur (`#0965d7`); hover voegt alleen een omlijning toe.
 - Touch-opties hebben minimaal 52 px hoogte en krijgen actieve feedback; toetsenbordfocus blijft zichtbaar.
 - Uitgeschakelde menu-items krijgen geen hover-interactie.
+
+## Niet-geïmplementeerde instellingenmenu's
+Niet-beschikbare menu-items blijven disabled en krijgen expliciet `pointer-events:none`. Daardoor reageren ze niet op muis-hover, touch of pointer-interactie. Alleen geïmplementeerde menu-items tonen de hover-omlijning.
