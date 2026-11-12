@@ -102,14 +102,12 @@
   "notifications.zolder-koud.message": "De temperatuur op zolder is lager dan 12 °C.",
   "notifications.heading": "Meldingen",
   "notifications.unavailableMessage": "Dashboardgegevens konden tijdelijk niet worden opgehaald.",
-  "weather.condition.clear": "Helder",
   "weather.condition.partly_cloudy": "Half bewolkt",
   "weather.condition.cloudy": "Bewolkt",
   "weather.condition.rain": "Regen",
   "weather.condition.thunderstorm": "Onweer",
   "weather.condition.snow": "Sneeuw",
   "weather.condition.fog": "Mist",
-  "weather.condition.wind": "Winderig",
   "weather.condition.unknown": "Weer niet beschikbaar",
   "notifications.notifications-load-error.title": "Meldingen niet beschikbaar",
   "notifications.notifications-load-error.message": "De meldingsconfiguratie kon niet worden ingelezen.",
@@ -139,6 +137,6 @@
   "settings.tokensLoadError": "Tokens laden mislukt.",
   "settings.tokenCreateError": "Token aanmaken mislukt.",
   "settings.tokenRevokeError": "Token intrekken mislukt.",
-    "settings.tokenCopySuccess": "Token naar klembord gekopieerd.",
+  "settings.tokenCopySuccess": "Token naar klembord gekopieerd.",
   "settings.tokenCopyError": "Kopiëren is niet gelukt. Selecteer en kopieer de token handmatig."
 }
