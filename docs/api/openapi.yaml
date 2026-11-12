@@ -417,7 +417,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: opaque token
-      description: Configure WEATHER_API_TOKEN in the private server .env file. Never commit the token.
+      description: Create and revoke named tokens in PIN-protected Settings. Only token hashes are stored; the secret is shown once. WEATHER_API_TOKEN remains a temporary migration fallback.
   parameters:
     SettingsSession:
       name: x-settings-session
