@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homey Dashboard API</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>
+    body { margin: 0; background: #fafafa; }
+    .topbar { display: none; }
+    .page-header { padding: 22px 24px; background: #102033; color: #fff; }
+    .page-header h1 { margin: 0 0 6px; font: 600 22px system-ui, sans-serif; }
+    .page-header p { margin: 0; color: #cbd5e1; font: 14px system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Homey Dashboard API</h1>
+    <p>Searchable API reference generated from the version-controlled OpenAPI specification.</p>
+  </header>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: "./openapi.yaml",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        displayRequestDuration: true,
+        persistAuthorization: false,
+        presets: [SwaggerUIBundle.presets.apis],
+        layout: "BaseLayout"
+      });
+    };
+  </script>
+</body>
+</html>
