@@ -244,3 +244,12 @@ De code en documentatie zijn gecommit, maar Docker-build/runtimegedrag en GitHub
 ## Besluit – Weather API-tokenbeheer via Instellingen (12 november 2026)
 
 Weather API Bearer-tokens worden beheerd via de PIN-beveiligde Instellingenpagina. De server genereert per token een willekeurig geheim; alleen de hash wordt persistent opgeslagen. Het geheim wordt één keer getoond. Tokens kunnen afzonderlijk worden ingetrokken en zijn uitsluitend geldig voor de write-endpoint voor weercondities. De bestaande WEATHER_API_TOKEN-variabele blijft tijdelijk ondersteund om bestaande integraties niet abrupt te breken. Zie docs/08-ontwikkeling/eerste-applicatiebasis.md voor de technische uitwerking en validatiestatus.
+
+
+## UI-correctie – Weather API-tokenformulier (12 november 2026)
+
+Op basis van de tablet-screenshot is het tokennaamveld teruggebracht tot een normale invoerhoogte (48 px). Het label staat boven het veld; de knop staat ernaast op dezelfde rij en blijft binnen de tokenkaart. Op smalle schermen stapelt de knop onder het veld en vult deze de beschikbare breedte. De tokenkaart krijgt een vaste inhoudshoogte in plaats van mee te krimpen met de systeemstatuskaart.
+
+## GitHub Pages – diagnose workflowfout (12 november 2026)
+
+De GitHub Actions-log van run 43250294307 (job 131293937025) bevestigt dat de fout optreedt in **Configure GitHub Pages**, vóór OpenAPI-lint, artifact-upload en deployment. GitHub retourneert eerst 404 bij het ophalen van de Pages-site en daarna **Resource not accessible by integration** bij het aanmaken ervan. De workflowtoken heeft wel Pages: write, maar mag de Pages-site niet via deze API aanmaken. Daarom probeert de workflow Pages niet langer automatisch in te schakelen. Een repository-eigenaar moet de Pages-site eenmalig handmatig activeren via Settings → Pages en de bron op GitHub Actions zetten. Daarna kan de workflow opnieuw worden uitgevoerd. Dit is een repository-instelling/rechtenprobleem, geen fout in de OpenAPI-specificatie.
