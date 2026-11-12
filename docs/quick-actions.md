@@ -61,3 +61,9 @@ De Flow-selectie is een eigen dropdown geworden in plaats van een los zoekveld b
 
 ## Niet-geïmplementeerde instellingenmenu's
 Niet-beschikbare menu-items blijven disabled en krijgen expliciet `pointer-events:none`. Daardoor reageren ze niet op muis-hover, touch of pointer-interactie. Alleen geïmplementeerde menu-items tonen de hover-omlijning.
+
+## Dashboard Quick Actions – raster en typografie
+- De zichtbare volgnummerlabels (01–08) zijn uit de actiekaarten verwijderd.
+- Op desktop/tablet worden de acht acties getoond in een raster van vier kolommen en twee rijen.
+- De actie-iconen en labels zijn vergroot en de kaartinhoud is gecentreerd.
+- Op smalle telefoons wordt het raster twee kolommen breed zodat labels en aanraakvlakken leesbaar en bruikbaar blijven.
