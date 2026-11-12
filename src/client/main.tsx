@@ -36,6 +36,7 @@ function App() {
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
+  const [settingsSession, setSettingsSession] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [pinError, setPinError] = React.useState("");
   const holdTimer = React.useRef<number | null>(null);
@@ -112,13 +113,13 @@ function App() {
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onBack={() => { setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} />
+    ? <GeneralSettingsPage session={settingsSession} onBack={() => { setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} />
     : <SettingsPinGate pin={pin} setPin={setPin} error={pinError} onCancel={() => setSettingsOpen(false)} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
-          const data = await response.json() as { error?: string; unlocked?: boolean };
+          const data = await response.json() as { error?: string; unlocked?: boolean; sessionToken?: string };
           if (!response.ok) throw new Error(data.error || "Toegang geweigerd.");
-          setSettingsUnlocked(true); setPinError("");
+          setSettingsSession(data.sessionToken ?? ""); setSettingsUnlocked(true); setPinError("");
         } catch (error) { setPinError(error instanceof Error ? error.message : "PIN-controle mislukt."); }
       }} />;
   return (
@@ -216,7 +217,7 @@ function SettingsPinGate({ pin, setPin, error, onCancel, onUnlock }: { pin: stri
 }
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
-function GeneralSettingsPage({ onBack }: { onBack: () => void }) {
+function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -227,7 +228,7 @@ function GeneralSettingsPage({ onBack }: { onBack: () => void }) {
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/general").then(r => { if (!r.ok) throw new Error("Instellingen laden mislukt"); return r.json() as Promise<GeneralSettings>; }),
+      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error("Instellingen laden mislukt"); return r.json() as Promise<GeneralSettings>; }),
       fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("Systeemstatus laden mislukt"); return r.json() as Promise<SystemStatus>; })
     ]).then(([prefs, system]) => {
       if (!active) return;
@@ -240,7 +241,7 @@ function GeneralSettingsPage({ onBack }: { onBack: () => void }) {
   const save = async () => {
     setMessage("");
     try {
-      const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(settings) });
+      const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify(settings) });
       const result = await response.json() as GeneralSettings & { error?: string };
       if (!response.ok) throw new Error(result.error || "Opslaan mislukt.");
       setSettings(result); setSaved(result); setMessage("Instellingen opgeslagen.");
