@@ -112,5 +112,15 @@
   "weather.condition.wind": "Winderig",
   "weather.condition.unknown": "Weer niet beschikbaar",
   "notifications.notifications-load-error.title": "Meldingen niet beschikbaar",
-  "notifications.notifications-load-error.message": "De meldingsconfiguratie kon niet worden ingelezen."
+  "notifications.notifications-load-error.message": "De meldingsconfiguratie kon niet worden ingelezen.",
+  "weather.condition.sunny": "Zonnig",
+  "weather.condition.mostly_sunny": "Overwegend zonnig",
+  "weather.condition.overcast": "Geheel bewolkt",
+  "weather.condition.drizzle": "Motregen",
+  "weather.condition.heavy_rain": "Zware regen",
+  "weather.condition.showers": "Buien",
+  "weather.condition.hail": "Hagel",
+  "weather.condition.snow_showers": "Sneeuwbuien",
+  "weather.condition.sleet": "Natte sneeuw",
+  "weather.condition.windy": "Winderig"
 }
