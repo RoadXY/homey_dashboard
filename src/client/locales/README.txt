@@ -38,7 +38,7 @@ Example: to add German:
 
 5. Keep the JSON syntax valid. Use double quotes around property names
    and string values, and separate entries with commas.
-6. Commit and deploy the changes using the normal dashboard update script.
+6. Save the files on the Ubuntu host in /opt/homey_dashboard/src/client/locales.\n7. Restart the dashboard container (no image rebuild is needed):\n\n   cd /opt/homey_dashboard\n   docker compose -f compose.prod.yaml restart dashboard\n\n8. Reload the dashboard page in the browser/tablet.
 
 LANGUAGE REGISTRY FIELDS
 ------------------------
