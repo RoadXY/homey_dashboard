@@ -28,7 +28,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Validate OpenAPI specification\n        run: npx --yes @redocly/cli lint docs/api/openapi.yaml\n      - name: Upload API documentation
+      - name: Validate OpenAPI specification
+        run: npx --yes @redocly/cli lint docs/api/openapi.yaml
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/api
