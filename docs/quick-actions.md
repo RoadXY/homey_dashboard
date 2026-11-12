@@ -76,3 +76,8 @@ Niet-beschikbare menu-items blijven disabled en krijgen expliciet `pointer-event
 
 ## Instellingen: kaarten behouden hun volledige inhoudshoogte
 De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaarten (Weer-API-tokens en Systeemstatus) mogen daarin niet meer als flex-items worden samengedrukt tot de resterende viewporthoogte. Ze gebruiken nu hun natuurlijke inhoudshoogte (`flex: 0 0 auto`), zodat de kaartachtergrond en rand de volledige inhoud blijven omsluiten en de pagina als geheel scrollt wanneer nodig.
+
+## Quick Actions-editor en instellingenmenu-vormgeving
+- De Quick Actions-editor staat standaard gesloten wanneer de instellingenpagina Dashboard wordt geopend. De gebruiker opent de editor door expliciet een actie uit de lijst te selecteren.
+- De actieve optie in de linker instellingen-navigatie gebruikt afgeronde rechthoekige hoeken (14 px), passend bij de kaart- en knopvormgeving in de rest van de interface, in plaats van een capsule/pill-vorm.
+- De bestaande blauwe actieve achtergrond, hover-omlijning en touchvriendelijke afmetingen blijven behouden.
