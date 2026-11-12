@@ -24,3 +24,7 @@ The last valid condition remains active until replaced. The dashboard does not a
 Named Bearer tokens are created and revoked from the PIN-protected Settings screen. Each token is scoped to weather-condition writes. The server stores only a SHA-256 hash; the full token is returned once at creation and cannot be retrieved later. The Settings API requires the short-lived `x-settings-session` header. Revocation takes effect immediately.
 
 The initial `WEATHER_API_TOKEN` environment variable remains temporarily accepted for backward compatibility. After creating and testing a managed token, remove that legacy variable from the private `.env` file and restart the container.
+
+## Local Swagger UI
+
+The Docker application also serves Swagger UI at `/api-docs/` from the same origin as the dashboard. Use this local page for live API testing against the Ubuntu-hosted container. Its OpenAPI copy is packaged from `public/api-docs/openapi.yaml`; keep it synchronized with the canonical `docs/api/openapi.yaml`.
