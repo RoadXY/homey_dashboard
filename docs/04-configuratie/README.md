@@ -351,3 +351,24 @@ De ontwerpkeuzes zijn bevestigd:
 
 #### Technische verificatie eenheden
 De officiële Homey Apps SDK-documentatie beschrijft voor numerieke capabilities de opties units en decimals. De documentatie vermeldt ook dat units: °C Homey in staat stelt de waarde in de Homey-interface naar Fahrenheit om te zetten. De dashboardimplementatie moet verifiëren welke van deze metadata daadwerkelijk door de gebruikte Homey Web API-client in de apparaat/capability-objecten wordt teruggegeven. Dit mag niet worden aangenomen op basis van alleen de Apps SDK-definitie. De runtime-API-respons wordt tijdens implementatie/test gecontroleerd; ontbrekende metadata leidt tot een lege eenheid en een veilige standaard voor decimalen.
+
+
+### Meetwaardetegels – implementatie eerste versie (12 november 2026)
+
+De eerste implementatiestap staat op branch phase_1_foundation:
+- Nieuwe persistente configuratie in data/measurement-tiles.json met vier vaste tegel-ID's, naam en bron.
+- Bronverwijzingen bevatten alleen stabiele Homey-ID's: deviceId + capabilityId of variableId.
+- Backendcatalogus biedt uitsluitend numerieke apparaatcapabilities en numerieke Logic-variabelen aan.
+- Voor apparaatcapabilities worden units en decimals uit capabilitiesObj gelezen wanneer beschikbaar. Dit is bewust afhankelijk van de runtime metadata die de Homey Web API-client teruggeeft.
+- Backend leest actuele meetwaarden opnieuw uit Homey en weigert niet-numerieke, niet-eindige waarden.
+- Instellingen-endpoints zijn beveiligd met de bestaande instellingen-sessie.
+- Dashboardtegels worden gevoed vanuit de opgeslagen configuratie; meetwaarden worden als fallback iedere vijf seconden vernieuwd en ook bij bestaande Homey-events opnieuw opgehaald.
+- Dashboard-instellingen krijgen een afzonderlijk tabblad Meetwaardetegels naast Quick Actions.
+
+#### Nog te verifiëren tijdens praktijktest
+- Of de Homey Web API-client voor de gebruikte Homey Pro 2023-capabilities daadwerkelijk units en decimals teruggeeft. Als metadata ontbreekt, toont de tegel geen eenheid en gebruikt hij één decimaal als presentatie-terugval.
+- Of Homey Logic numerieke variabelen in de runtime als type number retourneert.
+- De volledige geneste zone-/ruimteboom en bronselectie met apparaten en capabilities op de echte Homey.
+- Dat een apparaat dat offline gaat of een verwijderde capability geen andere tegel of dashboardsectie blokkeert.
+
+Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-build en daarna de praktijktest op de Homey Pro 2023 slagen.
