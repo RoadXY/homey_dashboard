@@ -16,7 +16,7 @@ type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
-type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null };
+type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null; booleanMode: "on" | "off" | "toggle" };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
 type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"; enabled: boolean; icon?: string };
@@ -39,6 +39,7 @@ function App() {
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
   const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
+  const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
   const [actionError, setActionError] = React.useState("");
   const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
@@ -59,6 +60,7 @@ function App() {
       .then((data) => setNotifications(data.notifications))
       .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
+    void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null>)).catch(() => setQuickActionStatuses({}));
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
@@ -122,17 +124,17 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const homeyOnline = homey?.state === "online";
-  const executeAction = async (id: string) => {
+  const refreshQuickActionStatuses = async () => {\n    try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { setQuickActionStatuses({}); }\n  };\n  const executeAction = async (id: string) => {
     if (executingAction) return;
     setExecutingAction(id); setActionError("");
     try {
       const response = await fetch("/api/homey/quick-actions/" + encodeURIComponent(id) + "/execute", { method: "POST" });
       const result = await response.json() as { error?: string };
-      if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));
+      if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));\n      await refreshQuickActionStatuses();
     } catch (error) { setActionError(error instanceof Error ? error.message : t("actions.executeError")); }
     finally { setExecutingAction(""); }
   };
-  const locale = resolveLocale(dashboardLanguage, homeyLanguage);
+  React.useEffect(() => {\n    if (settingsOpen || !quickActions.some(action => action.type === "device" && action.capabilityId)) return;\n    const timer = window.setInterval(() => void refreshQuickActionStatuses(), 5000);\n    return () => window.clearInterval(timer);\n  }, [settingsOpen, quickActions]);\n  const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
     const syncRoute = () => {
@@ -247,7 +249,7 @@ function App() {
             };
             const label = action.name.trim() || t(defaultLabels[action.id] ?? "settings.quickActions");
             return (
-              <button className="action-card" key={action.id} type="button"
+              <button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} key={action.id} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
                 aria-label={label} title={label}>
                 <MdiIcon name={action.icon} className="action-mark" />
@@ -563,7 +565,7 @@ function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: stri
             </div>}
           </div>
           <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
-          {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? false)} onChange={event => updateSelected({ value: event.target.value === "true" })}><option value="true">{t("settings.turnOn")}</option><option value="false">{t("settings.turnOff")}</option></select></label>}
+          {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={selected.booleanMode} onChange={event => { const mode = event.target.value as "on" | "off" | "toggle"; updateSelected({ booleanMode: mode, value: mode === "on" ? true : mode === "off" ? false : selected.value }); }}><option value="on">{t("settings.turnOn")}</option><option value="off">{t("settings.turnOff")}</option><option value="toggle">Wisselen (Toggle)</option></select></label>}
           {selectedCapability?.type === "number" && <label>{t("settings.actionValue")}<div className="quick-range-row"><input type="range" min={selectedCapability.min ?? 0} max={selectedCapability.max ?? 100} step={selectedCapability.step ?? 1} value={typeof selected.value === "number" ? selected.value : selectedCapability.min ?? 0} onChange={event => updateSelected({ value: Number(event.target.value) })}/><strong>{formatValue(selected.value, selectedCapability.units)}</strong></div></label>}
           {selectedCapability?.type === "enum" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}>{selectedCapability.values.map(option => <option key={option.id} value={option.id}>{option.title}</option>)}</select></label>}
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
