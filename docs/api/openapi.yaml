@@ -403,6 +403,18 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/dashboard/quick-action-status:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardQuickActionStatuses
+      summary: Get current Homey boolean states for configured device Quick Actions
+      responses:
+        '200':
+          description: Current status keyed by Quick Action ID; unknown and unavailable states are null
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey status could not be retrieved}
   /api/settings/dashboard-actions:
     get:
       tags: [Settings (internal)]
