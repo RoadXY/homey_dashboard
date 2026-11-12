@@ -97,6 +97,9 @@ async function initializeLocaleFiles(): Promise<void> {
         };
       } else {
         merged = { ...defaults, ...current };
+        // These legacy Homey-only labels are no longer canonical API conditions.
+        delete merged["weather.condition.clear"];
+        delete merged["weather.condition.wind"];
       }
       const serialized = JSON.stringify(merged, null, 2) + "\n";
       if (serialized !== JSON.stringify(current, null, 2) + "\\n") {
