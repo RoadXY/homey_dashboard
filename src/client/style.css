@@ -262,3 +262,15 @@ body {
 .leave-modal>div { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
 @media(max-width:1050px) { .settings-shell { grid-template-columns:220px minmax(0,1fr); }.settings-content { padding:20px 18px; }.settings-top-cards { grid-template-columns:1fr; }.settings-card { padding:15px 18px; }.settings-topbar { gap:14px; padding:0 16px; }.topbar-time { margin-right:10px; } }
 @media(max-width:700px) { .settings-shell { height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:58px auto auto; overflow:visible; }.settings-topbar { grid-column:1; }.settings-sidebar { grid-column:1; grid-row:2; padding:12px; flex-direction:row; flex-wrap:wrap; border-right:0; border-bottom:1px solid rgba(155,182,212,.25); }.settings-sidebar h2,.sidebar-product { display:none; }.settings-nav { flex:1; min-width:100px; padding:0 8px; gap:7px; font-size:14px; }.settings-content { grid-column:1; grid-row:3; overflow:visible; }.topbar-date { display:none; }.settings-top-label { display:none; }.status-row { grid-template-columns:30px 1fr auto; }.status-detail { grid-column:2/-1; padding-bottom:8px; }.settings-bottom { flex-wrap:wrap; }.save-message { flex-basis:100%; } }
+
+.weather-token-card > p { color: var(--muted, #94a3b8); margin: 8px 0 16px; }
+.token-create-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.token-create-row input { flex: 1 1 220px; min-width: 0; }
+.token-secret-panel { display: grid; gap: 8px; padding: 14px; margin: 14px 0; border: 1px solid rgba(59,130,246,.45); border-radius: 12px; background: rgba(59,130,246,.08); }
+.token-secret-panel code { display: block; overflow-wrap: anywhere; padding: 10px; border-radius: 8px; background: rgba(0,0,0,.22); user-select: all; }
+.token-secret-panel .secondary-button { justify-self: start; }
+.token-list { display: grid; gap: 8px; margin-top: 12px; }
+.token-list-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(148,163,184,.18); }
+.token-list-row > div { display: grid; gap: 4px; min-width: 0; }
+.token-list-row small { color: var(--muted, #94a3b8); }
+@media (max-width: 700px) { .token-create-row { align-items: stretch; flex-direction: column; } .token-list-row { align-items: flex-start; } }
