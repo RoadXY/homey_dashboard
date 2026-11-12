@@ -9,10 +9,11 @@ export const WEATHER_CONDITIONS = [
 ] as const;
 export type WeatherCategory = typeof WEATHER_CONDITIONS[number] | "unknown";
 
+type LegacyWeatherCategory = "clear" | "wind" | "snow" | "fog" | "rain" | "thunderstorm" | "partly_cloudy" | "cloudy";
 type WeatherMappingConfig = {
   schemaVersion: number; id: string; enabled: boolean;
   source: { deviceId: string; conditionCapabilities: string[] };
-  mappings: Array<{ capabilityId: string; match: { type: "equals"; values: Array<string | number> }; category: WeatherCategory }>;
+  mappings: Array<{ capabilityId: string; match: { type: "equals"; values: Array<string | number> }; category: WeatherCategory | LegacyWeatherCategory }>;
   defaultCategory: "unknown";
 };
 
@@ -48,7 +49,7 @@ async function getStoredWeatherCondition(): Promise<StoredWeatherCondition | nul
 async function loadWeatherConfig(): Promise<WeatherMappingConfig> {
   const configPath = join(process.cwd(), "config", "weather", "weather-mapping.json");
   const config = JSON.parse(await readFile(configPath, "utf8")) as WeatherMappingConfig;
-  const validCategories = new Set<string>(WEATHER_CONDITIONS);
+  const validCategories = new Set<string>([...WEATHER_CONDITIONS, "clear", "wind"]);
   const valid = config.schemaVersion === 1 && typeof config.id === "string" && typeof config.enabled === "boolean" &&
     typeof config.source?.deviceId === "string" && Array.isArray(config.source.conditionCapabilities) && config.source.conditionCapabilities.length > 0 &&
     Array.isArray(config.mappings) && config.mappings.every((mapping) => typeof mapping.capabilityId === "string" &&
