@@ -198,3 +198,35 @@ De backend verzorgt de Homey-communicatie. Homey-authenticatiegegevens worden ui
 
 ### Voorlopige applicatieopbouw
 De eerste ontwerpvariant is één zelfstandige Docker-applicatie met een webfrontend en backend. De tablet gebruikt Fully Kiosk Browser om uitsluitend de dashboardwebsite te tonen. De backend haalt Homey-gegevens op, verwerkt deze en levert ze aan de frontend. Configuratie en andere blijvende gegevens worden buiten de container persistent opgeslagen. De definitieve technologiekeuze en communicatiemethode volgen na technische verificatie.
+
+
+## Instellingen: directe URL's en sessiebeveiliging (12 november 2026)
+
+### Rechtstreekse navigatie
+- De instellingen zijn via vaste URL-paden bereikbaar; de SPA-fallback serveert de applicatie ook bij een directe browserrequest naar een instellingenpad.
+- Ondersteunde routes in deze implementatiefase:
+  - `/settings/general` – Algemeen.
+  - `/settings/dashboard/quick-actions` – Dashboard → Snelle acties.
+- De route wordt bijgewerkt bij navigatie in het instellingenmenu en ondersteunt de browser-terug-/vooruitknoppen.
+- De bestaande verborgen toegang door de klok lang ingedrukt te houden blijft bestaan en opent `/settings/general`.
+- Een directe URL omzeilt de PIN-beveiliging niet: bij een ontbrekende of verlopen sessie verschijnt eerst de PIN-poort. Na succesvolle verificatie wordt de oorspronkelijk opgevraagde instellingenroute geopend.
+
+### PIN-sessiecookie
+- Na correcte PIN-invoer geeft de server een ondertekende sessiecookie uit met de naam `homey_settings`.
+- Cookie-attributen: `HttpOnly`, `SameSite=Strict`, `Path=/` en een vervaltijd van 30 minuten.
+- De cookie is niet uitleesbaar vanuit JavaScript. Instellingen-API's valideren de handtekening en vervaltijd server-side; de oude clientgestuurde `x-settings-session`-tokenheader is verwijderd.
+- De HMAC-sleutel wordt automatisch aangemaakt als `/app/data/settings-session.key` met bestandsmodus 0600. De Docker Compose-configuratie mount `dashboard_data` op `/app/data`; daardoor blijft de sleutel en dus een nog geldige sessie behouden bij een containerrecreate/update.
+- De cookie is een sliding inactivity session: bij geauthenticeerd gebruik en expliciete activiteit wordt de vervaltijd opnieuw op 30 minuten gezet. De browser stuurt hiervoor maximaal eenmaal per minuut een activiteitsping wanneer de gebruiker daadwerkelijk interactie heeft.
+- Activiteit bestaat uit pointer/touch, toetsenbord, scrollen en wielinteractie. Achtergrondverversingen tellen niet als gebruikersactiviteit.
+- Na 30 minuten zonder gebruikersactiviteit beëindigt de frontend de sessie, wist de cookie en navigeert naar het hoofddashboard. De server weigert ook na cookie-expiratie iedere beschermde instellingen-API-aanroep.
+- Handmatig verlaten van de instellingen via de terugknop of browsernavigatie wist de sessiecookie.
+- De sessie blijft na een containerupdate geldig zolang de browsercookie niet verlopen is en de persistente volumesleutel behouden blijft. Het verwijderen van het Docker-volume `dashboard_data` maakt de bestaande cookie ongeldig.
+
+### Beveiligingsnotities en randvoorwaarden
+- De huidige installatie wordt via plain HTTP op het LAN gebruikt. Daarom wordt het cookie-attribuut `Secure` nog niet gezet; op een HTTPS-deployment moet dit worden ingeschakeld. HTTP biedt geen transportversleuteling en deze oplossing is bedoeld voor het vertrouwde lokale netwerk.
+- De PIN zelf en de HMAC-sleutel worden niet in Git opgeslagen. De HMAC-sleutel staat uitsluitend in het persistente data-volume.
+- De PIN-poort blijft de enige manier om een nieuwe sessie te starten; alleen het kennen van een instellingen-URL geeft geen toegang.
+
+### Implementatiestatus en testplan
+- Frontend-routering, PIN-cookie, sessievalidatie, sliding verlenging, 30-minuten-inactiviteitsafmelding en documentatie zijn bijgewerkt op `phase_1_foundation`.
+- Nog niet uitgevoerd: TypeScript/productieb build en runtime-test op de Ubuntu-server. Test na deployment: (1) direct openen van Quick Actions URL zonder cookie vraagt PIN; (2) na PIN wordt Quick Actions direct geopend; (3) vernieuwen en containerrecreate behouden een geldige sessie; (4) handmatig verlaten wist de cookie; (5) na 30 minuten zonder interactie keert de pagina terug naar dashboard en vraagt een volgende directe URL opnieuw om PIN.
