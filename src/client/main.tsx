@@ -131,7 +131,7 @@ function App() {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
           const data = await response.json() as { error?: string; unlocked?: boolean; sessionToken?: string };
-          if (!response.ok) throw new Error(data.error || translate(locale, "settings.pinDenied"));
+          if (!response.ok) throw new Error(translate(locale, "settings.pinDenied"));
           setSettingsSession(data.sessionToken ?? ""); setSettingsUnlocked(true); setPinError("");
         } catch (error) { setPinError(error instanceof Error ? error.message : translate(locale, "settings.pinError")); }
       }} />;
@@ -239,6 +239,8 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   const [message, setMessage] = React.useState("");
   const [showLeave, setShowLeave] = React.useState(false);
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  const locale = resolveLocale(settings.language, status?.homeyLanguage);
+  const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
     let active = true;
     Promise.all([
@@ -257,7 +259,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     try {
       const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify(settings) });
       const result = await response.json() as GeneralSettings & { error?: string };
-      if (!response.ok) throw new Error(result.error || translate(locale, "settings.saveError"));
+      if (!response.ok) throw new Error(translate(locale, "settings.saveError"));
       setSettings(result); setSaved(result); setMessage(translate(locale, "settings.saved"));
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
@@ -265,8 +267,6 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale === "nl" ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? (settings.language === "en" ? "2025-01-27" : "2025-01-27") : settings.dateFormat === "long" ? (settings.language === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
-  const locale = resolveLocale(settings.language, status?.homeyLanguage);
-  const t = (key: string) => translate(locale, key);
   const languageName = (code: string) => homeyLanguageName(code);
   return <main className="settings-shell">
     <header className="settings-topbar">
