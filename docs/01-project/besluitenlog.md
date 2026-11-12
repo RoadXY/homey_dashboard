@@ -207,3 +207,20 @@ De gebruiker bevestigt de gewenste werkwijze voor het weerconditieveld:
 - Het endpoint, OpenAPI-document, Swagger UI, tokenbeheer en de toekomstige Homey-app zijn nog niet geïmplementeerd. HTTP-statuscodes, request-schema, token-scopes, opslag en stale-updatebeleid moeten bij de technische uitwerking worden vastgelegd.
 
 De huidige Homey-capabilitymapping in `src/server/weather.ts` is bestaande functionaliteit en wordt niet stilzwijgend als het nieuwe push-contract beschouwd. Bij implementatie moet expliciet worden bepaald hoe de API-ingestelde conditie de dashboardweergave overneemt en hoe fallback/bronuitval werkt.
+
+
+## Gebruikersbesluit – actualiteit weerconditie is verantwoordelijkheid Homey Flow (12 november 2026)
+
+- Het dashboard past geen eigen timeout, TTL of automatische verversingslogica toe op de via `POST /api/v1/weather/condition` ingestelde conditie.
+- De gebruiker is verantwoordelijk voor een correct ingerichte Homey Flow die bij relevante veranderingen en/of volgens de gewenste frequentie een nieuwe conditie verstuurt.
+- Het dashboard bewaart en toont de laatst geldig ontvangen conditie totdat een volgende geldige update binnenkomt of de gebruiker deze expliciet vervangt.
+- De ontvangsttijd mag als technische metadata worden geregistreerd/getoond, maar wordt niet gebruikt om de conditie automatisch ongeldig te verklaren.
+
+## Architectuurbesluit – OpenAPI als contract voor alle HTTP API-routes (12 november 2026)
+
+- Alle HTTP API-routes van de dashboardbackend worden opgenomen in één OpenAPI 3.x-specificatie, niet alleen de externe integratie-endpoints.
+- Dit omvat ook routes die uitsluitend door de eigen frontend worden gebruikt. Deze worden in OpenAPI duidelijk gegroepeerd als interne dashboard-API en zijn niet automatisch een ondersteund extern integratiecontract.
+- De API-specificatie wordt versiebeheerd in de GitHub-repository en is de source of truth voor request-/response-schema's, statuscodes, authenticatie en voorbeelden.
+- De toekomstige Homey-app/integratie-endpoints worden afzonderlijk als externe integratie-API gegroepeerd en krijgen expliciete compatibiliteits-/versieafspraken.
+- Swagger UI is de interactieve documentatie-interface. GitHub Pages mag de statische documentatie en OpenAPI-specificatie hosten. De Try it out-functie op GitHub Pages wordt niet als gegarandeerd beschouwd voor een API op het lokale LAN; browser-origin, HTTPS, CORS en Private Network Access kunnen dit blokkeren. De lokale Swagger UI of API-client blijft de testoptie.
+- Server-Sent Events `GET /api/events` worden ook gedocumenteerd, inclusief eventnamen en payloadschema's; OpenAPI beschrijft de HTTP-route, met aanvullende documentatie voor de event-stream.
