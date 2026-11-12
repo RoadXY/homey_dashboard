@@ -480,6 +480,88 @@ paths:
         '404': {description: Quick Action not found}
         '409': {description: Quick Action is not configured}
         '502': {description: Homey rejected the action}
+  /api/settings/measurement-tiles:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementTileSettings
+      summary: Get the four configured dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Four saved measurement tile definitions
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles]
+                properties:
+                  tiles:
+                    type: array
+                    minItems: 4
+                    maxItems: 4
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+        '401': {description: Settings session required}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveMeasurementTileSettings
+      summary: Save the four dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tiles]
+              properties:
+                tiles:
+                  type: array
+                  minItems: 4
+                  maxItems: 4
+                  items: {$ref: '#/components/schemas/MeasurementTile'}
+      responses:
+        '200': {description: Measurement tile configuration saved}
+        '400': {description: Invalid tile configuration}
+        '401': {description: Settings session required}
+  /api/settings/measurement-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementSourceCatalog
+      summary: List numeric Homey device capabilities and numeric Logic variables
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Selectable measurement sources grouped by Homey zones and devices
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MeasurementSourceCatalog'}
+        '401': {description: Settings session required}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/measurement-tiles:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardMeasurementTiles
+      summary: Get saved measurement tile labels and current values
+      responses:
+        '200':
+          description: Four configured measurement tiles with their current values
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles, retrievedAt, values]
+                properties:
+                  tiles:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+                  retrievedAt: {type: string, format: date-time}
+                  values:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTileValue'}
+        '503': {description: Homey values could not be retrieved}
   /api/v1/weather/conditions:
     get:
       tags: [Integrations]
@@ -558,6 +640,87 @@ components:
       bearerFormat: opaque token
       description: Create and revoke named tokens in PIN-protected Settings. Only token hashes are stored; the secret is shown once. WEATHER_API_TOKEN remains a temporary migration fallback.
   schemas:
+    MeasurementTile:
+      type: object
+      additionalProperties: false
+      required: [id, name, source]
+      properties:
+        id:
+          type: string
+          enum: [measurement-1, measurement-2, measurement-3, measurement-4]
+        name: {type: string, minLength: 1, maxLength: 32}
+        source:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/MeasurementDeviceSource'
+            - $ref: '#/components/schemas/MeasurementLogicSource'
+    MeasurementDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    MeasurementLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
+    MeasurementSourceCatalog:
+      type: object
+      required: [retrievedAt, zones, devices, variables]
+      properties:
+        retrievedAt: {type: string, format: date-time}
+        zones:
+          type: array
+          items:
+            type: object
+            required: [id, name, parent]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              parent: {type: [string, 'null']}
+        devices:
+          type: array
+          items:
+            type: object
+            required: [id, name, zone, available, capabilities]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              zone: {type: [string, 'null']}
+              available: {type: boolean}
+              capabilities:
+                type: array
+                items:
+                  type: object
+                  required: [id, title, units, decimals]
+                  properties:
+                    id: {type: string}
+                    title: {type: string}
+                    units: {type: string}
+                    decimals: {type: [integer, 'null']}
+        variables:
+          type: array
+          items:
+            type: object
+            required: [id, name, type]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              type: {type: string, const: number}
+    MeasurementTileValue:
+      type: object
+      required: [id, value, units, decimals, available]
+      properties:
+        id: {type: string}
+        value: {type: [number, 'null']}
+        units: {type: string}
+        decimals: {type: [integer, 'null']}
+        available: {type: boolean}
     WeatherCondition:
       type: string
       enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
