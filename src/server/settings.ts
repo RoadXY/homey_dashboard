@@ -34,7 +34,7 @@ export async function readDashboardSettings(): Promise<DashboardSettings> {
 export async function saveDashboardSettings(input: unknown): Promise<DashboardSettings> {
   if (!input || typeof input !== "object") throw new Error("Ongeldige instellingen.");
   const value = input as Partial<DashboardSettings>;
-  if (typeof value.language !== "string" || !["automatic", "nl-NL", "en"].includes(value.language)) {
+  if (typeof value.language !== "string" || !(value.language === "automatic" || /^[a-z]{2}(-[A-Z]{2})?$/.test(value.language))) {
     throw new Error("Ongeldige dashboardtaal.");
   }
   if (typeof value.dateFormat !== "string" || !["short", "iso", "long"].includes(value.dateFormat)) {
