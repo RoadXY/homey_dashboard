@@ -122,5 +122,21 @@
   "weather.condition.hail": "Hagel",
   "weather.condition.snow_showers": "Sneeuwbuien",
   "weather.condition.sleet": "Natte sneeuw",
-  "weather.condition.windy": "Winderig"
+  "weather.condition.windy": "Winderig",
+  "settings.weatherTokens": "Weer-API-tokens",
+  "settings.weatherTokensDescription": "Beheer Bearer-tokens voor externe clients die de weerconditie bijwerken. De volledige token wordt alleen direct na aanmaken getoond.",
+  "settings.tokenName": "Naam",
+  "settings.tokenNamePlaceholder": "Bijvoorbeeld Homey Flow",
+  "settings.tokenCreate": "Token aanmaken",
+  "settings.tokenShowOnce": "Bewaar deze token nu",
+  "settings.tokenCopyWarning": "Deze geheime waarde wordt maar één keer getoond. Kopieer hem naar je wachtwoordmanager of Homey-configuratie.",
+  "settings.tokenCopy": "Kopieer token",
+  "settings.tokensEmpty": "Er zijn nog geen beheerde tokens.",
+  "settings.tokenRevoke": "Intrekken",
+  "settings.tokenRevokeConfirm": "Weet je zeker dat je deze token wilt intrekken? Integraties die hem gebruiken verliezen direct toegang.",
+  "settings.tokenCreated": "Token aangemaakt.",
+  "settings.tokenRevoked": "Token ingetrokken.",
+  "settings.tokensLoadError": "Tokens laden mislukt.",
+  "settings.tokenCreateError": "Token aanmaken mislukt.",
+  "settings.tokenRevokeError": "Token intrekken mislukt."
 }
