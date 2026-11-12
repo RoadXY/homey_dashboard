@@ -410,7 +410,7 @@ function normalizeQuickActionIcon(icon: string): string {
 
 
 
-function MeasurementTilesSettingsPage({ t }: { t: (key: string) => string }) {
+function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => string; onNavigate: (path: string) => void }) {
   const [tiles, setTiles] = React.useState<MeasurementTile[]>([]);
   const [saved, setSaved] = React.useState<MeasurementTile[]>([]);
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
@@ -453,7 +453,9 @@ function MeasurementTilesSettingsPage({ t }: { t: (key: string) => string }) {
     } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); setIsError(true); }
     finally { setSaving(false); }
   };
-  return <section className="settings-card system-card measurement-editor">
+  return <>
+    <div className="quick-tabs"><button type="button" className="active">♙ &nbsp;{t("settings.temperatureTiles")}</button><span>☁ &nbsp;{t("settings.weatherTab")}</span><button type="button" onClick={() => onNavigate("/settings/dashboard/quick-actions")}>ϟ &nbsp;{t("settings.quickActions")}</button></div>
+    <section className="settings-card system-card measurement-editor">
     <h2>Meetwaardetegels</h2>
     <p>Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
     <div className="measurement-tile-tabs">{tiles.map((tile, index) => <button key={tile.id} className={tile.id === selectedId ? "active" : ""} onClick={() => setSelectedId(tile.id)}>{index + 1}. {tile.name || "Tegel"}</button>)}</div>
@@ -469,21 +471,18 @@ function MeasurementTilesSettingsPage({ t }: { t: (key: string) => string }) {
     </div>}
     <div className="measurement-preview"><span>Voorbeeld op dashboard</span><strong>{selected?.name || "Naam"} · {selected?.source ? "Bron geselecteerd" : "Geen bron geselecteerd"}</strong></div>
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "Opslaan"}</button></div>
-  </section>;
+    </section>
+  </>;
 }
 
 function DashboardSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
   const measurement = window.location.pathname.includes("measurement-tiles");
-  return <>
-    <div className="settings-card dashboard-settings-tabs">
-      <button className={!measurement ? "active" : ""} onClick={() => onNavigate("/settings/dashboard/quick-actions")}>Quick Actions</button>
-      <button className={measurement ? "active" : ""} onClick={() => onNavigate("/settings/dashboard/measurement-tiles")}>Meetwaardetegels</button>
-    </div>
-    {measurement ? <MeasurementTilesSettingsPage t={t}/> : <QuickActionsSettingsPage locale={locale} t={t}/>}
-  </>;
+  return measurement
+    ? <MeasurementTilesSettingsPage t={t} onNavigate={onNavigate}/>
+    : <QuickActionsSettingsPage locale={locale} t={t} onNavigate={onNavigate}/>;
 }
 
-function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: string) => string }) {
+function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
@@ -562,7 +561,7 @@ function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: stri
   const formatValue = (value: unknown, units: string) => value === null || value === undefined ? "—" : String(value) + (units ? " " + units : "");
   return <div className="quick-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon">▦</div><div><h1>{t("settings.dashboard")}</h1><p>{t("settings.quickActionsSubtitle")}</p></div></div>
-    <div className="quick-tabs"><span>♙ &nbsp;{t("settings.temperatureTiles")}</span><span>☁ &nbsp;{t("settings.weatherTab")}</span><strong>ϟ &nbsp;{t("settings.quickActions")}</strong></div>
+    <div className="quick-tabs"><button type="button" onClick={() => onNavigate("/settings/dashboard/measurement-tiles")}>♙ &nbsp;{t("settings.temperatureTiles")}</button><span>☁ &nbsp;{t("settings.weatherTab")}</span><button type="button" className="active">ϟ &nbsp;{t("settings.quickActions")}</button></div>
     <div className="quick-workspace">
       <section className="settings-card quick-list-card">
         <h2><span>ϟ</span>{t("settings.quickActions")}</h2>
