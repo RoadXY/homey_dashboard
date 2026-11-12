@@ -22,7 +22,7 @@ export async function loadTranslations(): Promise<void> {
     }
     const loaded: Record<string, Record<string, string>> = {};
     await Promise.all(registry.languages.map(async (language) => {
-      if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(language.id) || !/^[a-z]{2}(-[A-Z]{2})?\\.json$/.test(language.file)) return;
+      if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(language.id) || !/^[a-z]{2}(-[A-Z]{2})?\.json$/.test(language.file)) return;
       const dictionaryResponse = await fetch(`/api/locales/${language.file}`, { cache: "no-store" });
       if (!dictionaryResponse.ok) return;
       loaded[language.id] = await dictionaryResponse.json() as Record<string, string>;
