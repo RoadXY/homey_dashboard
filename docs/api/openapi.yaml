@@ -370,7 +370,9 @@ components:
       type: object
       properties:
         retrievedAt: {type: string, format: date-time}
-        category: {$ref: '#/components/schemas/WeatherCondition'}
+        category:
+          type: string
+          enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy, unknown]
         conditionText: {type: [string, 'null']}
         sourceCapability: {type: [string, 'null']}
         source: {type: string, enum: [homey, api]}
