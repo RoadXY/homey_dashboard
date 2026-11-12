@@ -264,7 +264,7 @@ const quickActionDefaults: QuickAction[] = [
   { id: "tv", name: "", icon: "television", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "bedtime", name: "", icon: "moon-waning-crescent", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
 ];
-type MdiIconMeta = { id: string; name?: string; aliases?: string[] };
+type MdiIconMeta = { name: string; aliases?: string[] };
 type MdiIconChoice = { name: string; keywords: string[] };
 const dutchMdiSearchTerms: Record<string, string[]> = {
   music: ["muziek", "audio", "song", "foute uur"],
@@ -307,10 +307,25 @@ const dutchMdiSearchTerms: Record<string, string[]> = {
   fire: ["vuur", "haard", "warmte"],
   "smoke-detector": ["rookmelder", "brand", "veiligheid"]
 };
-const quickActionIconChoices: MdiIconChoice[] = (mdiMeta as MdiIconMeta[]).map(icon => ({
-  name: icon.id,
-  keywords: [icon.name ?? icon.id, ...(Array.isArray(icon.aliases) ? icon.aliases : []), ...(dutchMdiSearchTerms[icon.id] ?? [])]
-}));
+const mdiMetadataIcons = mdiMeta as MdiIconMeta[];
+const mdiIconByName = new Map(mdiMetadataIcons.map(icon => [icon.name, icon]));
+const featuredMdiIconNames = [
+  "music-note", "blinds", "window-shutter", "party-popper", "lightbulb", "lightbulb-on",
+  "lightbulb-group", "led-strip", "star-four-points", "television", "moon-waning-crescent",
+  "weather-sunny", "weather-night", "home", "car", "movie-open", "silverware-fork-knife",
+  "shield-outline", "power", "flash", "coffee", "speaker", "volume-high", "bell", "alarm",
+  "calendar", "robot", "robot-vacuum", "water", "flower", "sprout", "tree", "lock", "door",
+  "garage", "thermometer", "air-conditioner", "fan", "lamp", "ceiling-light", "play", "pause",
+  "stop", "skip-next", "volume-mute", "wifi", "curtains", "window-closed", "window-open",
+  "fire", "smoke-detector", "dots-horizontal"
+];
+const quickActionIconChoices: MdiIconChoice[] = [
+  ...featuredMdiIconNames,
+  ...mdiMetadataIcons.map(icon => icon.name).filter(name => !featuredMdiIconNames.includes(name))
+].flatMap(name => {
+  const icon = mdiIconByName.get(name);
+  return icon ? [{ name, keywords: [name, ...(Array.isArray(icon.aliases) ? icon.aliases : []), ...(dutchMdiSearchTerms[name] ?? [])] }] : [];
+});
 function MdiIcon({ name, className = "" }: { name: string; className?: string }) {
   const iconName = name.startsWith("mdi:") ? name.slice(4) : name;
   return <span className={`mdi mdi-${iconName} ${className}`.trim()} aria-hidden="true" />;
@@ -420,7 +435,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
       {editorOpen && <section className="settings-card quick-editor-card">
         <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("settings.editQuickAction")}</h2>
-        <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name} onChange={event => updateSelected({ name: event.target.value })} placeholder={actionName({ ...selected, name: "" })} /></label>
+        <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name || actionName(selected)} onChange={event => updateSelected({ name: event.target.value })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
         <div className="mdi-picker">
           <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder="Zoek MDI-iconen, bijvoorbeeld muziek, licht of raam…" aria-label="Zoek MDI-iconen" /></div>
