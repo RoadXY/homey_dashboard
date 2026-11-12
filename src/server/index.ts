@@ -7,6 +7,8 @@ import { getDashboardNotifications } from "./notifications.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
+import { readQuickActions, saveQuickActions } from "./quick-actions.js";
+import { executeQuickAction, getQuickActionCatalog } from "./homey.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
@@ -148,6 +150,41 @@ app.post("/api/settings/general", async (request, reply) => {
     return await saveDashboardSettings(request.body);
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Instellingen opslaan mislukt." });
+  }
+});
+
+app.get("/api/settings/dashboard-actions", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return { actions: await readQuickActions() };
+});
+
+app.post("/api/settings/dashboard-actions", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const body = request.body as { actions?: unknown } | undefined;
+    return { actions: await saveQuickActions(body?.actions) };
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Quick Actions opslaan mislukt." });
+  }
+});
+
+app.get("/api/settings/quick-action-catalog", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try { return await getQuickActionCatalog(); }
+  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Homey-overzicht kon niet worden geladen." }); }
+});
+
+app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", async (request, reply) => {
+  const actions = await readQuickActions();
+  const action = actions.find((item) => item.id === request.params.id);
+  if (!action) return reply.code(404).send({ error: "Quick Action niet gevonden." });
+  if (action.type === "flow" && !action.flowId) return reply.code(409).send({ error: "Deze Quick Action is nog niet ingesteld." });
+  if (action.type === "device" && (!action.deviceId || !action.capabilityId || action.value === null)) return reply.code(409).send({ error: "Deze Quick Action is nog niet ingesteld." });
+  try {
+    const result = await executeQuickAction(action);
+    return { ...result, actionId: action.id };
+  } catch (error) {
+    return reply.code(502).send({ error: error instanceof Error ? error.message : "Homey-actie uitvoeren mislukt." });
   }
 });
 
