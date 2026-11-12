@@ -133,7 +133,8 @@ function App() {
     try {
       const response = await fetch("/api/homey/quick-actions/" + encodeURIComponent(id) + "/execute", { method: "POST" });
       const result = await response.json() as { error?: string };
-      if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));\n      await refreshQuickActionStatuses();
+      if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));
+      await refreshQuickActionStatuses();
     } catch (error) { setActionError(error instanceof Error ? error.message : t("actions.executeError")); }
     finally { setExecutingAction(""); }
   };
