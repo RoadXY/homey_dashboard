@@ -177,3 +177,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De apparaatpictogrammen zijn vergroot naar 25px en krijgen een bredere vaste kolom.
 - De aanpassing is beperkt tot de apparaatkeuzelijst; de Flow-keuzelijst blijft ongewijzigd.
 - CSS bijgewerkt op `phase_1_foundation`; visuele controle volgt na de Docker-build.
+
+
+## Herstel crash Dashboard-instellingen na apparaatnaam-aanpassing
+- De hulpfuncties `displayDeviceZone` en `deviceDisplayName` worden nu gedeclareerd vóór de apparaatlijst deze gebruikt in `filter()`.
+- Dit voorkomt een JavaScript temporal-dead-zone-fout (`Cannot access before initialization`) waardoor de Dashboard-instellingen na kort renderen leeg werden.
+- De wijziging is beperkt tot de volgorde van initialisatie; de opgeschoonde apparaatlabels en de ruimere apparaatkeuzelijst blijven behouden.
+- Herstel gepusht naar `phase_1_foundation`; Docker-build en runtimecontrole op de Ubuntu-server moeten nog worden uitgevoerd.
