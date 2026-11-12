@@ -8,7 +8,7 @@ The specification covers all HTTP routes currently implemented by the Fastify ba
 
 ## GitHub Pages
 
-The repository workflow publishes this folder to GitHub Pages when changes are pushed to `phase_1_foundation`. In repository settings, configure **Pages → Build and deployment → Source: GitHub Actions**.
+The repository workflow publishes this folder to GitHub Pages when changes are pushed to `phase_1_foundation`. A repository owner must first enable/save the Pages site manually: **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow does not try to create or enable the Pages site through the Actions token, because GitHub denies that API operation for this repository.
 
 Swagger UI is intended primarily for browsing and searching. Its "Try it out" feature may not reach a dashboard running on a private LAN because of browser HTTPS, CORS and Private Network Access restrictions. Never put real Bearer tokens in the repository or published examples.
 
