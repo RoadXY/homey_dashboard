@@ -5,6 +5,10 @@ import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications } from "./notifications.js";
 import { getDashboardWeather } from "./weather.js";
+import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
+import os from "node:os";
+import { statfs } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -35,6 +39,40 @@ app.get("/api/health", async () => ({
 }));
 
 app.get("/api/homey/status", async () => getHomeyStatus());
+
+app.get("/api/settings/general", async () => readDashboardSettings());
+
+app.post("/api/settings/general", async (request, reply) => {
+  try {
+    return await saveDashboardSettings(request.body);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Instellingen opslaan mislukt." });
+  }
+});
+
+app.get("/api/system/status", async () => {
+  let version = "onbekend";
+  try {
+    const packageInfo = JSON.parse(await readFile(join(process.cwd(), "package.json"), "utf8")) as { version?: string };
+    version = packageInfo.version ?? version;
+  } catch { /* package metadata is optional in the runtime image */ }
+  let storage: { totalBytes: number; freeBytes: number } | null = null;
+  try {
+    const fs = await statfs(process.env.DATA_DIR ?? join(process.cwd(), "data"));
+    storage = { totalBytes: Number(fs.blocks * fs.bsize), freeBytes: Number(fs.bavail * fs.bsize) };
+  } catch { /* data volume may not exist until first save */ }
+  return {
+    homey: getHomeyStatus(),
+    service: "running",
+    version,
+    updatedAt: new Date((process.env.BUILD_TIMESTAMP ?? "").trim() || Date.now()).toISOString(),
+    uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
+    memory: { totalBytes: os.totalmem(), freeBytes: os.freemem(), usedBytes: os.totalmem() - os.freemem() },
+    storage,
+    platform: "Homey Pro 2023",
+  };
+});
+
 app.get("/api/events", async (_request, reply) => {
   reply.hijack();
   reply.raw.writeHead(200, {
