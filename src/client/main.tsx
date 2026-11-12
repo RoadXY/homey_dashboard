@@ -364,12 +364,12 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
     : undefined;
   const flowQuery = flowSearch.trim().toLocaleLowerCase();
   const deviceQuery = deviceSearch.trim().toLocaleLowerCase();
-  const matchingDevices = catalog.devices.filter(device =>
-    (deviceDisplayName(device) + " " + device.id).toLocaleLowerCase().includes(deviceQuery)
-  );
   const displayDeviceZone = (zone: string | undefined) => zone && !/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(zone) ? zone : "";
   const deviceDisplayName = (device: QuickActionCatalog["devices"][number]) => device.name + (displayDeviceZone(device.zone) ? " · " + displayDeviceZone(device.zone) : "");
   const selectedDeviceLabel = selectedDevice ? deviceDisplayName(selectedDevice) : t("settings.selectDevice");
+  const matchingDevices = catalog.devices.filter(device =>
+    (deviceDisplayName(device) + " " + device.id).toLocaleLowerCase().includes(deviceQuery)
+  );
   const matchingFlows = catalog.flows.filter(flow => {
     const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
     return !flowQuery || searchable.includes(flowQuery);
