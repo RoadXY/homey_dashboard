@@ -294,3 +294,11 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - Hiervoor vereist de Homey API-key de scope `homey.system.readonly`. Als deze scope ontbreekt, blijft de detectie onbekend en toont de instellingenpagina een permissiehint. Voeg de scope toe aan de lokale API-keyconfiguratie in Homey en werk uitsluitend de lokale `.env` bij; deel de sleutel niet.
 - Deze stap maakt het uitlezen en tonen van de Homey-taal mogelijk. Volledige vertaling van alle dashboardteksten op basis van de automatische taalkeuze is een afzonderlijke vervolgstap en is hiermee nog niet gerealiseerd.
 - Validatie van de Docker-build, daadwerkelijke taalcode uit Homey en weergave op de tablet staat nog open.
+
+
+## Docker-build optimalisatie: bestandseigenaarschap (12 november 2026)
+
+- De productiebuild van 12 november duurde circa 298 seconden; stap `RUN chown -R node:node /app` nam daarvan circa 281 seconden in beslag.
+- De recursieve eigenaarswijziging is verwijderd. Runtimebestanden `dist` en `config` worden nu met `COPY --chown=node:node` gekopieerd.
+- Alleen de schrijfbare datadirectory `/app/data` wordt aangemaakt en expliciet aan gebruiker `node` toegewezen. De applicatie blijft als niet-rootgebruiker `node` draaien.
+- Verwachting: de buildstap wordt veel sneller doordat Docker geen volledige recursieve eigenaarswijziging over `/app` meer uitvoert. De precieze tijdwinst moet bij de volgende build worden gemeten.
