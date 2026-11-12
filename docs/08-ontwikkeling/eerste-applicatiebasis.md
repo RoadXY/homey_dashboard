@@ -344,3 +344,13 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - Homey automatische detectie vergelijkt de door Homey gerapporteerde taalcode met de `homeyCodes` van de geregistreerde talen. Bij geen overeenkomst wordt de geregistreerde fallbacktaal gebruikt.
 - Engelstalige instructies voor het toevoegen van talen staan in `src/client/locales/README.txt`.
 - Nieuwe JSON-bestanden worden tijdens de frontend-build opgenomen. Na toevoegen van een taal is een nieuwe Docker-build/deployment nodig; een containerherstart zonder rebuild is niet voldoende.
+
+
+## Vertalingen laden tijdens runtime (12 november 2026)
+
+- Vertaalcatalogi zijn niet langer onderdeel van de frontend-build. De client haalt bij het starten de talenregistratie en de bijbehorende JSON-bestanden op via `GET /api/locales/registry` en `GET /api/locales/:file`.
+- De productiecompose mount `./src/client/locales` vanaf de Ubuntu-projectmap read-only op `/app/locales` in de container. De backend leest de bestanden rechtstreeks uit deze map.
+- Een nieuwe taal toevoegen bestaat nu uit het plaatsen van het vertaalbestand en het toevoegen van een item aan `languages.json`. Daarna is alleen een containerrestart en een browser-/tabletreload nodig; een Docker-image rebuild is niet nodig.
+- Deze architectuur vereist wel een eenmalige deployment van de nieuwe applicatiecode en Compose-mount. De eerstvolgende update na deze commit moet dus nog met het normale updatescript worden gebouwd. Daarna kunnen taalbestanden onafhankelijk van de image worden aangepast.
+- Het volume is read-only in de container; wijzigingen worden op de Ubuntu-host gedaan. Alleen JSON-bestanden met toegestane locale-bestandsnamen worden via de API beschikbaar gesteld.
+- De endpointvalidatie, werking van de bind mount en volledige Docker-build moeten op Ubuntu nog worden getest. Tot die validatie is afgerond, geldt de runtime-taaluitbreiding als geïmplementeerd maar nog niet operationeel bevestigd.
