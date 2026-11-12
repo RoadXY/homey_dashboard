@@ -111,7 +111,6 @@ function App() {
   const bramSensor = findDevice("temperatuur bram");
   const weather = findDevice("weer");
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
-  const weatherText = capability(weather, "conditioncode_text") ?? capability(weather, "description");
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const homeyOnline = homey?.state === "online";
   const locale = resolveLocale(dashboardLanguage, homeyLanguage);
@@ -156,7 +155,7 @@ function App() {
             <div>
               <div className="eyebrow">OUTSIDE · WEATHER</div>
               <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
-              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : typeof weatherText === "string" && locale.toLowerCase().startsWith("nl") ? weatherText : t("weather.condition.unknown")}</div>
+              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown")}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
           </div>
