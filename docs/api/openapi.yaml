@@ -166,6 +166,68 @@ paths:
                 type: object
                 properties:
                   language: {type: string}
+  /api/settings/weather-tokens:
+    get:
+      tags: [Settings (internal)]
+      operationId: listWeatherApiTokens
+      summary: List managed weather API tokens without revealing their secrets
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      responses:
+        '200':
+          description: Token metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    type: array
+                    items: {$ref: '#/components/schemas/WeatherTokenInfo'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: createWeatherApiToken
+      summary: Create a named weather API Bearer token; the secret is returned once
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: {type: string, minLength: 1, maxLength: 60}
+      responses:
+        '201':
+          description: Token created; retain the secret because it cannot be retrieved later
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [token, info]
+                properties:
+                  token: {type: string, description: Full Bearer secret; shown once}
+                  info: {$ref: '#/components/schemas/WeatherTokenInfo'}
+        '400': {description: Invalid token name}
+        '401': {description: Settings session missing or expired}
+  /api/settings/weather-tokens/{id}:
+    delete:
+      tags: [Settings (internal)]
+      operationId: revokeWeatherApiToken
+      summary: Revoke a managed weather API token
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '204': {description: Token revoked}
+        '401': {description: Settings session missing or expired}
+        '404': {description: Token not found}
   /api/settings/general:
     get:
       tags: [Settings (internal)]
@@ -367,6 +429,14 @@ components:
     WeatherCondition:
       type: string
       enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
+    WeatherTokenInfo:
+      type: object
+      required: [id, name, createdAt, lastFour]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        createdAt: {type: string, format: date-time}
+        lastFour: {type: string, description: Last four characters only; no secret or hash is exposed}
     WeatherState:
       type: object
       properties:
