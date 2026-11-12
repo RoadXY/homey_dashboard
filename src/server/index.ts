@@ -273,7 +273,7 @@ app.get("/api/weather", async (_request, reply) => {
     return await getDashboardWeather();
   } catch (error) {
     app.log.error(error);
-    return reply.code(500).send({ error: "Weather condition mapping could not be loaded." });
+    return reply.code(500).send({ error: "Weather condition could not be loaded." });
   }
 });
 
