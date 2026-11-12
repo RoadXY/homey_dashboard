@@ -101,3 +101,12 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Een zoekterm zonder resultaten, of resultaten die niet de huidige selectie bevatten, blokkeert **Toepassen**. De gebruiker moet dan een passende Flow kiezen of de zoekterm wissen.
 - De Flow-resultatenlijst en teller gebruiken dezelfde afgeleide gefilterde lijst om afwijkende tellingen of validatie te voorkomen.
 - Het zoekveld gebruikt uitsluitend de ingebouwde wisbediening van `input type="search"`; de extra eigen kruis-knop is verwijderd om dubbele kruisjes te voorkomen.
+
+
+## Material Design Icons (MDI)
+- Quick Action-pictogrammen gebruiken de lokaal gebundelde Material Design Icons-fontbibliotheek van Pictogrammers, versie `@mdi/font 7.4.47`.
+- De iconen worden lokaal in de frontendbuild opgenomen; runtime internettoegang of een externe CDN is niet nodig.
+- De iconpicker heeft een zoekveld dat filtert op MDI-naam en Nederlandse/Engelse zoektermen (bijvoorbeeld muziek, licht, raam, zon, tv en rolluik).
+- Dezelfde gekozen MDI-iconen worden getoond in de configuratielijst, preview en het live dashboard.
+- Bestaande Unicode/emoji-iconen worden bij het laden gemapt naar passende MDI-namen. De migratie wordt naar de configuratie geschreven zodra de gebruiker de Quick Actions opslaat.
+- De Flow-keuzelijst behoudt de door Homey aangeleverde Flow-iconen; de MDI-keuze geldt voor het pictogram van de Quick Action-kaart.
