@@ -13,6 +13,7 @@ type NotificationsResponse = { retrievedAt: string; notifications: DashboardNoti
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; sourceCapability: string | null; source?: "homey" | "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
+type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
 const actions = [
@@ -239,6 +240,11 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   const [busy, setBusy] = React.useState(true);
   const [message, setMessage] = React.useState("");
   const [showLeave, setShowLeave] = React.useState(false);
+  const [weatherTokens, setWeatherTokens] = React.useState<WeatherTokenInfo[]>([]);
+  const [tokenName, setTokenName] = React.useState("");
+  const [newToken, setNewToken] = React.useState("");
+  const [tokenBusy, setTokenBusy] = React.useState(false);
+  const [tokenMessage, setTokenMessage] = React.useState("");
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
   const t = (key: string) => translate(locale, key);
@@ -254,6 +260,34 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
+  const loadWeatherTokens = async () => {
+    const response = await fetch("/api/settings/weather-tokens", { headers: { "x-settings-session": session } });
+    if (!response.ok) throw new Error(t("settings.tokensLoadError"));
+    const data = await response.json() as { tokens: WeatherTokenInfo[] };
+    setWeatherTokens(data.tokens);
+  };
+  React.useEffect(() => { void loadWeatherTokens().catch(error => setTokenMessage(error instanceof Error ? error.message : t("settings.tokensLoadError"))); }, []);
+  const createToken = async () => {
+    setTokenBusy(true); setTokenMessage(""); setNewToken("");
+    try {
+      const response = await fetch("/api/settings/weather-tokens", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ name: tokenName }) });
+      const data = await response.json() as { token?: string; info?: WeatherTokenInfo; error?: string };
+      if (!response.ok || !data.token || !data.info) throw new Error(data.error ?? t("settings.tokenCreateError"));
+      setNewToken(data.token); setTokenName(""); setWeatherTokens(current => [...current, data.info!]);
+      setTokenMessage(t("settings.tokenCreated"));
+    } catch (error) { setTokenMessage(error instanceof Error ? error.message : t("settings.tokenCreateError")); }
+    finally { setTokenBusy(false); }
+  };
+  const revokeToken = async (id: string) => {
+    if (!window.confirm(t("settings.tokenRevokeConfirm"))) return;
+    setTokenBusy(true); setTokenMessage(""); setNewToken("");
+    try {
+      const response = await fetch("/api/settings/weather-tokens/" + encodeURIComponent(id), { method: "DELETE", headers: { "x-settings-session": session } });
+      if (!response.ok) throw new Error(t("settings.tokenRevokeError"));
+      setWeatherTokens(current => current.filter(token => token.id !== id)); setTokenMessage(t("settings.tokenRevoked"));
+    } catch (error) { setTokenMessage(error instanceof Error ? error.message : t("settings.tokenRevokeError")); }
+    finally { setTokenBusy(false); }
+  };
   const update = <K extends keyof GeneralSettings,>(key: K, value: GeneralSettings[K]) => setSettings(current => ({ ...current, [key]: value }));
   const save = async () => {
     setMessage("");
@@ -291,6 +325,20 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
           <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
+      <section className="settings-card system-card weather-token-card">
+        <h2><span>⌑</span>{t("settings.weatherTokens")}</h2>
+        <p>{t("settings.weatherTokensDescription")}</p>
+        <div className="setting-row token-create-row">
+          <label htmlFor="weather-token-name">{t("settings.tokenName")}</label>
+          <input id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
+          <button className="primary-button" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
+        </div>
+        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><button className="secondary-button" onClick={() => { void navigator.clipboard?.writeText(newToken); }}>{t("settings.tokenCopy")}</button></div>}
+        <div className="token-list">
+          {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
+        </div>
+        <p className="save-message" role="status">{tokenMessage}</p>
+      </section>
       <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
         <div className="status-table">
           <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
