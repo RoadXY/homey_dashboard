@@ -184,3 +184,11 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Dit voorkomt een JavaScript temporal-dead-zone-fout (`Cannot access before initialization`) waardoor de Dashboard-instellingen na kort renderen leeg werden.
 - De wijziging is beperkt tot de volgorde van initialisatie; de opgeschoonde apparaatlabels en de ruimere apparaatkeuzelijst blijven behouden.
 - Herstel gepusht naar `phase_1_foundation`; Docker-build en runtimecontrole op de Ubuntu-server moeten nog worden uitgevoerd.
+
+
+## Gelijke vormgeving Flow- en apparaatkeuzelijst
+- De Flow- en apparaatkeuzelijst gebruiken nu dezelfde rijhoogte (62px), verticale marges (6px), binnenruimte (12px 14px), tussenruimte (13px) en hoekafronding (10px).
+- Pictogrammen gebruiken in beide lijsten dezelfde kolombreedte (34px) en afmeting (25px).
+- Ook de touch/coarse-pointer-regel houdt dezelfde minimale rijhoogte en padding aan; de eerdere afwijkende Flow-pillvorm is verwijderd.
+- De Flow- en apparaatkeuzelijst zijn hiermee visueel gelijkgetrokken; alleen inhoud en menuhoogte blijven per type verschillend.
+- CSS bijgewerkt op `phase_1_foundation`; visuele controle volgt na de Docker-build.
