@@ -45,3 +45,9 @@ De zoekfunctie kan alleen Flows tonen die door Homey in de bestaande catalogus w
 
 ## UX-correctie Flow-selectie
 De Flow-selectie is een eigen dropdown geworden in plaats van een los zoekveld boven een native HTML-select. De zoekregel verschijnt nu pas wanneer de gebruiker de Flow-keuzelijst opent en staat boven de filterbare lijst in hetzelfde dropdownvenster. Filteren gebeurt op gedeeltelijke tekst, hoofdletterongevoelig, en ook op de beschikbare icon-tekst en Flow-type. Flow-regels tonen een pictogram; als Homey geen bruikbaar pictogram aanlevert, wordt een standaardpictogram gebruikt voor standaard- en Advanced Flows.
+
+## Flow-keuzelijst: hover, selectie en touch
+- Op muis/trackpad krijgt de optie onder de pointer een afgeronde pilvormige omlijning.
+- De geselecteerde optie behoudt de bestaande blauwe achtergrondkleur (`#1c4c77)); bij hover komt alleen de omlijning erbij.
+- Opties hebben minimaal 48 px hoogte, ruime padding en touch-action: manipulation voor telefoon en tablet.
+- Keyboard-focus is zichtbaar via `:focus-visible`. Hover-styling wordt alleen toegepast op apparaten met een echte hover-pointer; touch krijgt een duidelijke actieve feedback.
