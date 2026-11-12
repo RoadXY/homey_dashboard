@@ -80,15 +80,21 @@ De instellingen-navigatie bevat de zes categorieën: **Algemeen**, **Dashboard**
 
 Op de pagina **Dashboard** zijn deze onderdelen instelbaar: welke kamers en sensoren zichtbaar zijn in de temperatuurtegels; welke weergegevens zichtbaar zijn; en de zichtbaarheid, volgorde en instellingen van snelle actieknoppen.
 
-Het aantal temperatuurtegels staat vast op **vier**. Per tegel kan de gebruiker selecteren welke beschikbare Homey-temperatuursensor de temperatuur aanlevert. Het aantal tegels en de tegelindeling zijn niet instelbaar.
+Het aantal meetwaardetegels staat vast op **vier**. Het aantal tegels en de tegelindeling zijn niet instelbaar. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron.
 
-Naast de sensorselectie kan de gebruiker ook de naam van elk van de vier temperatuurtegels zelf aanpassen.
+De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term temperatuurtegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
 
-De sensorselectie voor temperatuurtegels is één keuzelijst met alle Homey-apparaten die een temperatuurmeting aanbieden; apparaten worden niet op ruimte gegroepeerd.
+Bronselectie voor Homey-apparaten: eerst een Homey-kamer/ruimte kiezen en daarna een apparaat en één van de numerieke capabilities van dat apparaat. De ruimtehiërarchie is volledig genest en wordt zonder vaste maximale diepte ondersteund. Alleen apparaten met ten minste één geschikte numerieke meetwaarde worden getoond. De sensorselectie wordt op stabiele Homey-ID's gebaseerd: apparaat-ID plus capability-ID; veranderlijke namen zijn uitsluitend presentatietekst.
 
-**Correctie sensorselectie:** de eerdere keuze voor één ongesorteerde lijst vervalt. De selectie volgt de Homey mobiele app: eerst een Homey-kamer/ruimte kiezen en daarna een temperatuursensor binnen die ruimte. In fase 2 wordt zoeken toegevoegd om sensoren sneller te vinden.
+Bronselectie voor Homey Logic: een afzonderlijke lijst met numerieke Logic-variabelen. De bron wordt opgeslagen op basis van de stabiele Logic-variabele-ID; de variabelenaam is uitsluitend presentatietekst.
 
-Bij de selectie via kamer/ruimte en daarna sensor is op elk niveau een duidelijke navigatieoptie **Terug** beschikbaar om naar het vorige niveau te gaan (van sensorlijst terug naar kamers/ruimtes).
+Per meetwaardebron wordt waar beschikbaar de capabilitymetadata gebruikt, waaronder de eenheid (units) en het aantal decimalen (decimals). De eenheid wordt niet handmatig door de gebruiker ingesteld. Bij ontbrekende metadata wordt geen eenheid verzonnen of afgeleid uit alleen de displaynaam. Homey Logic-variabelen bieden niet dezelfde capabilitymetadata; daarvoor wordt standaard geen eenheid getoond. Een toekomstige expliciete handmatige eenheidsinstelling valt buiten de huidige eenvoudige editor.
+
+De backend moet capabilitytype en actuele waarde controleren en uitsluitend eindige numerieke waarden aanbieden/weergeven. Onbeschikbare apparaten, verdwenen capabilities of verwijderde Logic-variabelen mogen de overige tegels niet blokkeren; de betreffende tegel toont een neutrale onbekende/niet-beschikbaar-weergave.
+
+De editor toont vier vaste tegelconfiguraties met naam en bron. De preview wordt direct bijgewerkt bij iedere wijziging, vóór Opslaan. Opslaan bewaart de wijzigingen definitief. Er zijn geen instelbare tegelvolgorde, kleur, pictogram, formaat of eenheid.
+
+De Homey-ruimtepicker volgt de volledige geneste ruimtestructuur. De navigatie gebruikt het aanklikbare kruimelpad; bij lange paden worden de laatste niveaus getoond en tussenliggende niveaus achter een aanklikbare ellipsis verborgen. In fase 2 kan zoeken aan de bronselectie worden toegevoegd.
 
 Op de pagina **Dashboard** kan de gebruiker alle volgende weergegevens afzonderlijk aan- of uitzetten: buitentemperatuur, gevoelstemperatuur, weericoon en weersomschrijving, windsnelheid en windrichting, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst en zonsondergang.
 
@@ -330,3 +336,18 @@ Naar aanleiding van de eerste praktijktest zijn twee tekortkomingen gecorrigeerd
 
 #### Scope van deze wijziging
 Deze wijziging legt de eerste tokens vast en past de blauwe actieve Quick Action-gradient toe. Er wordt nog geen themawisselaar of definitieve themastructuur geïmplementeerd; dat blijft onderdeel van fase 5.
+
+
+### Meetwaardetegels – bronselectie en numerieke waarden (12 november 2026)
+
+De ontwerpkeuzes zijn bevestigd:
+- Exact vier vaste tegels.
+- Per tegel uitsluitend een eigen naam en één bron.
+- Bronnen zijn numerieke Homey-apparaatcapabilities of numerieke Homey Logic-variabelen.
+- Opslag op basis van stabiele IDs: device ID + capability ID, of Logic variable ID.
+- Boolean- en tekstwaarden worden uitgesloten.
+- Eenheden en decimalen komen automatisch uit capabilitymetadata wanneer beschikbaar. Er wordt geen eenheid afgeleid uit een naam of capability-ID als de bron die metadata niet levert.
+- Logic-variabelen hebben geen capability-eenheid; zonder aanvullende metadata tonen deze dus geen eenheid. Een handmatige eenheidskeuze wordt niet toegevoegd aan de eenvoudige editor.
+
+#### Technische verificatie eenheden
+De officiële Homey Apps SDK-documentatie beschrijft voor numerieke capabilities de opties units en decimals. De documentatie vermeldt ook dat units: °C Homey in staat stelt de waarde in de Homey-interface naar Fahrenheit om te zetten. De dashboardimplementatie moet verifiëren welke van deze metadata daadwerkelijk door de gebruikte Homey Web API-client in de apparaat/capability-objecten wordt teruggegeven. Dit mag niet worden aangenomen op basis van alleen de Apps SDK-definitie. De runtime-API-respons wordt tijdens implementatie/test gecontroleerd; ontbrekende metadata leidt tot een lege eenheid en een veilige standaard voor decimalen.
