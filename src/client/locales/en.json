@@ -112,5 +112,15 @@
   "weather.condition.wind": "Windy",
   "weather.condition.unknown": "Weather unavailable",
   "notifications.notifications-load-error.title": "Notifications unavailable",
-  "notifications.notifications-load-error.message": "The notification configuration could not be loaded."
+  "notifications.notifications-load-error.message": "The notification configuration could not be loaded.",
+  "weather.condition.sunny": "Sunny",
+  "weather.condition.mostly_sunny": "Mostly sunny",
+  "weather.condition.overcast": "Overcast",
+  "weather.condition.drizzle": "Drizzle",
+  "weather.condition.heavy_rain": "Heavy rain",
+  "weather.condition.showers": "Showers",
+  "weather.condition.hail": "Hail",
+  "weather.condition.snow_showers": "Snow showers",
+  "weather.condition.sleet": "Sleet",
+  "weather.condition.windy": "Windy"
 }
