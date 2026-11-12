@@ -105,5 +105,7 @@
   "notifications.slaapkamer-tess-koud.title": "Slaapkamer Tess koud",
   "notifications.slaapkamer-tess-koud.message": "De temperatuur in slaapkamer Tess is lager dan 12 °C.",
   "notifications.zolder-koud.title": "Zolder koud",
-  "notifications.zolder-koud.message": "De temperatuur op zolder is lager dan 12 °C."
+  "notifications.zolder-koud.message": "De temperatuur op zolder is lager dan 12 °C.",
+  "notifications.heading": "Meldingen",
+  "notifications.unavailableMessage": "Dashboardgegevens konden tijdelijk niet worden opgehaald."
 }
