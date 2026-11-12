@@ -21,7 +21,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "homey-api": "^3.21.2",
-    "@mdi/font": "7.4.47"
+    "@mdi/font": "7.4.47",
+    "@mdi/svg": "7.4.47"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
