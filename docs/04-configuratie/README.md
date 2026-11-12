@@ -465,3 +465,13 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - Een statische i18n-audit van de clientcode vond daarnaast deze ongebruikte sleutels, verwijderd uit beide woordenboeken: `weather.loading`, `footer.homeyOffline`, `settings.pinLabel`, `settings.restoreMessage`, `settings.unknown`, `settings.homeyLanguage`, `footer.devices`, `footer.rooms` en `settings.clearSearch`.
 - Dynamisch opgebouwde vertalingen zijn bewust behouden: `weather.condition.*` wordt samengesteld uit de actuele weerconditie en `notifications.<id>.title/message` wordt samengesteld uit de Homey-meldings-ID. Deze sleutels lijken bij een eenvoudige zoekactie ongebruikt, maar worden tijdens runtime opgevraagd.
 - De audit is uitgevoerd op de clientbestanden en de Nederlandse/Engelse woordenboeken. Nieuwe talen moeten dezelfde sleutelopschoning volgen als die later worden toegevoegd.
+
+
+### Meetwaardetegels – configureerbare pictogrammen (13 november 2026)
+
+- Iedere vaste meetwaardetegel heeft nu een eigen Material Design Icon (MDI), naast naam en numerieke bron.
+- De pictogramkiezer hergebruikt de doorzoekbare MDI-catalogus en picker-interactie van Quick Actions, inclusief Nederlandse zoektermen, actieve selectie en limiet van 120 zichtbare resultaten.
+- De gekozen icon wordt getoond in de tegelrij, instellingenpreview en op het dashboard zelf.
+- Nieuwe en bestaande configuraties zonder `icon` blijven compatibel: de server vult automatisch `thermometer` als standaardpictogram in.
+- De configuratie blijft opgeslagen in `data/measurement-tiles.json`; geen aparte i18n-vertalingen nodig voor iconnamen.
+- Nog te testen na deployment: icon selecteren, opslaan, pagina herladen en controleren op instellingenpreview en dashboard.
