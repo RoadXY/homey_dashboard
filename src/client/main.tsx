@@ -23,9 +23,7 @@ type MeasurementTileValue = { id: string; value: number | null; units: string; d
 type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
 function formatMeasurementValue(reading: MeasurementTileValue | undefined, locale: string = "nl"): string {
   if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return "—";
-  const number = reading.decimals === null
-    ? String(reading.value)
-    : reading.value.toFixed(reading.decimals);
+  const number = reading.value.toFixed(reading.decimals ?? 1);
   const localized = locale.toLowerCase().startsWith("nl") ? number.replace(".", ",") : number;
   return localized + (reading.units ? " " + reading.units : "");
 }
@@ -269,12 +267,7 @@ function App() {
       <section className="right-column" aria-label={t("notifications.aria")}>
         <div className="actions-grid" aria-label={t("actions.aria")}>
           {quickActions.map((action) => {
-            const defaultLabels: Record<string, string> = {
-              "qmusic": "actions.qmusic", "foute-uur": "actions.fouteUur", "blinds": "actions.blinds",
-              "birthday": "actions.birthday", "living-lights": "actions.livingLights",
-              "mood-lights": "actions.moodLights", "tv": "actions.tv", "bedtime": "actions.bedtime"
-            };
-            const label = action.name.trim() || t(defaultLabels[action.id] ?? "settings.quickActions");
+            const label = action.name.trim();
             return (
               <button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} key={action.id} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
@@ -575,7 +568,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   const selectedActionValid = selected.type === "flow"
     ? Boolean(selectedFlow && (!flowPickerOpen || !flowQuery || matchingFlows.some(flow => flow.id === selected.flowId && flow.type === selected.flowType)))
     : Boolean(selectedDevice?.available && selectedCapability && (!devicePickerOpen || !deviceQuery || matchingDevices.some(device => device.id === selected.deviceId)));
-  const actionName = (item: QuickAction) => item.name.trim() || t(quickActionDefaults.find(entry => entry.id === item.id)?.id === "qmusic" ? "actions.qmusic" : item.id === "foute-uur" ? "actions.fouteUur" : item.id === "blinds" ? "actions.blinds" : item.id === "birthday" ? "actions.birthday" : item.id === "living-lights" ? "actions.livingLights" : item.id === "mood-lights" ? "actions.moodLights" : item.id === "tv" ? "actions.tv" : "actions.bedtime");
+  const actionName = (item: QuickAction) => item.name.trim();
   React.useEffect(() => {
     let active = true;
     Promise.all([
