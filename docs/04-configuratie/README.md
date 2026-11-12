@@ -427,3 +427,22 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - De preview is een configuratievoorbeeld. De actuele live meetwaarden blijven op het dashboard zelf zichtbaar; deze editorpreview doet geen aparte live waardeaanvraag.
 - De gedeelde Quick Actions-kaart-, lijst- en previewstijlen worden hergebruikt waar passend. Specifieke velden voor meetwaardebronnen behouden dezelfde donkere invoerstijl en blauwe geselecteerde toestand.
 - Hiermee vervalt de oude brede formulierweergave met een los voorbeeldblok onderaan.
+
+
+### Meetwaardetegels – live waarden gekoppeld aan preview en dashboard (12 november 2026)
+
+#### Gevonden oorzaak
+- De editorpreview toonde een vaste placeholder (`—`) en vroeg geen actuele waarden op.
+- De dashboardfrontend haalde `/api/dashboard/measurement-tiles` al periodiek op, maar gebruikte `measurementTileData` nog niet in de vier dashboardkaarten. De dashboardkaarten bleven daardoor de oude vaste bronselecties gebruiken.
+- Dit verklaart waarom een opgeslagen Logic-bron wel in de editorconfiguratie zichtbaar was, maar de preview geen waarde liet zien en de nieuwe bronconfiguratie niet doorwerkte in het dashboard.
+
+#### Correctie
+- De vier dashboardkaarten worden nu opgebouwd uit de opgeslagen tegelconfiguratie en de bijbehorende waarden uit `/api/dashboard/measurement-tiles`.
+- De editorpreview vraagt dezelfde endpoint op en vernieuwt de waarden iedere vijf seconden.
+- Als een tegel tijdens het bewerken een andere bron krijgt dan de opgeslagen bron, toont de preview tijdelijk `—` totdat de configuratie is opgeslagen; zo wordt nooit een waarde van een oude bron bij een nieuwe bron getoond.
+- Waarden worden volgens Homey-decimalenmetadata weergegeven wanneer beschikbaar; anders wordt de oorspronkelijke numerieke precisie behouden. Eenheid wordt alleen getoond wanneer de bron die levert.
+- De vaste hardcoded sensorkoppelingen voor de vier temperatuurkaarten zijn uit de dashboardweergave verwijderd.
+
+#### Verificatiestatus
+- Frontend-/TypeScript-build moet via GitHub Actions worden gecontroleerd.
+- De werkelijke Logic-waarde en periodieke updates moeten na deployment op de Homey Pro 2023 worden gevalideerd. Een groene build bewijst niet dat de Homey Web API tijdens runtime de verwachte waarde retourneert.
