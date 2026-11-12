@@ -155,3 +155,11 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De serverstandaard voor alle acht nieuwe Quick Actions is `lightning-bolt`.
 - Hiermee worden zelfgekozen pictogrammen niet langer door de server afgewezen met `Ongeldig pictogram.`.
 - Code is bijgewerkt op `phase_1_foundation`; Docker-build en opslaan/herladen moeten nog op de Ubuntu-server worden getest.
+
+
+## Foutmeldingen in de instellingenbalk
+- De status-/meldingsruimte onderaan de Quick Actions-pagina vult de beschikbare breedte tot aan de knop Opslaan.
+- Fouten worden visueel als rode balk weergegeven, met lichte tekst, rode rand en een duidelijke linker accentlijn.
+- De foutmelding gebruikt `role="alert"` zodat hulptechnologie de fout direct aankondigt; normale statusmeldingen behouden `role="status"`.
+- De Opslaan-knop blijft afzonderlijk rechts uitgelijnd.
+- Frontend en CSS zijn bijgewerkt op `phase_1_foundation`; visuele controle op de Ubuntu-server moet nog plaatsvinden.
