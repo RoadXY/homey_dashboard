@@ -520,3 +520,8 @@ Bij runtime-controle bleek dat de catch-all SPA-fallback in Fastify /api-docs af
 ### Correctie opname Swagger-assets in Docker-build (12 november 2026)
 
 De eerste runtime-fix gaf een 404-melding dat Swagger UI-assets ontbraken. Oorzaak: Vite gebruikt src/client als root en nam daardoor de repository-level public-map niet automatisch mee. vite.config.ts is aangepast met publicDir: ../../public zodat public/api-docs/index.html en public/api-docs/openapi.yaml in dist/client/api-docs terechtkomen. Na de CI-build moet de Docker-image opnieuw gebouwd en uitgerold worden; daarna moeten /api-docs/ en /api-docs/openapi.yaml runtime worden gecontroleerd.
+
+
+### Kopieerfunctie Weather API-token (12 november 2026)
+
+De kopieerknop gebruikte eerst uitsluitend navigator.clipboard.writeText. Dit is in browsers op een plain-HTTP LAN-adres vaak niet beschikbaar omdat de Clipboard API een secure context vereist. De knop gebruikt nu eerst de moderne Clipboard API en valt bij ontbreken/falen terug op een verborgen textarea met document.execCommand("copy"). De interface toont een gelokaliseerde succes- of foutmelding. Deze wijziging moet na deployment op het tablet/LAN-adres worden getest.
