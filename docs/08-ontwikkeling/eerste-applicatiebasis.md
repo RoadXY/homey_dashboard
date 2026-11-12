@@ -302,3 +302,12 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - De recursieve eigenaarswijziging is verwijderd. Runtimebestanden `dist` en `config` worden nu met `COPY --chown=node:node` gekopieerd.
 - Alleen de schrijfbare datadirectory `/app/data` wordt aangemaakt en expliciet aan gebruiker `node` toegewezen. De applicatie blijft als niet-rootgebruiker `node` draaien.
 - Verwachting: de buildstap wordt veel sneller doordat Docker geen volledige recursieve eigenaarswijziging over `/app` meer uitvoert. De precieze tijdwinst moet bij de volgende build worden gemeten.
+
+
+## Nederlandse taaloptie voor General-instellingen (12 november 2026)
+
+- De taalkeuze bevat nu expliciet `Nederlands` naast `Engels` en `Automatisch (Homey-taal)`.
+- Bij expliciete keuze `nl-NL` wordt de General-instellingenpagina in het Nederlands getoond. Bij `automatic` wordt Nederlands gebruikt wanneer Homey-taaldetectie een taalcode beginnend met `nl` retourneert; anders blijft Engels de fallback.
+- De General-pagina vertaalt navigatie, sectiekoppen, labels, statuswaarden, acties en de bevestiging bij niet-opgeslagen wijzigingen. De instelling wordt pas permanent opgeslagen via de bestaande knop Opslaan.
+- De wijziging is bedoeld om de Nederlandse taalkeuze en Homey-automatische detectie op de instellingenpagina te testen. De rest van het hoofddashboard heeft al grotendeels Nederlandstalige labels; volledige centrale vertaalondersteuning voor alle dashboardcomponenten en weerteksten is nog niet gerealiseerd.
+- Docker-build en visuele validatie van de nieuwe taaloptie op Ubuntu/tablet staan nog open.
