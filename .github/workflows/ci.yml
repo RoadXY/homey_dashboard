@@ -23,5 +23,6 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Validate OpenAPI specification\n        run: npx --yes @redocly/cli lint docs/api/openapi.yaml\n      - name: Build frontend and backend
+      - name: Validate OpenAPI specification
+        run: npx --yes @redocly/cli lint docs/api/openapi.yaml
         run: npm run build
