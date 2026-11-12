@@ -4,12 +4,12 @@ import { dirname, join } from "node:path";
 export type MeasurementTileSource =
   | { type: "device"; deviceId: string; capabilityId: string }
   | { type: "logic"; variableId: string };
-export type MeasurementTile = { id: string; name: string; source: MeasurementTileSource | null };
+export type MeasurementTile = { id: string; name: string; icon: string; source: MeasurementTileSource | null };
 const defaults: MeasurementTile[] = [
-  { id: "measurement-1", name: "Woonkamer", source: null },
-  { id: "measurement-2", name: "Keuken", source: null },
-  { id: "measurement-3", name: "Sem", source: null },
-  { id: "measurement-4", name: "Bram", source: null },
+  { id: "measurement-1", name: "Woonkamer", icon: "thermometer", source: null },
+  { id: "measurement-2", name: "Keuken", icon: "thermometer", source: null },
+  { id: "measurement-3", name: "Sem", icon: "thermometer", source: null },
+  { id: "measurement-4", name: "Bram", icon: "thermometer", source: null },
 ];
 const file = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "measurement-tiles.json");
 function normalizeSource(input: unknown): MeasurementTileSource | null {
@@ -27,7 +27,8 @@ function normalize(input: unknown): MeasurementTile[] {
     const item = entry as Record<string, unknown>;
     if (item.id !== defaults[index].id) throw new Error("De vaste tegel-ID's of volgorde zijn ongeldig.");
     if (typeof item.name !== "string" || !item.name.trim() || item.name.trim().length > 32) throw new Error("Elke tegelnaam moet 1 tot 32 tekens bevatten.");
-    return { id: defaults[index].id, name: item.name.trim(), source: normalizeSource(item.source) };
+    const icon = typeof item.icon === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.icon) ? item.icon : "thermometer";
+    return { id: defaults[index].id, name: item.name.trim(), icon, source: normalizeSource(item.source) };
   });
   return result;
 }
