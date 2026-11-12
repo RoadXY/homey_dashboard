@@ -95,7 +95,7 @@ async function initializeLocaleFiles(): Promise<void> {
       } else {
         merged = { ...defaults, ...current };
       }
-      const serialized = JSON.stringify(merged, null, 2) + "\\n";
+      const serialized = JSON.stringify(merged, null, 2) + "\n";
       if (serialized !== JSON.stringify(current, null, 2) + "\\n") {
         await writeFile(target, serialized, { mode: 0o600 });
       }
