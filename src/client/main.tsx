@@ -455,12 +455,12 @@ function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: stri
     const device = catalog.devices.find(item => item.id === deviceId);
     const capability = device?.capabilities[0];
     const value = capability ? capability.type === "boolean" ? false : capability.type === "number" ? (capability.value as number ?? capability.min ?? 0) : capability.type === "enum" ? capability.values[0]?.id ?? null : "" : null;
-    updateSelected({ deviceId, capabilityId: capability?.id ?? "", value });
+    updateSelected({ deviceId, capabilityId: capability?.id ?? "", value, booleanMode: capability?.type === "boolean" ? "off" : selected.booleanMode });
   };
   const selectCapability = (capabilityId: string) => {
     const capability = selectedDevice?.capabilities.find(item => item.id === capabilityId);
     const value = capability ? capability.type === "boolean" ? false : capability.type === "number" ? (typeof capability.value === "number" ? capability.value : capability.min ?? 0) : capability.type === "enum" ? capability.values[0]?.id ?? null : "" : null;
-    updateSelected({ capabilityId, value });
+    updateSelected({ capabilityId, value, booleanMode: capability?.type === "boolean" ? "off" : selected.booleanMode });
   };
   const save = async () => {
     setSaving(true); setMessage(""); setMessageIsError(false);
