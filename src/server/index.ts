@@ -8,8 +8,7 @@ import { getDashboardWeather } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
-import { readFile } from "node:fs/promises";
-import { readFile as readLocaleFile } from "node:fs/promises";
+import { readFile, mkdir, readdir, copyFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 
 const app = Fastify({ logger: true });
@@ -64,23 +63,36 @@ app.post("/api/settings/unlock", async (request, reply) => {
 });
 
 
-const localeDirectory = join(process.cwd(), "locales");
+const dataDirectory = process.env.DATA_DIR ?? join(process.cwd(), "data");
+const localeDirectory = join(dataDirectory, "locales");
+const defaultLocaleDirectory = join(process.cwd(), "default-locales");
+
+async function initializeLocaleFiles(): Promise<void> {
+  await mkdir(localeDirectory, { recursive: true });
+  const defaults = await readdir(defaultLocaleDirectory);
+  for (const file of defaults) {
+    if (!/^(languages|[a-z]{2}(-[A-Z]{2})?)\.json$/.test(file) && file !== "README.txt") continue;
+    const target = join(localeDirectory, file);
+    if (!existsSync(target)) await copyFile(join(defaultLocaleDirectory, file), target);
+  }
+}
+
 app.get("/api/locales/registry", async (_request, reply) => {
   try {
-    const registry = await readLocaleFile(join(localeDirectory, "languages.json"), "utf8");
-    return reply.type("application/json; charset=utf-8").send(registry);
+    const registry = await readFile(join(localeDirectory, "languages.json"), "utf8");
+    return reply.type("application/json; charset=utf-8").header("Cache-Control", "no-store").send(registry);
   } catch {
     return reply.code(503).send({ error: "Language registry unavailable." });
   }
 });
 app.get<{ Params: { file: string } }>("/api/locales/:file", async (request, reply) => {
   const file = request.params.file;
-  if (!/^[a-z]{2}(-[A-Z]{2})?\\.json$/.test(file)) {
+  if (!/^[a-z]{2}(-[A-Z]{2})?\.json$/.test(file)) {
     return reply.code(400).send({ error: "Invalid translation filename." });
   }
   try {
-    const dictionary = await readLocaleFile(join(localeDirectory, file), "utf8");
-    return reply.type("application/json; charset=utf-8").send(dictionary);
+    const dictionary = await readFile(join(localeDirectory, file), "utf8");
+    return reply.type("application/json; charset=utf-8").header("Cache-Control", "no-store").send(dictionary);
   } catch {
     return reply.code(404).send({ error: "Translation file not found." });
   }
@@ -235,6 +247,7 @@ if (existsSync(clientPath)) {
 }
 
 try {
+  await initializeLocaleFiles();
   await app.listen({ port, host });
 } catch (error) {
   app.log.error(error);
