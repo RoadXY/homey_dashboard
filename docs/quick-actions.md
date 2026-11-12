@@ -94,3 +94,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Voor apparaatacties moeten apparaat en capability in de actuele catalogus bestaan en moet het apparaat beschikbaar zijn.
 - De controle wordt ook in de klikhandler uitgevoerd, zodat een ongeldige actie niet kan worden toegepast via alternatieve bediening.
 - Zo kan een lege zoekopdracht of zoekterm zonder resultaten niet leiden tot het toepassen van een niet-bestaande Flow.
+
+
+## Quick Action Flow-zoekvalidatie en zoekveld
+- Zolang de Flow-keuzelijst open is en er een zoekterm staat, moet de huidige geselecteerde Flow ook binnen de gefilterde resultaten vallen voordat **Toepassen** actief wordt.
+- Een zoekterm zonder resultaten, of resultaten die niet de huidige selectie bevatten, blokkeert **Toepassen**. De gebruiker moet dan een passende Flow kiezen of de zoekterm wissen.
+- De Flow-resultatenlijst en teller gebruiken dezelfde afgeleide gefilterde lijst om afwijkende tellingen of validatie te voorkomen.
+- Het zoekveld gebruikt uitsluitend de ingebouwde wisbediening van `input type="search"`; de extra eigen kruis-knop is verwijderd om dubbele kruisjes te voorkomen.
