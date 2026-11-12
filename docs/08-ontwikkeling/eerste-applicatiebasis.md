@@ -311,3 +311,26 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - De General-pagina vertaalt navigatie, sectiekoppen, labels, statuswaarden, acties en de bevestiging bij niet-opgeslagen wijzigingen. De instelling wordt pas permanent opgeslagen via de bestaande knop Opslaan.
 - De wijziging is bedoeld om de Nederlandse taalkeuze en Homey-automatische detectie op de instellingenpagina te testen. De rest van het hoofddashboard heeft al grotendeels Nederlandstalige labels; volledige centrale vertaalondersteuning voor alle dashboardcomponenten en weerteksten is nog niet gerealiseerd.
 - Docker-build en visuele validatie van de nieuwe taaloptie op Ubuntu/tablet staan nog open.
+
+
+## Centrale i18n-structuur en Engelse/Nederlandse UI (12 november 2026)
+
+### Audit bestaande situatie
+- De repository bevatte vóór deze wijziging geen centrale i18n-library of vertaalbestanden. De teksten stonden grotendeels inline in `src/client/main.tsx`.
+- Bestaande JSON-bestanden onder `config/notifications` en `config/weather` zijn functionele configuratiebestanden, geen vertaalcatalogi.
+- De eerdere taalkeuze vertaalde slechts een deel van de General-instellingenpagina. Dit was geen volledige websitebrede i18n-oplossing.
+
+### Nieuwe implementatie
+- Centrale vertaalcatalogi: `src/client/locales/nl.json` en `src/client/locales/en.json`.
+- Gedeelde helper: `src/client/i18n.ts`, met `translate()` en `resolveLocale()`. Er is geen extra npm-dependency toegevoegd; de bestaande Vite/TypeScript-configuratie ondersteunt JSON-imports via `resolveJsonModule`.
+- De vertaalcatalogi bevatten dezelfde 118 sleutels (gecontroleerd op sleutelpariteit); beide JSON-bestanden zijn als JSON geparseerd.
+- De taalkeuze is beschikbaar voor de hele client. Een beperkt publiek endpoint `GET /api/settings/language` geeft alleen de opgeslagen taalvoorkeur terug, zodat het hoofddashboard dezelfde keuze kan gebruiken zonder de PIN-beveiligde algemene instellingen-API open te stellen.
+- De hoofdinterface, quick actions, temperatuurtegels, meldingslabels en de bestaande meldingsinhoud, weerconditie-labels, PIN-scherm en General-instellingen gebruiken de centrale catalogi. Temperatuurdecimalen en datum/tijdnotatie volgen de gekozen taal.
+- De bestaande `Restore defaults`-knop en bijbehorende ongebruikte handler zijn verwijderd.
+- Het pictogram bij Datum en tijd is gewijzigd naar een klokteken (`◷`).
+- Onbekende vertaalkeys vallen terug op Engels. De automatische keuze gebruikt Nederlands bij een Homey-taalcode die met `nl` begint; anders Engels.
+
+### Bekende grenzen en validatie
+- Homey-weerbeschrijvingen die als vrije tekst uit een apparaat komen, zijn brondata en kunnen nog in de Homey-taal verschijnen; de dashboardlabels en genormaliseerde weercondities zijn wel vertaald.
+- Namen van apparaten/ruimtes en eventueel door gebruikers aangepaste meldingen blijven bron-/gebruikersdata en worden niet automatisch herschreven.
+- De twee JSON-catalogi hebben dezelfde keys en zijn syntactisch geldige JSON. De TypeScript/Docker-build en visuele controle van alle schermen moeten nog op Ubuntu worden uitgevoerd; deze wijziging wordt daarom nog niet als build- of runtime-gevalideerd beschouwd.
