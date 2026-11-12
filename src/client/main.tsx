@@ -450,6 +450,17 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     const timer = window.setInterval(() => void poll(), 5000);
     return () => { active = false; window.clearInterval(timer); };
   }, []);
+  React.useEffect(() => {
+    if (!selected?.source) return;
+    if (selected.source.type === "logic") {
+      setSourceType("logic");
+    } else {
+      setSourceType("device");
+      setDeviceId(selected.source.deviceId);
+      const sourceDevice = catalog.devices.find(device => device.id === selected.source?.deviceId);
+      setZoneId(sourceDevice?.zone ?? "");
+    }
+  }, [selected?.id, selected?.source, catalog.devices]);
   const zonePath = (id: string | null): string => {
     if (!id) return "";
     const zone = catalog.zones.find(item => item.id === id);
@@ -506,9 +517,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <p className="quick-card-description">Zo worden de meetwaardetegels op het dashboard weergegeven.</p>
         <div className="quick-preview-grid measurement-preview-grid">
           {tiles.map(tile => {
-            const savedTile = previewData?.tiles.find(item => item.id === tile.id);
-            const sameSource = JSON.stringify(savedTile?.source ?? null) === JSON.stringify(tile.source ?? null);
-            const reading = sameSource ? previewData?.values.find(item => item.id === tile.id) : undefined;
+            const reading = previewData?.values.find(item => item.id === tile.id);
             return <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name="thermometer"/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
           })}
         </div>
