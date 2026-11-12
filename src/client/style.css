@@ -438,7 +438,7 @@ body {
 .quick-flow-search { flex:1; width:100%; min-width:0; height:38px; margin:0; padding:0 8px; border:0!important; outline:none; background:transparent!important; color:#f0f5fb; font:inherit; }
 .quick-flow-search::placeholder { color:#9db2c9; }
 .quick-flow-results { overflow-y:auto; overscroll-behavior:contain; }
-.quick-flow-option { display:flex; align-items:center; gap:9px; width:calc(100% - 12px); min-height:48px; margin:3px 6px; padding:9px 13px; border:1px solid transparent; border-radius:999px; background:transparent; color:#edf3fb; font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
+.quick-flow-option { display:flex; align-items:center; gap:13px; width:calc(100% - 12px); min-height:62px; margin:6px 6px; padding:12px 14px; border:1px solid transparent; border-radius:10px; background:transparent; color:#edf3fb; font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .quick-flow-option.selected { background:#1c4c77; }
 .quick-flow-option:focus-visible { outline:2px solid #8fc8ff; outline-offset:2px; }
 @media (hover:hover) and (pointer:fine) {
@@ -446,7 +446,7 @@ body {
   .quick-flow-option.selected:hover { background:#1c4c77; border-color:rgba(160,205,245,.9); }
 }
 @media (hover:none), (pointer:coarse) {
-  .quick-flow-option { min-height:50px; padding-top:10px; padding-bottom:10px; }
+  .quick-flow-option { min-height:62px; padding:12px 14px; }
   .quick-flow-option:active:not(.selected) { background:rgba(28,76,119,.55); }
 }
 .quick-flow-type { flex:0 0 auto; color:#9fb5ce; font-size:12px; }
@@ -459,8 +459,7 @@ body {
 .quick-device-picker .quick-flow-trigger-icon { font-size:20px; }
 .quick-device-menu { bottom:auto; top:calc(100% + 5px); max-height:min(58vh,480px); }
 .quick-device-menu .quick-flow-results { min-height:0; }
-.quick-device-menu .quick-flow-option { min-height:62px; margin:6px 6px; padding:12px 14px; gap:13px; border-radius:10px; }
-.quick-device-menu .quick-flow-option-icon { flex-basis:34px; font-size:25px; }
-.quick-device-menu .quick-flow-option-icon svg { width:25px; height:25px; }
+.quick-flow-option-icon { flex-basis:34px; font-size:25px; }
+.quick-flow-option-icon svg { width:25px; height:25px; }
 
 .quick-catalog-warning { margin:0 0 12px; padding:10px 12px; border:1px solid rgba(245,181,74,.4); border-radius:9px; background:rgba(128,82,18,.18); color:#ffd58a; font-size:13px; line-height:1.4; overflow-wrap:anywhere; }
