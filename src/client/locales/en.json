@@ -155,6 +155,8 @@
   "settings.deviceAction": "Device",
   "settings.homeyFlow": "Homey Flow",
   "settings.selectFlow": "Select a Flow",
+  "settings.searchFlows": "Search flows (part of the name)…",
+  "settings.flowResults": "results",
   "settings.device": "Device",
   "settings.selectDevice": "Select a device",
   "settings.deviceActionLabel": "Device action",
