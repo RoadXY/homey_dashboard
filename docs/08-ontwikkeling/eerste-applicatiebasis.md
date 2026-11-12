@@ -276,3 +276,11 @@ De productiecompose mount al het volume `dashboard_data:/app/data`, zodat instel
 ### Beveiligingsdetail instellingenroute
 
 Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De General-instellingen-API vereist deze token in de header `x-settings-session`; zonder geldige sessie geeft de API HTTP 401. De sessie verloopt na 30 minuten inactiviteit. De PIN zelf wordt uitsluitend server-side vergeleken met `SETTINGS_PIN` en wordt niet naar de browser teruggestuurd.
+
+## Productiedeployment op Ubuntu – poort- en Compose-keuze (12 november 2026)
+
+- De Ubuntu-host gebruikt poort 3000 al voor Grafana. De productiecontainer luistert intern op poort 3000, maar publiceert deze op hostpoort 5173 via `5173:3000`. Grafana blijft daardoor ongewijzigd bereikbaar op hostpoort 3000.
+- Productie wordt gestart met `docker compose -f compose.prod.yaml up -d --build dashboard`. Gebruik hiervoor niet de standaard `docker compose up`, want dat kiest `compose.yaml` (de Vite-ontwikkelconfiguratie).
+- Het updatescript `~/bin/homey-dashboard-update.sh` moet dezelfde productiecomposefile expliciet gebruiken voor configuratiecontrole, build/start en statuscontroles. Het script mag geen secrets afdrukken.
+- Een bestaande container opnieuw aanmaken zonder `--build` kan een oude image hergebruiken; na Dockerfile- of applicatiewijzigingen moet de image opnieuw worden gebouwd.
+- Validatie van de productiebuild en de readiness-endpoint op `http://localhost:5173/api/health/ready` staat nog open. De bestaande Grafana-container en Docker-volumes mogen tijdens herstel niet worden verwijderd of aangepast.
