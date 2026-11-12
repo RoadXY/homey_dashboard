@@ -43,7 +43,8 @@ function App() {
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
-  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);\n  const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
+  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
+  const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
   const [actionError, setActionError] = React.useState("");
   const [executingAction, setExecutingAction] = React.useState("");
