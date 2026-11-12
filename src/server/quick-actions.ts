@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 export type QuickActionType = "flow" | "device";
+export type QuickActionBooleanMode = "on" | "off" | "toggle";
 export type QuickAction = {
   id: string;
   name: string;
@@ -12,10 +13,11 @@ export type QuickAction = {
   deviceId: string;
   capabilityId: string;
   value: boolean | number | string | null;
+  booleanMode: QuickActionBooleanMode;
 };
 
 const defaults: QuickAction[] = [
-  { id: "qmusic", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "qmusic", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
   { id: "foute-uur", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "blinds", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "birthday", name: "", icon: "lightning-bolt", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
@@ -47,6 +49,7 @@ function normalizeAction(input: unknown, index: number): QuickAction {
     id: item.id, name: item.name.trim(), icon: item.icon, type: item.type,
     flowId: item.flowId ?? "", flowType: item.flowType,
     deviceId: item.deviceId ?? "", capabilityId: item.capabilityId ?? "", value: item.value ?? null,
+    booleanMode: item.booleanMode === "on" || item.booleanMode === "off" || item.booleanMode === "toggle" ? item.booleanMode : item.value === true ? "on" : "off",
   };
 }
 
