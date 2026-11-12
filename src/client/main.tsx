@@ -141,7 +141,7 @@ function App() {
       setSettingsPath(window.location.pathname);
       if (!isSettingsRoute) { setSettingsUnlocked(false); return; }
       void fetch("/api/settings/session").then(response => {
-        if (response.ok) { setSettingsUnlocked(true); setPinError(""); }
+        if (response.ok) { setSettingsUnlocked(true); setPin(""); setPinError(""); lastSessionRefresh.current = 0; }
         else { setSettingsUnlocked(false);  }
       }).catch(() => { setSettingsUnlocked(false); });
     };
@@ -154,11 +154,10 @@ function App() {
     const expireSettings = () => {
       if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
       settingsIdleTimer.current = null;
-      void fetch("/api/settings/logout", { method: "POST" }).finally(() => {
-        window.history.replaceState({}, "", "/");
-        setSettingsOpen(false); setSettingsUnlocked(false); 
-        void refresh();
-      });
+      void fetch("/api/settings/logout", { method: "POST" });
+      window.history.replaceState({}, "", "/");
+      setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false);
+      void refresh();
     };
     const scheduleExpiry = () => {
       if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
@@ -431,8 +430,8 @@ function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: stri
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/dashboard-actions", {}).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
-      fetch("/api/settings/quick-action-catalog", {}).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
+      fetch("/api/settings/dashboard-actions").then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
+      fetch("/api/settings/quick-action-catalog").then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
       const normalizedActions = configuration.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
@@ -608,7 +607,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     return () => { active = false; };
   }, []);
   const loadWeatherTokens = async () => {
-    const response = await fetch("/api/settings/weather-tokens", {});
+    const response = await fetch("/api/settings/weather-tokens");
     if (!response.ok) throw new Error(t("settings.tokensLoadError"));
     const data = await response.json() as { tokens: WeatherTokenInfo[] };
     setWeatherTokens(data.tokens);
