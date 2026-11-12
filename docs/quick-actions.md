@@ -87,3 +87,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Alle open dashboardclients luisteren naar dit event en halen de actuele dashboardgegevens opnieuw op.
 - Hierdoor worden bijvoorbeeld gewijzigde Quick Actions en taal-/datum-/tijdvoorkeuren op de tablet bijgewerkt zodra ze op een andere computer zijn opgeslagen, zonder handmatige refresh of volledige browserreload.
 - SSE-clients worden bij verbreken van de verbinding automatisch opnieuw verbonden door de browser; na reconnect stuurt het bestaande `ready`-event opnieuw een data-refresh aan.
+
+## Validatie Quick Action-editor
+- De knop **Toepassen** is alleen actief als de gekozen actie naar een bestaande, beschikbare Homey-doelactie verwijst.
+- Voor Flow-acties moet de combinatie van Flow-ID en Flow-type exact voorkomen in de actuele Homey-catalogus. Een lege, verwijderde of uitgeschakelde Flow kan niet worden toegepast.
+- Voor apparaatacties moeten apparaat en capability in de actuele catalogus bestaan en moet het apparaat beschikbaar zijn.
+- De controle wordt ook in de klikhandler uitgevoerd, zodat een ongeldige actie niet kan worden toegepast via alternatieve bediening.
+- Zo kan een lege zoekopdracht of zoekterm zonder resultaten niet leiden tot het toepassen van een niet-bestaande Flow.
