@@ -130,3 +130,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De MDI-metadata gebruikt `name` als icon-identificatie (niet `id`). De picker gebruikt deze naam om de bijbehorende `.mdi-<naam>` font-class te tonen.
 - Een samengestelde set veelgebruikte pictogrammen staat bovenaan, gevolgd door de volledige alfabetische MDI-catalogus. Zo zijn de eerste vakjes direct gevuld en blijven alle iconen doorzoekbaar.
 - De naam-invoer toont de effectieve standaardnaam van de Quick Action als gewone bewerkbare invoerwaarde; de gebruiker hoeft niet eerst een grijze placeholder te vervangen.
+
+
+## Diagnose en gedeeltelijk laden van Homey-selectiecatalogus
+- Apparaten, standaard Flows en Advanced Flows worden onafhankelijk opgehaald met `Promise.allSettled`.
+- Een fout bij het ophalen van één Homey-manager mag de gegevens uit de andere managers niet langer verbergen.
+- De catalogusresponse bevat optioneel `warnings`; de Quick Action-editor toont deze waarschuwingen zodat een ontbrekende gegevensbron zichtbaar is in plaats van alleen "Geen resultaten".
+- Als een manager geen gegevens levert, blijft de bijbehorende zoeklijst leeg en toont de editor de bijbehorende foutmelding.
