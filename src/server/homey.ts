@@ -402,11 +402,29 @@ export async function getHomeyLanguage(): Promise<string | null> {
 export async function getQuickActionCatalog() {
   if (!api || snapshot.state !== "online") await connectHomey();
   if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
-  const [devices, flows, advancedFlows] = await Promise.all([
+
+  // Fetch each Homey manager independently. A failure in Advanced Flow must
+  // not hide standard Flows and devices (and vice versa).
+  const [devicesResult, flowsResult, advancedFlowsResult] = await Promise.allSettled([
     api.devices.getDevices(),
     api.flow.getFlows(),
     api.flow.getAdvancedFlows(),
   ]);
+  const warnings: string[] = [];
+  const devices = devicesResult.status === "fulfilled" ? devicesResult.value : {};
+  const flows = flowsResult.status === "fulfilled" ? flowsResult.value : {};
+  const advancedFlows = advancedFlowsResult.status === "fulfilled" ? advancedFlowsResult.value : {};
+
+  if (devicesResult.status === "rejected") {
+    warnings.push("Homey-apparaten konden niet worden opgehaald: " + (devicesResult.reason instanceof Error ? devicesResult.reason.message : String(devicesResult.reason)));
+  }
+  if (flowsResult.status === "rejected") {
+    warnings.push("Homey-Flows konden niet worden opgehaald: " + (flowsResult.reason instanceof Error ? flowsResult.reason.message : String(flowsResult.reason)));
+  }
+  if (advancedFlowsResult.status === "rejected") {
+    warnings.push("Advanced Flows konden niet worden opgehaald: " + (advancedFlowsResult.reason instanceof Error ? advancedFlowsResult.reason.message : String(advancedFlowsResult.reason)));
+  }
+
   const deviceList = Object.values(devices as Record<string, any>).map((device: any) => {
     const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
     const capabilityList = capabilities.flatMap((id) => {
@@ -430,11 +448,13 @@ export async function getQuickActionCatalog() {
     });
     return { id: String(device.id), name: String(device.name ?? "Onbekend apparaat"), zone: String(device.zone ?? ""), available: device.available !== false, capabilities: capabilityList };
   }).filter((device) => device.capabilities.length > 0);
+
   const flowList = [
     ...Object.values(flows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Flow"), type: "standard" as const, enabled: flow.enabled !== false, icon: typeof flow.icon === "string" && flow.icon.length <= 8 ? flow.icon : undefined })),
     ...Object.values(advancedFlows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Advanced Flow"), type: "advanced" as const, enabled: flow.enabled !== false, icon: typeof flow.icon === "string" && flow.icon.length <= 8 ? flow.icon : undefined })),
   ].filter((flow) => flow.enabled).sort((a, b) => a.name.localeCompare(b.name));
-  return { retrievedAt: new Date().toISOString(), devices: deviceList, flows: flowList };
+
+  return { retrievedAt: new Date().toISOString(), devices: deviceList, flows: flowList, warnings };
 }
 
 export async function executeQuickAction(input: {
