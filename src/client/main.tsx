@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
 import "@mdi/font/css/materialdesignicons.css";
+import mdiMeta from "@mdi/svg/meta.json";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 
 type Reading = { capabilityId: string; value: unknown };
@@ -263,68 +264,53 @@ const quickActionDefaults: QuickAction[] = [
   { id: "tv", name: "", icon: "▣", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
 ];
+type MdiIconMeta = { id: string; name?: string; aliases?: string[] };
 type MdiIconChoice = { name: string; keywords: string[] };
-const quickActionIconChoices: MdiIconChoice[] = [
-  { name: "music", keywords: ["muziek", "audio", "song", "foute uur"] },
-  { name: "blinds", keywords: ["jaloezie", "rolluik", "zonwering", "raam"] },
-  { name: "window-shutter", keywords: ["rolluik", "zonwering", "raam"] },
-  { name: "party-popper", keywords: ["feest", "verjaardag", "party"] },
-  { name: "lightbulb", keywords: ["lamp", "licht", "verlichting"] },
-  { name: "lightbulb-on", keywords: ["lamp aan", "licht aan"] },
-  { name: "lightbulb-group", keywords: ["lampen", "groep", "verlichting"] },
-  { name: "led-strip", keywords: ["led", "sfeer", "strip"] },
-  { name: "star-four-points", keywords: ["ster", "sfeer", "glitter"] },
-  { name: "television", keywords: ["tv", "televisie", "media"] },
-  { name: "moon-waning-crescent", keywords: ["maan", "nacht", "bedtijd", "slapen"] },
-  { name: "weather-sunny", keywords: ["zon", "zonnig", "weer"] },
-  { name: "weather-night", keywords: ["nacht", "avond"] },
-  { name: "home", keywords: ["huis", "thuis", "woning"] },
-  { name: "car", keywords: ["auto", "vervoer", "voertuig"] },
-  { name: "movie-open", keywords: ["film", "bioscoop", "video"] },
-  { name: "silverware-fork-knife", keywords: ["eten", "bestek", "keuken"] },
-  { name: "shield-outline", keywords: ["beveiliging", "alarm", "schild"] },
-  { name: "power", keywords: ["aan", "uit", "stroom", "schakelaar"] },
-  { name: "flash", keywords: ["bliksem", "energie", "stroom"] },
-  { name: "coffee", keywords: ["koffie", "drinken"] },
-  { name: "speaker", keywords: ["geluid", "muziek", "audio", "speaker"] },
-  { name: "volume-high", keywords: ["volume", "geluid", "hard"] },
-  { name: "bell", keywords: ["bel", "melding", "notificatie"] },
-  { name: "alarm", keywords: ["wekker", "alarm", "timer"] },
-  { name: "calendar", keywords: ["agenda", "datum", "kalender"] },
-  { name: "robot", keywords: ["robot", "automatisering"] },
-  { name: "robot-vacuum", keywords: ["stofzuiger", "schoonmaken"] },
-  { name: "water", keywords: ["water", "kraan", "bewateren"] },
-  { name: "flower", keywords: ["bloem", "plant", "tuin"] },
-  { name: "sprout", keywords: ["plant", "groei", "tuin"] },
-  { name: "tree", keywords: ["boom", "tuin", "buiten"] },
-  { name: "lock", keywords: ["slot", "deur", "beveiliging"] },
-  { name: "door", keywords: ["deur", "toegang"] },
-  { name: "garage", keywords: ["garage", "poort"] },
-  { name: "thermometer", keywords: ["temperatuur", "warmte", "koud"] },
-  { name: "air-conditioner", keywords: ["airco", "koeling", "klimaat"] },
-  { name: "fan", keywords: ["ventilator", "lucht"] },
-  { name: "lamp", keywords: ["lamp", "licht"] },
-  { name: "ceiling-light", keywords: ["plafondlamp", "licht"] },
-  { name: "play", keywords: ["start", "afspelen"] },
-  { name: "pause", keywords: ["pauze"] },
-  { name: "stop", keywords: ["stoppen"] },
-  { name: "skip-next", keywords: ["volgende", "overslaan"] },
-  { name: "volume-mute", keywords: ["stil", "mute", "geluid uit"] },
-  { name: "wifi", keywords: ["netwerk", "wifi", "internet"] },
-  { name: "curtains", keywords: ["gordijnen", "raam"] },
-  { name: "window-closed", keywords: ["raam dicht", "raam"] },
-  { name: "window-open", keywords: ["raam open", "raam"] },
-  { name: "fire", keywords: ["vuur", "haard", "warmte"] },
-  { name: "smoke-detector", keywords: ["rookmelder", "brand", "veiligheid"] },
-  { name: "dots-horizontal", keywords: ["meer", "overig", "anders"] }
-];
-const legacyQuickActionIcons: Record<string, string> = {
-  "♫": "music", "⌃": "blinds", "✦": "party-popper", "◌": "lightbulb",
-  "✧": "star-four-points", "▣": "television", "☾": "moon-waning-crescent",
-  "♧": "tree", "⌂": "home", "▤": "calendar", "⚡": "flash", "💡": "lightbulb-on",
-  "🏠": "home", "🚗": "car", "🎬": "movie-open", "🍴": "silverware-fork-knife",
-  "🛡": "shield-outline", "⏻": "power", "•••": "dots-horizontal"
+const dutchMdiSearchTerms: Record<string, string[]> = {
+  music: ["muziek", "audio", "song", "foute uur"],
+  blinds: ["jaloezie", "rolluik", "zonwering", "raam"],
+  "window-shutter": ["rolluik", "zonwering", "raam"],
+  "party-popper": ["feest", "verjaardag", "party"],
+  lightbulb: ["lamp", "licht", "verlichting"],
+  "lightbulb-on": ["lamp aan", "licht aan"],
+  "lightbulb-group": ["lampen", "groep", "verlichting"],
+  "led-strip": ["led", "sfeer", "strip"],
+  "star-four-points": ["ster", "sfeer", "glitter"],
+  television: ["tv", "televisie", "media"],
+  "moon-waning-crescent": ["maan", "nacht", "bedtijd", "slapen"],
+  "weather-sunny": ["zon", "zonnig", "weer"],
+  "weather-night": ["nacht", "avond"],
+  home: ["huis", "thuis", "woning"],
+  car: ["auto", "vervoer", "voertuig"],
+  "movie-open": ["film", "bioscoop", "video"],
+  "silverware-fork-knife": ["eten", "bestek", "keuken"],
+  "shield-outline": ["beveiliging", "alarm", "schild"],
+  power: ["aan", "uit", "stroom", "schakelaar"],
+  flash: ["bliksem", "energie", "stroom"],
+  coffee: ["koffie", "drinken"],
+  "robot-vacuum": ["stofzuiger", "schoonmaken"],
+  water: ["water", "kraan", "bewateren"],
+  flower: ["bloem", "plant", "tuin"],
+  sprout: ["plant", "groei", "tuin"],
+  tree: ["boom", "tuin", "buiten"],
+  lock: ["slot", "deur", "beveiliging"],
+  door: ["deur", "toegang"],
+  garage: ["garage", "poort"],
+  thermometer: ["temperatuur", "warmte", "koud"],
+  "air-conditioner": ["airco", "koeling", "klimaat"],
+  fan: ["ventilator", "lucht"],
+  lamp: ["lamp", "licht"],
+  "ceiling-light": ["plafondlamp", "licht"],
+  curtains: ["gordijnen", "raam"],
+  "window-closed": ["raam dicht", "raam"],
+  "window-open": ["raam open", "raam"],
+  fire: ["vuur", "haard", "warmte"],
+  "smoke-detector": ["rookmelder", "brand", "veiligheid"]
 };
+const quickActionIconChoices: MdiIconChoice[] = (mdiMeta as MdiIconMeta[]).map(icon => ({
+  name: icon.id,
+  keywords: [icon.name ?? icon.id, ...(Array.isArray(icon.aliases) ? icon.aliases : []), ...(dutchMdiSearchTerms[icon.id] ?? [])]
+}));
 function MdiIcon({ name, className = "" }: { name: string; className?: string }) {
   const iconName = name.startsWith("mdi:") ? name.slice(4) : name;
   return <span className={`mdi mdi-${iconName} ${className}`.trim()} aria-hidden="true" />;
