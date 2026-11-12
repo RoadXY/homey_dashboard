@@ -153,6 +153,8 @@ app.post("/api/settings/general", async (request, reply) => {
   }
 });
 
+app.get("/api/dashboard/quick-actions", async () => ({ actions: await readQuickActions() }));
+
 app.get("/api/settings/dashboard-actions", async (request, reply) => {
   if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   return { actions: await readQuickActions() };
