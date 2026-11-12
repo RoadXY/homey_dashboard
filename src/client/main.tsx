@@ -103,6 +103,24 @@ function App() {
   const timeText = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const dateText = new Intl.DateTimeFormat("nl-NL", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const homeyOnline = homey?.state === "online";
+  const beginSettingsHold = () => {
+    if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
+    holdTimer.current = window.setTimeout(() => { setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
+  };
+  const cancelSettingsHold = () => {
+    if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
+    holdTimer.current = null;
+  };
+  if (settingsOpen) return settingsUnlocked
+    ? <GeneralSettingsPage onBack={() => { setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} />
+    : <SettingsPinGate pin={pin} setPin={setPin} error={pinError} onCancel={() => setSettingsOpen(false)} onUnlock={async () => {
+        try {
+          const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
+          const data = await response.json() as { error?: string; unlocked?: boolean };
+          if (!response.ok) throw new Error(data.error || "Toegang geweigerd.");
+          setSettingsUnlocked(true); setPinError("");
+        } catch (error) { setPinError(error instanceof Error ? error.message : "PIN-controle mislukt."); }
+      }} />;
   return (
     <main className="dashboard">
       <section className="left-column" aria-label="Tijd, weer en temperaturen">
