@@ -431,8 +431,8 @@ export async function getQuickActionCatalog() {
     return { id: String(device.id), name: String(device.name ?? "Onbekend apparaat"), zone: String(device.zone ?? ""), available: device.available !== false, capabilities: capabilityList };
   }).filter((device) => device.capabilities.length > 0);
   const flowList = [
-    ...Object.values(flows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Flow"), type: "standard" as const, enabled: flow.enabled !== false })),
-    ...Object.values(advancedFlows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Advanced Flow"), type: "advanced" as const, enabled: flow.enabled !== false })),
+    ...Object.values(flows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Flow"), type: "standard" as const, enabled: flow.enabled !== false, icon: typeof flow.icon === "string" && flow.icon.length <= 8 ? flow.icon : undefined })),
+    ...Object.values(advancedFlows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Advanced Flow"), type: "advanced" as const, enabled: flow.enabled !== false, icon: typeof flow.icon === "string" && flow.icon.length <= 8 ? flow.icon : undefined })),
   ].filter((flow) => flow.enabled).sort((a, b) => a.name.localeCompare(b.name));
   return { retrievedAt: new Date().toISOString(), devices: deviceList, flows: flowList };
 }
