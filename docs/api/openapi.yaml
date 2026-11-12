@@ -308,11 +308,17 @@ paths:
     get:
       tags: [Realtime (internal)]
       operationId: streamDashboardEvents
-      summary: Subscribe to Homey realtime events
+      summary: Subscribe to dashboard and Homey realtime events
       description: |
-        Server-Sent Events stream. Event names: ready, homey-update,
-        homey-connected, homey-disconnected. Each event data field is JSON.
-        A keepalive comment is sent every 20 seconds.
+        Server-Sent Events stream. Event names:
+        - ready: initial connection state, with Homey status and connectedAt.
+        - homey-update: Homey realtime update payload.
+        - homey-connected: Homey connection established.
+        - homey-disconnected: Homey connection lost.
+        - settings-updated: dashboard settings saved successfully; JSON data
+          contains section (general or quick-actions) and updatedAt (ISO 8601).
+        Each event data field is JSON. A keepalive comment is sent every
+        20 seconds. Browsers using EventSource reconnect automatically.
       responses:
         '200':
           description: Event stream
