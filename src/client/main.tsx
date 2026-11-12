@@ -96,6 +96,7 @@ function App() {
     stream.addEventListener("homey-update", scheduleRefresh);
     stream.addEventListener("homey-connected", scheduleRefresh);
     stream.addEventListener("homey-disconnected", scheduleRefresh);
+    stream.addEventListener("settings-updated", scheduleRefresh);
 
     return () => {
       window.clearInterval(clock);
@@ -104,6 +105,7 @@ function App() {
       stream.removeEventListener("homey-update", scheduleRefresh);
       stream.removeEventListener("homey-connected", scheduleRefresh);
       stream.removeEventListener("homey-disconnected", scheduleRefresh);
+      stream.removeEventListener("settings-updated", scheduleRefresh);
       stream.close();
     };
   }, [refresh]);
