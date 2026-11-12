@@ -397,3 +397,87 @@ export async function getHomeyLanguage(): Promise<string | null> {
     return null;
   }
 }
+
+
+export async function getQuickActionCatalog() {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const [devices, flows, advancedFlows] = await Promise.all([
+    api.devices.getDevices(),
+    api.flow.getFlows(),
+    api.flow.getAdvancedFlows(),
+  ]);
+  const deviceList = Object.values(devices as Record<string, any>).map((device: any) => {
+    const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
+    const capabilityList = capabilities.flatMap((id) => {
+      const descriptor = device.capabilitiesObj?.[id] as Record<string, any> | undefined;
+      if (!descriptor || descriptor.setable !== true) return [];
+      const type = typeof descriptor.type === "string" ? descriptor.type : "unknown";
+      if (!["boolean", "number", "string", "enum"].includes(type)) return [];
+      let value: unknown = null;
+      try { value = device.capabilitiesObj?.[id]?.value ?? null; } catch { /* current value is optional */ }
+      return [{
+        id, title: typeof descriptor.title === "string" ? descriptor.title : id,
+        type, min: typeof descriptor.min === "number" ? descriptor.min : null,
+        max: typeof descriptor.max === "number" ? descriptor.max : null,
+        step: typeof descriptor.step === "number" ? descriptor.step : null,
+        units: typeof descriptor.units === "string" ? descriptor.units : "",
+        values: Array.isArray(descriptor.values) ? descriptor.values.map((item: any) => ({
+          id: String(item.id ?? item.value ?? ""), title: String(item.title ?? item.label ?? item.id ?? item.value ?? ""),
+        })) : [],
+        value,
+      }];
+    });
+    return { id: String(device.id), name: String(device.name ?? "Onbekend apparaat"), zone: String(device.zone ?? ""), available: device.available !== false, capabilities: capabilityList };
+  }).filter((device) => device.capabilities.length > 0);
+  const flowList = [
+    ...Object.values(flows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Flow"), type: "standard" as const, enabled: flow.enabled !== false })),
+    ...Object.values(advancedFlows as Record<string, any>).map((flow: any) => ({ id: String(flow.id), name: String(flow.name ?? "Naamloze Advanced Flow"), type: "advanced" as const, enabled: flow.enabled !== false })),
+  ].filter((flow) => flow.enabled).sort((a, b) => a.name.localeCompare(b.name));
+  return { retrievedAt: new Date().toISOString(), devices: deviceList, flows: flowList };
+}
+
+export async function executeQuickAction(input: {
+  type: "flow" | "device"; flowId?: string; flowType?: "standard" | "advanced";
+  deviceId?: string; capabilityId?: string; value?: unknown;
+}) {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  if (input.type === "flow") {
+    if (!input.flowId || (input.flowType !== "standard" && input.flowType !== "advanced")) throw new Error("Flow-configuratie ontbreekt.");
+    if (input.flowType === "standard") {
+      const flows = await api.flow.getFlows() as Record<string, any>;
+      if (!flows[input.flowId] || flows[input.flowId].enabled === false) throw new Error("De geselecteerde Flow bestaat niet of is uitgeschakeld.");
+      await api.flow.triggerFlow({ id: input.flowId });
+    } else {
+      const flows = await api.flow.getAdvancedFlows() as Record<string, any>;
+      if (!flows[input.flowId] || flows[input.flowId].enabled === false) throw new Error("De geselecteerde Advanced Flow bestaat niet of is uitgeschakeld.");
+      await api.flow.triggerAdvancedFlow({ id: input.flowId });
+    }
+    return { executed: true, type: "flow" };
+  }
+  if (input.type !== "device" || !input.deviceId || !input.capabilityId) throw new Error("Apparaatconfiguratie ontbreekt.");
+  const devices = await api.devices.getDevices() as Record<string, any>;
+  const device = devices[input.deviceId];
+  if (!device) throw new Error("Het geselecteerde apparaat bestaat niet meer.");
+  if (device.available === false) throw new Error("Het geselecteerde apparaat is niet beschikbaar.");
+  if (!Array.isArray(device.capabilities) || !device.capabilities.includes(input.capabilityId)) throw new Error("De geselecteerde capability wordt niet meer ondersteund.");
+  const descriptor = device.capabilitiesObj?.[input.capabilityId] as Record<string, any> | undefined;
+  if (!descriptor || descriptor.setable !== true) throw new Error("Deze capability is niet wijzigbaar.");
+  const value = input.value;
+  const type = descriptor.type;
+  if (type === "boolean" && typeof value !== "boolean") throw new Error("Deze actie verwacht een aan/uit-waarde.");
+  if (type === "number") {
+    if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("Ongeldige numerieke waarde.");
+    if (typeof descriptor.min === "number" && value < descriptor.min) throw new Error("Waarde ligt onder het toegestane minimum.");
+    if (typeof descriptor.max === "number" && value > descriptor.max) throw new Error("Waarde ligt boven het toegestane maximum.");
+  }
+  if (type === "enum") {
+    const allowed = Array.isArray(descriptor.values) ? descriptor.values.map((item: any) => String(item.id ?? item.value ?? "")) : [];
+    if (typeof value !== "string" || !allowed.includes(value)) throw new Error("Ongeldige keuze voor deze capability.");
+  }
+  if (type === "string" && typeof value !== "string") throw new Error("Deze actie verwacht tekst.");
+  if (!["boolean", "number", "enum", "string"].includes(type)) throw new Error("Dit type apparaatbediening wordt niet ondersteund.");
+  await (device as any).setCapabilityValue({ capabilityId: input.capabilityId, value });
+  return { executed: true, type: "device" };
+}
