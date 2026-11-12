@@ -17,7 +17,7 @@ type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
-type MeasurementTile = { id: string; name: string; source: MeasurementTileSource };
+type MeasurementTile = { id: string; name: string; icon: string; source: MeasurementTileSource };
 type MeasurementSourceCatalog = { zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; units: string; decimals: number | null }[] }[]; variables: { id: string; name: string; type: "number" }[] };
 type MeasurementTileValue = { id: string; value: number | null; units: string; decimals: number | null; available: boolean };
 type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
@@ -260,7 +260,7 @@ function App() {
         <section className="temperature-grid" aria-label="Temperature sensors">
           {(measurementTileData?.tiles ?? []).map(tile => {
             const reading = measurementTileData?.values.find(value => value.id === tile.id);
-            return <TemperatureTile key={tile.id} label={tile.name} value={formatMeasurementValue(reading, locale)} />;
+            return <TemperatureTile key={tile.id} label={tile.name} icon={tile.icon || "thermometer"} value={formatMeasurementValue(reading, locale)} />;
           })}
         </section>
       </section>
@@ -421,6 +421,10 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
   const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
+  const [iconSearch, setIconSearch] = React.useState("");
+  const iconQuery = iconSearch.trim().toLocaleLowerCase();
+  const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
+  const visibleIcons = matchingIcons.slice(0, 120);
   const dirty = JSON.stringify(tiles) !== JSON.stringify(saved);
   const selected = tiles.find(tile => tile.id === selectedId) ?? tiles[0];
   React.useEffect(() => {
@@ -489,12 +493,21 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <p className="quick-card-description">Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
         <div className="quick-action-list measurement-tile-list">
           {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => setSelectedId(tile.id)}>
-            <span className="quick-action-number">{index + 1}</span><MdiIcon name="thermometer" className="quick-action-icon"/><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
+            <span className="quick-action-number">{index + 1}</span><MdiIcon name={tile.icon || "thermometer"} className="quick-action-icon"/><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
         {selected && <div className="measurement-inline-editor">
           <h3>Tegel {tiles.findIndex(tile => tile.id === selected.id) + 1} configureren</h3>
           <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
+          <div className="quick-editor-label">Pictogram</div>
+          <div className="mdi-picker">
+            <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder="Zoek MDI-iconen, bijvoorbeeld temperatuur, licht of water…" aria-label="Zoek MDI-iconen" /></div>
+            <div className="quick-icon-picker">
+              {visibleIcons.map(icon => <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={(selected.icon || "thermometer") === icon.name} className={(selected.icon || "thermometer") === icon.name ? "active" : ""} onClick={() => update({ icon: icon.name })}><MdiIcon name={icon.name} /></button>)}
+              {matchingIcons.length === 0 && <div className="mdi-no-results">Geen MDI-iconen gevonden.</div>}
+            </div>
+            <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · verfijn je zoekopdracht" : ""}</div>
+          </div>
           <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
           {sourceType === "device" ? <>
             <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
@@ -511,7 +524,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <div className="quick-preview-grid measurement-preview-grid">
           {tiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
-            return <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name="thermometer"/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
+            return <div className="quick-preview-item measurement-preview-item" key={tile.id}><MdiIcon name={tile.icon || "thermometer"}/><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
           })}
         </div>
       </section>
@@ -910,8 +923,8 @@ function WeatherIcon({ category }: { category: WeatherCategory }) {
     </div>
   );
 }
-function TemperatureTile({ label, value }: { label: string; value: string }) {
-  return <article className="card temperature-tile"><span className="temperature-label">{label}</span><strong>{value}</strong></article>;
+function TemperatureTile({ label, value, icon }: { label: string; value: string; icon: string }) {
+  return <article className="card temperature-tile"><MdiIcon name={icon} className="temperature-tile-icon"/><span className="temperature-label">{label}</span><strong>{value}</strong></article>;
 }
 void loadTranslations().finally(() => {
   ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
