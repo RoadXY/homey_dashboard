@@ -515,6 +515,36 @@ body {
 .dashboard-settings-tabs button.active,.measurement-tile-tabs button.active,.measurement-source-types button.active {
   color:var(--text-primary); border-color:var(--action-active-border); background:var(--action-active-background);
 }
+
+/* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
+.measurement-workspace { min-height:560px; }
+.measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
+.measurement-tile-list { margin-bottom:18px; }
+.measurement-inline-editor { display:flex; flex-direction:column; gap:12px; padding-top:16px; border-top:1px solid rgba(164,190,218,.14); }
+.measurement-inline-editor h3 { margin:0; color:#e8f1fc; font-size:17px; }
+.measurement-inline-editor label { display:flex; flex-direction:column; gap:7px; color:#c3d0df; font-size:14px; }
+.measurement-inline-editor input,.measurement-inline-editor select {
+  width:100%; min-width:0; min-height:43px; border:1px solid rgba(135,166,201,.22); border-radius:10px;
+  background:rgba(9,25,43,.72); color:#edf3fb; padding:10px 12px; font:inherit;
+}
+.measurement-inline-editor input:focus,.measurement-inline-editor select:focus { outline:2px solid var(--nav-button-active-border); outline-offset:1px; }
+.measurement-inline-editor .measurement-source-types { display:flex; gap:8px; flex-wrap:wrap; }
+.measurement-inline-editor .measurement-source-types button {
+  min-height:40px; padding:8px 14px; border:1px solid rgba(135,166,201,.22); border-radius:10px;
+  color:#c3d0df; background:rgba(9,25,43,.62); cursor:pointer;
+}
+.measurement-inline-editor .measurement-source-types button.active {
+  color:white; border-color:var(--nav-button-active-border); background:var(--nav-button-active-background);
+}
+.measurement-inline-editor .measurement-source-note { color:#91a8c2; font-size:13px; line-height:1.45; margin:0; }
+.measurement-preview-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.measurement-preview-item { min-height:150px; }
+.measurement-preview-item .measurement-preview-value { color:#f1f6fc; font-size:clamp(25px,2.1vw,36px); font-weight:600; line-height:1.1; }
+.measurement-preview-item small { max-width:100%; color:#91a8c2; font-size:11px; line-height:1.3; overflow-wrap:anywhere; }
+@media (max-width: 900px) {
+  .measurement-preview-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
 .measurement-editor { display:flex; flex-direction:column; gap:16px; }
 .measurement-editor > p { color:var(--text-secondary); margin:0; }
 .measurement-tile-tabs,.measurement-source-types { display:flex; flex-wrap:wrap; gap:8px; }
