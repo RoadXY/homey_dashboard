@@ -515,3 +515,8 @@ Bij containerstart worden de standaardbestanden uit de image met de bestaande be
 ### Correctie Swagger UI-route (12 november 2026)
 
 Bij runtime-controle bleek dat de catch-all SPA-fallback in Fastify /api-docs afhandelde als onbekende dashboardroute. Daarom zijn expliciete routes toegevoegd: /api-docs redirect naar /api-docs/ en /api-docs/ serveert dist/client/api-docs/index.html. De statische Swagger-bestanden, waaronder openapi.yaml, blijven via fastify-static beschikbaar. De routecorrectie moet nog door een nieuwe Docker-build en runtimecontrole worden bevestigd.
+
+
+### Correctie opname Swagger-assets in Docker-build (12 november 2026)
+
+De eerste runtime-fix gaf een 404-melding dat Swagger UI-assets ontbraken. Oorzaak: Vite gebruikt src/client als root en nam daardoor de repository-level public-map niet automatisch mee. vite.config.ts is aangepast met publicDir: ../../public zodat public/api-docs/index.html en public/api-docs/openapi.yaml in dist/client/api-docs terechtkomen. Na de CI-build moet de Docker-image opnieuw gebouwd en uitgerold worden; daarna moeten /api-docs/ en /api-docs/openapi.yaml runtime worden gecontroleerd.
