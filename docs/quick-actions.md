@@ -110,3 +110,9 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Dezelfde gekozen MDI-iconen worden getoond in de configuratielijst, preview en het live dashboard.
 - Bestaande Unicode/emoji-iconen worden bij het laden gemapt naar passende MDI-namen. De migratie wordt naar de configuratie geschreven zodra de gebruiker de Quick Actions opslaat.
 - De Flow-keuzelijst behoudt de door Homey aangeleverde Flow-iconen; de MDI-keuze geldt voor het pictogram van de Quick Action-kaart.
+
+
+## MDI-iconpicker – prestaties en standaardiconen
+- De picker doorzoekt de volledige metadata-index, maar rendert maximaal 120 resultaten tegelijk om de interface soepel te houden op tablets.
+- Het resultaatgebied is intern scrollbaar; bij veel overeenkomsten wordt gevraagd de zoekterm verder te verfijnen.
+- De acht standaard Quick Actions gebruiken voortaan MDI-namen in plaats van Unicode-symbolen.
