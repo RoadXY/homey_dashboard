@@ -525,3 +525,8 @@ De eerste runtime-fix gaf een 404-melding dat Swagger UI-assets ontbraken. Oorza
 ### Kopieerfunctie Weather API-token (12 november 2026)
 
 De kopieerknop gebruikte eerst uitsluitend navigator.clipboard.writeText. Dit is in browsers op een plain-HTTP LAN-adres vaak niet beschikbaar omdat de Clipboard API een secure context vereist. De knop gebruikt nu eerst de moderne Clipboard API en valt bij ontbreken/falen terug op een verborgen textarea met document.execCommand("copy"). De interface toont een gelokaliseerde succes- of foutmelding. Deze wijziging moet na deployment op het tablet/LAN-adres worden getest.
+
+
+### Inline kopieerbevestiging voor Weather API-token (12 november 2026)
+
+Na kopiëren toont de tokenkaart direct naast de knop een afgeronde statusmelding. Succes wordt groen weergegeven; een mislukte kopieerpoging rood. De meldingen gebruiken de bestaande i18n-sleutels settings.tokenCopySuccess en settings.tokenCopyError in nl.json en en.json, met aria-live statusfeedback. De melding wordt bij het starten van een nieuwe tokenactie gewist.
