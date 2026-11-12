@@ -9,12 +9,22 @@ import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "0.0.0.0";
 
 const startedAt = Date.now();
+const settingsSessions = new Map<string, number>();
+function hasSettingsSession(request: { headers: Record<string, string | string[] | undefined> }): boolean {
+  const token = request.headers["x-settings-session"];
+  if (typeof token !== "string") return false;
+  const expiresAt = settingsSessions.get(token);
+  if (!expiresAt || expiresAt < Date.now()) { settingsSessions.delete(token); return false; }
+  settingsSessions.set(token, Date.now() + 30 * 60 * 1000);
+  return true;
+}
 
 app.get("/api/health/live", async () => ({
   status: "ok",
@@ -47,10 +57,15 @@ app.post("/api/settings/unlock", async (request, reply) => {
   if (typeof body?.pin !== "string" || body.pin !== configuredPin) {
     return reply.code(401).send({ error: "Onjuiste PIN." });
   }
-  return { unlocked: true };
+  const sessionToken = randomUUID();
+  settingsSessions.set(sessionToken, Date.now() + 30 * 60 * 1000);
+  return { unlocked: true, sessionToken };
 });
 
-app.get("/api/settings/general", async () => readDashboardSettings());
+app.get("/api/settings/general", async (request, reply) => {
+  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return readDashboardSettings();
+});
 
 app.post("/api/settings/general", async (request, reply) => {
   try {
