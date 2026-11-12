@@ -14,6 +14,7 @@ COPY package*.json ./
 RUN npm install --omit=dev && npm cache clean --force
 COPY --chown=node:node --from=build /app/dist ./dist
 COPY --chown=node:node --from=build /app/config ./config
+COPY --chown=node:node --from=build /app/src/client/locales ./default-locales
 RUN mkdir -p /app/data && chown node:node /app/data
 USER node
 EXPOSE 3000
