@@ -205,7 +205,10 @@ body {
 .brand-orb { display:inline-block; width:38px; height:38px; border-radius:50%; background:conic-gradient(#ff4b4b,#ffcb35,#54d96b,#19c8d8,#3978ff,#b64bdf,#ff4b4b); position:relative; }
 .brand-orb:after { content:""; position:absolute; inset:7px; background:#101b2a; border-radius:50%; }
 .topbar-divider { height:34px; width:1px; background:rgba(180,199,220,.42); }
-.crumb-button { border:0; background:none; color:#e1e8f1; display:flex; gap:12px; align-items:center; font-size:16px; cursor:pointer; }
+.crumb-button { border:0; background:none; color:#e1e8f1; display:flex; gap:10px; align-items:center; font-size:16px; cursor:pointer; padding:10px 12px; border-radius:10px; transition:background .15s ease,color .15s ease; }
+.crumb-button > .mdi { font-size:19px; line-height:1; }
+.crumb-button:hover { background:rgba(116,157,204,.12); color:#fff; }
+.crumb-button:focus-visible { outline:2px solid #168fff; outline-offset:2px; }
 .topbar-spacer { flex:1; }
 .topbar-date { font-size:15px; color:#d1d9e4; margin-right:16px; }
 .topbar-time { font-size:21px; letter-spacing:.02em; margin-right:48px; }
