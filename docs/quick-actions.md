@@ -116,3 +116,11 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De picker doorzoekt de volledige metadata-index, maar rendert maximaal 120 resultaten tegelijk om de interface soepel te houden op tablets.
 - Het resultaatgebied is intern scrollbaar; bij veel overeenkomsten wordt gevraagd de zoekterm verder te verfijnen.
 - De acht standaard Quick Actions gebruiken voortaan MDI-namen in plaats van Unicode-symbolen.
+
+
+## Quick Action apparaatzoeker
+- De Homey-apparaatkeuze gebruikt dezelfde zoekbare dropdown-interactie als de Flow-keuze.
+- De zoekopdracht filtert op apparaatnaam, zone en (indien nodig) apparaat-ID. Het ID wordt niet standaard in de zichtbare apparaatnaam getoond.
+- De lijst toont de apparaatnaam en optioneel de zone; niet-beschikbare apparaten krijgen een duidelijke Offline-indicator.
+- Na selectie sluit de lijst en wordt de bijbehorende eerste capability als uitgangspunt gekozen, zoals bij de bestaande apparaatselectielogica.
+- De lijst heeft een eigen scrollgebied en een teller met het aantal overeenkomende apparaten, zodat deze ook bij grote Homey-installaties bruikbaar blijft.
