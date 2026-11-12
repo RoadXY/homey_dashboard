@@ -284,3 +284,13 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - Het updatescript `~/bin/homey-dashboard-update.sh` moet dezelfde productiecomposefile expliciet gebruiken voor configuratiecontrole, build/start en statuscontroles. Het script mag geen secrets afdrukken.
 - Een bestaande container opnieuw aanmaken zonder `--build` kan een oude image hergebruiken; na Dockerfile- of applicatiewijzigingen moet de image opnieuw worden gebouwd.
 - Validatie van de productiebuild en de readiness-endpoint op `http://localhost:5173/api/health/ready` staat nog open. De bestaande Grafana-container en Docker-volumes mogen tijdens herstel niet worden verwijderd of aangepast.
+
+
+## General-instellingen vereenvoudigd en Homey-taaldetectie (12 november 2026)
+
+- De General-pagina toont niet langer de Settings-knop rechtsboven, datum of tijd in de bovenbalk, of de titelhiërarchie `Settings > General`. De bestaande subtitel blijft behouden en is links uitgelijnd.
+- De geheugen- en opslagregel onder System status is verwijderd. De overige systeemstatusregels blijven staan.
+- Homey-taaldetectie gebruikt de read-only Homey Web API-methode `api.i18n.getOptionLanguage()` via de backend. De backend geeft alleen de gedetecteerde taalcode door in `GET /api/system/status`; de Homey API-key blijft server-side.
+- Hiervoor vereist de Homey API-key de scope `homey.system.readonly`. Als deze scope ontbreekt, blijft de detectie onbekend en toont de instellingenpagina een permissiehint. Voeg de scope toe aan de lokale API-keyconfiguratie in Homey en werk uitsluitend de lokale `.env` bij; deel de sleutel niet.
+- Deze stap maakt het uitlezen en tonen van de Homey-taal mogelijk. Volledige vertaling van alle dashboardteksten op basis van de automatische taalkeuze is een afzonderlijke vervolgstap en is hiermee nog niet gerealiseerd.
+- Validatie van de Docker-build, daadwerkelijke taalcode uit Homey en weergave op de tablet staat nog open.
