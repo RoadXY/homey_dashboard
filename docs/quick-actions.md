@@ -170,3 +170,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Een echte zone-/kamernaam blijft zichtbaar achter de apparaatnaam.
 - Het technische apparaat-ID blijft intern beschikbaar voor selectie en filtering, maar wordt niet als onderdeel van de zichtbare naam getoond.
 - Aangepast in `src/client/main.tsx` op `phase_1_foundation`; controle op de Ubuntu-server volgt na de volgende build.
+
+
+## Leesbaarheid apparaatkeuzelijst
+- De rijen in de apparaatkeuzelijst hebben meer verticale ruimte gekregen (minimaal 62px) en extra tussenruimte.
+- De apparaatpictogrammen zijn vergroot naar 25px en krijgen een bredere vaste kolom.
+- De aanpassing is beperkt tot de apparaatkeuzelijst; de Flow-keuzelijst blijft ongewijzigd.
+- CSS bijgewerkt op `phase_1_foundation`; visuele controle volgt na de Docker-build.
