@@ -477,3 +477,8 @@ This is the inventory observed in `src/server/index.ts` on 12 November 2026; it 
 - Docker-build/redeploy is nodig om deze nieuwe code te installeren. De actuele conditie zelf blijft in het bestaande persistente datavolume staan.
 - Nog te valideren op de Ubuntu-server: Docker-build, healthcheck, GET lijst, POST met geldige token, POST zonder/ongeldige token, afwijzen onbekende enum, persistentie na containerrestart en weergave op dashboard.
 - De toekomstige Homey-app is niet onderdeel van deze implementatie.
+
+
+### Runtime-vertalingen: standaardkeys bijwerken zonder gebruikersvertalingen te overschrijven
+
+Bij containerstart worden de standaardbestanden uit de image met de bestaande bestanden in DATA_DIR/locales samengevoegd. Voor taalcatalogi geldt: standaardkeys die nieuw zijn toegevoegd worden aangevuld; bestaande waarden van de gebruiker blijven leidend. Voor languages.json worden ontbrekende standaardtalen toegevoegd, terwijl reeds geregistreerde eigen talen behouden blijven. README.txt wordt alleen bij de eerste initialisatie gekopieerd. Hierdoor verschijnen ook nieuwe i18n-labels na een rebuild/restart in het persistente volume zonder bestaande vertalingen te overschrijven.
