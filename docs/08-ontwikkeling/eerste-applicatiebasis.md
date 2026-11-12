@@ -545,3 +545,35 @@ De gebruiker heeft besloten dat de Weather API de enige bron voor de weergegeven
 - De oude mappingdocumentatie is vervangen door de actuele API-only werkwijze in `docs/03-dashboard/weather-mapping.md`.
 
 De runtimewijziging moet nog via de productie-update worden uitgerold en op de Ubuntu-server worden getest. Na deployment toont het dashboard `Weer niet beschikbaar` / `Weather unavailable` totdat Homey of een andere integratie een geldige API-update verstuurt.
+
+
+## Quick Actions – eerste implementatie (12 november 2026)
+
+De eerste implementatie van de goedgekeurde Quick Actions-instellingen is toegevoegd.
+
+### Server en opslag
+- Configuratie staat in `DATA_DIR/dashboard-actions.json`, los van de algemene instellingen en met bestandsrechten `0600`.
+- Exact acht vaste action-ID's worden geaccepteerd; duplicaten, ontbrekende IDs, onbekende iconen, ongeldige types en ongeldige waardetypen worden geweigerd.
+- Instellingen ophalen en opslaan vereist de bestaande PIN-beveiligde `x-settings-session`.
+- De dashboardfrontend kan de opgeslagen configuratie lezen via `GET /api/dashboard/quick-actions`.
+- De uitvoerroute accepteert alleen een action-ID en haalt de doelactie zelf uit de opgeslagen configuratie. De browser kan dus niet willekeurig een Flow, apparaat of capability meesturen om te bedienen.
+
+### Homey-catalogus en uitvoering
+- De instellingen laden bestaande Standard Flows en Advanced Flows via de Homey Web API.
+- De apparaatlijst bevat alleen apparaten met minimaal één capability waarvan Homey expliciet `setable: true` meldt.
+- Per capability worden het type en, waar aanwezig, minimum, maximum, stapgrootte, eenheid en enum-opties opgehaald.
+- Bij opslaan en uitvoeren worden de selectie en wijzigbaarheid opnieuw gevalideerd tegen de actuele Homey-inventaris. Numerieke grenzen en enum-opties worden server-side gecontroleerd.
+- Flow-start gebruikt `triggerFlow` of `triggerAdvancedFlow`; directe apparaatbediening gebruikt `setCapabilityValue`.
+- Het dashboard voert uitsluitend een actie uit na een expliciete klik op een ingestelde knop. Niet-ingestelde knoppen zijn uitgeschakeld.
+
+### Frontend
+- Instellingen → Dashboard is actief; andere nog niet gebouwde instellingenonderdelen blijven uitgeschakeld.
+- Quick Actions toont de acht bestaande knoppen, een editor voor naam/pictogram/Flow of apparaatbediening, en een preview.
+- De gebruiker slaat configuratie expliciet op. De knop Restore defaults is niet opgenomen.
+- Alle nieuwe UI-teksten zijn toegevoegd aan Nederlands en Engels; beide catalogi bevatten 170 sleutels met volledige sleutelpariteit.
+
+### Validatie en open praktijktest
+- GitHub Actions build geslaagd op commit `4869c38171a5480577d5934436366cb8019f0588`; OpenAPI-lint/build ook geslaagd op commit `f00faf34993a99eb0ea6bdb859a060d6eee710a7`.
+- De API-key op Homey moet voldoende rechten hebben om Flow-start en apparaatbediening toe te staan. Als Homey een autorisatiefout geeft, controleer dan de permissies van de bestaande API-key in Homey; voeg geen extra permissies toe zonder de foutmelding te beoordelen.
+- De code is nog niet uitgerold naar de Ubuntu-container en de Homey-apparaatcatalogus is nog niet live in deze sessie getest.
+- Praktijktest na deployment: selecteer een ongevaarlijke Flow en een testapparaat/capability, sla op, controleer preview, en voer pas daarna de knoppen bewust uit.
