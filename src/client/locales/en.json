@@ -122,5 +122,21 @@
   "weather.condition.hail": "Hail",
   "weather.condition.snow_showers": "Snow showers",
   "weather.condition.sleet": "Sleet",
-  "weather.condition.windy": "Windy"
+  "weather.condition.windy": "Windy",
+  "settings.weatherTokens": "Weather API tokens",
+  "settings.weatherTokensDescription": "Manage Bearer tokens for external clients that update the weather condition. The full token is shown only once immediately after creation.",
+  "settings.tokenName": "Name",
+  "settings.tokenNamePlaceholder": "For example Homey Flow",
+  "settings.tokenCreate": "Create token",
+  "settings.tokenShowOnce": "Save this token now",
+  "settings.tokenCopyWarning": "This secret is shown only once. Copy it to your password manager or Homey configuration.",
+  "settings.tokenCopy": "Copy token",
+  "settings.tokensEmpty": "No managed tokens yet.",
+  "settings.tokenRevoke": "Revoke",
+  "settings.tokenRevokeConfirm": "Are you sure you want to revoke this token? Integrations using it will immediately lose access.",
+  "settings.tokenCreated": "Token created.",
+  "settings.tokenRevoked": "Token revoked.",
+  "settings.tokensLoadError": "Could not load tokens.",
+  "settings.tokenCreateError": "Could not create token.",
+  "settings.tokenRevokeError": "Could not revoke token."
 }
