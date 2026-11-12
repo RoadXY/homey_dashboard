@@ -380,3 +380,40 @@ Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-
 - De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Temperatuurtegels** opent de configuratie van de vier meetwaardetegels en **Snelle acties** opent de configuratie van de acht Quick Actions.
 - De actieve sectieknop wordt visueel gemarkeerd. De navigatie werkt op beide pagina's, zodat tussen de twee onderdelen heen en weer kan worden geschakeld.
 - De knop **Weer** blijft voorlopig een niet-actieve aanduiding; de instellingenpagina voor weer valt buiten deze wijziging.
+
+
+### Visuele basisstijl – navigatieknoppen en themaregels (12 november 2026)
+
+#### Aanleiding
+De navigatieknoppen bovenaan (Quick Actions / Meetwaardetegels) en de sectieknoppen (Temperatuurtegels / Weer / Snelle acties) hadden verschillende kleur- en actieve-stijlen. Dat is ongewenst: knoppen met dezelfde navigatiefunctie moeten binnen één thema dezelfde visuele taal gebruiken.
+
+#### Afgesproken basisstijl voor sectienavigatie
+- **Inactief:** donkere blauwgrijze achtergrond, subtiele blauwgrijze rand en lichte tekst.
+- **Actief/geselecteerd:** effen helderblauwe achtergrond, iets lichtere blauwe rand en witte tekst.
+- **Hover:** alleen de rand krijgt een duidelijker blauw accent; de knop verandert niet onverwacht van basisvorm.
+- **Focus:** zichtbare blauwe focusrand voor toetsenbord-/toegankelijkheidsnavigatie.
+- **Vorm:** afgeronde hoeken van circa 11 px, gelijke minimale hoogte van 52 px en consistente tussenruimte.
+- Knoppen die dezelfde sectienavigatie uitvoeren, gebruiken dezelfde tokens en dezelfde actieve status. Een tweede, afwijkende variant voor een bovenste tabstrip is niet toegestaan.
+
+#### Semantische tokens
+De navigatiestijl gebruikt centraal gedefinieerde CSS-variabelen:
+- `--nav-button-background`, `--nav-button-border`, `--nav-button-text`
+- `--nav-button-hover-border`
+- `--nav-button-active-background`, `--nav-button-active-border`, `--nav-button-active-text`
+- `--nav-button-radius`, `--nav-button-min-height`
+
+Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden voor dezelfde knopstatussen. Een toekomstig thema overschrijft de tokenwaarden centraal; het hoeft niet iedere knopcomponent afzonderlijk aan te passen.
+
+#### Algemene themaregels voor nieuwe UI
+1. Bepaal eerst de functie van een element: navigatie, primaire actie, secundaire actie, selectie, status of waarschuwing.
+2. Gebruik voor dezelfde functie overal dezelfde componentstijl en statussemantiek. Navigatieknoppen zijn dus niet automatisch gelijk aan Opslaan-/Verwijderen-knoppen; die krijgen elk hun eigen gedeelde rolstijl.
+3. Definieer kleur, achtergrond, rand, schaduw, focus en status als semantische tokens. Geen losse hardcoded kleurwaarden in nieuwe componentregels.
+4. Houd normale, hover-, active/selected-, focus-visible-, disabled- en loading-toestanden expliciet en consistent.
+5. Een actieve status mag niet uitsluitend door kleur herkenbaar zijn; behoud ook een duidelijke geselecteerde toestand in de structuur/semantiek.
+6. Nieuwe pagina's en componenten volgen eerst de bestaande tokens. Als een nieuwe rol ontbreekt, voeg dan een token/componentpatroon toe en documenteer het vóór lokaal afwijkende styling te introduceren.
+7. Bij een visuele wijziging controleren we zowel de betreffende pagina als bestaande pagina's die dezelfde componentstijl gebruiken, op tablet en desktop.
+
+#### Scope en status
+- De sectienavigatieknoppen gebruiken nu de gedeelde navigatietokens en dezelfde actieve stijl.
+- Dit is de eerste concrete stap naar een consistente themabasis, geen volledige thematisering van de applicatie. Bestaande componenten bevatten nog vaste kleuren en worden bij verdere themawerkzaamheden stapsgewijs naar semantische tokens omgezet.
+- De eerdere afwijkende bovenste tabstrip is uit de dashboardinstellingen verwijderd; de resterende sectienavigatie is de canonieke stijl.
