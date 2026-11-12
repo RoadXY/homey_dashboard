@@ -13,6 +13,7 @@ services:
       - "5173:3000"
     volumes:
       - dashboard_data:/app/data
+      - ./src/client/locales:/app/locales:ro
     restart: unless-stopped
 
 volumes:
