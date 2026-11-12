@@ -93,5 +93,17 @@
   "homey.offline": "offline",
   "homey.connecting": "verbinden",
   "homey.notConnected": "niet verbonden",
-  "homey.unknown": "onbekend"
+  "homey.unknown": "onbekend",
+  "notifications.achterdeur-open.title": "Achterdeur open",
+  "notifications.achterdeur-open.message": "De achterdeur staat open terwijl het buiten kouder dan 18 °C of warmer dan 24 °C is.",
+  "notifications.co2-woonkamer-test.title": "CO₂ woonkamer",
+  "notifications.co2-woonkamer-test.message": "Dit is een testmelding vanuit Homey Logic.",
+  "notifications.ouderslaapkamer-koud.title": "Ouderslaapkamer koud",
+  "notifications.ouderslaapkamer-koud.message": "De temperatuur in de ouderslaapkamer is lager dan 12 °C.",
+  "notifications.slaapkamer-bram-koud.title": "Slaapkamer Bram koud",
+  "notifications.slaapkamer-bram-koud.message": "De temperatuur in slaapkamer Bram is lager dan 12 °C.",
+  "notifications.slaapkamer-tess-koud.title": "Slaapkamer Tess koud",
+  "notifications.slaapkamer-tess-koud.message": "De temperatuur in slaapkamer Tess is lager dan 12 °C.",
+  "notifications.zolder-koud.title": "Zolder koud",
+  "notifications.zolder-koud.message": "De temperatuur op zolder is lager dan 12 °C."
 }
