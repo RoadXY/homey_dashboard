@@ -8,6 +8,7 @@ info:
     documented for completeness but are not guaranteed as third-party APIs.
 servers:
   - url: /
+security: []
     description: Same origin as the dashboard
 tags:
   - name: Health
