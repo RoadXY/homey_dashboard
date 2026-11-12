@@ -59,6 +59,20 @@ async function loadWeatherConfig(): Promise<WeatherMappingConfig> {
   return config;
 }
 
+function canonicalCategory(category: WeatherCategory | LegacyWeatherCategory): WeatherCategory {
+  const legacy: Partial<Record<LegacyWeatherCategory, WeatherCategory>> = {
+    clear: "sunny",
+    wind: "windy",
+    snow: "snow",
+    fog: "fog",
+    rain: "rain",
+    thunderstorm: "thunderstorm",
+    partly_cloudy: "partly_cloudy",
+    cloudy: "cloudy",
+  };
+  return legacy[category as LegacyWeatherCategory] ?? category as WeatherCategory;
+}
+
 function valuesMatch(actual: unknown, expected: Array<string | number>): boolean {
   if (typeof actual === "string") {
     const normalizedActual = actual.trim().toLocaleLowerCase("en-US");
@@ -82,12 +96,11 @@ export async function getDashboardWeather(): Promise<DashboardWeather> {
   try { readings = (await getHomeyDeviceCapabilityValues(sources)).readings; }
   catch { return { retrievedAt: new Date().toISOString(), category: "unknown", conditionText: null, sourceCapability: null, source: "homey", reason: "source_unavailable" }; }
 
-  const legacyMap: Record<string, WeatherCategory> = { clear: "sunny", wind: "windy", snow: "snow", fog: "fog", rain: "rain", thunderstorm: "thunderstorm", partly_cloudy: "partly_cloudy", cloudy: "cloudy" };
   for (const capabilityId of config.source.conditionCapabilities) {
     const reading = readings.find((item) => item.capabilityId === capabilityId);
     if (!reading || reading.available === false || reading.error || reading.value === null || reading.value === undefined) continue;
     const mapping = config.mappings.find((item) => item.capabilityId === capabilityId && valuesMatch(reading.value, item.match.values));
-    if (mapping) return { retrievedAt: new Date().toISOString(), category: legacyMap[mapping.category] ?? mapping.category,
+    if (mapping) return { retrievedAt: new Date().toISOString(), category: canonicalCategory(mapping.category),
       conditionText: typeof reading.value === "string" ? reading.value : String(reading.value), sourceCapability: capabilityId, source: "homey" };
   }
   const firstValue = config.source.conditionCapabilities.map((capabilityId) => readings.find((item) => item.capabilityId === capabilityId))
