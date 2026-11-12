@@ -8,7 +8,7 @@
 - Alleen het meldingenpaneel mag verticaal scrollen als er veel meldingen zijn.
 - Bij een mislukte quick button-actie verschijnt een algemene foutmelding bovenaan het dashboard.
 
-## Linkerzijde\n\nZie [Weather condition mapping](weather-mapping.md) voor de JSON-gestuurde vertaling van providerwaarden naar vaste interne weercategorieën.
+## Linkerzijde\n\nDe weerconditie en het bijbehorende icoon komen uitsluitend uit de beveiligde Weather API; Homey levert alleen de aanvullende meetwaarden. Zie [Weather condition source](weather-mapping.md).
 - Grote klok met tijd in 24-uursnotatie (standaard); tijdnotatie wordt later instelbaar.
 - Datum wordt standaard voluit getoond inclusief weekdag en maandnaam; datum- en weekdagpresentatie worden later instelbaar.
 - Weer met een bij de actuele conditie passend icoon naast de buitentemperatuur.\n- Weericonen ondersteunen onder meer zonnig, halfbewolkt, bewolkt, regen/buien, onweer, sneeuw/hagel, mist/nevel en wind. De iconen gebruiken een rustige monochrome grijstint en uitsluitend subtiele beweging; bij systeeminstelling ‘minder beweging’ staat animatie uit.
