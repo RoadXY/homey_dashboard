@@ -239,3 +239,8 @@ De eerste implementatie is toegevoegd op phase_1_foundation:
 - API-conditie heeft voorrang op de bestaande Homey-weermapping; zonder API-conditie blijft de Homey-bron actief.
 
 De code en documentatie zijn gecommit, maar Docker-build/runtimegedrag en GitHub Pages-publicatie moeten nog door de gebruiker/CI worden gevalideerd. Zie de technische documentatie voor teststappen.
+
+
+## Besluit – Weather API-tokenbeheer via Instellingen (12 november 2026)
+
+Weather API Bearer-tokens worden beheerd via de PIN-beveiligde Instellingenpagina. De server genereert per token een willekeurig geheim; alleen de hash wordt persistent opgeslagen. Het geheim wordt één keer getoond. Tokens kunnen afzonderlijk worden ingetrokken en zijn uitsluitend geldig voor de write-endpoint voor weercondities. De bestaande WEATHER_API_TOKEN-variabele blijft tijdelijk ondersteund om bestaande integraties niet abrupt te breken. Zie docs/08-ontwikkeling/eerste-applicatiebasis.md voor de technische uitwerking en validatiestatus.
