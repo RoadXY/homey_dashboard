@@ -36,3 +36,8 @@ De eerste frontendversie van General, de persistente instellingen-API, systeemst
 | Instellingen – Dashboard – Quick Actions | **Functioneel en visueel referentiebeeld bevestigd** | Twee editorvarianten (Flow en apparaat), naam/pictogram, apparaatgebonden acties dynamisch tonen, acht knoppen, preview, expliciet Opslaan; geen Restore defaults | Implementatie, capability-mapping, Homey-uitvoering, foutafhandeling en praktijktest |
 
 De twee door de gebruiker aangeleverde afbeeldingen op 12 november 2026 zijn de leidende referentie voor de Quick Actions-editor. De tweede afbeelding toont Flow-selectie; de eerste toont apparaatselectie met een actie die bij het apparaat hoort. De bestaande acht projectknoppen en hun volgorde blijven behouden; mockupteksten zijn alleen voorbeelden.
+
+
+## Update 12 november 2026 – Quick Actions implementatie
+
+De eerste implementatie staat op branch `phase_1_foundation`: PIN-beveiligde configuratie-API, persistente opslag, Homey Flow-/Advanced Flow-catalogus, apparaten met expliciet wijzigbare capabilities, editor, preview, i18n en dashboardknopuitvoering. De CI-build is geslaagd. De containerdeployment en praktijktest met een echte Homey Flow en een geschikt testapparaat moeten nog plaatsvinden. Zie `docs/03-dashboard/README.md` voor validatie en beveiligingsgedrag.
