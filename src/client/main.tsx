@@ -269,7 +269,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
-  const [editingId, setEditingId] = React.useState("qmusic");
+  const [editingId, setEditingId] = React.useState("qmusic");\n  const [editorOpen, setEditorOpen] = React.useState(true);
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -321,7 +321,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <h2><span>ϟ</span>{t("settings.quickActions")}</h2>
         <p className="quick-card-description">{t("settings.quickActionsDescription")}</p>
         <div className="quick-action-list">
-          {items.map((item, index) => <button key={item.id} className={"quick-action-row " + (item.id === editingId ? "selected" : "")} onClick={() => setEditingId(item.id)}>
+          {items.map((item, index) => <button key={item.id} className={"quick-action-row " + (item.id === editingId ? "selected" : "")} onClick={() => { setEditingId(item.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-icon">{item.icon}</span><span className="quick-action-name">{actionName(item)}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
@@ -334,8 +334,8 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
           {items.map(item => <div className="quick-preview-item" key={item.id}><span>{item.icon}</span><strong>{actionName(item)}</strong></div>)}
         </div>
       </section>
-      <section className="settings-card quick-editor-card">
-        <button className="quick-editor-close" onClick={() => setEditingId("")} aria-label={t("settings.close")}>×</button>
+      {editorOpen && <section className="settings-card quick-editor-card">
+        <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("settings.editQuickAction")}</h2>
         <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name} onChange={event => updateSelected({ name: event.target.value })} placeholder={actionName({ ...selected, name: "" })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
