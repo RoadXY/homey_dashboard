@@ -354,3 +354,8 @@ De eerste implementatie van de goedgekeurde Quick Actions-instellingen is toegev
 - De API-key op Homey moet voldoende rechten hebben om Flow-start en apparaatbediening toe te staan. Als Homey een autorisatiefout geeft, controleer dan de permissies van de bestaande API-key in Homey; voeg geen extra permissies toe zonder de foutmelding te beoordelen.
 - De code is nog niet uitgerold naar de Ubuntu-container en de Homey-apparaatcatalogus is nog niet live in deze sessie getest.
 - Praktijktest na deployment: selecteer een ongevaarlijke Flow en een testapparaat/capability, sla op, controleer preview, en voer pas daarna de knoppen bewust uit.
+
+
+## Navigatie: terug naar dashboard
+- De knop rechtsboven in de instellingen gebruikt het MDI-pictogram `view-dashboard-outline` en de vertaalde tekst `settings.back`.
+- De vertaalwaarden staan in `src/client/locales/nl.json` en `src/client/locales/en.json` (respectievelijk `Terug naar dashboard` en `Back to dashboard`). Nieuwe talen moeten dezelfde sleutel `settings.back` opnemen.
