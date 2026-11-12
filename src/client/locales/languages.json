@@ -1,0 +1,27 @@
+{
+  "automatic": {
+    "label": "Automatic (Homey language)"
+  },
+  "languages": [
+    {
+      "id": "nl-NL",
+      "label": "Nederlands",
+      "file": "nl.json",
+      "homeyCodes": [
+        "nl",
+        "nl-NL"
+      ]
+    },
+    {
+      "id": "en",
+      "label": "English",
+      "file": "en.json",
+      "homeyCodes": [
+        "en",
+        "en-US",
+        "en-GB"
+      ]
+    }
+  ],
+  "fallback": "en"
+}
