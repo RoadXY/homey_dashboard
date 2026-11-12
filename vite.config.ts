@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   root: "src/client",
+  // Swagger UI and its OpenAPI document live in the repository-level public directory.
+  publicDir: "../../public",
   plugins: [react()],
   server: {
     host: "0.0.0.0",
