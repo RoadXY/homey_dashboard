@@ -359,7 +359,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   });
   const selectedActionValid = selected.type === "flow"
     ? Boolean(selectedFlow && (!flowPickerOpen || !flowQuery || matchingFlows.some(flow => flow.id === selected.flowId && flow.type === selected.flowType)))
-    : Boolean(selectedDevice?.available && selectedCapability);
+    : Boolean(selectedDevice?.available && selectedCapability && (!devicePickerOpen || !deviceQuery || matchingDevices.some(device => device.id === selected.deviceId)));
   const actionName = (item: QuickAction) => item.name.trim() || t(quickActionDefaults.find(entry => entry.id === item.id)?.id === "qmusic" ? "actions.qmusic" : item.id === "foute-uur" ? "actions.fouteUur" : item.id === "blinds" ? "actions.blinds" : item.id === "birthday" ? "actions.birthday" : item.id === "living-lights" ? "actions.livingLights" : item.id === "mood-lights" ? "actions.moodLights" : item.id === "tv" ? "actions.tv" : "actions.bedtime");
   React.useEffect(() => {
     let active = true;
