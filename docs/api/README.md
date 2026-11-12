@@ -2,7 +2,8 @@
 
 - `openapi.yaml` is the version-controlled API contract.
 - `index.html` loads Swagger UI to provide a searchable, interactive API reference.
-- `events.md` documents the Server-Sent Events stream.
+- `events.md` documents the Server-Sent Events stream, including the `settings-updated` notification used to refresh connected dashboard screens after settings are saved.
+- Keep `public/api-docs/openapi.yaml` synchronized with `openapi.yaml`; this is the specification served by the Docker-hosted Swagger UI.
 
 The specification covers all HTTP routes currently implemented by the Fastify backend, including routes used only by the dashboard frontend. Internal routes are tagged accordingly and are not automatically supported third-party integration contracts.
 
