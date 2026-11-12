@@ -218,7 +218,7 @@ function GeneralSettingsPage({ onBack }: { onBack: () => void }) {
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
-  const update = <K extends keyof GeneralSettings>(key: K, value: GeneralSettings[K]) => setSettings(current => ({ ...current, [key]: value }));
+  const update = <K extends keyof GeneralSettings,>(key: K, value: GeneralSettings[K]) => setSettings(current => ({ ...current, [key]: value }));
   const save = async () => {
     setMessage("");
     try {
