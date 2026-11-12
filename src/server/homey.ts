@@ -540,3 +540,72 @@ export async function executeQuickAction(input: {
     : value;
   return { executed: true, type: "device", value: confirmedValue };
 }
+
+
+export async function getMeasurementSourceCatalog() {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const [devices, zones, variables] = await Promise.all([
+    api.devices.getDevices(), api.zones.getZones(), api.logic.getVariables(),
+  ]);
+  const zoneList = Object.values(zones as Record<string, any>).map((zone: any) => ({
+    id: String(zone.id), name: String(zone.name ?? "Ruimte"), parent: typeof zone.parent === "string" ? zone.parent : null,
+  }));
+  const deviceList = Object.values(devices as Record<string, any>).flatMap((device: any) => {
+    const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
+    const numeric = capabilities.flatMap(capabilityId => {
+      const descriptor = device.capabilitiesObj?.[capabilityId] as Record<string, any> | undefined;
+      if (descriptor?.type !== "number") return [];
+      return [{
+        id: capabilityId,
+        title: typeof descriptor.title === "string" ? descriptor.title : capabilityId,
+        units: typeof descriptor.units === "string" ? descriptor.units : "",
+        decimals: Number.isInteger(descriptor.decimals) && descriptor.decimals >= 0 && descriptor.decimals <= 6 ? descriptor.decimals : null,
+      }];
+    });
+    if (!numeric.length) return [];
+    return [{
+      id: String(device.id), name: String(device.name ?? "Onbekend apparaat"),
+      zone: typeof device.zone === "string" ? device.zone : null,
+      available: device.available !== false, capabilities: numeric,
+    }];
+  });
+  const logicList = Object.values(variables as Record<string, any>).flatMap((variable: any) => {
+    if (variable.type !== "number" || typeof variable.value !== "number" || !Number.isFinite(variable.value)) return [];
+    return [{ id: String(variable.id), name: String(variable.name ?? "Logic-variabele"), type: "number" }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  return { retrievedAt: new Date().toISOString(), zones: zoneList, devices: deviceList, variables: logicList };
+}
+
+export async function getMeasurementTileValues(tiles: Array<{ id: string; source: { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null }>) {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const [devices, variables] = await Promise.all([api.devices.getDevices(), api.logic.getVariables()]);
+  const deviceMap = devices as Record<string, any>;
+  const variableMap = variables as Record<string, any>;
+  const values = await Promise.all(tiles.map(async tile => {
+    if (!tile.source) return { id: tile.id, value: null, units: "", decimals: null, available: false };
+    if (tile.source.type === "logic") {
+      const variable = variableMap[tile.source.variableId];
+      const value = variable?.value;
+      return { id: tile.id, value: typeof value === "number" && Number.isFinite(value) ? value : null, units: "", decimals: null, available: typeof value === "number" && Number.isFinite(value) };
+    }
+    const device = deviceMap[tile.source.deviceId];
+    const descriptor = device?.capabilitiesObj?.[tile.source.capabilityId] as Record<string, any> | undefined;
+    if (!device || device.available === false || !Array.isArray(device.capabilities) || !device.capabilities.includes(tile.source.capabilityId) || descriptor?.type !== "number") {
+      return { id: tile.id, value: null, units: "", decimals: null, available: false };
+    }
+    try {
+      const raw = await api!.devices.getCapabilityValue({ deviceId: tile.source.deviceId, capabilityId: tile.source.capabilityId });
+      return {
+        id: tile.id, value: typeof raw === "number" && Number.isFinite(raw) ? raw : null,
+        units: typeof descriptor.units === "string" ? descriptor.units : "",
+        decimals: Number.isInteger(descriptor.decimals) && descriptor.decimals >= 0 && descriptor.decimals <= 6 ? descriptor.decimals : null,
+        available: typeof raw === "number" && Number.isFinite(raw),
+      };
+    } catch {
+      return { id: tile.id, value: null, units: typeof descriptor.units === "string" ? descriptor.units : "", decimals: null, available: false };
+    }
+  }));
+  return { retrievedAt: new Date().toISOString(), values };
+}
