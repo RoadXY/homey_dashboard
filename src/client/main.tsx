@@ -42,11 +42,13 @@ function App() {
   const [actionError, setActionError] = React.useState("");
   const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
-  const [settingsOpen, setSettingsOpen] = React.useState(false);
+  const [settingsOpen, setSettingsOpen] = React.useState(() => window.location.pathname.startsWith("/settings"));
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
   const [settingsSession, setSettingsSession] = React.useState("");
   const [pin, setPin] = React.useState("");
   const [pinError, setPinError] = React.useState("");
+  const settingsIdleTimer = React.useRef<number | null>(null);
+  const lastSessionRefresh = React.useRef(0);
   const holdTimer = React.useRef<number | null>(null);
   const refresh = React.useCallback(async () => {
     void fetch("/api/notifications")
@@ -132,25 +134,72 @@ function App() {
   };
   const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
+  React.useEffect(() => {
+    const syncRoute = () => {
+      const isSettingsRoute = window.location.pathname.startsWith("/settings");
+      setSettingsOpen(isSettingsRoute);
+      if (!isSettingsRoute) { setSettingsUnlocked(false); setSettingsSession(""); return; }
+      void fetch("/api/settings/session").then(response => {
+        if (response.ok) { setSettingsUnlocked(true); setPinError(""); }
+        else { setSettingsUnlocked(false); setSettingsSession(""); }
+      }).catch(() => { setSettingsUnlocked(false); setSettingsSession(""); });
+    };
+    window.addEventListener("popstate", syncRoute);
+    if (settingsOpen) syncRoute();
+    return () => window.removeEventListener("popstate", syncRoute);
+  }, []);
+  React.useEffect(() => {
+    if (!settingsOpen || !settingsUnlocked) return;
+    const expireSettings = () => {
+      if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
+      settingsIdleTimer.current = null;
+      void fetch("/api/settings/logout", { method: "POST" }).finally(() => {
+        window.history.replaceState({}, "", "/");
+        setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession("");
+        void refresh();
+      });
+    };
+    const scheduleExpiry = () => {
+      if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
+      settingsIdleTimer.current = window.setTimeout(expireSettings, 30 * 60 * 1000);
+    };
+    const onActivity = () => {
+      scheduleExpiry();
+      const now = Date.now();
+      if (now - lastSessionRefresh.current >= 60 * 1000) {
+        lastSessionRefresh.current = now;
+        void fetch("/api/settings/session/refresh", { method: "POST", headers: { "x-settings-activity": "1" } }).then(response => {
+          if (response.status === 401) expireSettings();
+        }).catch(() => undefined);
+      }
+    };
+    const events: Array<keyof DocumentEventMap> = ["pointerdown", "touchstart", "keydown", "scroll", "wheel"];
+    events.forEach(event => document.addEventListener(event, onActivity, { passive: true }));
+    scheduleExpiry();
+    return () => {
+      events.forEach(event => document.removeEventListener(event, onActivity));
+      if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
+      settingsIdleTimer.current = null;
+    };
+  }, [settingsOpen, settingsUnlocked, refresh]);
   React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
   const timeText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
-    holdTimer.current = window.setTimeout(() => { setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
+    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
   };
   const cancelSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage session={settingsSession} onBack={() => { setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} />
-    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => setSettingsOpen(false)} onUnlock={async () => {
+    ? <GeneralSettingsPage session={settingsSession} onNavigate={path => window.history.pushState({}, "", path)} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} initialPage={window.location.pathname.includes("/settings/dashboard") ? "dashboard" : "general"} />
+    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
-          const data = await response.json() as { error?: string; unlocked?: boolean; sessionToken?: string };
           if (!response.ok) throw new Error(translate(locale, "settings.pinDenied"));
-          setSettingsSession(data.sessionToken ?? ""); setSettingsUnlocked(true); setPinError("");
+          setSettingsSession(""); setSettingsUnlocked(true); setPinError("");
         } catch (error) { setPinError(error instanceof Error ? error.message : translate(locale, "settings.pinError")); }
       }} />;
   return (
@@ -381,7 +430,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/dashboard-actions", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
+      fetch("/api/settings/dashboard-actions", {}).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
       fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
@@ -405,7 +454,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const save = async () => {
     setSaving(true); setMessage(""); setMessageIsError(false);
     try {
-      const response = await fetch("/api/settings/dashboard-actions", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ actions: items }) });
+      const response = await fetch("/api/settings/dashboard-actions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ actions: items }) });
       const data = await response.json() as { actions?: QuickAction[]; error?: string };
       if (!response.ok || !data.actions) throw new Error(data.error ?? t("settings.saveError"));
       const normalizedActions = data.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setMessage(t("settings.quickActionsSaved")); setMessageIsError(false);
@@ -527,8 +576,9 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
-  const [page, setPage] = React.useState<"general" | "dashboard">("general");
+function GeneralSettingsPage({ onBack, session, initialPage, onNavigate }: { onBack: () => void; session: string; initialPage: "general" | "dashboard"; onNavigate: (path: string) => void }) {
+  const [page, setPage] = React.useState<"general" | "dashboard">(initialPage);
+  React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -637,7 +687,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     </header>
     <aside className="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+((page==="general"&&index===0)||(page==="dashboard"&&index===1)?"active":"")} disabled={index>1} onClick={()=>setPage(index===1?"dashboard":"general")}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
+      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+((page==="general"&&index===0)||(page==="dashboard"&&index===1)?"active":"")} disabled={index>1} onClick={()=>{ const next=index===1?"dashboard":"general"; setPage(next); onNavigate(next==="dashboard"?"/settings/dashboard/quick-actions":"/settings/general"); }}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
