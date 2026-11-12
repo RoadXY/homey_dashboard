@@ -10,8 +10,8 @@ type LogicResponse = { retrievedAt: string; variables: { name: string; value: un
 type HomeyStatus = { state: string; checkedAt: string | null; error: string | null; deviceCount?: number; zoneCount?: number };
 type DashboardNotification = { id: string; title: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[] };
-type WeatherCategory = "clear" | "partly_cloudy" | "cloudy" | "rain" | "thunderstorm" | "snow" | "fog" | "wind" | "unknown";
-type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; sourceCapability: string | null; reason?: string };
+type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
+type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; sourceCapability: string | null; source?: "homey" | "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
@@ -307,26 +307,26 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
 function WeatherIcon({ category }: { category: WeatherCategory }) {
   return (
     <div className={`weather-symbol weather-${category}`} role="img" aria-label={category.replaceAll("_", " ")}>
-      {(category === "clear" || category === "partly_cloudy") && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
+      {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
       </svg>}
-      {(category === "cloudy" || category === "partly_cloudy" || category === "rain" || category === "thunderstorm" || category === "snow" || category === "fog") && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
+      {(["mostly_sunny", "partly_cloudy", "cloudy", "overcast", "drizzle", "rain", "heavy_rain", "showers", "thunderstorm", "hail", "snow", "snow_showers", "sleet", "fog", "windy"].includes(category)) && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M22 49h51a15 15 0 0 0 0-30 22 22 0 0 0-42-3A17 17 0 0 0 22 49Z" />
       </svg>}
-      {category === "rain" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
+      {(["drizzle", "rain", "heavy_rain", "showers"].includes(category)) && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
         <path d="m30 39-5 12 M49 39l-5 12 M68 39l-5 12" />
       </svg>}
       {category === "thunderstorm" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
         <path d="m52 38-12 15h10l-5 10 17-19H52l7-6" />
       </svg>}
-      {category === "snow" && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
+      {(["snow", "snow_showers", "sleet", "hail"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M29 42v13m-5-9 10 5m0-10-10 10 M49 42v13m-5-9 10 5m0-10-10 10 M69 42v13m-5-9 10 5m0-10-10 10" />
       </svg>}
       {category === "fog" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M17 48h62 M25 56h48" />
       </svg>}
-      {category === "wind" && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
+      {category === "windy" && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M12 24h57c12 0 12-15 2-15-5 0-7 3-7 6 M5 37h73c13 0 13 16 2 16-5 0-7-3-7-6" />
       </svg>}
       {category === "unknown" && <span className="weather-unknown-mark">?</span>}
