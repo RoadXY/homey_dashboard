@@ -334,3 +334,13 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 - Homey-weerbeschrijvingen die als vrije tekst uit een apparaat komen, zijn brondata en kunnen nog in de Homey-taal verschijnen; de dashboardlabels en genormaliseerde weercondities zijn wel vertaald.
 - Namen van apparaten/ruimtes en eventueel door gebruikers aangepaste meldingen blijven bron-/gebruikersdata en worden niet automatisch herschreven.
 - De twee JSON-catalogi hebben dezelfde keys en zijn syntactisch geldige JSON. De TypeScript/Docker-build en visuele controle van alle schermen moeten nog op Ubuntu worden uitgevoerd; deze wijziging wordt daarom nog niet als build- of runtime-gevalideerd beschouwd.
+
+
+## Handmatig uitbreidbare talenregistratie (12 november 2026)
+
+- Beschikbare talen worden centraal geregistreerd in `src/client/locales/languages.json`. Dit bestand bevat de automatische-keuzelabeltekst, de fallbacktaal en per taal de instellingen-ID, zichtbare eigennaam, vertaalbestandsnaam en bijbehorende Homey-taalcodes.
+- `src/client/i18n.ts` laadt de geregistreerde vertaalbestanden via Vite `import.meta.glob`. De taalkeuzelijst wordt rechtstreeks uit de registratie opgebouwd.
+- Een nieuwe taal toevoegen vereist daarom alleen een nieuw vertaalbestand (bijvoorbeeld `de.json`) en een registratie-item in `languages.json`. De server accepteert geldige locale-ID's; de client biedt alleen geregistreerde talen in de keuzelijst aan.
+- Homey automatische detectie vergelijkt de door Homey gerapporteerde taalcode met de `homeyCodes` van de geregistreerde talen. Bij geen overeenkomst wordt de geregistreerde fallbacktaal gebruikt.
+- Engelstalige instructies voor het toevoegen van talen staan in `src/client/locales/README.txt`.
+- Nieuwe JSON-bestanden worden tijdens de frontend-build opgenomen. Na toevoegen van een taal is een nieuwe Docker-build/deployment nodig; een containerherstart zonder rebuild is niet voldoende.
