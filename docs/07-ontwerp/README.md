@@ -413,3 +413,8 @@ Technische onderdelen:
 - Save schrijft de instellingen persistent weg; Restore defaults zet de conceptwaarden terug naar de standaardwaarden. Verlaten met wijzigingen toont Save / Discard / Stay.
 
 **Nog niet gevalideerd:** de containerbuild en runtime zijn niet vanuit deze werkomgeving uitgevoerd (GitHub is niet rechtstreeks bereikbaar vanuit de buildomgeving). De gebruiker moet de Docker-build nog uitvoeren. Ook moet de lokale `SETTINGS_PIN` worden ingevuld voordat de instellingenpagina toegankelijk is. De precieze runtime-status en visuele vergelijking op de tablet volgen na die test.
+
+
+### Beveiligingsdetail instellingenroute
+
+Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De General-instellingen-API vereist deze token in de header `x-settings-session`; zonder geldige sessie geeft de API HTTP 401. De sessie verloopt na 30 minuten inactiviteit. De PIN zelf wordt uitsluitend server-side vergeleken met `SETTINGS_PIN` en wordt niet naar de browser teruggestuurd.
