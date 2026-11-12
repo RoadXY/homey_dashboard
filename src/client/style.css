@@ -397,3 +397,9 @@ body {
  .quick-action-row { grid-template-columns:34px 32px minmax(0,1fr) 22px; gap:6px; }
  .quick-action-number { width:30px; height:30px; }
 }
+
+/* Quick Actions: searchable Homey Flow picker */
+.quick-flow-search { margin-bottom:8px; }
+.quick-flow-count { display:block; margin-top:-7px; color:#9db5cf; font-size:12px; }
+.actions-grid .action-card { font:inherit; text-align:left; cursor:pointer; }
+.actions-grid .action-card:disabled { cursor:wait; opacity:.72; }
