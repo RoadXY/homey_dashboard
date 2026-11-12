@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
+import "@mdi/font/css/materialdesignicons.css";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 
 type Reading = { capabilityId: string; value: unknown };
@@ -199,7 +200,7 @@ function App() {
               <button className="action-card" key={action.id} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
                 aria-label={label} title={label}>
-                <span className="action-mark" aria-hidden="true">{action.icon}</span>
+                <MdiIcon name={action.icon} className="action-mark" />
                 <span className="action-label">{label}</span>
               </button>
             );
@@ -262,7 +263,77 @@ const quickActionDefaults: QuickAction[] = [
   { id: "tv", name: "", icon: "▣", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
 ];
-const quickActionIconChoices = ["♫", "⌃", "✦", "◌", "✧", "▣", "☾", "♧", "⌂", "▤", "⚡", "💡", "🏠", "🚗", "🎬", "🍴", "🛡", "⏻", "•••"];
+type MdiIconChoice = { name: string; keywords: string[] };
+const quickActionIconChoices: MdiIconChoice[] = [
+  { name: "music", keywords: ["muziek", "audio", "song", "foute uur"] },
+  { name: "blinds", keywords: ["jaloezie", "rolluik", "zonwering", "raam"] },
+  { name: "window-shutter", keywords: ["rolluik", "zonwering", "raam"] },
+  { name: "party-popper", keywords: ["feest", "verjaardag", "party"] },
+  { name: "lightbulb", keywords: ["lamp", "licht", "verlichting"] },
+  { name: "lightbulb-on", keywords: ["lamp aan", "licht aan"] },
+  { name: "lightbulb-group", keywords: ["lampen", "groep", "verlichting"] },
+  { name: "led-strip", keywords: ["led", "sfeer", "strip"] },
+  { name: "star-four-points", keywords: ["ster", "sfeer", "glitter"] },
+  { name: "television", keywords: ["tv", "televisie", "media"] },
+  { name: "moon-waning-crescent", keywords: ["maan", "nacht", "bedtijd", "slapen"] },
+  { name: "weather-sunny", keywords: ["zon", "zonnig", "weer"] },
+  { name: "weather-night", keywords: ["nacht", "avond"] },
+  { name: "home", keywords: ["huis", "thuis", "woning"] },
+  { name: "car", keywords: ["auto", "vervoer", "voertuig"] },
+  { name: "movie-open", keywords: ["film", "bioscoop", "video"] },
+  { name: "silverware-fork-knife", keywords: ["eten", "bestek", "keuken"] },
+  { name: "shield-outline", keywords: ["beveiliging", "alarm", "schild"] },
+  { name: "power", keywords: ["aan", "uit", "stroom", "schakelaar"] },
+  { name: "flash", keywords: ["bliksem", "energie", "stroom"] },
+  { name: "coffee", keywords: ["koffie", "drinken"] },
+  { name: "speaker", keywords: ["geluid", "muziek", "audio", "speaker"] },
+  { name: "volume-high", keywords: ["volume", "geluid", "hard"] },
+  { name: "bell", keywords: ["bel", "melding", "notificatie"] },
+  { name: "alarm", keywords: ["wekker", "alarm", "timer"] },
+  { name: "calendar", keywords: ["agenda", "datum", "kalender"] },
+  { name: "robot", keywords: ["robot", "automatisering"] },
+  { name: "robot-vacuum", keywords: ["stofzuiger", "schoonmaken"] },
+  { name: "water", keywords: ["water", "kraan", "bewateren"] },
+  { name: "flower", keywords: ["bloem", "plant", "tuin"] },
+  { name: "sprout", keywords: ["plant", "groei", "tuin"] },
+  { name: "tree", keywords: ["boom", "tuin", "buiten"] },
+  { name: "lock", keywords: ["slot", "deur", "beveiliging"] },
+  { name: "door", keywords: ["deur", "toegang"] },
+  { name: "garage", keywords: ["garage", "poort"] },
+  { name: "thermometer", keywords: ["temperatuur", "warmte", "koud"] },
+  { name: "air-conditioner", keywords: ["airco", "koeling", "klimaat"] },
+  { name: "fan", keywords: ["ventilator", "lucht"] },
+  { name: "lamp", keywords: ["lamp", "licht"] },
+  { name: "ceiling-light", keywords: ["plafondlamp", "licht"] },
+  { name: "play", keywords: ["start", "afspelen"] },
+  { name: "pause", keywords: ["pauze"] },
+  { name: "stop", keywords: ["stoppen"] },
+  { name: "skip-next", keywords: ["volgende", "overslaan"] },
+  { name: "volume-mute", keywords: ["stil", "mute", "geluid uit"] },
+  { name: "wifi", keywords: ["netwerk", "wifi", "internet"] },
+  { name: "curtains", keywords: ["gordijnen", "raam"] },
+  { name: "window-closed", keywords: ["raam dicht", "raam"] },
+  { name: "window-open", keywords: ["raam open", "raam"] },
+  { name: "fire", keywords: ["vuur", "haard", "warmte"] },
+  { name: "smoke-detector", keywords: ["rookmelder", "brand", "veiligheid"] },
+  { name: "dots-horizontal", keywords: ["meer", "overig", "anders"] }
+];
+const legacyQuickActionIcons: Record<string, string> = {
+  "♫": "music", "⌃": "blinds", "✦": "party-popper", "◌": "lightbulb",
+  "✧": "star-four-points", "▣": "television", "☾": "moon-waning-crescent",
+  "♧": "tree", "⌂": "home", "▤": "calendar", "⚡": "flash", "💡": "lightbulb-on",
+  "🏠": "home", "🚗": "car", "🎬": "movie-open", "🍴": "silverware-fork-knife",
+  "🛡": "shield-outline", "⏻": "power", "•••": "dots-horizontal"
+};
+function MdiIcon({ name, className = "" }: { name: string; className?: string }) {
+  const iconName = name.startsWith("mdi:") ? name.slice(4) : name;
+  return <span className={`mdi mdi-${iconName} ${className}`.trim()} aria-hidden="true" />;
+}
+function migrateQuickActionIcon(icon: string): string {
+  if (legacyQuickActionIcons[icon]) return legacyQuickActionIcons[icon];
+  return icon.startsWith("mdi:") ? icon.slice(4) : icon;
+}
+
 
 function QuickActionsSettingsPage({ session, locale, t }: { session: string; locale: string; t: (key: string) => string }) {
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
@@ -275,6 +346,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [message, setMessage] = React.useState("");
   const [flowSearch, setFlowSearch] = React.useState("");
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
+  const [iconSearch, setIconSearch] = React.useState("");
   const dirty = JSON.stringify(items) !== JSON.stringify(saved);
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
@@ -298,7 +370,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
       fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
-      setItems(configuration.actions); setSaved(configuration.actions); setCatalog(options);
+      setItems(configuration.actions.map(item => ({ ...item, icon: migrateQuickActionIcon(item.icon) }))); setSaved(configuration.actions); setCatalog(options);
     }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -335,7 +407,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <p className="quick-card-description">{t("settings.quickActionsDescription")}</p>
         <div className="quick-action-list">
           {items.map((item, index) => <button key={item.id} className={"quick-action-row " + (item.id === editingId ? "selected" : "")} onClick={() => { setEditingId(item.id); setEditorOpen(true); }}>
-            <span className="quick-action-number">{index + 1}</span><span className="quick-action-icon">{item.icon}</span><span className="quick-action-name">{actionName(item)}</span><span className="quick-action-edit">✎</span>
+            <span className="quick-action-number">{index + 1}</span><MdiIcon name={item.icon} className="quick-action-icon" /><span className="quick-action-name">{actionName(item)}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
         <div className="quick-info">ⓘ <span>{t("settings.quickActionsHint")}</span></div>
@@ -344,7 +416,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <h2><span>◎</span>{t("settings.preview")}</h2>
         <p className="quick-card-description">{t("settings.quickActionsPreviewDescription")}</p>
         <div className="quick-preview-grid">
-          {items.map(item => <div className="quick-preview-item" key={item.id}><span>{item.icon}</span><strong>{actionName(item)}</strong></div>)}
+          {items.map(item => <div className="quick-preview-item" key={item.id}><MdiIcon name={item.icon} /><strong>{actionName(item)}</strong></div>)}
         </div>
       </section>
       {editorOpen && <section className="settings-card quick-editor-card">
@@ -352,7 +424,16 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
         <h2>{t("settings.editQuickAction")}</h2>
         <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name} onChange={event => updateSelected({ name: event.target.value })} placeholder={actionName({ ...selected, name: "" })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
-        <div className="quick-icon-picker">{quickActionIconChoices.map(icon => <button key={icon} className={selected.icon === icon ? "active" : ""} onClick={() => updateSelected({ icon })}>{icon}</button>)}</div>
+        <div className="mdi-picker">
+          <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder="Zoek MDI-iconen, bijvoorbeeld muziek, licht of raam…" aria-label="Zoek MDI-iconen" /></div>
+          <div className="quick-icon-picker">
+            {quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).map(icon =>
+              <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={selected.icon === icon.name ? "active" : ""} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
+            )}
+            {quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).length === 0 && <div className="mdi-no-results">Geen MDI-iconen gevonden.</div>}
+          </div>
+          <div className="mdi-picker-count">{quickActionIconChoices.filter(icon => (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconSearch.trim().toLocaleLowerCase())).length} iconen</div>
+        </div>
         <label>{t("settings.actionType")}
           <select value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
             <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
