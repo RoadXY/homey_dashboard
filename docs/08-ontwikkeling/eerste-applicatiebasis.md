@@ -271,3 +271,8 @@ Nieuwe backendonderdelen:
 De productiecompose mount al het volume `dashboard_data:/app/data`, zodat instellingen containerrestarts overleven. De Homey-taal wordt nog niet uit de gebruikte API gelezen; de pagina maakt deze beperking zichtbaar in plaats van een detectie te veinzen.
 
 **Validatie:** Docker-build en browser/tabletcontrole zijn nog niet uitgevoerd. Voer na het instellen van `SETTINGS_PIN` het bestaande updatescript uit en controleer de buildoutput voordat deze implementatie als werkend wordt beschouwd.
+
+
+### Beveiligingsdetail instellingenroute
+
+Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De General-instellingen-API vereist deze token in de header `x-settings-session`; zonder geldige sessie geeft de API HTTP 401. De sessie verloopt na 30 minuten inactiviteit. De PIN zelf wordt uitsluitend server-side vergeleken met `SETTINGS_PIN` en wordt niet naar de browser teruggestuurd.
