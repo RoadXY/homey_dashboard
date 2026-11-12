@@ -446,3 +446,12 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 #### Verificatiestatus
 - Frontend-/TypeScript-build moet via GitHub Actions worden gecontroleerd.
 - De werkelijke Logic-waarde en periodieke updates moeten na deployment op de Homey Pro 2023 worden gevalideerd. Een groene build bewijst niet dat de Homey Web API tijdens runtime de verwachte waarde retourneert.
+
+
+### Meetwaardetegels – vervolgdiagnose browserpreview (12 november 2026)
+
+- De gebruiker leverde Network-Response uit Chrome DevTools aan. De browser ontvangt `GET /api/dashboard/measurement-tiles` met HTTP 200 en echte numerieke waarden (o.a. Woonkamer circa 23,10 en Keuken2 21), beide met `available: true`.
+- De Chrome-console toont geen zichtbare JavaScript-foutmeldingen. Daarmee is een API-/transportfout niet de oorzaak van de lege preview.
+- De preview bevatte een extra controle die de waarde alleen toonde wanneer de bronobjecten in de editor en API exact gelijk waren na `JSON.stringify`. Die onnodig strikte controle is verwijderd; de preview koppelt nu de actuele waarde op basis van het vaste tegel-ID.
+- De geselecteerde bronsoort in het formulier wordt nu afgeleid van de bron van de geselecteerde tegel. Bij een Logic-bron wordt Homey Logic direct actief; bij een apparaatbron wordt Apparaat actief en worden ruimte/apparaat vooraf ingevuld.
+- Nog te valideren na deployment: de vier previewwaarden, de geselecteerde bronsoort en de vier tegels op het dashboard. De GitHub-build moet eerst groen zijn.
