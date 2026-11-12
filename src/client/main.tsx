@@ -256,7 +256,7 @@ const quickActionDefaults: QuickAction[] = [
   { id: "living-lights", name: "", icon: "◌", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "mood-lights", name: "", icon: "✧", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
   { id: "tv", name: "", icon: "▣", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
-  { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", flowId: "", deviceId: "", capabilityId: "", value: null },
+  { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
 ];
 const quickActionIconChoices = ["♫", "⌃", "✦", "◌", "✧", "▣", "☾", "♧", "⌂", "▤", "⚡", "💡", "🏠", "🚗", "🎬", "🍴", "🛡", "⏻", "•••"];
 
