@@ -137,3 +137,13 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Een fout bij het ophalen van één Homey-manager mag de gegevens uit de andere managers niet langer verbergen.
 - De catalogusresponse bevat optioneel `warnings`; de Quick Action-editor toont deze waarschuwingen zodat een ontbrekende gegevensbron zichtbaar is in plaats van alleen "Geen resultaten".
 - Als een manager geen gegevens levert, blijft de bijbehorende zoeklijst leeg en toont de editor de bijbehorende foutmelding.
+
+
+## Standaardpictogram en validatie Quick Actions
+- De frontend voert geen migratie van oude Unicode-/emoji-pictogrammen meer uit; de Quick Actions-configuratie is nieuw en in ontwikkeling.
+- Bij het laden van Quick Actions controleert de frontend of het opgeslagen pictogram een bekende MDI-iconnaam is (ook de optionele prefix `mdi:` wordt ondersteund).
+- Een ontbrekend of onbekend pictogram wordt weergegeven als `lightning-bolt`.
+- Geldige, zelfgekozen MDI-pictogrammen blijven ongewijzigd.
+- Deze normalisatie wordt toegepast op zowel de acht knoppen op het hoofddashboard als de instellingenlijst, preview en editor. De genormaliseerde waarden worden ook gebruikt als uitgangspunt voor de editor-opslagstatus.
+- De eerdere verwijzing naar de niet-bestaande variabele `legacyQuickActionIcons` is verwijderd.
+- Implementatie gepusht naar `phase_1_foundation`; runtime-/Docker-test op de Ubuntu-server moet nog worden uitgevoerd.
