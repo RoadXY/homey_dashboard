@@ -10,6 +10,7 @@ import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeath
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
 import { executeQuickAction, getQuickActionCatalog } from "./homey.js";
 import os from "node:os";
+import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
 import { randomUUID, createHash, timingSafeEqual } from "node:crypto";
@@ -20,6 +21,10 @@ const host = process.env.HOST ?? "0.0.0.0";
 
 const startedAt = Date.now();
 const settingsSessions = new Map<string, number>();
+const settingsRealtime = new EventEmitter();
+function broadcastSettingsUpdated(section: "general" | "quick-actions"): void {
+  settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
+}
 function hasSettingsSession(request: { headers: Record<string, string | string[] | undefined> }): boolean {
   const token = request.headers["x-settings-session"];
   if (typeof token !== "string") return false;
@@ -147,7 +152,9 @@ app.get("/api/settings/general", async (request, reply) => {
 app.post("/api/settings/general", async (request, reply) => {
   if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
-    return await saveDashboardSettings(request.body);
+    const settings = await saveDashboardSettings(request.body);
+    broadcastSettingsUpdated("general");
+    return settings;
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Instellingen opslaan mislukt." });
   }
@@ -164,7 +171,9 @@ app.post("/api/settings/dashboard-actions", async (request, reply) => {
   if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
     const body = request.body as { actions?: unknown } | undefined;
-    return { actions: await saveQuickActions(body?.actions) };
+    const actions = await saveQuickActions(body?.actions);
+    broadcastSettingsUpdated("quick-actions");
+    return { actions };
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Quick Actions opslaan mislukt." });
   }
@@ -256,6 +265,9 @@ app.get("/api/events", async (_request, reply) => {
   const onDisconnected = (payload: unknown) => {
     if (!reply.raw.destroyed) reply.raw.write(`event: homey-disconnected\ndata: ${JSON.stringify(payload)}\n\n`);
   };
+  const onSettingsUpdated = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: settings-updated\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
   const heartbeat = setInterval(() => {
     if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\n\n`);
   }, 20_000);
@@ -263,11 +275,13 @@ app.get("/api/events", async (_request, reply) => {
   homeyRealtime.on("update", onUpdate);
   homeyRealtime.on("connected", onConnected);
   homeyRealtime.on("disconnected", onDisconnected);
+  settingsRealtime.on("updated", onSettingsUpdated);
   reply.raw.on("close", () => {
     clearInterval(heartbeat);
     homeyRealtime.off("update", onUpdate);
     homeyRealtime.off("connected", onConnected);
     homeyRealtime.off("disconnected", onDisconnected);
+    settingsRealtime.off("updated", onSettingsUpdated);
   });
 });
 
