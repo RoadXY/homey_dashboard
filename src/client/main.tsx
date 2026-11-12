@@ -20,7 +20,7 @@ type QuickAction = { id: string; name: string; icon: string; type: "flow" | "dev
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
 type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"; enabled: boolean; icon?: string };
-type QuickActionCatalog = { devices: QuickActionDevice[]; flows: QuickActionFlow[] };
+type QuickActionCatalog = { devices: QuickActionDevice[]; flows: QuickActionFlow[]; warnings?: string[] };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
 function capability(device: HomeyDevice | undefined, id: string): unknown {
@@ -340,6 +340,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
+  const [catalogWarning, setCatalogWarning] = React.useState("");
   const [editingId, setEditingId] = React.useState("qmusic");
   const [editorOpen, setEditorOpen] = React.useState(false);
   const [busy, setBusy] = React.useState(true);
@@ -383,7 +384,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
       fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
-      setItems(configuration.actions.map(item => ({ ...item, icon: migrateQuickActionIcon(item.icon) }))); setSaved(configuration.actions); setCatalog(options);
+      setItems(configuration.actions.map(item => ({ ...item, icon: migrateQuickActionIcon(item.icon) }))); setSaved(configuration.actions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
     }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -452,6 +453,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
             <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
           </select>
         </label>
+        {catalogWarning && <div className="quick-catalog-warning" role="status">{catalogWarning}</div>}
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
           <div className="quick-flow-picker">
