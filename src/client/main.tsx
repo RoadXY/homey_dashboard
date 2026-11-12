@@ -144,6 +144,12 @@ function App() {
     finally { setExecutingAction(""); }
   };
   React.useEffect(() => {
+    if (settingsOpen) return;
+    const poll = () => { void fetch("/api/dashboard/measurement-tiles").then(r => r.ok ? r.json() as Promise<MeasurementTileResponse> : Promise.reject()).then(setMeasurementTileData).catch(() => undefined); };
+    const timer = window.setInterval(poll, 5000);
+    return () => window.clearInterval(timer);
+  }, [settingsOpen]);
+  React.useEffect(() => {
     if (settingsOpen || !quickActions.some(action => action.type === "device" && action.capabilityId)) return;
     const timer = window.setInterval(() => void refreshQuickActionStatuses(), 5000);
     return () => window.clearInterval(timer);
@@ -435,7 +441,6 @@ function MeasurementTilesSettingsPage({ t }: { t: (key: string) => string }) {
   const update = (patch: Partial<MeasurementTile>) => setTiles(current => current.map(tile => tile.id === selected.id ? { ...tile, ...patch } : tile));
   const devices = catalog.devices.filter(device => device.zone === zoneId);
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
-  const selectedCapability = selected?.source?.type === "device" ? chosenDevice?.capabilities.find(cap => cap.id === selected.source?.type === "device" ? selected.source.capabilityId : "") : undefined;
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
     try {
