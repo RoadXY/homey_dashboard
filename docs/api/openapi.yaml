@@ -1,0 +1,402 @@
+openapi: 3.1.0
+info:
+  title: Homey Dashboard API
+  version: 1.0.0
+  description: |
+    API contract for the Homey Dashboard backend. Routes are grouped into
+    Dashboard UI (internal) and Integrations (external). Internal routes are
+    documented for completeness but are not guaranteed as third-party APIs.
+servers:
+  - url: /
+    description: Same origin as the dashboard
+tags:
+  - name: Health
+    description: Container liveness and readiness
+  - name: Dashboard UI (internal)
+    description: Endpoints used by the dashboard frontend
+  - name: Homey (internal)
+    description: Read-only Homey Pro data access used by the dashboard
+  - name: Settings (internal)
+    description: PIN-protected dashboard settings
+  - name: Localization (internal)
+    description: Runtime language registry and translation files
+  - name: System (internal)
+    description: Dashboard host diagnostics
+  - name: Realtime (internal)
+    description: Server-Sent Events
+  - name: Weather
+    description: Weather display and canonical condition input
+  - name: Notifications (internal)
+    description: Dashboard notification state
+  - name: Integrations
+    description: Supported integration endpoints
+paths:
+  /api/health/live:
+    get:
+      tags: [Health]
+      operationId: getLiveness
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Process is alive
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/health/ready:
+    get:
+      tags: [Health]
+      operationId: getReadiness
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Application is ready
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/health:
+    get:
+      tags: [Health]
+      operationId: getHealth
+      summary: Backwards-compatible aggregate health
+      responses:
+        '200':
+          description: Health and Homey connection summary
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/homey/status:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyStatus
+      summary: Get Homey connection status
+      responses:
+        '200':
+          description: Homey connection status
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/homey/connect:
+    post:
+      tags: [Homey (internal)]
+      operationId: connectHomey
+      summary: Initiate Homey connection
+      responses:
+        '200':
+          description: Connection result
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/homey/readings:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyReadings
+      summary: Read configured Homey device readings
+      responses:
+        '200':
+          description: Device readings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/homey/logic:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyLogic
+      summary: Read configured Homey Logic variables
+      responses:
+        '200':
+          description: Logic variables
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/homey/inventory:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyInventory
+      summary: Read Homey device and zone inventory
+      responses:
+        '200':
+          description: Inventory
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/settings/unlock:
+    post:
+      tags: [Settings (internal)]
+      operationId: unlockSettings
+      summary: Unlock settings using the configured PIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pin]
+              properties:
+                pin: {type: string, format: password}
+      responses:
+        '200':
+          description: Settings session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unlocked: {type: boolean}
+                  sessionToken: {type: string}
+        '401': {description: Invalid PIN}
+        '503': {description: SETTINGS_PIN is not configured}
+  /api/settings/language:
+    get:
+      tags: [Settings (internal)]
+      operationId: getDashboardLanguage
+      summary: Get the saved dashboard language preference
+      responses:
+        '200':
+          description: Language preference
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  language: {type: string}
+  /api/settings/general:
+    get:
+      tags: [Settings (internal)]
+      operationId: getGeneralSettings
+      summary: Get general settings
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      responses:
+        '200':
+          description: General settings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveGeneralSettings
+      summary: Save general settings
+      parameters:
+        - $ref: '#/components/parameters/SettingsSession'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/GenericObject'}
+      responses:
+        '200':
+          description: Saved settings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '400': {description: Invalid settings}
+        '401': {description: Settings session missing or expired}
+  /api/locales/registry:
+    get:
+      tags: [Localization (internal)]
+      operationId: getLanguageRegistry
+      summary: Get registered dashboard languages
+      responses:
+        '200':
+          description: Language registry
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Registry unavailable}
+  /api/locales/{file}:
+    get:
+      tags: [Localization (internal)]
+      operationId: getTranslationFile
+      summary: Get a registered translation JSON file
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z]{2}(-[A-Z]{2})?\.json$'
+      responses:
+        '200':
+          description: Translation dictionary
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '400': {description: Invalid filename}
+        '404': {description: Translation file not found}
+  /api/system/status:
+    get:
+      tags: [System (internal)]
+      operationId: getSystemStatus
+      summary: Get dashboard and host status
+      responses:
+        '200':
+          description: System diagnostics
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/events:
+    get:
+      tags: [Realtime (internal)]
+      operationId: streamDashboardEvents
+      summary: Subscribe to Homey realtime events
+      description: |
+        Server-Sent Events stream. Event names: ready, homey-update,
+        homey-connected, homey-disconnected. Each event data field is JSON.
+        A keepalive comment is sent every 20 seconds.
+      responses:
+        '200':
+          description: Event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+  /api/weather:
+    get:
+      tags: [Weather]
+      operationId: getWeather
+      summary: Get the weather condition currently displayed
+      responses:
+        '200':
+          description: Current displayed condition. API-set conditions take precedence over the Homey capability mapping.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WeatherState'}
+        '500':
+          description: Weather mapping could not be loaded
+  /api/notifications:
+    get:
+      tags: [Notifications (internal)]
+      operationId: getNotifications
+      summary: Get dashboard notifications
+      responses:
+        '200':
+          description: Notification states
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '500':
+          description: Notification configuration could not be loaded
+  /api/v1/weather/conditions:
+    get:
+      tags: [Integrations]
+      operationId: listWeatherConditions
+      summary: List supported canonical weather conditions
+      responses:
+        '200':
+          description: Canonical condition codes accepted by the write endpoint
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [conditions]
+                properties:
+                  conditions:
+                    type: array
+                    items: {$ref: '#/components/schemas/WeatherCondition'}
+    post:
+      tags: [Integrations]
+      operationId: setWeatherCondition
+      summary: Set the dashboard weather condition
+      description: |
+        Stores the latest selected condition persistently. It remains active
+        until replaced by another valid request. The dashboard does not apply
+        a TTL or automatic expiry; the calling Homey Flow owns update cadence.
+      security:
+        - WeatherBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [condition]
+              properties:
+                condition:
+                  $ref: '#/components/schemas/WeatherCondition'
+            examples:
+              cloudy:
+                summary: Cloudy
+                value: {condition: cloudy}
+              thunderstorm:
+                summary: Thunderstorm
+                value: {condition: thunderstorm}
+      responses:
+        '200':
+          description: Condition stored
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [condition, receivedAt, source]
+                properties:
+                  condition: {$ref: '#/components/schemas/WeatherCondition'}
+                  receivedAt: {type: string, format: date-time}
+                  source: {type: string, const: api}
+        '400':
+          description: Invalid or missing condition
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+        '401': {description: Missing or invalid Bearer token}
+        '503': {description: WEATHER_API_TOKEN is not configured}
+        '500': {description: Condition could not be persisted}
+components:
+  securitySchemes:
+    WeatherBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque token
+      description: Configure WEATHER_API_TOKEN in the private server .env file. Never commit the token.
+  parameters:
+    SettingsSession:
+      name: x-settings-session
+      in: header
+      required: true
+      schema: {type: string}
+      description: Short-lived session token returned by POST /api/settings/unlock.
+  schemas:
+    WeatherCondition:
+      type: string
+      enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
+    WeatherState:
+      type: object
+      properties:
+        retrievedAt: {type: string, format: date-time}
+        category: {$ref: '#/components/schemas/WeatherCondition'}
+        conditionText: {type: [string, 'null']}
+        sourceCapability: {type: [string, 'null']}
+        source: {type: string, enum: [homey, api]}
+        receivedAt: {type: string, format: date-time}
+        reason: {type: string}
+    Health:
+      type: object
+      properties:
+        status: {type: string}
+        application: {type: string}
+        uptimeSeconds: {type: integer}
+        readiness: {type: string}
+        homey: {type: string}
+    Error:
+      type: object
+      properties:
+        error: {type: string}
+        allowedValues:
+          type: array
+          items: {$ref: '#/components/schemas/WeatherCondition'}
+    GenericObject:
+      type: object
+      additionalProperties: true
+  responses:
+    ServiceUnavailable:
+      description: Homey service unavailable
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
