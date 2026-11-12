@@ -13,25 +13,63 @@ import os from "node:os";
 import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
-import { randomUUID, createHash, timingSafeEqual } from "node:crypto";
+import { randomUUID, randomBytes, createHmac, createHash, timingSafeEqual } from "node:crypto";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "0.0.0.0";
 
 const startedAt = Date.now();
-const settingsSessions = new Map<string, number>();
+const dataDirectory = process.env.DATA_DIR ?? join(process.cwd(), "data");
+const SETTINGS_SESSION_COOKIE = "homey_settings";
+const SETTINGS_SESSION_IDLE_MS = 30 * 60 * 1000;
+let settingsSessionSecret: Buffer;
 const settingsRealtime = new EventEmitter();
 function broadcastSettingsUpdated(section: "general" | "quick-actions"): void {
   settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
 }
-function hasSettingsSession(request: { headers: Record<string, string | string[] | undefined> }): boolean {
-  const token = request.headers["x-settings-session"];
-  if (typeof token !== "string") return false;
-  const expiresAt = settingsSessions.get(token);
-  if (!expiresAt || expiresAt < Date.now()) { settingsSessions.delete(token); return false; }
-  settingsSessions.set(token, Date.now() + 30 * 60 * 1000);
+function settingsCookieValue(expiresAt: number): string {
+  const payload = Buffer.from(String(expiresAt)).toString("base64url");
+  const signature = createHmac("sha256", settingsSessionSecret).update(payload).digest("base64url");
+  return payload + "." + signature;
+}
+function setSettingsCookie(reply: { header(name: string, value: string): unknown }, expiresAt: number): void {
+  const maxAge = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+  reply.header("Set-Cookie", `${SETTINGS_SESSION_COOKIE}=${settingsCookieValue(expiresAt)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}`);
+}
+function clearSettingsCookie(reply: { header(name: string, value: string): unknown }): void {
+  reply.header("Set-Cookie", `${SETTINGS_SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0`);
+}
+function hasSettingsSession(request: { headers: Record<string, string | string[] | undefined> }, reply: { header(name: string, value: string): unknown }): boolean {
+  const cookieHeader = request.headers.cookie;
+  if (typeof cookieHeader !== "string") return false;
+  const cookie = cookieHeader.split(";").map(part => part.trim()).find(part => part.startsWith(SETTINGS_SESSION_COOKIE + "="));
+  const value = cookie?.slice(SETTINGS_SESSION_COOKIE.length + 1);
+  if (!value) return false;
+  const [payload, suppliedSignature] = value.split(".");
+  if (!payload || !suppliedSignature) return false;
+  const expectedSignature = createHmac("sha256", settingsSessionSecret).update(payload).digest();
+  let actualSignature: Buffer;
+  try { actualSignature = Buffer.from(suppliedSignature, "base64url"); } catch { return false; }
+  if (actualSignature.length !== expectedSignature.length || !timingSafeEqual(actualSignature, expectedSignature)) return false;
+  const expiresAt = Number(Buffer.from(payload, "base64url").toString("utf8"));
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= Date.now()) return false;
+  setSettingsCookie(reply, Date.now() + SETTINGS_SESSION_IDLE_MS);
   return true;
+}
+async function initializeSettingsSessionSecret(): Promise<void> {
+  await mkdir(dataDirectory, { recursive: true });
+  const secretPath = join(dataDirectory, "settings-session.key");
+  try {
+    settingsSessionSecret = await readFile(secretPath);
+    if (settingsSessionSecret.length < 32) throw new Error("Settings session key is invalid.");
+  } catch {
+    settingsSessionSecret = randomBytes(48);
+    await writeFile(secretPath, settingsSessionSecret, { flag: "wx", mode: 0o600 }).catch(async error => {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+      settingsSessionSecret = await readFile(secretPath);
+    });
+  }
 }
 
 app.get("/api/health/live", async () => ({
@@ -65,13 +103,26 @@ app.post("/api/settings/unlock", async (request, reply) => {
   if (typeof body?.pin !== "string" || body.pin !== configuredPin) {
     return reply.code(401).send({ error: "Onjuiste PIN." });
   }
-  const sessionToken = randomUUID();
-  settingsSessions.set(sessionToken, Date.now() + 30 * 60 * 1000);
-  return { unlocked: true, sessionToken };
+  setSettingsCookie(reply, Date.now() + SETTINGS_SESSION_IDLE_MS);
+  return { unlocked: true };
+});
+
+app.get("/api/settings/session", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ authenticated: false });
+  return { authenticated: true, idleTimeoutSeconds: SETTINGS_SESSION_IDLE_MS / 1000 };
+});
+app.post("/api/settings/session/refresh", async (request, reply) => {
+  if (request.headers["x-settings-activity"] !== "1" || !hasSettingsSession(request, reply)) {
+    return reply.code(401).send({ authenticated: false });
+  }
+  return { authenticated: true };
+});
+app.post("/api/settings/logout", async (_request, reply) => {
+  clearSettingsCookie(reply);
+  return { loggedOut: true };
 });
 
 
-const dataDirectory = process.env.DATA_DIR ?? join(process.cwd(), "data");
 const localeDirectory = join(dataDirectory, "locales");
 const defaultLocaleDirectory = existsSync(join(process.cwd(), "default-locales"))
   ? join(process.cwd(), "default-locales")
@@ -145,7 +196,7 @@ app.get("/api/settings/language", async () => {
 });
 
 app.get("/api/settings/general", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   return readDashboardSettings();
 });
 
@@ -406,6 +457,7 @@ if (existsSync(clientPath)) {
 
 try {
   await initializeLocaleFiles();
+  await initializeSettingsSessionSecret();
   await app.listen({ port, host });
 } catch (error) {
   app.log.error(error);
