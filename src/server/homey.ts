@@ -457,9 +457,27 @@ export async function getQuickActionCatalog() {
   return { retrievedAt: new Date().toISOString(), devices: deviceList, flows: flowList, warnings };
 }
 
+export async function getQuickActionStatuses(actions: Array<{ id: string; type: "flow" | "device"; deviceId: string; capabilityId: string }>): Promise<Record<string, boolean | null>> {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const devices = await api.devices.getDevices() as Record<string, any>;
+  const statuses: Record<string, boolean | null> = {};
+  for (const action of actions) {
+    if (action.type !== "device" || !action.deviceId || !action.capabilityId) continue;
+    const device = devices[action.deviceId];
+    if (!device || device.available === false || !Array.isArray(device.capabilities) || !device.capabilities.includes(action.capabilityId)) {
+      statuses[action.id] = null;
+      continue;
+    }
+    const descriptor = device.capabilitiesObj?.[action.capabilityId] as Record<string, any> | undefined;
+    statuses[action.id] = descriptor?.type === "boolean" && typeof descriptor.value === "boolean" ? descriptor.value : null;
+  }
+  return statuses;
+}
+
 export async function executeQuickAction(input: {
   type: "flow" | "device"; flowId?: string; flowType?: "standard" | "advanced";
-  deviceId?: string; capabilityId?: string; value?: unknown;
+  deviceId?: string; capabilityId?: string; value?: unknown; booleanMode?: "on" | "off" | "toggle";
 }) {
   if (!api || snapshot.state !== "online") await connectHomey();
   if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
@@ -484,9 +502,17 @@ export async function executeQuickAction(input: {
   if (!Array.isArray(device.capabilities) || !device.capabilities.includes(input.capabilityId)) throw new Error("De geselecteerde capability wordt niet meer ondersteund.");
   const descriptor = device.capabilitiesObj?.[input.capabilityId] as Record<string, any> | undefined;
   if (!descriptor || descriptor.setable !== true) throw new Error("Deze capability is niet wijzigbaar.");
-  const value = input.value;
   const type = descriptor.type;
-  if (type === "boolean" && typeof value !== "boolean") throw new Error("Deze actie verwacht een aan/uit-waarde.");
+  let value = input.value;
+  if (type === "boolean") {
+    if (input.booleanMode === "toggle") {
+      const currentValue = descriptor.value;
+      if (typeof currentValue !== "boolean") throw new Error("De actuele aan/uit-status van Homey is onbekend; Toggle is niet uitgevoerd.");
+      value = !currentValue;
+    } else if (input.booleanMode === "on") value = true;
+    else if (input.booleanMode === "off") value = false;
+    else if (typeof value !== "boolean") throw new Error("Deze actie verwacht een aan/uit-waarde.");
+  }
   if (type === "number") {
     if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("Ongeldige numerieke waarde.");
     if (typeof descriptor.min === "number" && value < descriptor.min) throw new Error("Waarde ligt onder het toegestane minimum.");
@@ -499,5 +525,5 @@ export async function executeQuickAction(input: {
   if (type === "string" && typeof value !== "string") throw new Error("Deze actie verwacht tekst.");
   if (!["boolean", "number", "enum", "string"].includes(type)) throw new Error("Dit type apparaatbediening wordt niet ondersteund.");
   await (device as any).setCapabilityValue({ capabilityId: input.capabilityId, value });
-  return { executed: true, type: "device" };
+  return { executed: true, type: "device", value };
 }
