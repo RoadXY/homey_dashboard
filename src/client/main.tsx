@@ -14,6 +14,11 @@ type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
+type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null };
+type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
+type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
+type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"; enabled: boolean };
+type QuickActionCatalog = { devices: QuickActionDevice[]; flows: QuickActionFlow[] };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
 const actions = [
@@ -36,7 +41,7 @@ function App() {
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
-  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);\n  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);\n  const [actionError, setActionError] = React.useState("");\n  const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
@@ -51,7 +56,7 @@ function App() {
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
+      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));\n    void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions(data.actions as QuickAction[])).catch(() => setQuickActions([]));
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
@@ -113,6 +118,16 @@ function App() {
   const logicValue = (name: string) => logic?.variables.find((item) => item.name === name)?.value;
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const homeyOnline = homey?.state === "online";
+  const executeAction = async (id: string) => {
+    if (executingAction) return;
+    setExecutingAction(id); setActionError("");
+    try {
+      const response = await fetch("/api/homey/quick-actions/" + encodeURIComponent(id) + "/execute", { method: "POST" });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));
+    } catch (error) { setActionError(error instanceof Error ? error.message : t("actions.executeError")); }
+    finally { setExecutingAction(""); }
+  };
   const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
@@ -181,7 +196,7 @@ function App() {
             </div>
           ))}
         </div>
-        <section className="notifications-panel" aria-label={t("notifications.aria")}>
+        {actionError && <div className="action-error" role="alert">{actionError}</div>}\n        <section className="notifications-panel" aria-label={t("notifications.aria")}>
           <div className="notifications-heading"><h1>{t("notifications.heading")}</h1></div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
