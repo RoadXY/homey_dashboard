@@ -502,3 +502,11 @@ Bij containerstart worden de standaardbestanden uit de image met de bestaande be
 - De volledige token wordt na aanmaken eenmalig in de UI getoond met een kopieeractie. Bewaar deze direct in de Homey-integratie of wachtwoordmanager; opnieuw opvragen is niet mogelijk.
 - De bestaande WEATHER_API_TOKEN uit .env wordt voorlopig nog als migratie-/compatibiliteitsroute geaccepteerd. Na het maken en testen van een beheerde token kan deze variabele lokaal uit .env worden verwijderd.
 - Build- en OpenAPI-lintvalidatie zijn geslaagd in GitHub Actions op commit c9a3d826. Runtime-test van token aanmaken, autorisatie, intrekken en persistentie in Docker moet nog plaatsvinden.
+
+
+### Swagger UI in de container en GitHub Pages-status (12 november 2026)
+
+- Naast de statische GitHub Pages-documentatie wordt Swagger UI ook opgenomen in de Vite-public assets: public/api-docs/index.html en public/api-docs/openapi.yaml. Na deployment is de lokale documentatie beschikbaar op dezelfde host als het dashboard onder /api-docs/.
+- De lokale Swagger UI gebruikt dezelfde-origin requests en is daardoor de aangewezen plek om de API op de Ubuntu-server te testen. De OpenAPI-specificatie in docs/api/openapi.yaml is de bron; de public/api-docs kopie moet bij contractwijzigingen worden bijgewerkt.
+- GitHub Pages-publicatie is nog niet geslaagd. De workflow faalt in actions/configure-pages: eerst meldt GitHub dat de Pages-site niet bestaat (404); met enablement=true meldt GitHub vervolgens "Resource not accessible by integration" bij het aanmaken van de Pages-site. De GitHub Actions-integratie heeft dus onvoldoende rechten om Pages via de API aan te maken, of de Pages-site is nog niet daadwerkelijk geactiveerd. De gebruiker moet in Repository Settings → Pages controleren dat de site is opgeslagen/geactiveerd en dat de bron op GitHub Actions staat. De workflow kan daarna opnieuw worden uitgevoerd.
+- De tokenbeheer-UI, serverroutes en OpenAPI-contract zijn door CI-build en OpenAPI-lint gevalideerd. De Docker-runtime en tokenflow moeten nog op de Ubuntu-server worden getest.
