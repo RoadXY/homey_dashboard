@@ -60,15 +60,19 @@ function hasSettingsSession(request: { headers: Record<string, string | string[]
 async function initializeSettingsSessionSecret(): Promise<void> {
   await mkdir(dataDirectory, { recursive: true });
   const secretPath = join(dataDirectory, "settings-session.key");
-  try {
+  if (existsSync(secretPath)) {
     settingsSessionSecret = await readFile(secretPath);
-    if (settingsSessionSecret.length < 32) throw new Error("Settings session key is invalid.");
-  } catch {
-    settingsSessionSecret = randomBytes(48);
-    await writeFile(secretPath, settingsSessionSecret, { flag: "wx", mode: 0o600 }).catch(async error => {
-      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
-      settingsSessionSecret = await readFile(secretPath);
-    });
+    if (settingsSessionSecret.length < 32) throw new Error("Settings session key is invalid; inspect the persistent data volume.");
+    return;
+  }
+  const generated = randomBytes(48);
+  try {
+    await writeFile(secretPath, generated, { flag: "wx", mode: 0o600 });
+    settingsSessionSecret = generated;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+    settingsSessionSecret = await readFile(secretPath);
+    if (settingsSessionSecret.length < 32) throw new Error("Settings session key is invalid; inspect the persistent data volume.");
   }
 }
 
