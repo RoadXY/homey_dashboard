@@ -143,7 +143,7 @@ function App() {
       void fetch("/api/settings/session").then(response => {
         if (response.ok) { setSettingsUnlocked(true); setPinError(""); }
         else { setSettingsUnlocked(false);  }
-      }).catch(() => { setSettingsUnlocked(false); setSettingsSession(""); });
+      }).catch(() => { setSettingsUnlocked(false); });
     };
     window.addEventListener("popstate", syncRoute);
     if (settingsOpen) syncRoute();
@@ -156,7 +156,7 @@ function App() {
       settingsIdleTimer.current = null;
       void fetch("/api/settings/logout", { method: "POST" }).finally(() => {
         window.history.replaceState({}, "", "/");
-        setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession("");
+        setSettingsOpen(false); setSettingsUnlocked(false); 
         void refresh();
       });
     };
@@ -195,12 +195,12 @@ function App() {
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : "general"} />
+    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
           if (!response.ok) throw new Error(translate(locale, "settings.pinDenied"));
-          setSettingsSession(""); setSettingsUnlocked(true); setPinError("");
+          setSettingsUnlocked(true); setPinError("");
         } catch (error) { setPinError(error instanceof Error ? error.message : translate(locale, "settings.pinError")); }
       }} />;
   return (
@@ -598,7 +598,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/general", { headers: {} }).then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
+      fetch("/api/settings/general").then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
       fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("settings.statusError"); return r.json() as Promise<SystemStatus>; })
     ]).then(([prefs, system]) => {
       if (!active) return;
@@ -608,7 +608,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     return () => { active = false; };
   }, []);
   const loadWeatherTokens = async () => {
-    const response = await fetch("/api/settings/weather-tokens", { headers: { "x-settings-session": session } });
+    const response = await fetch("/api/settings/weather-tokens", {});
     if (!response.ok) throw new Error(t("settings.tokensLoadError"));
     const data = await response.json() as { tokens: WeatherTokenInfo[] };
     setWeatherTokens(data.tokens);
@@ -661,7 +661,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     if (!window.confirm(t("settings.tokenRevokeConfirm"))) return;
     setTokenBusy(true); setTokenMessage(""); setNewToken("");
     try {
-      const response = await fetch("/api/settings/weather-tokens/" + encodeURIComponent(id), { method: "DELETE", headers: { "x-settings-session": session } });
+      const response = await fetch("/api/settings/weather-tokens/" + encodeURIComponent(id), { method: "DELETE" });
       if (!response.ok) throw new Error(t("settings.tokenRevokeError"));
       setWeatherTokens(current => current.filter(token => token.id !== id)); setTokenMessage(t("settings.tokenRevoked"));
     } catch (error) { setTokenMessage(error instanceof Error ? error.message : t("settings.tokenRevokeError")); }
@@ -671,7 +671,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
   const save = async () => {
     setMessage("");
     try {
-      const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify(settings) });
+      const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(settings) });
       const result = await response.json() as GeneralSettings & { error?: string };
       if (!response.ok) throw new Error(translate(locale, "settings.saveError"));
       setSettings(result); setSaved(result); setMessage(translate(locale, "settings.saved"));
