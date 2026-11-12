@@ -397,3 +397,19 @@ De gebruiker heeft de aangeleverde screenshot (65819.png) expliciet aangewezen a
 
 ### Navigatie-opmerking ter verificatie
 De screenshot toont in de zijbalk vijf categorieën (**General, Dashboard, Devices, Homey, System**) en geen afzonderlijke categorie **Notifications**. Eerdere documentatie noemt zes categorieën, waaronder **Meldingen**. Dit verschil is zichtbaar vastgelegd en wordt niet stilzwijgend opgelost door een categorie te verwijderen of toe te voegen; de screenshot is leidend voor de vormgeving van deze eerste pagina, terwijl de navigatie-indeling voor de volledige instellingen nog volgens de bestaande afspraken moet worden afgestemd.
+
+
+
+## Implementatie – Instellingen > General (12 november 2026)
+
+De eerste pagina is nu als frontendpagina toegevoegd op basis van de aangewezen screenshot. De bestaande klokkaart opent de PIN-poort via lang indrukken (850 ms); er wordt geen zichtbare instellingenknop aan het dashboard toegevoegd. Na PIN-verificatie wordt de pagina General getoond.
+
+Technische onderdelen:
+- General-instellingen worden via `/api/settings/general` gelezen en opgeslagen in `/app/data/settings.json` (configureerbaar via `DATA_DIR`); productie gebruikt het bestaande persistente Docker-volume `dashboard_data`.
+- De API valideert de toegestane taal-, datum-, tijd- en weekstartwaarden.
+- PIN-controle verloopt server-side via `POST /api/settings/unlock`; configureer een eigen `SETTINGS_PIN` in de lokale `.env`. De PIN staat niet in Git.
+- `/api/system/status` levert Homey-verbindingsstatus, dashboardversie, uptime, geheugen- en (indien beschikbaar) opslaginformatie.
+- De UI toont expliciet dat de Homey-taal via de huidige integratie nog niet beschikbaar is; de automatische taalkeuze wordt dus niet ten onrechte als gedetecteerd gepresenteerd.
+- Save schrijft de instellingen persistent weg; Restore defaults zet de conceptwaarden terug naar de standaardwaarden. Verlaten met wijzigingen toont Save / Discard / Stay.
+
+**Nog niet gevalideerd:** de containerbuild en runtime zijn niet vanuit deze werkomgeving uitgevoerd (GitHub is niet rechtstreeks bereikbaar vanuit de buildomgeving). De gebruiker moet de Docker-build nog uitvoeren. Ook moet de lokale `SETTINGS_PIN` worden ingevuld voordat de instellingenpagina toegankelijk is. De precieze runtime-status en visuele vergelijking op de tablet volgen na die test.
