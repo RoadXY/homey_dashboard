@@ -8,7 +8,7 @@ import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
-import { readFile, mkdir, readdir, copyFile } from "node:fs/promises";
+import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
 import { randomUUID, createHash, timingSafeEqual } from "node:crypto";
 
 const app = Fastify({ logger: true });
@@ -72,8 +72,36 @@ async function initializeLocaleFiles(): Promise<void> {
   const defaults = await readdir(defaultLocaleDirectory);
   for (const file of defaults) {
     if (!/^(languages|[a-z]{2}(-[A-Z]{2})?)\.json$/.test(file) && file !== "README.txt") continue;
+    const source = join(defaultLocaleDirectory, file);
     const target = join(localeDirectory, file);
-    if (!existsSync(target)) await copyFile(join(defaultLocaleDirectory, file), target);
+    if (!existsSync(target)) {
+      await copyFile(source, target);
+      continue;
+    }
+    if (!file.endsWith(".json")) continue;
+    try {
+      const defaults = JSON.parse(await readFile(source, "utf8")) as Record<string, unknown>;
+      const current = JSON.parse(await readFile(target, "utf8")) as Record<string, unknown>;
+      let merged: Record<string, unknown>;
+      if (file === "languages.json") {
+        const defaultLanguages = Array.isArray(defaults.languages) ? defaults.languages as Array<{ id?: string }> : [];
+        const currentLanguages = Array.isArray(current.languages) ? current.languages as Array<{ id?: string }> : [];
+        const knownIds = new Set(currentLanguages.map((language) => language.id));
+        merged = {
+          ...defaults,
+          ...current,
+          languages: [...currentLanguages, ...defaultLanguages.filter((language) => !knownIds.has(language.id))],
+        };
+      } else {
+        merged = { ...defaults, ...current };
+      }
+      const serialized = JSON.stringify(merged, null, 2) + "\\n";
+      if (serialized !== JSON.stringify(current, null, 2) + "\\n") {
+        await writeFile(target, serialized, { mode: 0o600 });
+      }
+    } catch (error) {
+      app.log.warn({ file, error }, "Could not merge default locale file; preserving existing file.");
+    }
   }
 }
 
