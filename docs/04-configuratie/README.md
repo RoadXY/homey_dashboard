@@ -299,3 +299,10 @@ Naar aanleiding van de eerste praktijktest zijn twee tekortkomingen gecorrigeerd
 - Bij het selecteren van een andere boolean-capability wordt de bedieningsmodus expliciet op **Uitzetten** gezet. Zo kan een eerder gekozen modus van een andere capability niet onbedoeld worden overgenomen.
 - De bestaande apparaatinstantie-methode `device.setCapabilityValue({ capabilityId, value })` blijft de schrijfroute; de booleanwaarde wordt expliciet gevalideerd voordat deze naar Homey gaat.
 - Deze correctie is door GitHub Actions gebouwd en gevalideerd; de praktijktest op de Ubuntu-server moet na deployment opnieuw worden uitgevoerd, met zowel aan- als uitzetten en statuswijzigingen vanuit Homey.
+
+
+### Quick Actions – editor overlapt de lijst niet meer (12 november 2026)
+
+- Het bewerkingspaneel wordt niet langer absoluut boven de Quick Actions-werkruimte geplaatst. Het staat nu als afzonderlijk paneel onder de lijst en preview, over de beschikbare werkruimtebreedte.
+- Hierdoor kan de achtergrond en schaduw van het editorpaneel de Quick Action-lijst niet meer optisch donkerder maken. Alleen de geselecteerde rij krijgt de geselecteerde stijl.
+- Dit is uitsluitend een frontend-layoutcorrectie; selectie-, opslag- en Homey-bedieningslogica blijven ongewijzigd.
