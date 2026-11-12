@@ -254,7 +254,7 @@ app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", asy
   const action = actions.find((item) => item.id === request.params.id);
   if (!action) return reply.code(404).send({ error: "Quick Action niet gevonden." });
   if (action.type === "flow" && !action.flowId) return reply.code(409).send({ error: "Deze Quick Action is nog niet ingesteld." });
-  if (action.type === "device" && (!action.deviceId || !action.capabilityId || action.value === null)) return reply.code(409).send({ error: "Deze Quick Action is nog niet ingesteld." });
+  if (action.type === "device" && (!action.deviceId || !action.capabilityId || (action.value === null && action.booleanMode !== "toggle"))) return reply.code(409).send({ error: "Deze Quick Action is nog niet ingesteld." });
   try {
     const result = await executeQuickAction(action);
     return { ...result, actionId: action.id };
