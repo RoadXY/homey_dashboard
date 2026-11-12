@@ -247,3 +247,32 @@ Alle hoofdcategorieën in de instellingen hebben nu een eigen directe URL. Deze 
 De zijbalknavigatie werkt voor alle vijf categorieën en werkt de URL bij. De drie onderdelen waarvan de inhoud nog niet is gebouwd tonen een tijdelijke melding in plaats van een niet-werkende/uitgeschakelde menuoptie. De browsergeschiedenis (terug/vooruit) blijft de route synchroniseren.
 
 De bestaande Dashboard-subtabellen Temperatuurtegels en Weer hebben nog geen afzonderlijke inhoudsroutes; op dit moment is alleen Snelle acties als dashboard-subpagina geïmplementeerd. Dit wordt aangevuld zodra die instellingenpagina's worden gebouwd.
+
+
+## Quick Actions: statusgestuurde apparaattegels en Toggle-bediening (12 november 2026)
+
+### Keuze van de gebruiker
+- Bij het configureren van een apparaatactie toont de apparaatkeuze alle beschikbare, wijzigbare boolean-capabilities van het gekozen apparaat. De gebruiker kiest zelf precies één capability voor deze Quick Action.
+- We filteren deze lijst dus niet op een veronderstelde hoofdfunctie. Een ventilator kan bijvoorbeeld meerdere boolean-capabilities aanbieden, zoals `onoff`, `onoff.light`, `onoff.buzzer_enabled` en `onoff.light_enabled`; deze worden als afzonderlijke keuzes getoond wanneer Homey ze als wijzigbaar aanbiedt.
+- Eén Quick Action bedient één gekozen capability. Wil de gebruiker naast de ventilator ook de ingebouwde lamp bedienen, dan maakt die daarvoor een tweede Quick Action aan.
+
+### Bedieningsopties voor boolean-capabilities
+Voor een gekozen wijzigbare boolean-capability zijn drie bedieningsopties beschikbaar:
+1. **Aanzetten**: schrijf `true` naar de capability.
+2. **Uitzetten**: schrijf `false` naar de capability.
+3. **Wisselen (Toggle)**: lees de actuele waarde rechtstreeks uit Homey en schrijf de tegengestelde boolean-waarde terug.
+
+Toggle wordt server-side uitgevoerd op basis van de actuele Homey-waarde, niet op basis van een mogelijk verouderde browserstatus. Bij een ongeldige/onbekende status of een niet-beschikbaar apparaat mag niet blind worden omgeschakeld; de actie geeft dan een fout terug.
+
+### Statusweergave op de bestaande Quick Action-tegel
+- De bestaande tegelindeling, naam en het gekozen pictogram blijven behouden.
+- Bij een apparaatactie die een boolean-capability gebruikt, weerspiegelt de tegel de actuele waarde van precies die gekozen capability: `true` krijgt de actieve accentkleur en `false` de normale tegelstijl.
+- Er wordt geen tekstlabel zoals AAN/UIT onder de tegel getoond; het kleurverschil is de statusindicatie.
+- De status wordt uit Homey gelezen en moet ook wijzigingen reflecteren die buiten het dashboard om zijn gedaan. Na een bediening wordt de tegel bijgewerkt zodra de actuele status uit Homey bekend is.
+- Andere Quick Actions die dezelfde capability niet bedienen, krijgen niet automatisch dezelfde status.
+- Flow-acties krijgen geen blijvende aan/uit-statuskleur; een Flow is een opdracht en heeft niet automatisch een betrouwbare apparaatstatus.
+
+### Afbakening
+Deze drie bedieningsopties gelden voor wijzigbare boolean-capabilities. Numerieke en enum-capabilities behouden hun passende waarde-/keuzebediening en krijgen niet automatisch Toggle-gedrag of een aan/uit-kleur. Een dimbare lamp gebruikt voor de status de gekozen boolean-capability (bijvoorbeeld `onoff`); de dimwaarde zelf bepaalt niet of de tegel als aan of uit wordt weergegeven.
+
+Dit is een vastgelegd ontwerpbesluit; de statusgestuurde tegelweergave en de nieuwe Toggle-uitvoering moeten nog worden geïmplementeerd en getest.
