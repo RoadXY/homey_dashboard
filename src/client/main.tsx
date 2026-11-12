@@ -24,7 +24,7 @@ const actions = [
 function capability(device: HomeyDevice | undefined, id: string): unknown {
   return device?.readings?.find((reading) => reading.capabilityId === id)?.value;
 }
-function temperature(value: unknown, locale: "nl" | "en" = "nl"): string {
+function temperature(value: unknown, locale: string = "nl"): string {
   return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(1).replace(".", locale.toLowerCase().startsWith("nl") ? "," : ".")}°` : "—";
 }
 function App() {
