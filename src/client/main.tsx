@@ -17,7 +17,7 @@ type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour:
 type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
-type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"; enabled: boolean };
+type QuickActionFlow = { id: string; name: string; type: "standard" | "advanced"; enabled: boolean; icon?: string };
 type QuickActionCatalog = { devices: QuickActionDevice[]; flows: QuickActionFlow[] };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
@@ -279,6 +279,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [flowSearch, setFlowSearch] = React.useState("");
+  const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
   const dirty = JSON.stringify(items) !== JSON.stringify(saved);
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
@@ -352,19 +353,45 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
           </select>
         </label>
         {selected.type === "flow" ? <>
-          <label>{t("settings.homeyFlow")}
-            <input type="search" className="quick-flow-search" value={flowSearch}
-              onChange={event => setFlowSearch(event.target.value)}
-              placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
-            <select value={selected.flowType + ":" + selected.flowId} onChange={event => { const [flowType, ...id] = event.target.value.split(":"); updateSelected({ flowType: flowType as "standard" | "advanced", flowId: id.join(":") }); }}>
-              <option value="standard:">{t("settings.selectFlow")}</option>
-              {catalog.flows.filter(flow => {
+          <label>{t("settings.homeyFlow")}</label>
+          <div className="quick-flow-picker">
+            <button type="button" className="quick-flow-trigger" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
+              onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
+              <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
+              <span className="quick-flow-trigger-name">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.name ?? t("settings.selectFlow")) : t("settings.selectFlow")}</span>
+              <span className="quick-flow-chevron">▾</span>
+            </button>
+            {flowPickerOpen && <div className="quick-flow-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
+              <div className="quick-flow-search-wrap">
+                <span aria-hidden="true">⌕</span>
+                <input autoFocus type="search" className="quick-flow-search" value={flowSearch}
+                  onChange={event => setFlowSearch(event.target.value)}
+                  placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
+                {flowSearch && <button type="button" className="quick-flow-clear" onClick={() => setFlowSearch("")} aria-label={t("settings.clearSearch")}>×</button>}
+              </div>
+              <div className="quick-flow-results">
+                {catalog.flows.filter(flow => {
+                  const query = flowSearch.trim().toLocaleLowerCase();
+                  const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
+                  return !query || searchable.includes(query);
+                }).map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
+                  className={"quick-flow-option" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
+                  key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
+                  <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
+                  <span className="quick-flow-option-name">{flow.name}</span>
+                  {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
+                </button>)}
+                {catalog.flows.filter(flow => {
+                  const query = flowSearch.trim().toLocaleLowerCase();
+                  return !query || (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase().includes(query);
+                }).length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
+              </div>
+              <div className="quick-flow-footer">{catalog.flows.filter(flow => {
                 const query = flowSearch.trim().toLocaleLowerCase();
-                return !query || flow.name.toLocaleLowerCase().includes(query) || (flow.type + ":" + flow.id) === (selected.flowType + ":" + selected.flowId);
-              }).map(flow => <option key={flow.type + flow.id} value={flow.type + ":" + flow.id}>{flow.name}{flow.type === "advanced" ? " · Advanced" : ""}</option>)}
-            </select>
-            {flowSearch.trim() && <span className="quick-flow-count">{catalog.flows.filter(flow => flow.name.toLocaleLowerCase().includes(flowSearch.trim().toLocaleLowerCase())).length} {t("settings.flowResults")}</span>}
-          </label>
+                return !query || (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase().includes(query);
+              }).length} {t("settings.flowResults")}</div>
+            </div>}
+          </div>
         </> : <>
           <label>{t("settings.device")}<select value={selected.deviceId} onChange={event => selectDevice(event.target.value)}><option value="">{t("settings.selectDevice")}</option>{catalog.devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.zone ? " · " + device.zone : ""}</option>)}</select></label>
           <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
