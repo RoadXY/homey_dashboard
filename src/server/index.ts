@@ -4,12 +4,12 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications } from "./notifications.js";
-import { getDashboardWeather } from "./weather.js";
+import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash, timingSafeEqual } from "node:crypto";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -173,6 +173,41 @@ app.get("/api/events", async (_request, reply) => {
     homeyRealtime.off("connected", onConnected);
     homeyRealtime.off("disconnected", onDisconnected);
   });
+});
+
+
+function hasWeatherApiToken(request: { headers: Record<string, string | string[] | undefined> }): boolean {
+  const configured = process.env.WEATHER_API_TOKEN;
+  const authorization = request.headers.authorization;
+  if (!configured || typeof authorization !== "string" || !authorization.startsWith("Bearer ")) return false;
+  const supplied = authorization.slice(7);
+  const expectedHash = createHash("sha256").update(configured).digest();
+  const suppliedHash = createHash("sha256").update(supplied).digest();
+  return timingSafeEqual(expectedHash, suppliedHash);
+}
+
+app.get("/api/v1/weather/conditions", async () => ({
+  conditions: WEATHER_CONDITIONS,
+}));
+
+app.post<{ Body: { condition?: unknown } }>("/api/v1/weather/conditions", async (request, reply) => {
+  if (!hasWeatherApiToken(request)) return reply.code(process.env.WEATHER_API_TOKEN ? 401 : 503).send({
+    error: process.env.WEATHER_API_TOKEN ? "A valid Bearer token is required." : "Weather API is not configured.",
+  });
+  const condition = request.body?.condition;
+  if (typeof condition !== "string" || !(WEATHER_CONDITIONS as readonly string[]).includes(condition)) {
+    return reply.code(400).send({
+      error: "Invalid weather condition.",
+      allowedValues: WEATHER_CONDITIONS,
+    });
+  }
+  try {
+    const stored = await setWeatherCondition(condition as typeof WEATHER_CONDITIONS[number]);
+    return reply.code(200).send({ condition: stored.condition, receivedAt: stored.receivedAt, source: "api" });
+  } catch (error) {
+    app.log.error(error);
+    return reply.code(500).send({ error: "Weather condition could not be saved." });
+  }
 });
 
 app.get("/api/weather", async (_request, reply) => {
