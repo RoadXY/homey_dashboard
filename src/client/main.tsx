@@ -41,7 +41,10 @@ function App() {
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
-  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);\n  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);\n  const [actionError, setActionError] = React.useState("");\n  const [executingAction, setExecutingAction] = React.useState("");
+  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
+  const [actionError, setActionError] = React.useState("");
+  const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
@@ -56,7 +59,8 @@ function App() {
         return await response.json() as NotificationsResponse;
       })
       .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));\n    void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions(data.actions as QuickAction[])).catch(() => setQuickActions([]));
+      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
+    void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions(data.actions as QuickAction[])).catch(() => setQuickActions([]));
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
@@ -196,7 +200,8 @@ function App() {
             </div>
           ))}
         </div>
-        {actionError && <div className="action-error" role="alert">{actionError}</div>}\n        <section className="notifications-panel" aria-label={t("notifications.aria")}>
+        {actionError && <div className="action-error" role="alert">{actionError}</div>}
+        <section className="notifications-panel" aria-label={t("notifications.aria")}>
           <div className="notifications-heading"><h1>{t("notifications.heading")}</h1></div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
@@ -361,7 +366,8 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {\n  const [page, setPage] = React.useState<"general" | "dashboard">("general");
+function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
+  const [page, setPage] = React.useState<"general" | "dashboard">("general");
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -474,7 +480,8 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
-      {page === "general" ? <>\n      <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
+      {page === "general" ? <>
+      <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
           <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{automaticLanguageLabel}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
@@ -508,7 +515,8 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : <QuickActionsSettingsPage session={session} locale={locale} t={t} />}\n    </section>
+      </> : <QuickActionsSettingsPage session={session} locale={locale} t={t} />}
+    </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
