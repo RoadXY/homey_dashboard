@@ -455,3 +455,13 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - De preview bevatte een extra controle die de waarde alleen toonde wanneer de bronobjecten in de editor en API exact gelijk waren na `JSON.stringify`. Die onnodig strikte controle is verwijderd; de preview koppelt nu de actuele waarde op basis van het vaste tegel-ID.
 - De geselecteerde bronsoort in het formulier wordt nu afgeleid van de bron van de geselecteerde tegel. Bij een Logic-bron wordt Homey Logic direct actief; bij een apparaatbron wordt Apparaat actief en worden ruimte/apparaat vooraf ingevuld.
 - Nog te valideren na deployment: de vier previewwaarden, de geselecteerde bronsoort en de vier tegels op het dashboard. De GitHub-build moet eerst groen zijn.
+
+
+### i18n-audit en meetwaardepresentatie (13 november 2026)
+
+- Meetwaardetegels tonen standaard één decimaal wanneer de Homey-bron geen expliciete `decimals`-metadata levert. Als Homey wel decimalenmetadata levert, blijft die waarde leidend.
+- Quick Action-namen en meetwaardetegel-namen zijn gebruikersconfiguratie, geen interfacevertalingen. De namen worden uitsluitend uit de opgeslagen configuratie gelezen en worden niet via i18n vertaald.
+- De fallbackvertalingen voor de acht standaard Quick Action-namen zijn verwijderd uit `nl.json` en `en.json`. Een lege gebruikersnaam blijft leeg totdat de gebruiker zelf een naam instelt; vaste standaardnamen worden niet langer op basis van taal ingevuld.
+- Een statische i18n-audit van de clientcode vond daarnaast deze ongebruikte sleutels, verwijderd uit beide woordenboeken: `weather.loading`, `footer.homeyOffline`, `settings.pinLabel`, `settings.restoreMessage`, `settings.unknown`, `settings.homeyLanguage`, `footer.devices`, `footer.rooms` en `settings.clearSearch`.
+- Dynamisch opgebouwde vertalingen zijn bewust behouden: `weather.condition.*` wordt samengesteld uit de actuele weerconditie en `notifications.<id>.title/message` wordt samengesteld uit de Homey-meldings-ID. Deze sleutels lijken bij een eenvoudige zoekactie ongebruikt, maar worden tijdens runtime opgevraagd.
+- De audit is uitgevoerd op de clientbestanden en de Nederlandse/Engelse woordenboeken. Nieuwe talen moeten dezelfde sleutelopschoning volgen als die later worden toegevoegd.
