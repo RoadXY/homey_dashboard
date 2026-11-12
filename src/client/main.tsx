@@ -11,7 +11,7 @@ type HomeyStatus = { state: string; checkedAt: string | null; error: string | nu
 type DashboardNotification = { id: string; title: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[] };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
-type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; sourceCapability: string | null; source?: "homey" | "api"; receivedAt?: string; reason?: string };
+type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
@@ -74,7 +74,7 @@ function App() {
       if (weatherResponse?.ok) {
         setWeatherCondition(await weatherResponse.json() as WeatherConditionResponse);
       } else {
-        setWeatherCondition({ retrievedAt: new Date().toISOString(), category: "unknown", conditionText: null, sourceCapability: null, reason: "source_unavailable" });
+        setWeatherCondition({ retrievedAt: new Date().toISOString(), category: "unknown", conditionText: null, source: "api", reason: "source_unavailable" });
       }
       setLoadError("");
     } catch (error) { setLoadError(error instanceof Error ? error.message : "settings.loadDataError"); }
