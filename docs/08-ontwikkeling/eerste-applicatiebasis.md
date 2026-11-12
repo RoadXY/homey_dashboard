@@ -489,3 +489,16 @@ Bij containerstart worden de standaardbestanden uit de image met de bestaande be
 - GitHub Actions CI is succesvol afgerond op commit 5146b0ae: Redocly OpenAPI-lint geslaagd en npm run build geslaagd (Vite frontend + TypeScript backend).
 - De GitHub Pages-publicatieworkflow start, maar stopt bij Configure GitHub Pages omdat voor de repository nog geen Pages-site is ingeschakeld/geconfigureerd. Na instelling via Repository Settings → Pages → Build and deployment → Source: GitHub Actions kan de publicatie opnieuw worden uitgevoerd.
 - De endpoint is daarmee compile-/spec-validatie geslaagd, maar nog niet runtime-getest tegen de Ubuntu Docker-container. De daadwerkelijke POST-validatie en persistentiecontrole blijven open.
+
+
+## Beheer van Weather API Bearer-tokens in Instellingen (12 november 2026)
+
+- In de PIN-beveiligde General-instellingen is een sectie toegevoegd voor het aanmaken en intrekken van benoemde Weather API-tokens.
+- Aanmaken: de gebruiker geeft een herkenbare naam op. De server genereert een cryptografisch willekeurige token met prefix hdy_ en retourneert het geheim uitsluitend in het antwoord op die ene create-call.
+- Opslag: alleen SHA-256-hash, UUID, naam, aanmaakdatum en de laatste vier tekens worden bewaard in DATA_DIR/weather/tokens.json. Het bestand wordt met bestandsmodus 0600 geschreven. De lijst-API retourneert nooit de hash of het volledige geheim.
+- Intrekken verwijdert de tokenhash direct uit het bestand; de token is daarna niet meer geldig.
+- De beheer-API GET/POST /api/settings/weather-tokens en DELETE /api/settings/weather-tokens/{id} vereist de bestaande kortlevende x-settings-session uit de PIN-unlock.
+- Weather-tokens zijn alleen bedoeld voor POST /api/v1/weather/conditions; ze geven geen toegang tot andere API-routes.
+- De volledige token wordt na aanmaken eenmalig in de UI getoond met een kopieeractie. Bewaar deze direct in de Homey-integratie of wachtwoordmanager; opnieuw opvragen is niet mogelijk.
+- De bestaande WEATHER_API_TOKEN uit .env wordt voorlopig nog als migratie-/compatibiliteitsroute geaccepteerd. Na het maken en testen van een beheerde token kan deze variabele lokaal uit .env worden verwijderd.
+- Build- en OpenAPI-lintvalidatie zijn geslaagd in GitHub Actions op commit c9a3d826. Runtime-test van token aanmaken, autorisatie, intrekken en persistentie in Docker moet nog plaatsvinden.
