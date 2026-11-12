@@ -1,5 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 export type DashboardSettings = {
   language: string;
@@ -48,7 +48,7 @@ export async function saveDashboardSettings(input: unknown): Promise<DashboardSe
     timeFormat: value.timeFormat,
     firstDayOfWeek: value.firstDayOfWeek,
   };
-  await mkdir(join(settingsFile, ".."), { recursive: true });
+  await mkdir(dirname(settingsFile), { recursive: true });
   await writeFile(settingsFile, JSON.stringify(settings, null, 2) + "\n", { mode: 0o600 });
   return settings;
 }
