@@ -8,7 +8,7 @@ import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
-import { executeQuickAction, getQuickActionCatalog } from "./homey.js";
+import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
@@ -238,6 +238,15 @@ app.get("/api/settings/quick-action-catalog", async (request, reply) => {
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try { return await getQuickActionCatalog(); }
   catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Homey-overzicht kon niet worden geladen." }); }
+});
+
+app.get("/api/dashboard/quick-action-status", async (_request, reply) => {
+  try {
+    const actions = await readQuickActions();
+    return { statuses: await getQuickActionStatuses(actions) };
+  } catch (error) {
+    return reply.code(503).send({ error: error instanceof Error ? error.message : "Quick Action-statussen konden niet worden opgehaald." });
+  }
 });
 
 app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", async (request, reply) => {
