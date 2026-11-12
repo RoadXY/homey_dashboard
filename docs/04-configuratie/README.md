@@ -417,3 +417,13 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - De sectienavigatieknoppen gebruiken nu de gedeelde navigatietokens en dezelfde actieve stijl.
 - Dit is de eerste concrete stap naar een consistente themabasis, geen volledige thematisering van de applicatie. Bestaande componenten bevatten nog vaste kleuren en worden bij verdere themawerkzaamheden stapsgewijs naar semantische tokens omgezet.
 - De eerdere afwijkende bovenste tabstrip is uit de dashboardinstellingen verwijderd; de resterende sectienavigatie is de canonieke stijl.
+
+
+### Meetwaardetegels – editor en preview in lijn met Quick Actions (12 november 2026)
+
+- De instellingenpagina voor meetwaardetegels gebruikt voortaan dezelfde paginaopbouw als Quick Actions: paginatitel, gedeelde sectienavigatie en een tweekoloms werkruimte.
+- Linkerkaart: de vier vaste tegels staan als selecteerbare genummerde rijen. Onder de lijst worden de naam en broninstellingen van de geselecteerde tegel bewerkt.
+- Rechterkaart: een preview toont alle vier tegels in een raster, met pictogram, naam, placeholder voor de meetwaarde en de gekozen bron als ondersteunende tekst.
+- De preview is een configuratievoorbeeld. De actuele live meetwaarden blijven op het dashboard zelf zichtbaar; deze editorpreview doet geen aparte live waardeaanvraag.
+- De gedeelde Quick Actions-kaart-, lijst- en previewstijlen worden hergebruikt waar passend. Specifieke velden voor meetwaardebronnen behouden dezelfde donkere invoerstijl en blauwe geselecteerde toestand.
+- Hiermee vervalt de oude brede formulierweergave met een los voorbeeldblok onderaan.
