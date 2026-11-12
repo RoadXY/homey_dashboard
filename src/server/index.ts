@@ -9,6 +9,7 @@ import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import os from "node:os";
 import { statfs } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
+import { readFile as readLocaleFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 
 const app = Fastify({ logger: true });
@@ -60,6 +61,29 @@ app.post("/api/settings/unlock", async (request, reply) => {
   const sessionToken = randomUUID();
   settingsSessions.set(sessionToken, Date.now() + 30 * 60 * 1000);
   return { unlocked: true, sessionToken };
+});
+
+
+const localeDirectory = join(process.cwd(), "locales");
+app.get("/api/locales/registry", async (_request, reply) => {
+  try {
+    const registry = await readLocaleFile(join(localeDirectory, "languages.json"), "utf8");
+    return reply.type("application/json; charset=utf-8").send(registry);
+  } catch {
+    return reply.code(503).send({ error: "Language registry unavailable." });
+  }
+});
+app.get<{ Params: { file: string } }>("/api/locales/:file", async (request, reply) => {
+  const file = request.params.file;
+  if (!/^[a-z]{2}(-[A-Z]{2})?\\.json$/.test(file)) {
+    return reply.code(400).send({ error: "Invalid translation filename." });
+  }
+  try {
+    const dictionary = await readLocaleFile(join(localeDirectory, file), "utf8");
+    return reply.type("application/json; charset=utf-8").send(dictionary);
+  } catch {
+    return reply.code(404).send({ error: "Translation file not found." });
+  }
 });
 
 app.get("/api/settings/language", async () => {
