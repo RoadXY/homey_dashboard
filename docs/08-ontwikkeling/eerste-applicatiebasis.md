@@ -510,3 +510,8 @@ Bij containerstart worden de standaardbestanden uit de image met de bestaande be
 - De lokale Swagger UI gebruikt dezelfde-origin requests en is daardoor de aangewezen plek om de API op de Ubuntu-server te testen. De OpenAPI-specificatie in docs/api/openapi.yaml is de bron; de public/api-docs kopie moet bij contractwijzigingen worden bijgewerkt.
 - GitHub Pages-publicatie is nog niet geslaagd. De log van run 43250294307 toont een 404 bij het ophalen van de Pages-site en daarna "Resource not accessible by integration" bij het aanmaken ervan, ondanks Pages: write in de workflowtoken. De Actions-integratie mag de Pages-site dus niet via de API aanmaken. De workflow probeert dit niet langer automatisch. Een repository-eigenaar moet de site eenmalig handmatig activeren via Repository Settings → Pages → Build and deployment → Source: GitHub Actions. Daarna kan de workflow opnieuw worden uitgevoerd.
 - De tokenbeheer-UI, serverroutes en OpenAPI-contract zijn door CI-build en OpenAPI-lint gevalideerd. De Docker-runtime en tokenflow moeten nog op de Ubuntu-server worden getest.
+
+
+### Correctie Swagger UI-route (12 november 2026)
+
+Bij runtime-controle bleek dat de catch-all SPA-fallback in Fastify /api-docs afhandelde als onbekende dashboardroute. Daarom zijn expliciete routes toegevoegd: /api-docs redirect naar /api-docs/ en /api-docs/ serveert dist/client/api-docs/index.html. De statische Swagger-bestanden, waaronder openapi.yaml, blijven via fastify-static beschikbaar. De routecorrectie moet nog door een nieuwe Docker-build en runtimecontrole worden bevestigd.
