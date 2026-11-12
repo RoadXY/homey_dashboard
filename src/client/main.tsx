@@ -401,6 +401,81 @@ function normalizeQuickActionIcon(icon: string): string {
 }
 
 
+
+function MeasurementTilesSettingsPage({ t }: { t: (key: string) => string }) {
+  const [tiles, setTiles] = React.useState<MeasurementTile[]>([]);
+  const [saved, setSaved] = React.useState<MeasurementTile[]>([]);
+  const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
+  const [selectedId, setSelectedId] = React.useState("measurement-1");
+  const [zoneId, setZoneId] = React.useState("");
+  const [deviceId, setDeviceId] = React.useState("");
+  const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
+  const [busy, setBusy] = React.useState(true);
+  const [saving, setSaving] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [isError, setIsError] = React.useState(false);
+  const dirty = JSON.stringify(tiles) !== JSON.stringify(saved);
+  const selected = tiles.find(tile => tile.id === selectedId) ?? tiles[0];
+  React.useEffect(() => {
+    let active = true;
+    Promise.all([
+      fetch("/api/settings/measurement-tiles").then(async r => { if (!r.ok) throw new Error("Meetwaardetegels konden niet worden geladen."); return r.json() as Promise<{ tiles: MeasurementTile[] }>; }),
+      fetch("/api/settings/measurement-sources").then(async r => { if (!r.ok) throw new Error("Meetwaardebronnen konden niet worden geladen."); return r.json() as Promise<MeasurementSourceCatalog>; }),
+    ]).then(([config, sources]) => { if (!active) return; setTiles(config.tiles); setSaved(config.tiles); setCatalog(sources); })
+      .catch(error => { if (active) { setMessage(error instanceof Error ? error.message : "Laden mislukt."); setIsError(true); } })
+      .finally(() => { if (active) setBusy(false); });
+    return () => { active = false; };
+  }, []);
+  const zonePath = (id: string | null): string => {
+    if (!id) return "";
+    const zone = catalog.zones.find(item => item.id === id);
+    if (!zone) return "";
+    return [zonePath(zone.parent), zone.name].filter(Boolean).join(" / ");
+  };
+  const update = (patch: Partial<MeasurementTile>) => setTiles(current => current.map(tile => tile.id === selected.id ? { ...tile, ...patch } : tile));
+  const devices = catalog.devices.filter(device => device.zone === zoneId);
+  const chosenDevice = catalog.devices.find(device => device.id === deviceId);
+  const selectedCapability = selected?.source?.type === "device" ? chosenDevice?.capabilities.find(cap => cap.id === selected.source?.type === "device" ? selected.source.capabilityId : "") : undefined;
+  const save = async () => {
+    setSaving(true); setMessage(""); setIsError(false);
+    try {
+      const response = await fetch("/api/settings/measurement-tiles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tiles }) });
+      const result = await response.json() as { tiles?: MeasurementTile[]; error?: string };
+      if (!response.ok || !result.tiles) throw new Error(result.error ?? "Opslaan mislukt.");
+      setTiles(result.tiles); setSaved(result.tiles); setMessage("Meetwaardetegels opgeslagen.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); setIsError(true); }
+    finally { setSaving(false); }
+  };
+  return <section className="settings-card system-card measurement-editor">
+    <h2>Meetwaardetegels</h2>
+    <p>Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
+    <div className="measurement-tile-tabs">{tiles.map((tile, index) => <button key={tile.id} className={tile.id === selectedId ? "active" : ""} onClick={() => setSelectedId(tile.id)}>{index + 1}. {tile.name || "Tegel"}</button>)}</div>
+    {selected && <div className="measurement-fields">
+      <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
+      <div className="measurement-source-types"><button className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
+      {sourceType === "device" ? <>
+        <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
+        <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+        <label>Meetwaarde<select disabled={!chosenDevice} value={selected?.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
+      </> : <label>Numerieke Logic-variabele<select value={selected?.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+      <p className="measurement-source-note">De eenheid en precisie worden automatisch uit Homey-capabilitymetadata gelezen wanneer die beschikbaar zijn. Logic-variabelen tonen geen eenheid.</p>
+    </div>}
+    <div className="measurement-preview"><span>Voorbeeld op dashboard</span><strong>{selected?.name || "Naam"} · {selected?.source ? "Bron geselecteerd" : "Geen bron geselecteerd"}</strong></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "Opslaan"}</button></div>
+  </section>;
+}
+
+function DashboardSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
+  const measurement = window.location.pathname.includes("measurement-tiles");
+  return <>
+    <div className="settings-card dashboard-settings-tabs">
+      <button className={!measurement ? "active" : ""} onClick={() => onNavigate("/settings/dashboard/quick-actions")}>Quick Actions</button>
+      <button className={measurement ? "active" : ""} onClick={() => onNavigate("/settings/dashboard/measurement-tiles")}>Meetwaardetegels</button>
+    </div>
+    {measurement ? <MeasurementTilesSettingsPage t={t}/> : <QuickActionsSettingsPage locale={locale} t={t}/>}
+  </>;
+}
+
 function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: string) => string }) {
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
@@ -746,7 +821,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "dashboard" ? <QuickActionsSettingsPage locale={locale} t={t} /> : <section className="settings-card system-card">
+      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : <section className="settings-card system-card">
         <h2>{page === "devices" ? t("settings.devices") : page === "homey" ? t("settings.homey") : t("settings.system")}</h2>
         <p>{locale.toLowerCase().startsWith("nl") ? "Deze instellingenpagina heeft alvast een eigen, beveiligde URL. De inhoud wordt in een volgende ontwikkelstap geïmplementeerd." : "This settings page already has its own protected URL. Its contents will be implemented in a later development step."}</p>
       </section>}
