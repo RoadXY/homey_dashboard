@@ -194,7 +194,7 @@ function App() {
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : "general"} />
+    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : settingsPath.startsWith("/settings/devices") ? "devices" : settingsPath.startsWith("/settings/homey") ? "homey" : settingsPath.startsWith("/settings/system") ? "system" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
@@ -576,8 +576,8 @@ function QuickActionsSettingsPage({ locale, t }: { locale: string; t: (key: stri
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard"; onNavigate: (path: string) => void }) {
-  const [page, setPage] = React.useState<"general" | "dashboard">(initialPage);
+function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard" | "devices" | "homey" | "system"; onNavigate: (path: string) => void }) {
+  const [page, setPage] = React.useState<"general" | "dashboard" | "devices" | "homey" | "system">(initialPage);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
@@ -687,7 +687,11 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     </header>
     <aside className="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=><button key={name} className={"settings-nav "+((page==="general"&&index===0)||(page==="dashboard"&&index===1)?"active":"")} disabled={index>1} onClick={()=>{ const next=index===1?"dashboard":"general"; setPage(next); onNavigate(next==="dashboard"?"/settings/dashboard/quick-actions":"/settings/general"); }}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>)}
+      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
+        const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/devices","/settings/homey","/settings/system"] as const;
+        const pages = ["general","dashboard","devices","homey","system"] as const;
+        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>;
+      })}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
@@ -726,7 +730,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : <QuickActionsSettingsPage locale={locale} t={t} />}
+      </> : page === "dashboard" ? <QuickActionsSettingsPage locale={locale} t={t} /> : <section className="settings-card system-card">
+        <h2>{page === "devices" ? t("settings.devices") : page === "homey" ? t("settings.homey") : t("settings.system")}</h2>
+        <p>{locale.toLowerCase().startsWith("nl") ? "Deze instellingenpagina heeft alvast een eigen, beveiligde URL. De inhoud wordt in een volgende ontwikkelstap geïmplementeerd." : "This settings page already has its own protected URL. Its contents will be implemented in a later development step."}</p>
+      </section>}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
