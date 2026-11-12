@@ -192,3 +192,11 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Ook de touch/coarse-pointer-regel houdt dezelfde minimale rijhoogte en padding aan; de eerdere afwijkende Flow-pillvorm is verwijderd.
 - De Flow- en apparaatkeuzelijst zijn hiermee visueel gelijkgetrokken; alleen inhoud en menuhoogte blijven per type verschillend.
 - CSS bijgewerkt op `phase_1_foundation`; visuele controle volgt na de Docker-build.
+
+
+## Lange Flow-namen op smalle en brede schermen
+- Flow-namen in de keuzelijst worden niet langer standaard op één regel afgekapt met ellipsis; de tekst mag op meerdere regels doorlopen.
+- Het Flow-selectieveld zelf kan eveneens meerregelige namen tonen en groeit mee in hoogte.
+- De volledige Flow-naam is ook als `title`-tekst beschikbaar voor desktopgebruikers.
+- De rij behoudt een minimale hoogte en groeit automatisch wanneer een lange naam meer ruimte nodig heeft. De Flow-typeaanduiding blijft apart herkenbaar.
+- Markup en CSS bijgewerkt op `phase_1_foundation`; controle op mobiel, tablet en desktop volgt na de Docker-build.
