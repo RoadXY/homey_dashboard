@@ -16,6 +16,11 @@ type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
+type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
+type MeasurementTile = { id: string; name: string; source: MeasurementTileSource };
+type MeasurementSourceCatalog = { zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; units: string; decimals: number | null }[] }[]; variables: { id: string; name: string; type: "number" }[] };
+type MeasurementTileValue = { id: string; value: number | null; units: string; decimals: number | null; available: boolean };
+type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
 type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null; booleanMode: "on" | "off" | "toggle" };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
@@ -38,7 +43,7 @@ function App() {
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
-  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
+  const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);\n  const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
   const [actionError, setActionError] = React.useState("");
   const [executingAction, setExecutingAction] = React.useState("");
@@ -60,7 +65,7 @@ function App() {
       .then((data) => setNotifications(data.notifications))
       .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
-    void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null>)).catch(() => undefined);
+    void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null>)).catch(() => undefined);\n    void fetch("/api/dashboard/measurement-tiles").then(r => r.ok ? r.json() as Promise<MeasurementTileResponse> : Promise.reject()).then(setMeasurementTileData).catch(() => undefined);
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
