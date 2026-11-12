@@ -125,3 +125,8 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Na selectie sluit de lijst en wordt de bijbehorende eerste capability als uitgangspunt gekozen, zoals bij de bestaande apparaatselectielogica.
 - De lijst heeft een eigen scrollgebied en een teller met het aantal overeenkomende apparaten, zodat deze ook bij grote Homey-installaties bruikbaar blijft.
 - Net als bij de Flow-zoeker wordt **Toepassen** geblokkeerd wanneer de apparaatzoeker openstaat met een zoekterm die het momenteel geselecteerde apparaat niet meer bevat.
+
+## MDI-picker: metadata en eerste iconen
+- De MDI-metadata gebruikt `name` als icon-identificatie (niet `id`). De picker gebruikt deze naam om de bijbehorende `.mdi-<naam>` font-class te tonen.
+- Een samengestelde set veelgebruikte pictogrammen staat bovenaan, gevolgd door de volledige alfabetische MDI-catalogus. Zo zijn de eerste vakjes direct gevuld en blijven alle iconen doorzoekbaar.
+- De naam-invoer toont de effectieve standaardnaam van de Quick Action als gewone bewerkbare invoerwaarde; de gebruiker hoeft niet eerst een grijze placeholder te vervangen.
