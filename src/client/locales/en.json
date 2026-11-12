@@ -102,14 +102,12 @@
   "notifications.zolder-koud.message": "The temperature in the attic is below 12 °C.",
   "notifications.heading": "Notifications",
   "notifications.unavailableMessage": "Dashboard data could not be retrieved temporarily.",
-  "weather.condition.clear": "Clear",
   "weather.condition.partly_cloudy": "Partly cloudy",
   "weather.condition.cloudy": "Cloudy",
   "weather.condition.rain": "Rain",
   "weather.condition.thunderstorm": "Thunderstorm",
   "weather.condition.snow": "Snow",
   "weather.condition.fog": "Fog",
-  "weather.condition.wind": "Windy",
   "weather.condition.unknown": "Weather unavailable",
   "notifications.notifications-load-error.title": "Notifications unavailable",
   "notifications.notifications-load-error.message": "The notification configuration could not be loaded.",
@@ -139,6 +137,6 @@
   "settings.tokensLoadError": "Could not load tokens.",
   "settings.tokenCreateError": "Could not create token.",
   "settings.tokenRevokeError": "Could not revoke token.",
-    "settings.tokenCopySuccess": "Token copied to clipboard.",
+  "settings.tokenCopySuccess": "Token copied to clipboard.",
   "settings.tokenCopyError": "Copy failed. Select and copy the token manually."
 }
