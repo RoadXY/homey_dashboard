@@ -330,6 +330,18 @@ app.get("/api/homey/inventory", async (_request, reply) => {
 
 const clientPath = join(process.cwd(), "dist/client");
 if (existsSync(clientPath)) {
+  // Serve Swagger UI explicitly before the SPA fallback. Without these routes,
+  // /api-docs (especially without a trailing slash) falls through to index.html.
+  app.get("/api-docs", async (_request, reply) => reply.redirect("/api-docs/"));
+  app.get("/api-docs/", async (_request, reply) => {
+    try {
+      const swaggerHtml = await readFile(join(clientPath, "api-docs/index.html"), "utf8");
+      return reply.type("text/html; charset=utf-8").send(swaggerHtml);
+    } catch {
+      return reply.code(404).send({ error: "Swagger UI assets not found. Rebuild the dashboard image." });
+    }
+  });
+
   await app.register(fastifyStatic, { root: clientPath });
   app.setNotFoundHandler((_request, reply) =>
     reply.sendFile("index.html")
