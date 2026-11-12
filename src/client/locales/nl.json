@@ -107,5 +107,14 @@
   "notifications.zolder-koud.title": "Zolder koud",
   "notifications.zolder-koud.message": "De temperatuur op zolder is lager dan 12 °C.",
   "notifications.heading": "Meldingen",
-  "notifications.unavailableMessage": "Dashboardgegevens konden tijdelijk niet worden opgehaald."
+  "notifications.unavailableMessage": "Dashboardgegevens konden tijdelijk niet worden opgehaald.",
+  "weather.condition.clear": "Helder",
+  "weather.condition.partly_cloudy": "Half bewolkt",
+  "weather.condition.cloudy": "Bewolkt",
+  "weather.condition.rain": "Regen",
+  "weather.condition.thunderstorm": "Onweer",
+  "weather.condition.snow": "Sneeuw",
+  "weather.condition.fog": "Mist",
+  "weather.condition.wind": "Winderig",
+  "weather.condition.unknown": "Weer niet beschikbaar"
 }
