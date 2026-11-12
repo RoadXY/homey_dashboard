@@ -115,6 +115,7 @@ function App() {
   const homeyOnline = homey?.state === "online";
   const locale = resolveLocale(dashboardLanguage, homeyLanguage);
   const t = (key: string) => translate(locale, key);
+  React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
   const timeText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const dateText = new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
@@ -230,7 +231,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
 }
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
-function homeyLanguageName(language: string): string { const names: Record<string, string> = { nl: "Dutch", en: "English", de: "German", fr: "French", it: "Italian", sv: "Swedish", no: "Norwegian", es: "Spanish", da: "Danish", ru: "Russian", pl: "Polish", ko: "Korean", ar: "Arabic" }; return names[language.toLowerCase().split("-")[0]] ?? "Unsupported language"; }
+function homeyLanguageName(language: string, locale: "nl" | "en"): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale === "nl" ? 0 : 1] ?? language.toUpperCase(); }
 function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
@@ -265,9 +266,9 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   };
   const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale === "nl" ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
-  const datePreview = settings.dateFormat === "iso" ? (settings.language === "en" ? "2025-01-27" : "2025-01-27") : settings.dateFormat === "long" ? (settings.language === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
+  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
-  const languageName = (code: string) => homeyLanguageName(code);
+  const languageName = (code: string) => homeyLanguageName(code, locale);
   return <main className="settings-shell">
     <header className="settings-topbar">
       <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span> {t("settings.dashboard")}</span></button>
