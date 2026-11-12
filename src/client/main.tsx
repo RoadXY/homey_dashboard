@@ -332,6 +332,8 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const [message, setMessage] = React.useState("");
   const [flowSearch, setFlowSearch] = React.useState("");
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
+  const [deviceSearch, setDeviceSearch] = React.useState("");
+  const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
   const [iconSearch, setIconSearch] = React.useState("");
   const iconQuery = iconSearch.trim().toLocaleLowerCase();
   const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
@@ -344,6 +346,13 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
     ? catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)
     : undefined;
   const flowQuery = flowSearch.trim().toLocaleLowerCase();
+  const deviceQuery = deviceSearch.trim().toLocaleLowerCase();
+  const matchingDevices = catalog.devices.filter(device =>
+    (device.name + " " + (device.zone ?? "") + " " + device.id).toLocaleLowerCase().includes(deviceQuery)
+  );
+  const selectedDeviceLabel = selectedDevice
+    ? selectedDevice.name + (selectedDevice.zone ? " · " + selectedDevice.zone : "")
+    : t("settings.selectDevice");
   const matchingFlows = catalog.flows.filter(flow => {
     const searchable = (flow.name + " " + (flow.icon ?? "") + " " + flow.type).toLocaleLowerCase();
     return !flowQuery || searchable.includes(flowQuery);
@@ -458,7 +467,34 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
             </div>}
           </div>
         </> : <>
-          <label>{t("settings.device")}<select value={selected.deviceId} onChange={event => selectDevice(event.target.value)}><option value="">{t("settings.selectDevice")}</option>{catalog.devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.zone ? " · " + device.zone : ""}</option>)}</select></label>
+          <label>{t("settings.device")}</label>
+          <div className="quick-device-picker">
+            <button type="button" className="quick-flow-trigger" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+              onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
+              <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
+              <span className="quick-flow-trigger-name">{selectedDeviceLabel}</span>
+              <span className="quick-flow-chevron">▾</span>
+            </button>
+            {devicePickerOpen && <div className="quick-flow-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
+              <div className="quick-flow-search-wrap">
+                <span aria-hidden="true">⌕</span>
+                <input autoFocus type="search" className="quick-flow-search" value={deviceSearch}
+                  onChange={event => setDeviceSearch(event.target.value)}
+                  placeholder="Zoek apparaat op naam of zone…" aria-label="Zoek Homey-apparaat" />
+              </div>
+              <div className="quick-flow-results">
+                {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === selected.deviceId}
+                  className={"quick-flow-option" + (device.id === selected.deviceId ? " selected" : "")}
+                  key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
+                  <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
+                  <span className="quick-flow-option-name">{device.name}{device.zone ? " · " + device.zone : ""}</span>
+                  {!device.available && <span className="quick-flow-type">Offline</span>}
+                </button>)}
+                {matchingDevices.length === 0 && <div className="quick-flow-empty">Geen apparaten gevonden.</div>}
+              </div>
+              <div className="quick-flow-footer">{matchingDevices.length} apparaten</div>
+            </div>}
+          </div>
           <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
           {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? false)} onChange={event => updateSelected({ value: event.target.value === "true" })}><option value="true">{t("settings.turnOn")}</option><option value="false">{t("settings.turnOff")}</option></select></label>}
           {selectedCapability?.type === "number" && <label>{t("settings.actionValue")}<div className="quick-range-row"><input type="range" min={selectedCapability.min ?? 0} max={selectedCapability.max ?? 100} step={selectedCapability.step ?? 1} value={typeof selected.value === "number" ? selected.value : selectedCapability.min ?? 0} onChange={event => updateSelected({ value: Number(event.target.value) })}/><strong>{formatValue(selected.value, selectedCapability.units)}</strong></div></label>}
