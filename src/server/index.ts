@@ -8,6 +8,8 @@ import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
+import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.js";
+import { getMeasurementSourceCatalog, getMeasurementTileValues } from "./homey.js";
 import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
@@ -261,6 +263,31 @@ app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", asy
   } catch (error) {
     return reply.code(502).send({ error: error instanceof Error ? error.message : "Homey-actie uitvoeren mislukt." });
   }
+});
+
+app.get("/api/settings/measurement-tiles", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return { tiles: await readMeasurementTiles() };
+});
+app.post("/api/settings/measurement-tiles", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const body = request.body as { tiles?: unknown } | undefined;
+    const tiles = await saveMeasurementTiles(body?.tiles);
+    broadcastSettingsUpdated("quick-actions");
+    return { tiles };
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Meetwaardetegels opslaan mislukt." });
+  }
+});
+app.get("/api/settings/measurement-sources", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try { return await getMeasurementSourceCatalog(); }
+  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardebronnen konden niet worden geladen." }); }
+});
+app.get("/api/dashboard/measurement-tiles", async (_request, reply) => {
+  try { return { tiles: await readMeasurementTiles(), ...(await getMeasurementTileValues(await readMeasurementTiles())) }; }
+  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardetegels konden niet worden bijgewerkt." }); }
 });
 
 app.get("/api/settings/weather-tokens", async (request, reply) => {
