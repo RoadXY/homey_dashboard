@@ -482,3 +482,10 @@ This is the inventory observed in `src/server/index.ts` on 12 November 2026; it 
 ### Runtime-vertalingen: standaardkeys bijwerken zonder gebruikersvertalingen te overschrijven
 
 Bij containerstart worden de standaardbestanden uit de image met de bestaande bestanden in DATA_DIR/locales samengevoegd. Voor taalcatalogi geldt: standaardkeys die nieuw zijn toegevoegd worden aangevuld; bestaande waarden van de gebruiker blijven leidend. Voor languages.json worden ontbrekende standaardtalen toegevoegd, terwijl reeds geregistreerde eigen talen behouden blijven. README.txt wordt alleen bij de eerste initialisatie gekopieerd. Hierdoor verschijnen ook nieuwe i18n-labels na een rebuild/restart in het persistente volume zonder bestaande vertalingen te overschrijven.
+
+
+### CI-validatie en publicatiestatus (12 november 2026)
+
+- GitHub Actions CI is succesvol afgerond op commit 5146b0ae: Redocly OpenAPI-lint geslaagd en npm run build geslaagd (Vite frontend + TypeScript backend).
+- De GitHub Pages-publicatieworkflow start, maar stopt bij Configure GitHub Pages omdat voor de repository nog geen Pages-site is ingeschakeld/geconfigureerd. Na instelling via Repository Settings → Pages → Build and deployment → Source: GitHub Actions kan de publicatie opnieuw worden uitgevoerd.
+- De endpoint is daarmee compile-/spec-validatie geslaagd, maar nog niet runtime-getest tegen de Ubuntu Docker-container. De daadwerkelijke POST-validatie en persistentiecontrole blijven open.
