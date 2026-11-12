@@ -230,3 +230,20 @@ De eerste ontwerpvariant is één zelfstandige Docker-applicatie met een webfron
 ### Implementatiestatus en testplan
 - Frontend-routering, PIN-cookie, sessievalidatie, sliding verlenging, 30-minuten-inactiviteitsafmelding en documentatie zijn bijgewerkt op `phase_1_foundation`.
 - GitHub Actions heeft de OpenAPI-validatie en de TypeScript-/productieb build succesvol afgerond op commit `f0ac0b7168fb6fd0a89da7ad97c55aa5b4140987`. De runtime-test op de Ubuntu-server moet nog worden uitgevoerd. Test na deployment: (1) direct openen van Quick Actions URL zonder cookie vraagt PIN; (2) na PIN wordt Quick Actions direct geopend; (3) vernieuwen en containerrecreate behouden een geldige sessie; (4) handmatig verlaten wist de cookie; (5) na 30 minuten zonder interactie keert de pagina terug naar dashboard en vraagt een volgende directe URL opnieuw om PIN.
+
+
+## Instellingenroutes uitgebreid (12 november 2026)
+
+Alle hoofdcategorieën in de instellingen hebben nu een eigen directe URL. Deze routes vallen onder dezelfde PIN-poort en de bestaande sessiecookie met 30 minuten inactiviteit:
+
+| Onderdeel | URL | Inhoudsstatus |
+|---|---|---|
+| Algemeen | `/settings/general` | Geïmplementeerd |
+| Dashboard → Snelle acties | `/settings/dashboard/quick-actions` | Geïmplementeerd |
+| Apparaten | `/settings/devices` | Route actief; inhoud volgt |
+| Homey | `/settings/homey` | Route actief; inhoud volgt |
+| Systeem | `/settings/system` | Route actief; inhoud volgt |
+
+De zijbalknavigatie werkt voor alle vijf categorieën en werkt de URL bij. De drie onderdelen waarvan de inhoud nog niet is gebouwd tonen een tijdelijke melding in plaats van een niet-werkende/uitgeschakelde menuoptie. De browsergeschiedenis (terug/vooruit) blijft de route synchroniseren.
+
+De bestaande Dashboard-subtabellen Temperatuurtegels en Weer hebben nog geen afzonderlijke inhoudsroutes; op dit moment is alleen Snelle acties als dashboard-subpagina geïmplementeerd. Dit wordt aangevuld zodra die instellingenpagina's worden gebouwd.
