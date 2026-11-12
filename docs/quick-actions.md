@@ -147,3 +147,11 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - Deze normalisatie wordt toegepast op zowel de acht knoppen op het hoofddashboard als de instellingenlijst, preview en editor. De genormaliseerde waarden worden ook gebruikt als uitgangspunt voor de editor-opslagstatus.
 - De eerdere verwijzing naar de niet-bestaande variabele `legacyQuickActionIcons` is verwijderd.
 - Implementatie gepusht naar `phase_1_foundation`; runtime-/Docker-test op de Ubuntu-server moet nog worden uitgevoerd.
+
+
+## Servervalidatie MDI-pictogrammen
+- De Quick Actions-editor verstuurt MDI-iconnamen (bijvoorbeeld `lightning-bolt` en `music-note`).
+- De servervalidatie accepteert nu geldige MDI-iconnamen met kleine letters, cijfers en koppeltekens, in plaats van uitsluitend de oude vaste set Unicode-symbolen.
+- De serverstandaard voor alle acht nieuwe Quick Actions is `lightning-bolt`.
+- Hiermee worden zelfgekozen pictogrammen niet langer door de server afgewezen met `Ongeldig pictogram.`.
+- Code is bijgewerkt op `phase_1_foundation`; Docker-build en opslaan/herladen moeten nog op de Ubuntu-server worden getest.
