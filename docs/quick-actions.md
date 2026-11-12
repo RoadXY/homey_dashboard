@@ -163,3 +163,10 @@ De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaa
 - De foutmelding gebruikt `role="alert"` zodat hulptechnologie de fout direct aankondigt; normale statusmeldingen behouden `role="status"`.
 - De Opslaan-knop blijft afzonderlijk rechts uitgelijnd.
 - Frontend en CSS zijn bijgewerkt op `phase_1_foundation`; visuele controle op de Ubuntu-server moet nog plaatsvinden.
+
+
+## Apparaatnamen in de Quick Action-editor
+- De apparaatkeuzelijst toont de apparaatnaam zonder een zone-achtervoegsel dat feitelijk een UUID/device-ID bevat.
+- Een echte zone-/kamernaam blijft zichtbaar achter de apparaatnaam.
+- Het technische apparaat-ID blijft intern beschikbaar voor selectie en filtering, maar wordt niet als onderdeel van de zichtbare naam getoond.
+- Aangepast in `src/client/main.tsx` op `phase_1_foundation`; controle op de Ubuntu-server volgt na de volgende build.
