@@ -2,7 +2,7 @@
 
 Endpoint: `GET /api/events`
 
-The endpoint returns a `text/event-stream` response. Each event's `data` field contains JSON.
+The endpoint returns a `text/event-stream` response. Each named event's `data` field contains JSON. Clients should use the browser's native `EventSource` API, which reconnects automatically after a dropped connection. On every new connection the server sends `ready` first.
 
 | Event | Purpose | Data |
 |---|---|---|
@@ -10,5 +10,13 @@ The endpoint returns a `text/event-stream` response. Each event's `data` field c
 | `homey-update` | Homey realtime update | Homey update payload |
 | `homey-connected` | Homey connection established | Connection payload |
 | `homey-disconnected` | Homey connection lost | Connection payload |
+| `settings-updated` | Settings saved successfully on another client | `{ section, updatedAt }`; `section` is `general` or `quick-actions`, and `updatedAt` is an ISO 8601 timestamp |
 
-A comment heartbeat is sent every 20 seconds. The browser reconnects using the native EventSource behavior.
+The `settings-updated` event is emitted after a successful save to:
+
+- `POST /api/settings/general`
+- `POST /api/settings/dashboard-actions`
+
+Dashboard clients listen for this event and reload the current dashboard data so tablets and other displays reflect settings saved from another computer. The event is a refresh notification; it does not include the settings payload or any secret values.
+
+A comment heartbeat is sent every 20 seconds. Heartbeats are SSE comments, not named events, and can be ignored by clients.
