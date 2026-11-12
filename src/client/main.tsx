@@ -197,7 +197,6 @@ function App() {
               <button className="action-card" key={action.id} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
                 aria-label={label} title={label}>
-                <span className="action-index">{String(index + 1).padStart(2, "0")}</span>
                 <span className="action-mark" aria-hidden="true">{action.icon}</span>
                 <span className="action-label">{label}</span>
               </button>
