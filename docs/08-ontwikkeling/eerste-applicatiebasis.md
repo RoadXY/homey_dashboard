@@ -573,7 +573,7 @@ De eerste implementatie van de goedgekeurde Quick Actions-instellingen is toegev
 - Alle nieuwe UI-teksten zijn toegevoegd aan Nederlands en Engels; beide catalogi bevatten 170 sleutels met volledige sleutelpariteit.
 
 ### Validatie en open praktijktest
-- GitHub Actions build geslaagd op commit `4869c38171a5480577d5934436366cb8019f0588`; OpenAPI-lint/build ook geslaagd op commit `f00faf34993a99eb0ea6bdb859a060d6eee710a7`.
+- GitHub Actions build en OpenAPI-lint geslaagd op de laatste Quick Actions-implementatiecommit `ffa2e4779845100f1e152f4b92b5a66bafc2415a`.
 - De API-key op Homey moet voldoende rechten hebben om Flow-start en apparaatbediening toe te staan. Als Homey een autorisatiefout geeft, controleer dan de permissies van de bestaande API-key in Homey; voeg geen extra permissies toe zonder de foutmelding te beoordelen.
 - De code is nog niet uitgerold naar de Ubuntu-container en de Homey-apparaatcatalogus is nog niet live in deze sessie getest.
 - Praktijktest na deployment: selecteer een ongevaarlijke Flow en een testapparaat/capability, sla op, controleer preview, en voer pas daarna de knoppen bewust uit.
