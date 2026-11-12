@@ -381,3 +381,19 @@ export async function getHomeyDeviceCapabilityValues(
     })),
   };
 }
+
+export async function getHomeyLanguage(): Promise<string | null> {
+  if (!api || snapshot.state !== "online") return null;
+  try {
+    const result = await api.i18n.getOptionLanguage() as unknown;
+    if (typeof result === "string") return result;
+    if (result && typeof result === "object") {
+      const value = (result as { value?: unknown; language?: unknown }).value ?? (result as { language?: unknown }).language;
+      return typeof value === "string" ? value : null;
+    }
+    return null;
+  } catch (error) {
+    console.warn("Homey-taal kon niet worden uitgelezen; controleer homey.system.readonly", error);
+    return null;
+  }
+}
