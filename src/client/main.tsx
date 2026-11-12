@@ -247,6 +247,120 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
 function homeyLanguageName(language: string, locale: string): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale.toLowerCase().startsWith("nl") ? 0 : 1] ?? language.toUpperCase(); }
+
+const quickActionDefaults: QuickAction[] = [
+  { id: "qmusic", name: "", icon: "♫", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "foute-uur", name: "", icon: "♫", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "blinds", name: "", icon: "⌃", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "birthday", name: "", icon: "✦", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "living-lights", name: "", icon: "◌", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "mood-lights", name: "", icon: "✧", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "tv", name: "", icon: "▣", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null },
+  { id: "bedtime", name: "", icon: "☾", type: "flow", flowId: "", flowType: "standard", flowId: "", deviceId: "", capabilityId: "", value: null },
+];
+const quickActionIconChoices = ["♫", "⌃", "✦", "◌", "✧", "▣", "☾", "♧", "⌂", "▤", "⚡", "💡", "🏠", "🚗", "🎬", "🍴", "🛡", "⏻", "•••"];
+
+function QuickActionsSettingsPage({ session, locale, t }: { session: string; locale: string; t: (key: string) => string }) {
+  const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
+  const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
+  const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
+  const [editingId, setEditingId] = React.useState("qmusic");
+  const [busy, setBusy] = React.useState(true);
+  const [saving, setSaving] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const dirty = JSON.stringify(items) !== JSON.stringify(saved);
+  const selected = items.find(item => item.id === editingId) ?? items[0];
+  const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
+  const selectedCapability = selectedDevice?.capabilities.find(capability => capability.id === selected.capabilityId);
+  const actionName = (item: QuickAction) => item.name.trim() || t(quickActionDefaults.find(entry => entry.id === item.id)?.id === "qmusic" ? "actions.qmusic" : item.id === "foute-uur" ? "actions.fouteUur" : item.id === "blinds" ? "actions.blinds" : item.id === "birthday" ? "actions.birthday" : item.id === "living-lights" ? "actions.livingLights" : item.id === "mood-lights" ? "actions.moodLights" : item.id === "tv" ? "actions.tv" : "actions.bedtime");
+  React.useEffect(() => {
+    let active = true;
+    Promise.all([
+      fetch("/api/settings/dashboard-actions", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsLoadError")); return response.json() as Promise<{ actions: QuickAction[] }>; }),
+      fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
+    ]).then(([configuration, options]) => {
+      if (!active) return;
+      setItems(configuration.actions); setSaved(configuration.actions); setCatalog(options);
+    }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); })
+      .finally(() => { if (active) setBusy(false); });
+    return () => { active = false; };
+  }, []);
+  const updateSelected = (patch: Partial<QuickAction>) => setItems(current => current.map(item => item.id === selected.id ? { ...item, ...patch } : item));
+  const selectDevice = (deviceId: string) => {
+    const device = catalog.devices.find(item => item.id === deviceId);
+    const capability = device?.capabilities[0];
+    const value = capability ? capability.type === "boolean" ? false : capability.type === "number" ? (capability.value as number ?? capability.min ?? 0) : capability.type === "enum" ? capability.values[0]?.id ?? null : "" : null;
+    updateSelected({ deviceId, capabilityId: capability?.id ?? "", value });
+  };
+  const selectCapability = (capabilityId: string) => {
+    const capability = selectedDevice?.capabilities.find(item => item.id === capabilityId);
+    const value = capability ? capability.type === "boolean" ? false : capability.type === "number" ? (typeof capability.value === "number" ? capability.value : capability.min ?? 0) : capability.type === "enum" ? capability.values[0]?.id ?? null : "" : null;
+    updateSelected({ capabilityId, value });
+  };
+  const save = async () => {
+    setSaving(true); setMessage("");
+    try {
+      const response = await fetch("/api/settings/dashboard-actions", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ actions: items }) });
+      const data = await response.json() as { actions?: QuickAction[]; error?: string };
+      if (!response.ok || !data.actions) throw new Error(data.error ?? t("settings.saveError"));
+      setItems(data.actions); setSaved(data.actions); setMessage(t("settings.quickActionsSaved"));
+    } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); }
+    finally { setSaving(false); }
+  };
+  const formatValue = (value: unknown, units: string) => value === null || value === undefined ? "—" : String(value) + (units ? " " + units : "");
+  return <div className="quick-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon">▦</div><div><h1>{t("settings.dashboard")}</h1><p>{t("settings.quickActionsSubtitle")}</p></div></div>
+    <div className="quick-tabs"><span>♙ &nbsp;{t("settings.temperatureTiles")}</span><span>☁ &nbsp;{t("settings.weatherTab")}</span><strong>ϟ &nbsp;{t("settings.quickActions")}</strong></div>
+    <div className="quick-workspace">
+      <section className="settings-card quick-list-card">
+        <h2><span>ϟ</span>{t("settings.quickActions")}</h2>
+        <p className="quick-card-description">{t("settings.quickActionsDescription")}</p>
+        <div className="quick-action-list">
+          {items.map((item, index) => <button key={item.id} className={"quick-action-row " + (item.id === editingId ? "selected" : "")} onClick={() => setEditingId(item.id)}>
+            <span className="quick-action-number">{index + 1}</span><span className="quick-action-icon">{item.icon}</span><span className="quick-action-name">{actionName(item)}</span><span className="quick-action-edit">✎</span>
+          </button>)}
+        </div>
+        <div className="quick-info">ⓘ <span>{t("settings.quickActionsHint")}</span></div>
+      </section>
+      <section className="settings-card quick-preview-card">
+        <h2><span>◎</span>{t("settings.preview")}</h2>
+        <p className="quick-card-description">{t("settings.quickActionsPreviewDescription")}</p>
+        <div className="quick-preview-grid">
+          {items.map(item => <div className="quick-preview-item" key={item.id}><span>{item.icon}</span><strong>{actionName(item)}</strong></div>)}
+        </div>
+      </section>
+      <section className="settings-card quick-editor-card">
+        <button className="quick-editor-close" onClick={() => setEditingId("")} aria-label={t("settings.close")}>×</button>
+        <h2>{t("settings.editQuickAction")}</h2>
+        <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name} onChange={event => updateSelected({ name: event.target.value })} placeholder={actionName({ ...selected, name: "" })} /></label>
+        <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
+        <div className="quick-icon-picker">{quickActionIconChoices.map(icon => <button key={icon} className={selected.icon === icon ? "active" : ""} onClick={() => updateSelected({ icon })}>{icon}</button>)}</div>
+        <label>{t("settings.actionType")}
+          <select value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
+            <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
+          </select>
+        </label>
+        {selected.type === "flow" ? <label>{t("settings.homeyFlow")}
+          <select value={selected.flowType + ":" + selected.flowId} onChange={event => { const [flowType, ...id] = event.target.value.split(":"); updateSelected({ flowType: flowType as "standard" | "advanced", flowId: id.join(":") }); }}>
+            <option value="standard:">{t("settings.selectFlow")}</option>
+            {catalog.flows.map(flow => <option key={flow.type + flow.id} value={flow.type + ":" + flow.id}>{flow.name}{flow.type === "advanced" ? " · Advanced" : ""}</option>)}
+          </select>
+        </label> : <>
+          <label>{t("settings.device")}<select value={selected.deviceId} onChange={event => selectDevice(event.target.value)}><option value="">{t("settings.selectDevice")}</option>{catalog.devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.zone ? " · " + device.zone : ""}</option>)}</select></label>
+          <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
+          {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? false)} onChange={event => updateSelected({ value: event.target.value === "true" })}><option value="true">{t("settings.turnOn")}</option><option value="false">{t("settings.turnOff")}</option></select></label>}
+          {selectedCapability?.type === "number" && <label>{t("settings.actionValue")}<div className="quick-range-row"><input type="range" min={selectedCapability.min ?? 0} max={selectedCapability.max ?? 100} step={selectedCapability.step ?? 1} value={typeof selected.value === "number" ? selected.value : selectedCapability.min ?? 0} onChange={event => updateSelected({ value: Number(event.target.value) })}/><strong>{formatValue(selected.value, selectedCapability.units)}</strong></div></label>}
+          {selectedCapability?.type === "enum" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}>{selectedCapability.values.map(option => <option key={option.id} value={option.id}>{option.title}</option>)}</select></label>}
+          {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
+          {selectedDevice && !selectedDevice.available && <p className="quick-warning">{t("settings.deviceUnavailable")}</p>}
+        </>}
+        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => setEditingId("")}>{t("settings.close")}</button><button className="primary-button" onClick={() => setEditingId("")}>{t("settings.apply")}</button></div>
+      </section>
+    </div>
+    <div className="settings-bottom"><span className="save-message" role="status">{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+  </div>;
+}
+
 function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {\n  const [page, setPage] = React.useState<"general" | "dashboard">("general");
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
