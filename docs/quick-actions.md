@@ -51,3 +51,10 @@ De Flow-selectie is een eigen dropdown geworden in plaats van een los zoekveld b
 - De geselecteerde optie behoudt de bestaande blauwe achtergrondkleur (`#1c4c77)); bij hover komt alleen de omlijning erbij.
 - Opties hebben minimaal 48 px hoogte, ruime padding en touch-action: manipulation voor telefoon en tablet.
 - Keyboard-focus is zichtbaar via `:focus-visible`. Hover-styling wordt alleen toegepast op apparaten met een echte hover-pointer; touch krijgt een duidelijke actieve feedback.
+
+## Instellingenmenu: hover, selectie en touch
+- Instellingenmenu-opties gebruiken dezelfde afgeronde capsulevorm als de Flow-keuzelijst.
+- Bij muis-hover op een beschikbare optie verschijnt een subtiele lichte omlijning.
+- De actieve pagina behoudt de bestaande blauwe achtergrondkleur (`#0965d7`); hover voegt alleen een omlijning toe.
+- Touch-opties hebben minimaal 52 px hoogte en krijgen actieve feedback; toetsenbordfocus blijft zichtbaar.
+- Uitgeschakelde menu-items krijgen geen hover-interactie.
