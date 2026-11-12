@@ -201,7 +201,7 @@ app.get("/api/settings/general", async (request, reply) => {
 });
 
 app.post("/api/settings/general", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
     const settings = await saveDashboardSettings(request.body);
     broadcastSettingsUpdated("general");
@@ -214,12 +214,12 @@ app.post("/api/settings/general", async (request, reply) => {
 app.get("/api/dashboard/quick-actions", async () => ({ actions: await readQuickActions() }));
 
 app.get("/api/settings/dashboard-actions", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   return { actions: await readQuickActions() };
 });
 
 app.post("/api/settings/dashboard-actions", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
     const body = request.body as { actions?: unknown } | undefined;
     const actions = await saveQuickActions(body?.actions);
@@ -231,7 +231,7 @@ app.post("/api/settings/dashboard-actions", async (request, reply) => {
 });
 
 app.get("/api/settings/quick-action-catalog", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try { return await getQuickActionCatalog(); }
   catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Homey-overzicht kon niet worden geladen." }); }
 });
@@ -251,12 +251,12 @@ app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", asy
 });
 
 app.get("/api/settings/weather-tokens", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   return { tokens: await listWeatherTokens() };
 });
 
 app.post<{ Body: { name?: unknown } }>("/api/settings/weather-tokens", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   if (typeof request.body?.name !== "string") return reply.code(400).send({ error: "Geef een tokennaam op." });
   try {
     const created = await createWeatherToken(request.body.name);
@@ -267,7 +267,7 @@ app.post<{ Body: { name?: unknown } }>("/api/settings/weather-tokens", async (re
 });
 
 app.delete<{ Params: { id: string } }>("/api/settings/weather-tokens/:id", async (request, reply) => {
-  if (!hasSettingsSession(request)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   const revoked = await revokeWeatherToken(request.params.id);
   return revoked ? reply.code(204).send() : reply.code(404).send({ error: "Token niet gevonden." });
 });
