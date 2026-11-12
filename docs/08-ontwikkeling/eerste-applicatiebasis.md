@@ -413,3 +413,37 @@ Use named Bearer tokens managed through Settings. Store only a secure token hash
 - Whether/how the legacy `GET /api/weather` response should expose the canonical condition and source metadata.
 
 This section records the approved direction, not a claim that the endpoint, OpenAPI specification, Swagger UI or Homey app have already been implemented.
+
+
+## OpenAPI coverage and published API documentation (12 November 2026)
+
+### Coverage policy
+
+Maintain one version-controlled OpenAPI 3.x specification for every HTTP API route implemented by the Fastify backend, including routes called only by the React frontend. Internal frontend/backend routes are documented and tagged `Dashboard UI (internal)`; this documents the real application contract but does not make those routes supported third-party integration APIs. External integration routes (for example the future Homey weather-condition write endpoint) are tagged separately and receive explicit compatibility/versioning expectations.
+
+Document request and response schemas, required headers, authentication, success/error status codes, and representative examples. Include health, settings, system status, Homey read endpoints, weather, notifications, locale endpoints, and the SSE endpoint. For `GET /api/events`, document the HTTP stream plus event names/payload schemas in the OpenAPI description and supporting event-stream documentation.
+
+### Repository and GitHub Pages
+
+- Keep the canonical specification in the repository, proposed path: `docs/api/openapi.yaml`.
+- Publish a searchable static Swagger UI site with GitHub Pages, loading that version-controlled specification.
+- GitHub Pages is suitable for browsing and sharing API documentation. Its `Try it out` feature is not guaranteed to reach a private LAN dashboard: HTTPS-to-HTTP mixed-content restrictions, browser CORS, and Private Network Access can block requests. Do not weaken API security or expose the dashboard publicly just to make GitHub Pages Try it out work.
+- For live testing against the LAN instance, use a Swagger UI served from the dashboard itself or another same-origin/trusted local client. Keep bearer-token secrets out of published examples and committed OpenAPI files.
+
+### Weather condition integration
+
+The future `POST /api/v1/weather/condition` is an externally consumable integration route and must be specified with the approved 16-value enum, bearer-token security, request/response schemas, validation errors, and server-generated received timestamp. The last valid condition remains active until another valid update is received; the dashboard does not apply a TTL or auto-expiry. The user owns the Homey Flow logic and its update cadence. The received timestamp may be retained as metadata and shown for diagnostics only.
+
+### Current route inventory to document
+
+The current Fastify backend routes include:
+
+- `GET /api/health/live`, `GET /api/health/ready`, `GET /api/health`
+- `GET /api/homey/status`, `POST /api/homey/connect`, `GET /api/homey/readings`, `GET /api/homey/logic`, `GET /api/homey/inventory`
+- `POST /api/settings/unlock`, `GET /api/settings/language`, `GET /api/settings/general`, `POST /api/settings/general`
+- `GET /api/locales/registry`, `GET /api/locales/{file}`
+- `GET /api/system/status`
+- `GET /api/events` (Server-Sent Events)
+- `GET /api/weather`, `GET /api/notifications`
+
+This is the inventory observed in `src/server/index.ts` on 12 November 2026; it must be refreshed when routes are added, removed or changed. The weather write endpoint is planned, not yet implemented.
