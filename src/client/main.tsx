@@ -360,8 +360,8 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
           {selectedDevice && !selectedDevice.available && <p className="quick-warning">{t("settings.deviceUnavailable")}</p>}
         </>}
-        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => setEditingId("")}>{t("settings.close")}</button><button className="primary-button" onClick={() => setEditingId("")}>{t("settings.apply")}</button></div>
-      </section>
+        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" onClick={() => setEditorOpen(false)}>{t("settings.apply")}</button></div>
+      </section>}
     </div>
     <div className="settings-bottom"><span className="save-message" role="status">{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
   </div>;
