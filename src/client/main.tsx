@@ -278,6 +278,38 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     } catch (error) { setTokenMessage(error instanceof Error ? error.message : t("settings.tokenCreateError")); }
     finally { setTokenBusy(false); }
   };
+  const copyWeatherToken = async () => {
+    if (!newToken) return;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(newToken);
+      } else {
+        throw new Error("Clipboard API unavailable");
+      }
+      setTokenMessage(t("settings.tokenCopySuccess"));
+    } catch {
+      // Clipboard API is unavailable on plain HTTP LAN origins. Use the legacy
+      // selection-based copy command as a fallback for trusted local networks.
+      try {
+        const field = document.createElement("textarea");
+        field.value = newToken;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.opacity = "0";
+        field.style.pointerEvents = "none";
+        document.body.appendChild(field);
+        field.focus();
+        field.select();
+        field.setSelectionRange(0, field.value.length);
+        const copied = document.execCommand("copy");
+        document.body.removeChild(field);
+        if (!copied) throw new Error("Copy command failed");
+        setTokenMessage(t("settings.tokenCopySuccess"));
+      } catch {
+        setTokenMessage(t("settings.tokenCopyError"));
+      }
+    }
+  };
   const revokeToken = async (id: string) => {
     if (!window.confirm(t("settings.tokenRevokeConfirm"))) return;
     setTokenBusy(true); setTokenMessage(""); setNewToken("");
@@ -333,7 +365,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
           <input id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
           <button className="primary-button" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
         </div>
-        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><button className="secondary-button" onClick={() => { void navigator.clipboard?.writeText(newToken); }}>{t("settings.tokenCopy")}</button></div>}
+        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><button className="secondary-button" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button></div>}
         <div className="token-list">
           {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
         </div>
