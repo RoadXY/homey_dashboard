@@ -105,5 +105,7 @@
   "notifications.slaapkamer-tess-koud.title": "Tess's bedroom cold",
   "notifications.slaapkamer-tess-koud.message": "The temperature in Tess's bedroom is below 12 °C.",
   "notifications.zolder-koud.title": "Attic cold",
-  "notifications.zolder-koud.message": "The temperature in the attic is below 12 °C."
+  "notifications.zolder-koud.message": "The temperature in the attic is below 12 °C.",
+  "notifications.heading": "Notifications",
+  "notifications.unavailableMessage": "Dashboard data could not be retrieved temporarily."
 }
