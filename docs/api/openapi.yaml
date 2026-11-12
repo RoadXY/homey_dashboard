@@ -407,7 +407,6 @@ paths:
       tags: [Settings (internal)]
       operationId: getQuickActionSettings
       summary: Get Quick Action configuration
-      security: []
       security:
         - SettingsCookie: []
       responses:
