@@ -85,7 +85,7 @@ body {
 }
 .connection-warning { color: #e1a0a0; font-size: clamp(14px, 1vw, 18px); text-align: center; }
 .clock-content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; margin: auto; }
-.clock { width: 100%; text-align: center; font-size: clamp(90px, 10vw, 190px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: 0; }
+.clock { width: 100%; text-align: center; font-size: clamp(110px, 12.5vw, 220px); font-weight: 520; letter-spacing: -.075em; line-height: .95; font-variant-numeric: tabular-nums; margin: 0; }
 .date { color: #aab1bc; font-size: clamp(18px, 1.35vw, 25px); text-transform: capitalize; text-align: center; }
 .clock-bottom { color: #7c8592; font-size: clamp(12px, .82vw, 15px); margin-top: 22px; justify-content: flex-start; }
 .clock-bottom .server-dot { margin-left: auto; }
@@ -182,7 +182,7 @@ body {
   .dashboard { padding: 12px; gap: 12px; }
   .left-column { display: flex; }
   .clock-card { height: calc(2 * 124px + 10px); min-height: 0; }
-  .clock { font-size: clamp(88px, 16vw, 140px); }
+  .clock { font-size: clamp(100px, 19vw, 160px); }
   .weather-card { min-height: 180px; }
   .temperature-grid { min-height: 250px; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(110px,1fr)); }
   .notification-list { grid-template-columns:minmax(0,1fr); gap:12px; }
