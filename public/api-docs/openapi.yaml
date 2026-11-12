@@ -397,7 +397,21 @@ paths:
       parameters:
         - $ref: '#/components/parameters/SettingsSession'
       responses:
-        '200': {description: Homey selection catalog}
+        '200':
+          description: Homey selection catalog. Individual manager failures are returned as warnings; successfully loaded sources remain available.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [retrievedAt, devices, flows]
+                properties:
+                  retrievedAt: {type: string, format: date-time}
+                  devices: {type: array, items: {type: object}}
+                  flows: {type: array, items: {type: object}}
+                  warnings:
+                    type: array
+                    description: Optional per-source errors when one Homey manager could not be read.
+                    items: {type: string}
         '401': {description: Settings session required}
         '503': {description: Homey is unavailable}
   /api/homey/quick-actions/{id}/execute:
