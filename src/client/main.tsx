@@ -12,7 +12,7 @@ type NotificationsResponse = { retrievedAt: string; notifications: DashboardNoti
 type WeatherCategory = "clear" | "partly_cloudy" | "cloudy" | "rain" | "thunderstorm" | "snow" | "fog" | "wind" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; sourceCapability: string | null; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
-type SystemStatus = { homey: HomeyStatus; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
+type SystemStatus = { homey: HomeyStatus; homeyLanguage: string | null; service: string; version: string; updatedAt: string; uptimeSeconds: number; memory: { totalBytes: number; freeBytes: number; usedBytes: number }; storage: { totalBytes: number; freeBytes: number } | null; platform: string };
 
 const actions = [
   { name: "Q-Music", icon: "♫" }, { name: "Q-Music Foute Uur", icon: "♫" },
@@ -217,6 +217,7 @@ function SettingsPinGate({ pin, setPin, error, onCancel, onUnlock }: { pin: stri
 }
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
+function homeyLanguageName(language: string): string { const names: Record<string, string> = { nl: "Dutch", en: "English", de: "German", fr: "French", it: "Italian", sv: "Swedish", no: "Norwegian", es: "Spanish", da: "Danish", ru: "Russian", pl: "Polish", ko: "Korean", ar: "Arabic" }; return names[language.toLowerCase().split("-")[0]] ?? "Unsupported language"; }
 function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session: string }) {
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
@@ -249,15 +250,12 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   };
   const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
   const restore = () => { setSettings({ ...initialSettings }); setMessage("Standaardwaarden hersteld. Klik op Save om ze toe te passen."); };
-  const fmtBytes = (n?: number) => n == null ? "—" : n >= 1024 ** 3 ? (n / 1024 ** 3).toFixed(1) + " GB" : (n / 1024 ** 2).toFixed(0) + " MB";
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+"u", String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? "maandag 27 januari 2025" : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   return <main className="settings-shell">
     <header className="settings-topbar">
-      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><span className="topbar-divider" />
-      <button className="crumb-button" onClick={leave}>⌂ <span>Dashboard</span></button>
-      <div className="topbar-spacer" /><span className="topbar-date">{new Intl.DateTimeFormat("en-GB",{weekday:"short",day:"2-digit",month:"short",year:"numeric"}).format(new Date())}</span><strong className="topbar-time">{new Intl.DateTimeFormat("nl-NL",{hour:"2-digit",minute:"2-digit"}).format(new Date())}</strong><span className="settings-top-label">⚙ Settings</span>
+      <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave}>⌂ <span>Dashboard</span></button>
     </header>
     <aside className="settings-sidebar">
       <h2>Settings</h2>
@@ -265,11 +263,11 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
-      <div className="settings-title"><span className="title-icon">⚙</span><div><h1>Settings <span>›</span> General</h1><p>Basic settings for language, date, time and system information.</p></div></div>
+      <div className="settings-title"><p>Basic settings for language, date, time and system information.</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>Language</h2>
           <label className="setting-row"><span>Dashboard language</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">Automatic (Homey language)</option><option value="nl-NL">Dutch</option><option value="en">English</option></select></label>
-          <div className="language-info"><div>ℹ <span><strong>Automatic</strong><br/>Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.</span></div><div>● <span>Detected Homey language: <strong>Not available through current API</strong></span><em>Fallback</em></div></div>
+          <div className="language-info"><div>ℹ <span><strong>Automatic</strong><br/>Uses the Homey language when detection is supported. Otherwise the dashboard falls back to English.</span></div><div>● <span>Detected Homey language: <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${homeyLanguageName(status.homeyLanguage)})` : "Not available — check Homey API permissions"}</strong></span><em>{status?.homeyLanguage ? "Detected" : "Fallback"}</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>▢</span>Date and time</h2>
           <label className="setting-row"><span>Date format</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">DD-MM-YYYY ({datePreview})</option><option value="iso">YYYY-MM-DD ({datePreview})</option><option value="long">Long ({datePreview})</option></select></label>
@@ -283,7 +281,6 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
           <div className="status-row"><span className="status-check ok">✓</span><span>Dashboard service</span><strong className="status-pill ok">Running</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>System</span><strong className="status-pill ok">Healthy</strong><span className="status-detail">Uptime: {uptime(status?.uptimeSeconds)}</span></div>
         </div>
-        <div className="system-note">ⓘ <span>Memory: {fmtBytes(status?.memory.usedBytes)} used / {fmtBytes(status?.memory.totalBytes)} · Storage: {status?.storage ? fmtBytes(status.storage.totalBytes-status.storage.freeBytes)+" used / "+fmtBytes(status.storage.totalBytes) : "Not available"}</span></div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?"Loading…":message}</span><button className="secondary-button" onClick={restore}>⟳ &nbsp;Restore defaults</button><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;Save</button></div>
     </section>
