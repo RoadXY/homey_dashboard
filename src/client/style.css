@@ -244,7 +244,7 @@ body {
 .language-info em { margin-left:auto; padding:5px 12px; border-radius:20px; background:rgba(194,137,37,.22); color:#f0c76b; font-size:13px; font-style:normal; white-space:nowrap; }
 .date-card { display:flex; flex-direction:column; }
 .date-card .setting-row { flex:1; }
-.system-card { flex:1; min-height:0; }
+.system-card { flex:0 0 auto; min-height:0; }
 .status-table { display:flex; flex-direction:column; }
 .status-row { min-height:41px; display:grid; grid-template-columns:38px minmax(180px,1fr) minmax(110px,.8fr) minmax(190px,1.1fr); align-items:center; gap:12px; border-bottom:1px solid rgba(160,184,211,.12); font-size:16px; }
 .status-check { width:27px; height:27px; border-radius:50%; display:grid; place-items:center; font-weight:800; color:white; }
