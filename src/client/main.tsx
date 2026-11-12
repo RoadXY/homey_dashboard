@@ -56,7 +56,7 @@ function App() {
       })
       .then((data) => setNotifications(data.notifications))
       .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
-    void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions(data.actions as QuickAction[])).catch(() => setQuickActions([]));
+    void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     try {
       const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
@@ -330,9 +330,9 @@ function MdiIcon({ name, className = "" }: { name: string; className?: string })
   const iconName = name.startsWith("mdi:") ? name.slice(4) : name;
   return <span className={`mdi mdi-${iconName} ${className}`.trim()} aria-hidden="true" />;
 }
-function migrateQuickActionIcon(icon: string): string {
-  if (legacyQuickActionIcons[icon]) return legacyQuickActionIcons[icon];
-  return icon.startsWith("mdi:") ? icon.slice(4) : icon;
+function normalizeQuickActionIcon(icon: string): string {
+  const name = icon.startsWith("mdi:") ? icon.slice(4) : icon;
+  return mdiIconByName.has(name) ? name : "lightning-bolt";
 }
 
 
@@ -384,7 +384,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
       fetch("/api/settings/quick-action-catalog", { headers: { "x-settings-session": session } }).then(async response => { if (!response.ok) throw new Error(t("settings.quickActionsCatalogError")); return response.json() as Promise<QuickActionCatalog>; }),
     ]).then(([configuration, options]) => {
       if (!active) return;
-      setItems(configuration.actions.map(item => ({ ...item, icon: migrateQuickActionIcon(item.icon) }))); setSaved(configuration.actions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
+      const normalizedActions = configuration.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setCatalog(options); setCatalogWarning(options.warnings?.join(" · ") ?? "");
     }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : t("settings.quickActionsLoadError")); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -407,7 +407,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
       const response = await fetch("/api/settings/dashboard-actions", { method: "POST", headers: { "Content-Type": "application/json", "x-settings-session": session }, body: JSON.stringify({ actions: items }) });
       const data = await response.json() as { actions?: QuickAction[]; error?: string };
       if (!response.ok || !data.actions) throw new Error(data.error ?? t("settings.saveError"));
-      setItems(data.actions); setSaved(data.actions); setMessage(t("settings.quickActionsSaved"));
+      const normalizedActions = data.actions.map(item => ({ ...item, icon: normalizeQuickActionIcon(item.icon) })); setItems(normalizedActions); setSaved(normalizedActions); setMessage(t("settings.quickActionsSaved"));
     } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); }
     finally { setSaving(false); }
   };
