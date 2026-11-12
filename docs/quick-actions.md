@@ -73,3 +73,6 @@ Niet-beschikbare menu-items blijven disabled en krijgen expliciet `pointer-event
 - Op smalle telefoons schakelt de meldingenlijst terug naar één kolom voor leesbaarheid.
 - De footer met "HOMEY DASHBOARD" en apparaat-/ruimteaantallen is uit het meldingenpaneel verwijderd om verticale ruimte vrij te maken.
 - De klokkaart krijgt een vaste hoogte die overeenkomt met de totale hoogte van twee Quick Actions-kaartrijen inclusief tussenruimte. De kloktypografie schaalt mee met de kleinere kaart.
+
+## Instellingen: kaarten behouden hun volledige inhoudshoogte
+De algemene instellingenpagina gebruikt een scrollbaar contentgebied. Systeemkaarten (Weer-API-tokens en Systeemstatus) mogen daarin niet meer als flex-items worden samengedrukt tot de resterende viewporthoogte. Ze gebruiken nu hun natuurlijke inhoudshoogte (`flex: 0 0 auto`), zodat de kaartachtergrond en rand de volledige inhoud blijven omsluiten en de pagina als geheel scrollt wanneer nodig.
