@@ -279,6 +279,12 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
   const selectedCapability = selectedDevice?.capabilities.find(capability => capability.id === selected.capabilityId);
+  const selectedFlow = selected.type === "flow"
+    ? catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)
+    : undefined;
+  const selectedActionValid = selected.type === "flow"
+    ? Boolean(selectedFlow)
+    : Boolean(selectedDevice?.available && selectedCapability);
   const actionName = (item: QuickAction) => item.name.trim() || t(quickActionDefaults.find(entry => entry.id === item.id)?.id === "qmusic" ? "actions.qmusic" : item.id === "foute-uur" ? "actions.fouteUur" : item.id === "blinds" ? "actions.blinds" : item.id === "birthday" ? "actions.birthday" : item.id === "living-lights" ? "actions.livingLights" : item.id === "mood-lights" ? "actions.moodLights" : item.id === "tv" ? "actions.tv" : "actions.bedtime");
   React.useEffect(() => {
     let active = true;
@@ -396,7 +402,7 @@ function QuickActionsSettingsPage({ session, locale, t }: { session: string; loc
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
           {selectedDevice && !selectedDevice.available && <p className="quick-warning">{t("settings.deviceUnavailable")}</p>}
         </>}
-        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" onClick={() => setEditorOpen(false)}>{t("settings.apply")}</button></div>
+        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
       </section>}
     </div>
     <div className="settings-bottom"><span className="save-message" role="status">{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
