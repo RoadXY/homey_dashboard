@@ -127,13 +127,13 @@ function App() {
   };
   if (settingsOpen) return settingsUnlocked
     ? <GeneralSettingsPage session={settingsSession} onBack={() => { setSettingsOpen(false); setSettingsUnlocked(false); setSettingsSession(""); void refresh(); }} />
-    : <SettingsPinGate pin={pin} setPin={setPin} error={pinError} onCancel={() => setSettingsOpen(false)} onUnlock={async () => {
+    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => setSettingsOpen(false)} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
           const data = await response.json() as { error?: string; unlocked?: boolean; sessionToken?: string };
-          if (!response.ok) throw new Error(data.error || "Toegang geweigerd.");
+          if (!response.ok) throw new Error(data.error || translate(locale, "settings.pinDenied"));
           setSettingsSession(data.sessionToken ?? ""); setSettingsUnlocked(true); setPinError("");
-        } catch (error) { setPinError(error instanceof Error ? error.message : "PIN-controle mislukt."); }
+        } catch (error) { setPinError(error instanceof Error ? error.message : translate(locale, "settings.pinError")); }
       }} />;
   return (
     <main className="dashboard">
@@ -181,7 +181,7 @@ function App() {
           ))}
         </div>
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
-          <div className="notifications-heading"><h1>Meldingen</h1></div>
+          <div className="notifications-heading"><h1>{t("notifications.heading")}</h1></div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
@@ -196,14 +196,14 @@ function App() {
             ) : notifications.some((item) => item.state === "unknown") ? (
               <div className="empty-state">
                 <span className="empty-mark" aria-hidden="true">!</span>
-                <strong>Bron niet beschikbaar</strong>
-                <span>Een of meer Homey-bronnen ontbreken of kunnen niet betrouwbaar worden uitgelezen. De meldingstatus is onbekend.</span>
+                <strong>{t("notifications.unknownTitle")}</strong>
+                <span>{t("notifications.unknownMessage")}</span>
               </div>
             ) : (
               <div className="empty-state">
                 <span className="empty-mark" aria-hidden="true">◇</span>
                 <strong>{loadError ? t("notifications.unavailableTitle") : t("notifications.noneTitle")}</strong>
-                <span>{loadError || t("notifications.noneMessage")}</span>
+                <span>{loadError ? t("notifications.unavailableMessage") : t("notifications.noneMessage")}</span>
               </div>
             )}
           </div>
@@ -219,13 +219,13 @@ function App() {
   );
 }
 
-function SettingsPinGate({ pin, setPin, error, onCancel, onUnlock }: { pin: string; setPin: (value: string) => void; error: string; onCancel: () => void; onUnlock: () => void }) {
+function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { locale: "nl" | "en"; pin: string; setPin: (value: string) => void; error: string; onCancel: () => void; onUnlock: () => void }) {
   return <main className="settings-gate"><form className="pin-card" onSubmit={(event) => { event.preventDefault(); onUnlock(); }}>
     <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div>
-    <h1>{translate("en", "settings.lockedTitle")}</h1><p>{translate("en", "settings.pinPrompt")}</p>
+    <h1>{translate(locale, "settings.lockedTitle")}</h1><p>{translate(locale, "settings.pinPrompt")}</p>
     <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
-    <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>{translate("en", "settings.back")}</button><button className="primary-button" type="submit">{translate("en", "settings.unlock")}</button></div>
+    <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>{translate(locale, "settings.back")}</button><button className="primary-button" type="submit">{translate(locale, "settings.unlock")}</button></div>
   </form></main>;
 }
 
@@ -242,12 +242,12 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error(translate("en", "settings.loadError")); return r.json() as Promise<GeneralSettings>; }),
-      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error(translate("en", "settings.statusError")); return r.json() as Promise<SystemStatus>; })
+      fetch("/api/settings/general", { headers: { "x-settings-session": session } }).then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
+      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("settings.statusError"); return r.json() as Promise<SystemStatus>; })
     ]).then(([prefs, system]) => {
       if (!active) return;
       setSettings(prefs); setSaved(prefs); setStatus(system);
-    }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : "Gegevens laden mislukt"); })
+    }).catch(error => { if (active) setMessage(error instanceof Error ? translate(locale, error.message) : translate(locale, "settings.loadDataError")); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
@@ -262,7 +262,7 @@ function GeneralSettingsPage({ onBack, session }: { onBack: () => void; session:
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
-  const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+"u", String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
+  const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale === "nl" ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? (settings.language === "en" ? "2025-01-27" : "2025-01-27") : settings.dateFormat === "long" ? (settings.language === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
