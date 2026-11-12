@@ -93,5 +93,17 @@
   "homey.offline": "offline",
   "homey.connecting": "connecting",
   "homey.notConnected": "not connected",
-  "homey.unknown": "unknown"
+  "homey.unknown": "unknown",
+  "notifications.achterdeur-open.title": "Back door open",
+  "notifications.achterdeur-open.message": "The back door is open while the outside temperature is below 18 °C or above 24 °C.",
+  "notifications.co2-woonkamer-test.title": "Living room CO₂",
+  "notifications.co2-woonkamer-test.message": "This is a test notification from Homey Logic.",
+  "notifications.ouderslaapkamer-koud.title": "Master bedroom cold",
+  "notifications.ouderslaapkamer-koud.message": "The temperature in the master bedroom is below 12 °C.",
+  "notifications.slaapkamer-bram-koud.title": "Bram's bedroom cold",
+  "notifications.slaapkamer-bram-koud.message": "The temperature in Bram's bedroom is below 12 °C.",
+  "notifications.slaapkamer-tess-koud.title": "Tess's bedroom cold",
+  "notifications.slaapkamer-tess-koud.message": "The temperature in Tess's bedroom is below 12 °C.",
+  "notifications.zolder-koud.title": "Attic cold",
+  "notifications.zolder-koud.message": "The temperature in the attic is below 12 °C."
 }
