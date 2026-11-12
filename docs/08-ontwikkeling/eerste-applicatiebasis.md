@@ -256,3 +256,18 @@ De eerste implementatie maakt geen wijzigingen in Homey. Realtime-updates, appar
 - De huidige UI toont nog geen meldingenpaneel. Dat is bewust buiten deze eerste hoofdschermstap gehouden.
 - GitHub-commits: `e6456e4` (frontendstructuur) en `24dfbb5` (styling).
 - Validatie: code is op GitHub bijgewerkt; een Docker-build en visuele controle op Ubuntu/tablet moeten nog worden uitgevoerd. De implementatie wordt dus nog niet als getest of afgerond beschouwd.
+
+
+
+## Instellingenpagina General – eerste implementatie (12 november 2026)
+
+De eerste instellingenpagina is toegevoegd aan `src/client/main.tsx` en `src/client/style.css` volgens de door de gebruiker aangewezen General-mockup. De toegang wordt gestart door de klokkaart op het hoofddashboard 850 ms ingedrukt te houden. De PIN wordt server-side gecontroleerd via `POST /api/settings/unlock`; de lokale `.env` moet hiervoor `SETTINGS_PIN` bevatten.
+
+Nieuwe backendonderdelen:
+- `src/server/settings.ts`: gevalideerde General-instellingen met persistente JSON-opslag onder `DATA_DIR` (standaard `/app/data`).
+- `GET/POST /api/settings/general`: instellingen ophalen en opslaan.
+- `GET /api/system/status`: Homey-status, dashboardversie, uptime, geheugen en opslag waar beschikbaar.
+
+De productiecompose mount al het volume `dashboard_data:/app/data`, zodat instellingen containerrestarts overleven. De Homey-taal wordt nog niet uit de gebruikte API gelezen; de pagina maakt deze beperking zichtbaar in plaats van een detectie te veinzen.
+
+**Validatie:** Docker-build en browser/tabletcontrole zijn nog niet uitgevoerd. Voer na het instellen van `SETTINGS_PIN` het bestaande updatescript uit en controleer de buildoutput voordat deze implementatie als werkend wordt beschouwd.
