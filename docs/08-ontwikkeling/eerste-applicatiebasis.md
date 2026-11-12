@@ -323,7 +323,7 @@ Na correcte PIN-invoer geeft de server een willekeurige sessietoken uit. De Gene
 ### Nieuwe implementatie
 - Centrale vertaalcatalogi: `src/client/locales/nl.json` en `src/client/locales/en.json`.
 - Gedeelde helper: `src/client/i18n.ts`, met `translate()` en `resolveLocale()`. Er is geen extra npm-dependency toegevoegd; de bestaande Vite/TypeScript-configuratie ondersteunt JSON-imports via `resolveJsonModule`.
-- De vertaalcatalogi bevatten dezelfde 118 sleutels (gecontroleerd op sleutelpariteit); beide JSON-bestanden zijn als JSON geparseerd.
+- De vertaalcatalogi bevatten dezelfde 120 sleutels (gecontroleerd op sleutelpariteit); beide JSON-bestanden zijn als JSON geparseerd.
 - De taalkeuze is beschikbaar voor de hele client. Een beperkt publiek endpoint `GET /api/settings/language` geeft alleen de opgeslagen taalvoorkeur terug, zodat het hoofddashboard dezelfde keuze kan gebruiken zonder de PIN-beveiligde algemene instellingen-API open te stellen.
 - De hoofdinterface, quick actions, temperatuurtegels, meldingslabels en de bestaande meldingsinhoud, weerconditie-labels, PIN-scherm en General-instellingen gebruiken de centrale catalogi. Temperatuurdecimalen en datum/tijdnotatie volgen de gekozen taal.
 - De bestaande `Restore defaults`-knop en bijbehorende ongebruikte handler zijn verwijderd.
