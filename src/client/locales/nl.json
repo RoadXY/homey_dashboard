@@ -139,4 +139,6 @@
   "settings.tokensLoadError": "Tokens laden mislukt.",
   "settings.tokenCreateError": "Token aanmaken mislukt.",
   "settings.tokenRevokeError": "Token intrekken mislukt."
+  "settings.tokenCopySuccess": "Token naar klembord gekopieerd.",
+  "settings.tokenCopyError": "Kopiëren is niet gelukt. Selecteer en kopieer de token handmatig.",
 }
