@@ -150,6 +150,11 @@ export function isValidNotificationConfig(value: unknown): value is Notification
 
 const notificationOverridePath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.json");
 
+export function parseNotificationConfigJson(contents: string): unknown {
+  const normalized = contents.endsWith("\\\\n") ? contents.slice(0, -2) : contents;
+  return JSON.parse(normalized);
+}
+
 async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
   const directory = join(process.cwd(), "config", "notifications");
   const filenames = (await readdir(directory)).filter((filename) => filename.endsWith(".json")).sort();
@@ -162,7 +167,7 @@ async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
 
 export async function getNotificationConfigsForSettings(): Promise<NotificationConfig[]> {
   try {
-    const saved = JSON.parse(await readFile(notificationOverridePath, "utf8")) as unknown;
+    const saved = parseNotificationConfigJson(await readFile(notificationOverridePath, "utf8"));
     if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
     const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
     for (const config of saved) merged.set(config.id, config);
