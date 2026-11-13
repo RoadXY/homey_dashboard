@@ -131,8 +131,14 @@ export function evaluateDurationGate(
 
   const startedAt = activeSince.get(key) ?? now;
   activeSince.set(key, startedAt);
-  const reevaluateAt = startedAt + durationMs;
-  return now >= reevaluateAt
-    ? { state: "active" }
-    : { state: "inactive", reevaluateAt };
+  const durationDeadline = startedAt + durationMs;
+  const reevaluateAt = child.reevaluateAt === undefined
+    ? durationDeadline
+    : Math.min(durationDeadline, child.reevaluateAt);
+  if (now >= durationDeadline) {
+    return child.reevaluateAt === undefined
+      ? { state: "active" }
+      : { state: "active", reevaluateAt: child.reevaluateAt };
+  }
+  return { state: "inactive", reevaluateAt };
 }
