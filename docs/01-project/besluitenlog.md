@@ -381,3 +381,7 @@ Bij wisselen tussen meldingen of navigeren naar een andere instellingenpagina/he
 
 ## Meldingen / Blockly – Genereer melding blijft een vast blok (13 november 2026)
 De hoofdconstructie `Genereer melding` wordt automatisch aangemaakt en kan niet worden verwijderd of verplaatst. Deze hoeft dus niet in de toolbox beschikbaar te zijn. De tijdelijke wijziging waarbij het rootblok als sleepbaar toolboxblok werd aangeboden en dubbele rootblokken werden gecontroleerd, is teruggedraaid.
+
+
+## Meldingen – browser Back bevestigen bij onopgeslagen wijzigingen (13 november 2026)
+Browsergeschiedenisnavigatie (popstate/Back) is toegevoegd aan dezelfde bescherming als interne menu- en flowwissels. Bij onopgeslagen meldingswijzigingen wordt de huidige route hersteld en verschijnt een bevestiging. Annuleren blijft op de huidige route; bevestigen voert Back alsnog uit en verwerpt het concept.
