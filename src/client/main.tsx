@@ -963,6 +963,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
           const candidate = ws.newBlock(sourceType);
           candidate.setFieldValue(sourceKey, "SOURCE");
+          // Refresh Blockly's cached dynamic dropdown options after SOURCE changes.
+          // During block initialization OP may have been generated for the first
+          // catalog item (often boolean), before hydration selects a numeric source.
+          const operatorField = candidate.getField("OP");
+          if (operatorField && typeof operatorField.getOptions === "function") operatorField.getOptions(false);
           const operator = node.condition?.operator ?? "equals";
           if (!comparisonOptions(candidate).some(([, option]) => option === operator)) {
             candidate.dispose();
