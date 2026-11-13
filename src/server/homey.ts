@@ -316,41 +316,6 @@ export async function getHomeyDeviceReadings(deviceIds: string[]) {
 }
 
 
-export async function getHomeyLogicVariables(variableNames: string[]) {
-  if (!api || snapshot.state !== "online") {
-    await connectHomey();
-  }
-
-  if (!api || snapshot.state !== "online") {
-    throw new Error("Homey is niet verbonden.");
-  }
-
-  const variables = await api.logic.getVariables();
-  const wanted = new Set(variableNames);
-  type HomeyLogicVariable = {
-    id: string;
-    name: string;
-    type: string;
-    value: unknown;
-  };
-  const variableList = Object.values(
-    variables as Record<string, HomeyLogicVariable>
-  );
-
-  return {
-    retrievedAt: new Date().toISOString(),
-    variables: variableList
-      .filter((variable) => wanted.has(variable.name))
-      .map((variable) => ({
-        id: variable.id,
-        name: variable.name,
-        type: variable.type,
-        value: variable.value,
-      })),
-  };
-}
-
-
 export async function getHomeyDeviceCapabilityValues(
   sources: Array<{ deviceId: string; capabilityId: string }>
 ) {
