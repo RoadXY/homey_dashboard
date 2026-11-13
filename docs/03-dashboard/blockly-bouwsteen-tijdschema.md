@@ -369,3 +369,9 @@ De inklapknop staat nu volledig aan de binnenzijde van de sidebar, links van de 
 
 ## Ingeklapte sidebar – positie inklapknop (13 november 2026)
 In de ingeklapte sidebar staat de toggle rechtsboven binnen de sidebar, met gelijke boven- en rechtermarge van 8 px. Een verouderde, later in de stylesheet geplaatste regel die de knop 15 px over de scheidingslijn schoof, is verwijderd. In de uitgeklapte stand blijft de knop op de bestaande positie.
+
+
+## Blockly-contextmenu en lokale vertalingen (13 november 2026)
+De Blockly-editor wordt via `blockly/core` als npm-module geladen. Deze import vult de interne `Blockly.Msg`-berichtentabel niet vanzelf met de vertalingen die Blockly's eigen contextmenu nodig heeft. Daardoor kon een rechtermuisklik falen bij het opbouwen van de menuopties (interne `displayText`-fout) en verscheen het contextmenu niet.
+
+De editor importeert nu de meegeleverde Nederlandse en Engelse Blockly-berichtentabellen lokaal uit de vastgepinde npm-dependency en activeert vóór workspace-initialisatie de tabel die past bij de dashboardtaal via `Blockly.setLocale`. Dit herstelt de standaard contextmenu-teksten zonder een runtime-internetafhankelijkheid of wijziging aan de eigen blokdefinities en notificatiegegevens.
