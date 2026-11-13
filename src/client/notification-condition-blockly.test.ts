@@ -4,6 +4,7 @@ import {
   comparisonValueFromBlockly,
   durationNodeFromBlockly,
   durationNodeToBlockly,
+  normalizeScheduleTimeInput,
   sourceFromKey,
   sourceKeyFromNode,
 } from "./notification-condition-blockly";
