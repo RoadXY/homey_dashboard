@@ -636,6 +636,9 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
 function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
+  const [conditionError, setConditionError] = React.useState("");
+  const conditionErrorRef = React.useRef(setConditionError);
+  conditionErrorRef.current = setConditionError;
   const changeRef = React.useRef(onChange);
   const sourceChangeRef = React.useRef(onSourceChange);
   const catalogRef = React.useRef(sourceCatalog);
@@ -899,15 +902,21 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       let block: any = null;
       if (node.type === "comparison") {
         const sourceKey = sourceKeyFromNode(node.source);
-        const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
-        const sourceBlock = ws.newBlock(sourceType);
-        sourceBlock.setFieldValue(sourceKey, "SOURCE");
-        const comparisonBlock = ws.newBlock("homey_condition_comparison");
-        comparisonBlock.setFieldValue(node.condition?.operator ?? "equals", "OP");
-        comparisonBlock.setFieldValue(String(node.condition?.value ?? false), "VALUE");
-        sourceBlock.nextConnection.connect(comparisonBlock.previousConnection);
-        comparisonBlock.initSvg(); comparisonBlock.render();
-        block = sourceBlock;
+        const resolvedSource = resolveNotificationSourceFromKey(sourceKey, catalogRef.current);
+        if (!resolvedSource) {
+          block = ws.newBlock("homey_condition_unsupported");
+          block.data = JSON.stringify(node);
+        } else {
+          const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
+          const sourceBlock = ws.newBlock(sourceType);
+          sourceBlock.setFieldValue(sourceKey, "SOURCE");
+          const comparisonBlock = ws.newBlock("homey_condition_comparison");
+          comparisonBlock.setFieldValue(node.condition?.operator ?? "equals", "OP");
+          comparisonBlock.setFieldValue(String(node.condition?.value ?? false), "VALUE");
+          sourceBlock.nextConnection.connect(comparisonBlock.previousConnection);
+          comparisonBlock.initSvg(); comparisonBlock.render();
+          block = sourceBlock;
+        }
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
         days.forEach(([day, field]) => block.setFieldValue(node.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
@@ -1009,7 +1018,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const nodes = serializeChain(roots[0]);
         if (nodes.length !== 1) throw new Error("Verbind alle voorwaarden tot één conditieboom.");
         conditionChangeRef.current(nodes[0]);
+        conditionErrorRef.current("");
       } catch (error) {
+        conditionErrorRef.current(error instanceof Error ? error.message : "De Blockly-voorwaarde is ongeldig en is niet opgeslagen.");
         // Invalid/incomplete workspaces are deliberately not written to configuration.
       }
     };
@@ -1020,7 +1031,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     hydrating = false;
     return () => ws.dispose();
   }, []);
-  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
+  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <><div ref={host} className="schedule-blockly-workspace" />{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>}</div>;
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
