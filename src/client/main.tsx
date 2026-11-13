@@ -1182,6 +1182,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page notification-settings-page">
+    <div className="settings-title"><p>{t("notifications.subtitle")}</p></div>
     <div className="notification-rule-selector">
       <label htmlFor="notification-rule-select">Meldingen</label>
       <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !configs.length} onChange={event => setSelectedId(event.target.value)}>
