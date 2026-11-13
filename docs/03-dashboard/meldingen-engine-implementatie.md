@@ -157,3 +157,10 @@ Het project is nog in de ontwikkelfase. De gebruiker heeft expliciet besloten ge
 De zes bestaande ontwikkelconfiguraties zijn uitsluitend hernummerd van schemaVersion 2 naar schemaVersion 1; hun conditieboom en inhoud zijn niet aangepast. Dit is geen migratie van oude configuraties, maar het vastleggen van het enige model dat we tijdens ontwikkeling gaan gebruiken.
 
 De validator- en regressietests zijn aangepast om uitsluitend het canonieke schema te accepteren en legacy-vormen, Logic-namen en schemaVersion 2 expliciet af te wijzen. Blockly wordt rechtstreeks op dit schema gebouwd; JSON-configuratie, Blockly en backend delen één model en één evaluator.
+
+
+## Herstel JSON-opslag van meldingsconfiguraties – 13 november 2026
+
+Een fout in de serializer voegde de twee letterlijke tekens `\\n` toe achter het JSON-document, in plaats van een echte regeleinde. Daardoor kon de instellingen-API een eerder opgeslagen `data/notifications.json` niet meer parsen en bleef de meldingenkeuzelijst leeg.
+
+De serializer schrijft nu een normale newline. De reader herkent daarnaast uitsluitend deze bekende foutieve suffix en verwijdert die vóór het parsen, zodat bestaande configuraties behouden blijven. Andere ongeldige trailing data blijft een parsefout geven. Regressietests dekken normale JSON, herstel van de oude suffix en afwijzing van willekeurige extra tekst.
