@@ -775,6 +775,10 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             });
             results.appendChild(item);
           });
+          // Keep the current source visible whenever the picker opens (and
+          // after filtering). The scroll is limited to the result list.
+          const selectedItem = results.querySelector('.notification-source-dropdown-option.selected') as HTMLButtonElement | null;
+          selectedItem?.scrollIntoView({ block: "nearest" });
           if (!options.length) {
             const empty = document.createElement('div');
             empty.className = 'notification-source-dropdown-empty';
