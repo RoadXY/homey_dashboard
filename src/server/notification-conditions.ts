@@ -15,11 +15,28 @@ const WEEKDAY_INDEX: Record<string, number> = {
 };
 
 function parseClockTime(value: string): number {
-  if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value)) {
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) {
     throw new Error(`Ongeldige schematijd: ${value}`);
   }
   const [hours, minutes] = value.split(":").map(Number);
   return hours * 60 + minutes;
+}
+
+export function isValidScheduleCondition(schedule: ScheduleCondition): boolean {
+  try {
+    if (!Array.isArray(schedule.weekdays) || schedule.weekdays.length === 0 ||
+        schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) return false;
+    const start = parseClockTime(schedule.startTime);
+    const end = parseClockTime(schedule.endTime);
+    if (start === end) return false;
+    if (schedule.timeZone !== undefined) {
+      if (typeof schedule.timeZone !== "string" || schedule.timeZone.length === 0) return false;
+      new Intl.DateTimeFormat("en-US", { timeZone: schedule.timeZone });
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
