@@ -299,3 +299,31 @@ De breedte van de hoofdcontainer wordt nu vooral bepaald door de daadwerkelijk g
 ### 12.4 Label van de hoofdcontainer verwijderd – 13 november 2026
 
 Na de volgende praktijktest is ook het korte label **Voorwaarden:** uit de invoeropening van **Genereer melding** verwijderd. De hoofdcontainer toont nu alleen de titel en de inhoud die erin wordt geplaatst. Dit verkleint de visuele drukte; de statement-opening en de onderliggende conditielogica blijven ongewijzigd.
+
+
+## 13. Blockly-codecontrole – 13 november 2026
+
+De actuele implementatie op `phase_1_foundation` is statisch gecontroleerd en de GitHub Actions-build is gecontroleerd.
+
+### Wat aanwezig is
+- Vaste, niet-verplaatsbare hoofdcontainer **Genereer melding**.
+- Homey-apparaat/capability- en Logic-variabelebronnen met datatype-afhankelijke vergelijkingsoperatoren.
+- EN-, OF- en NIET-containers.
+- Tijdschema als C-vormige container, inclusief weekdagen en begin-/eindtijd.
+- Dag-van-de-week-voorwaarde.
+- Duur actief en duur inactief, waarbij inactief canoniek als `duration(not(condition))` wordt opgeslagen.
+- Laden van de bestaande conditieboom en serialiseren van wijzigingen naar het bestaande notification-v1-model.
+- Validatie van onvolledige/ongeldige Blockly-structuren voordat wijzigingen naar de configuratie worden doorgegeven.
+
+### Geautomatiseerde controle
+De CI-run voor de actuele documentatiecommit `94f4d93f28c46eff7448f2008c8a9ac81d7f4ba7` is succesvol afgerond: [GitHub Actions run 43456603802](https://github.com/RoadXY/homey_dashboard/actions/runs/43456603802). De workflow heeft dependency-installatie, `npm test`, OpenAPI-validatie en `npm run build` succesvol uitgevoerd.
+
+De unit-tests voor `notification-condition-blockly.ts` controleren bronconversie, datatype-afhankelijke vergelijkingswaarden, duurconversie en impliciete EN-semantiek van de hoofdcontainer.
+
+### Nog niet bewezen / bekende beperking
+- Er zijn nog geen geautomatiseerde browser-/Blockly-integratietests die het daadwerkelijk slepen, nesten, laden en opslaan van de volledige Blockly-workspace doorlopen. De helpertests bewijzen dus niet de volledige visuele round-trip.
+- De Blockly-library wordt in `src/client/index.html` geladen vanaf `https://unpkg.com/blockly@12.3.1/blockly.min.js`. De instellingenpagina vereist daarom internettoegang om Blockly te laden; de editor is nog niet volledig self-contained in de Docker-image.
+- De praktijktest op de tablet moet nog bevestigen dat alle combinaties na opslaan en herladen exact dezelfde structuur en betekenis behouden.
+
+### Conclusie
+De implementatie is build- en unit-test-groen en de belangrijkste onderdelen zijn aanwezig. De Blockly-editor kan op basis van de huidige controles nog niet als volledig functioneel of volledig praktijktest-bewezen worden aangemerkt. De resterende stap is een gerichte browser-/tablet-test van de volledige Blockly-round-trip en bij voorkeur automatisering daarvan.
