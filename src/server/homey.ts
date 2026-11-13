@@ -574,13 +574,18 @@ export async function getNotificationSourceCatalog() {
     const supported = capabilities.flatMap(capabilityId => {
       const descriptor = device.capabilitiesObj?.[capabilityId] as Record<string, any> | undefined;
       if (!descriptor) return [];
-      const type = descriptor.type;
+      const units = typeof descriptor.units === "string" ? descriptor.units : "";
+      // Homey capability metadata can expose an inconsistent boolean type for
+      // measured values. A physical unit (°C, %, ppm, W, etc.) is authoritative:
+      // a capability with a unit must be compared as a number.
+      const declaredType = descriptor.type;
+      const type = units.trim() ? "number" : declaredType;
       if (type !== "number" && type !== "boolean") return [];
       return [{
         id: capabilityId,
         title: typeof descriptor.title === "string" ? descriptor.title : capabilityId,
         type,
-        units: typeof descriptor.units === "string" ? descriptor.units : "",
+        units,
       }];
     });
     if (!supported.length) return [];
