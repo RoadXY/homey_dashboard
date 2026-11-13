@@ -151,7 +151,7 @@ export function isValidNotificationConfig(value: unknown): value is Notification
 const notificationOverridePath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.json");
 
 export function parseNotificationConfigJson(contents: string): unknown {
-  const normalized = contents.endsWith("\\\\n") ? contents.slice(0, -2) : contents;
+  const normalized = contents.endsWith("\\n") ? contents.slice(0, -2) : contents;
   return JSON.parse(normalized);
 }
 
@@ -189,7 +189,7 @@ export async function saveNotificationConfigsForSettings(value: unknown): Promis
   const directory = join(process.env.DATA_DIR ?? join(process.cwd(), "data"));
   await mkdir(directory, { recursive: true });
   const temporaryPath = join(directory, `notifications.${randomUUID()}.tmp`);
-  await writeFile(temporaryPath, JSON.stringify(configs, null, 2) + "\\n", { encoding: "utf8", mode: 0o600 });
+  await writeFile(temporaryPath, JSON.stringify(configs, null, 2) + "\n", { encoding: "utf8", mode: 0o600 });
   await rename(temporaryPath, notificationOverridePath);
   return configs;
 }
