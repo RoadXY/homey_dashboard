@@ -97,3 +97,17 @@ Tijdschema-, dag-van-de-week- en duurblokken leveren boolean-condities en moeten
 ## Instellingen – mobiele navigatie (13 november 2026)
 
 De instellingen-navigatie blijft op desktop een linker zijbalk. Op schermen tot en met 700 px wordt deze omgezet naar één compacte horizontale navigatierij boven de inhoud. De rij kan horizontaal worden verschoven; knoppen wrappen niet en rekken niet verticaal uit. Zo blijven alle zes categorieën bereikbaar op smalle telefoons zonder de content onnodig naar beneden te duwen. De actieve categorie behoudt dezelfde blauwe accentkleur.
+
+
+## Blockly – vaste hoofdconstructie Genereer melding (13 november 2026)
+
+De gebruiker kiest als definitieve basisstructuur één vaste hoofdconstructie **Genereer melding**. Dit is het enige start-/hoofdelement van een melding en bevat de volledige conditieflow plus een vaste actiepresentatie onderaan. De actie is inherent aan de meldingsconfiguratie en wordt niet als nieuwe JSON-node opgeslagen; het bestaande canonieke conditiemodel en de backend-evaluator blijven leidend.
+
+- Meerdere directe onderdelen in de hoofdconstructie worden impliciet met EN gecombineerd.
+- EN en OF zijn nestbare C-vormige statementcontainers met één invoerpunt voor een keten van voorwaarden en andere containers.
+- Meerdere containers van verschillende typen mogen naast elkaar in de hoofdconstructie staan.
+- EN vereist dat alle ingesloten voorwaarden waar zijn; OF vereist minimaal één ware voorwaarde. Beide vereisen minimaal twee kinderen.
+- NIET en duurblokken blijven voorwaarden die in EN/OF-containers geplaatst kunnen worden.
+- Een Homey-apparaat- of Logic-variabeleblok bevat bron, operator en waarde als één voorwaarde. Het losse vergelijkingsblok verdwijnt uit de toolbox.
+- Bestaande conditie-JSON wordt in de vaste hoofdconstructie gehydrateerd. Eén direct onderdeel blijft ongewijzigd; meerdere directe onderdelen worden bij serialisatie een canonieke AND-node.
+- De JSON-schema's en backend-evaluator blijven ongewijzigd; er komt geen tweede evaluatie-implementatie in Blockly.
