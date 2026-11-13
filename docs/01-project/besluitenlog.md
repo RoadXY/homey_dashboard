@@ -353,3 +353,7 @@ Bij de smalle/tablet-layout erfden de meetwaardetegels de algemene Quick Actions
 
 ## Meldingen / Blockly – datatype van meetwaarden corrigeren (13 november 2026)
 De Homey-broncatalogus gebruikte uitsluitend het metadata-veld `descriptor.type` om te bepalen of een apparaat-capability numeriek of boolean was. Bij een meetwaarde met een fysieke eenheid, zoals temperatuur in °C, kan die metadata inconsistent zijn. Capabilities met een niet-lege fysieke eenheid worden voortaan als numeriek aangeboden aan Blockly. Daardoor krijgen deze bronnen een numerieke waarde-invoer en alle zes numerieke operatoren; boolean-bronnen zonder eenheid behouden true/false. Logic-variabelen blijven hun expliciete Homey-type gebruiken.
+
+
+## Meldingen / Blockly – bronselectie synchroniseert vergelijkingsveld direct (13 november 2026)
+De custom doorzoekbare Homey-bronkeuzelijst synchroniseerde het vergelijkingsveld alleen via de algemene Blockly-wijzigingslistener. Bij selectie via de custom dropdown kon die eventroute het datatype-afhankelijke invoerveld missen: de bron werd numeriek opgeslagen, terwijl de UI nog true/false toonde. De bronselectie synchroniseert nu direct het invoerveld en de toegestane operatoren. Een oude ongeldige boolean-waarde wordt bij omschakelen naar numeriek veilig genormaliseerd. Hiermee blijven bron, operator en waarde-invoer consistent.
