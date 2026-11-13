@@ -10,17 +10,18 @@ type LogicSource = { type: "logic-variable"; variableId: string; expectedType: E
 type DeviceSource = { type: "device-capability"; deviceId: string; capabilityId: string; expectedType: ExpectedType };
 type Source = LogicSource | DeviceSource;
 type Comparison =
-  | { operator: "equals"; value: boolean | number }
-  | { operator: "lessThan"; value: number }
-  | { operator: "greaterThan"; value: number };
+  | { operator: "equals" | "notEquals"; value: boolean | number }
+  | { operator: "lessThan" | "lessThanOrEqual" | "greaterThan" | "greaterThanOrEqual"; value: number };
 type ConditionGroup = {
   operator: "and" | "or";
   conditions: ConditionNode[];
 };
+type NotNode = { type: "not"; condition: ConditionNode };
+type WeekdayNode = { type: "weekday"; weekdays: number[] };
 type ConditionLeaf = { type: "comparison"; source: Source; condition: Comparison };
 type DurationNode = { type: "duration"; id: string; durationMs: number; condition: ConditionNode };
 type ScheduleNode = { type: "schedule" } & ScheduleCondition;
-type ConditionNode = ConditionGroup | ConditionLeaf | DurationNode | ScheduleNode;
+type ConditionNode = ConditionGroup | NotNode | WeekdayNode | ConditionLeaf | DurationNode | ScheduleNode;
 
 const durationStartedAt = new Map<string, number>();
 
@@ -65,16 +66,16 @@ function isSource(value: unknown): value is Source {
 function isComparison(value: unknown): value is Comparison {
   if (!value || typeof value !== "object") return false;
   const comparison = value as Record<string, unknown>;
-  if (comparison.operator === "equals") {
+  if (comparison.operator === "equals" || comparison.operator === "notEquals") {
     return typeof comparison.value === "boolean" || (typeof comparison.value === "number" && Number.isFinite(comparison.value));
   }
-  return (comparison.operator === "lessThan" || comparison.operator === "greaterThan") &&
+  return ["lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"].includes(String(comparison.operator)) &&
     typeof comparison.value === "number" && Number.isFinite(comparison.value);
 }
 
 function isValidSourceCondition(source: unknown, condition: unknown): source is Source {
   if (!isSource(source) || !isComparison(condition)) return false;
-  if (condition.operator === "equals") return typeof condition.value === source.expectedType;
+  if (condition.operator === "equals" || condition.operator === "notEquals") return typeof condition.value === source.expectedType;
   return source.expectedType === "number";
 }
 
@@ -90,6 +91,12 @@ function isConditionNode(
   if (!value || typeof value !== "object" || Array.isArray(value) ||
       depth > MAX_CONDITION_DEPTH || ++counter.count > MAX_CONDITION_NODES) return false;
   const node = value as Record<string, unknown>;
+  if (node.type === "weekday") {
+    return Array.isArray(node.weekdays) && node.weekdays.length > 0 &&
+      node.weekdays.every((day) => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6) &&
+      new Set(node.weekdays).size === node.weekdays.length;
+  }
+  if (node.type === "not") return isConditionNode(node.condition, depth + 1, seenDurationIds, counter);
   if (node.type === "schedule") {
     return (node.configured === undefined || node.configured === false) &&
       (node.timeZone === undefined || typeof node.timeZone === "string") &&
@@ -192,7 +199,9 @@ function evaluateComparison(value: unknown, expectedType: ExpectedType, conditio
   }
   switch (condition.operator) {
     case "equals": return { state: value === condition.value ? "active" : "inactive" };
+    case "notEquals": return { state: value !== condition.value ? "active" : "inactive" };
     case "lessThan": return { state: (value as number) < condition.value ? "active" : "inactive" };
+    case "lessThanOrEqual": return { state: (value as number) <= condition.value ? "active" : "inactive" };
     case "greaterThan": return { state: (value as number) > condition.value ? "active" : "inactive" };
   }
 }
@@ -231,6 +240,23 @@ function evaluateNode(
     } catch {
       return { state: "unknown", reason: "schedule_invalid" };
     }
+  }
+  if ("type" in node && node.type === "not") {
+    const child = evaluateNode(node.condition, values, notificationId, now);
+    if (child.state === "unknown") return child;
+    return child.reevaluateAt === undefined
+      ? { state: child.state === "active" ? "inactive" : "active" }
+      : { state: child.state === "active" ? "inactive" : "active", reevaluateAt: child.reevaluateAt };
+  }
+  if ("type" in node && node.type === "weekday") {
+    const timeZone = "Europe/Amsterdam";
+    const weekday = new Intl.DateTimeFormat("en-US", { timeZone, weekday: "short" }).format(now);
+    const index: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const nextMidnight = new Date(now);
+    nextMidnight.setSeconds(0, 0);
+    nextMidnight.setMinutes(0);
+    nextMidnight.setHours(nextMidnight.getHours() + 1);
+    return { state: node.weekdays.includes(index[weekday]) ? "active" : "inactive", reevaluateAt: nextMidnight.getTime() };
   }
   if ("type" in node && node.type === "duration") {
     const child = evaluateNode(node.condition, values, notificationId, now);
