@@ -413,3 +413,7 @@ De knipperindicator wordt alleen getoond bij actieve kritieke of waarschuwingsme
 
 ## Instellingen Meldingen – alfabetische keuzelijst (14 november 2026)
 De dropdown met bestaande meldingen wordt alfabetisch gesorteerd op naam, met locale-aware, hoofdletterongevoelige en numerieke sortering. Alleen de presentatie van de keuzelijst wijzigt; de opgeslagen volgorde en selectie/configuraties worden niet aangepast. De zoekfilter en resultaatsteller gebruiken dezelfde gesorteerde, gefilterde lijst.
+
+
+## Blockly – losse tijd- en weekdagvoorwaarden (14 november 2026)
+De categorie Tijd krijgt twee aanvullende blokken: **Tijd tussen** (dagelijks tijdvenster zonder dagselectie, inclusief over-middernacht) en **Dagen van de week** (meerdere dagen aanvinken zonder tijdselectie). De nieuwe blokken gebruiken bestaande condition-schema's zodat de runtime dezelfde tijdzone/DST- en weekdagafhandeling behoudt. De bestaande gecombineerde tijdschema- en enkele-weekdagblokken blijven compatibel. Beide nieuwe blokken zijn inzetbaar in EN/OF/NIET-containers.
