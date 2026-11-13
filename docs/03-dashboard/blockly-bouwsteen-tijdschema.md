@@ -348,3 +348,8 @@ De gebruiker kiest ervoor om Blockly als lokale, vastgepinde npm-afhankelijkheid
 
 ### Validatiestatus
 De broncode en dependencyconfiguratie zijn omgezet naar de lokale package-import. De lockfile legt versie 12.3.1 vast. De definitieve bevestiging volgt uit de GitHub Actions-run (dependency-installatie, tests en build) en daarna uit een browser-/tablet-test waarbij de editor zonder internetverbinding wordt geopend.
+
+
+## 15. Positie label hoofdblok (13 november 2026)
+
+Het vaste paarse hoofdblok toont de tekst **🔔 Genereer melding** nu onderaan in een footer-input. Boven de voorwaarden staat geen titel/label meer. De statement-input `CONDITIONS` staat als eerste in het blok, gevolgd door de footer. De inhoud en serialisatie van de voorwaarden veranderen hierdoor niet; dit is uitsluitend een visuele wijziging.
