@@ -191,3 +191,8 @@ Bij het opnieuw opbouwen van bestaande meldingsvoorwaarden wordt het vergelijkin
 Daarmee wordt voorkomen dat een oude numerieke waarde (bijvoorbeeld `24`) tijdelijk in een boolean-dropdown met alleen `false` en `true` terechtkomt. Het vergelijkingsveld wordt eerst opnieuw aangemaakt als numeriek veld of boolean-keuzelijst en krijgt daarna een voor dat datatype geldige waarde. Dit voorkomt ook Blockly-consolewaarschuwingen over waarden die niet in de dropdown-opties voorkomen.
 
 Dezelfde synchronisatie wordt gebruikt wanneer de gebruiker tijdens het bewerken een andere bron selecteert. De JSON-structuur van meldingsvoorwaarden en de backendvalidatie blijven ongewijzigd.
+
+
+## Meldingen individueel in- en uitschakelen (13 november 2026)
+
+Elke melding heeft een eigen `enabled`-schakelaar in de editor. De bestaande configuratie-eigenschap wordt via dezelfde Opslaan-actie bewaard. Uitgeschakelde meldingen worden door de meldingenengine niet geëvalueerd en leveren geen dashboardmelding of her-evaluatietimer op. Ook de instellingencontrole op ontbrekende/niet-beschikbare Homey-bronnen slaat uitgeschakelde meldingen over. Zodra een melding weer wordt ingeschakeld, wordt zij opnieuw meegenomen in de broncontrole en de eerstvolgende engine-evaluatie; bestaande bronproblemen verschijnen dan opnieuw. De Blockly-voorwaarde en overige instellingen blijven behouden wanneer een melding wordt uitgeschakeld.
