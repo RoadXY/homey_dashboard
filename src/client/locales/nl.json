@@ -191,5 +191,7 @@
   "settings.weatherHumidity": "Luchtvochtigheid",
   "settings.weatherRain": "Neerslag",
   "settings.weatherPressure": "Luchtdruk",
-  "settings.weatherSunriseSunset": "Zonsopkomst en zonsondergang"
+  "settings.weatherSunriseSunset": "Zonsopkomst en zonsondergang",
+  "notifications.activeIndicator": "Er zijn actieve meldingen",
+  "notifications.unknownIndicator": "De meldingsstatus kan niet volledig worden gecontroleerd"
 }
