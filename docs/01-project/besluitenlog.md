@@ -337,3 +337,7 @@ Onder 900 px wordt de weerkaart niet langer door de hoogte van de klokkaart uitg
 
 ## Instelbare inklapknop zijmenu (13 november 2026)
 Naast de bestaande klikactie op het Homey Dashboard-merk in de bovenbalk is nu een afzonderlijke inklapknop toegevoegd aan de rechterrand van de zijbalk, ongeveer ter hoogte van de navigatiekop. De knop gebruikt een zijbalk-layoutpictogram dat wisselt tussen inklappen en uitklappen, heeft toegankelijke naam-/statusattributen en is op desktop/tablet-touch bedienbaar. De kleur komt uit het semantische token `--sidebar-toggle-color`, standaard gekoppeld aan `--action-icon-color`; thema's en light/dark modes kunnen dit token later overschrijven zonder component-CSS aan te passen. De knop is verborgen in de mobiele horizontale navigatieweergave (maximaal 700 px), waar de inklapbare zijbalk niet van toepassing is.
+
+
+## Zijbalkkop Instellingen – groter en gecentreerd (13 november 2026)
+De kop 'Instellingen' is vergroot naar 26 px en horizontaal gecentreerd over de volledige binnenbreedte van de zijbalk (tussen de linker paginarand en de rechter scheidingslijn). De kop gebruikt het semantische teksttoken `--text-primary`, zodat kleur automatisch meebeweegt met toekomstige thema's en light/dark modes. De bestaande mobiele weergave verbergt deze kop en de ingeklapte desktopweergave verbergt hem eveneens.
