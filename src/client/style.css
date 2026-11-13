@@ -540,7 +540,7 @@ body {
 }
 
 /* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
-.measurement-workspace { min-height:560px; }
+.measurement-workspace { min-height:560px; align-items:stretch; grid-auto-rows:auto; }
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
 .measurement-tile-list { margin-bottom:18px; }
 /* Meetwaardetegels hebben geen pictogramkolom: geef de naam alle resterende ruimte en plaats Bewerken uiterst rechts. */
