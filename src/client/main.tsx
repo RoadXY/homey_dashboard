@@ -890,8 +890,24 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         }
       ]
     };
+    const homeyDarkTheme = Blockly.Theme.defineTheme("homeyDark", {
+      base: Blockly.Themes.Classic,
+      componentStyles: {
+        workspaceBackgroundColour: "#171b22",
+        toolboxBackgroundColour: "#202630",
+        toolboxForegroundColour: "#dce3ec",
+        flyoutBackgroundColour: "#242c37",
+        flyoutForegroundColour: "#dce3ec",
+        flyoutOpacity: 1,
+        scrollbarColour: "#657386",
+        insertionMarkerColour: "#f4f6f9",
+        insertionMarkerOpacity: 0.3,
+        cursorColour: "#f4f6f9"
+      }
+    });
     const ws = Blockly.inject(host.current, {
       toolbox,
+      theme: homeyDarkTheme,
       trashcan: true,
       move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
