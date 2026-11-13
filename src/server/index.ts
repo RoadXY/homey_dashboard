@@ -9,7 +9,7 @@ import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
 import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.js";
-import { getMeasurementSourceCatalog, getMeasurementTileValues } from "./homey.js";
+import { getMeasurementSourceCatalog, getNotificationSourceCatalog, getMeasurementTileValues } from "./homey.js";
 import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
@@ -296,6 +296,11 @@ app.post("/api/settings/measurement-tiles", async (request, reply) => {
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Meetwaardetegels opslaan mislukt." });
   }
+});
+app.get("/api/settings/notification-sources", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try { return await getNotificationSourceCatalog(); }
+  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meldingsbronnen konden niet worden geladen." }); }
 });
 app.get("/api/settings/measurement-sources", async (request, reply) => {
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
