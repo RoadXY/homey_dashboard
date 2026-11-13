@@ -124,4 +124,9 @@ Dit is opgelost zonder periodiek alle Homey-bronnen opnieuw op te vragen:
 
 De timer blijft servergeheugenstatus en wordt na een containerherstart opnieuw opgebouwd zodra de voorwaarden weer worden geëvalueerd. Persistente timers/herstel over herstarts blijven een afzonderlijk toekomstig besluit. Tests controleren dat de oorspronkelijke deadline stabiel blijft en dat geneste groepen de vroegste deadline doorgeven.
 
-Code- en testcommits: `ba682f0`, `807a9da`, `ed2f4f0`, `2ee1c12` en `af1ae82`. CI moet nog bevestigen dat frontend en backend samen bouwen.
+Code- en testcommits: `ba682f0`, `807a9da`, `ed2f4f0`, `2ee1c12`, `af1ae82` en `fd89ae5`. De eerste CI-runs op tussenliggende commits vonden nog oude testverwachtingen die niet waren aangepast aan het nieuwe deadlineveld. Die regressietests zijn bijgewerkt in `fd89ae5`. De volledige CI-run voor die commit is groen: alle 21 tests in 3 testbestanden geslaagd, OpenAPI-validatie geslaagd en frontend-/backendbuild geslaagd. Run: https://github.com/RoadXY/homey_dashboard/actions/runs/43374163008.
+
+
+## Openstaand aandachtspunt – tijdschema-overgangen
+
+De nieuwe automatische deadline behandelt duurvoorwaarden. Een tijdschema zelf kan ook precies op een begin- of eindtijd van status veranderen zonder Homey-event. De huidige schema-evaluator wordt bij Homey-updates opnieuw uitgevoerd; automatische herbeoordeling op schema-overgangen moet daarom nog worden toegevoegd voordat de Blockly-editor als compleet kan worden beschouwd. Dit wordt de eerstvolgende backendstap.
