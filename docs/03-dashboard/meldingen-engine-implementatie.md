@@ -206,3 +206,8 @@ De schakelaar voor een melding wijzigt eerst alleen de lokale conceptconfigurati
 ## Genereer melding beschikbaar in de Blockly-toolbox (13 november 2026)
 
 De vaste hoofdconstructie `Genereer melding` is nu ook als sleepbaar blok beschikbaar in de toolbox onder de categorie **Melding**. De reeds aanwezige hoofdconstructie in het werkveld blijft automatisch aangemaakt en vergrendeld; de toolboxvariant is verplaatsbaar en verwijderbaar. Daarmee blijft het bestaande model met één vaste root behouden, terwijl de gebruiker de hoofdconstructie ook vanuit de toolbox kan herkennen en pakken. De workspacevalidatie telt expliciet het aantal rootblokken: zodra meer dan één `Genereer melding`-blok in het werkveld staat, wordt een duidelijke fout getoond en wordt de ongeldige Blockly-structuur niet naar de meldingsconfiguratie geschreven. De gebruiker kan het extra blok verwijderen; de bestaande hoofdconstructie en voorwaarden blijven intact.
+
+
+## Bevestiging bij verlaten van onopgeslagen meldingswijzigingen (13 november 2026)
+
+De meldingeneditor meldt zijn dirty-status aan de instellingencontainer. Bij het wisselen naar een andere melding wordt eerst om bevestiging gevraagd als de huidige conceptconfiguratie afwijkt van de laatst opgeslagen configuratie. Annuleren houdt de gebruiker in dezelfde melding en behoudt alle conceptwijzigingen. Bevestigen gooit de conceptwijzigingen weg en opent de gekozen melding met de laatst opgeslagen gegevens. Hetzelfde bevestigingsprincipe geldt bij navigeren naar een andere instellingenpagina of terug naar het dashboard. Opslaan blijft de enige manier om wijzigingen permanent te maken.
