@@ -328,3 +328,10 @@ De Homey-broncatalogus bepaalde het datatype van een apparaat-capability uitslui
 ### 11.20 Blockly synchroniseert datatype direct bij selectie van een Homey-bron
 
 De custom doorzoekbare Blockly-bronkeuzelijst wijzigde de bron via `FieldDropdown.setValue()`. De algemene Blockly-wijzigingslistener bleek daarbij niet betrouwbaar genoeg om het bijbehorende vergelijkingsveld te vervangen. Daardoor kon een nieuw geselecteerde numerieke bron (zoals een temperatuur) visueel nog een boolean-keuzelijst met `true/false` tonen, terwijl de serialisatie de numerieke bron al gebruikte. De klikactie van de custom keuzelijst synchroniseert nu direct het datatype-afhankelijke invoerveld en de toegestane operatoren. Bij een overgang van boolean naar number wordt een ongeldige oude waarde veilig genormaliseerd; bij een overgang naar boolean wordt het true/false-veld hersteld. Dit staat los van de algemene Blockly-wijzigingslistener en werkt daardoor ook bij de custom zoekdropdown.
+
+
+### 11.21 Huidige bron automatisch zichtbaar maken en Blockly-waarde robuust normaliseren
+
+De doorzoekbare bronlijst scrollt bij openen (en na filteren) automatisch naar de huidige geselecteerde bron. De geselecteerde regel wordt binnen de resultatenlijst met `scrollIntoView({ block: "nearest" })` zichtbaar gemaakt; de lijst springt dus niet onnodig naar een willekeurige positie buiten de dropdown.
+
+Daarnaast bleek Blockly afhankelijk van het veldtype een waarde als string, number of boolean te kunnen teruggeven. De serialisatie gebruikte `.trim()` direct op de ruwe waarde, wat de foutmelding `l.trim is not a function` kon veroorzaken. De datatype-normalisatie zet de ruwe waarde nu eerst expliciet om naar tekst voordat numerieke validatie en boolean-validatie plaatsvinden.
