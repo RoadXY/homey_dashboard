@@ -498,9 +498,19 @@ Voor de migratie van een versie-1 Logic-bron die alleen een variabelenaam bevat,
 
 De JSON Schema-validatie wordt aangevuld met domeinvalidatie in de backend, onder andere voor unieke duration-ID's, maximumdiepte/-omvang, geldige IANA-tijdzones en typecompatibiliteit tussen bron en vergelijking. Het schema alleen is dus niet de volledige runtime-validatie.
 
-De bestaande versie-1-bestanden worden pas omgezet nadat de versie-2-normalisatie en migratietests zijn geïmplementeerd. Tot die tijd blijven ze ongewijzigd.
+De versie-2-normalisatie en regressietests zijn inmiddels geïmplementeerd. De eerste zes bestaande configuraties zijn op 13 november 2026 gecontroleerd gemigreerd; zie de migratiestatus hieronder.
 
 
 ### Implementatiestatus v1/v2-normalisatie (13 november 2026)
 
 De backend ondersteunt inmiddels het inlezen en normaliseren van zowel schemaVersion 1 als 2. V1-bestanden blijven ongewijzigd; v2 gebruikt stabiele Homey Logic variable-ID's. Bij een dubbele Logic-variabelenaam wordt een v1-bron als ambigu gemarkeerd in plaats van willekeurig gekoppeld. De volledige normalisatie en regressietests zijn beschreven in `docs/03-dashboard/meldingen-engine-implementatie.md`.
+
+
+### Eerste migratie bestaande meldingen naar schema v2 (13 november 2026)
+
+De eerste zes bestaande bestanden zijn gecontroleerd omgezet naar schemaVersion 2:
+- `achterdeur-open.json`: samengestelde AND/OR-conditie en beide apparaat-capabilitybronnen behouden.
+- `co2-woonkamer-test.json`: Logic-bron `dashboard_test_co2_melding` is tijdens de migratie live in Homey gevonden en vastgelegd met stabiele variabele-ID `965b5973-bd5f-4843-aa6e-8f79173141af` (boolean). De testOnly-markering en vergelijkingswaarde `true` zijn behouden.
+- `ouderslaapkamer-koud.json`, `slaapkamer-bram-koud.json`, `slaapkamer-tess-koud.json` en `zolder-koud.json`: apparaat-ID's, capability `measure_temperature`, grenswaarde <12 °C en bestaande metadata zijn behouden.
+
+De migratie wijzigt alleen de JSON-structuur naar het canonieke v2-model; meldings-ID's, titels, berichten, severity, enabled/testOnly en de functionele voorwaarden zijn niet inhoudelijk aangepast. De overige bestaande meldingsbestanden worden gefaseerd geïnventariseerd en gemigreerd. Iedere Logic-bron wordt vóór omzetting tegen de actuele Homey-inventaris gecontroleerd; onbekende of dubbelzinnige bronnen worden niet gegokt.
