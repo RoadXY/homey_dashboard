@@ -164,3 +164,9 @@ Bij een bronwissel blijft de vergelijking behouden als de waarde bij het datatyp
 De losse HTML-bronkeuze is vervangen door een eigen Blockly-blok `homey_notification_source`. De dropdown in dit blok wordt gevuld vanuit de opgehaalde broncatalogus en toont apparaat/capability of Logic-variabele. De geselecteerde waarde blijft gebaseerd op stabiele IDs en wordt doorgegeven aan de bestaande bron-updatefunctie voor het condition-model.
 
 Het bestaande tijdschema-blok blijft in dezelfde Blockly-workspace beschikbaar. De Homey-bron en het tijdschema zijn op dit moment afzonderlijke zichtbare blokken; de volledige verbinding van bron → vergelijking → logische combinaties en het round-trip laden van de volledige condition-boom zijn nog vervolgstappen. Deze tussenstatus is bewust expliciet: een los bronblok mag niet de indruk wekken dat de volledige visuele regel-editor al gereed is.
+
+### 11.3 Vergelijkingsblok als volgende Blockly-bouwsteen
+
+De Blockly-workspace bevat nu ook een afzonderlijk vergelijkingsblok met operator- en waardekeuze. De operatorlijst is datatypebewust: numerieke bronnen bieden alle zes afgesproken operatoren; booleaanse bronnen alleen `equals` en `notEquals`. Wijzigingen aan operator en waarde worden teruggeschreven naar de eerste vergelijkingsnode in het bestaande condition-model, zonder de omliggende EN/OF-structuur te vervangen.
+
+Dit is nog een tussenstap: bron- en vergelijkingsblokken zijn zichtbaar naast elkaar en nog niet via Blockly-verbindingen tot één expressie gekoppeld. Het round-trip laden van willekeurige bestaande condition-bomen en de visuele EN/OF/NIET-compositie volgen hierna. Tot die tijd blijft de bestaande JSON-configuratie de bron van waarheid.
