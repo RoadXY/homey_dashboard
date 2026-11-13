@@ -383,3 +383,9 @@ De lijst met meetwaardetegels gebruikt een eigen grid-indeling zonder gereservee
 ## Meetwaardetegels – compacte waardeweergave (13 november 2026)
 
 De vier meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op één regel. De waarde schaalt responsief mee met de beschikbare tegelbreedte via container-relative typografie; de eenheid wordt kleiner weergegeven zodat de meetwaarde visueel leidend blijft. Eenheden blijven behouden (onder andere `ppm` en `%`). Bij absolute waarden vanaf 1.000 wordt de waarde op nul decimalen weergegeven om onnodig lange getallen te voorkomen. Onder die grens blijft de precisie uit Homey-metadata behouden, met maximaal drie decimalen. De instellingen-preview blijft dezelfde formatter gebruiken.
+
+## Instellingen: editor voor Snelle acties (13 november 2026)
+
+- Het bewerkpaneel voor een Snelle actie staat als afzonderlijk blok direct onder de twee bovenste kaarten (lijst en preview), niet langer als derde grid-item binnen de twee-koloms werkruimte.
+- Daardoor neemt de editor zijn eigen hoogte in de normale documentflow in. Bij een lange editor of een scherm dat lager is dan de inhoud scrollt de instellingenpagina verticaal door; de editor overlapt de lijst niet.
+- De lijst en preview behouden hun bestaande naast-elkaar-indeling op brede schermen en stapelen op smallere beschikbare contentbreedtes.
