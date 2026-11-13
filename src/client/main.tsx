@@ -716,9 +716,31 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     if (!Blockly.Blocks.homey_notification_condition_statement) {
       Blockly.Blocks.homey_notification_condition_statement = {
         init() {
-          this.appendDummyInput().appendField("Plaats hier de voorwaarde");
+          this.appendDummyInput().appendField("Als").appendField(new Blockly.FieldDropdown(() => {
+            const catalog = catalogRef.current;
+            const options: Array<[string, string]> = [["— selecteer Homey-bron —", ""]];
+            (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title, "device:" + device.id + ":" + capability.id])));
+            (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
+            return options;
+          }, (value: string) => { if (value) sourceChangeRef.current(value); return value; }), "SOURCE");
+          this.appendDummyInput().appendField(new Blockly.FieldDropdown(() => {
+            const numeric = comparisonRef.current?.source?.expectedType === "number";
+            return numeric
+              ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
+              : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
+          }, (value: string) => {
+            const current = comparisonRef.current;
+            const numeric = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) || current?.source?.expectedType === "number";
+            comparisonChangeRef.current(value, numeric ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "boolean" ? current.condition.value : false));
+            return value;
+          }), "OP").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false), (value: string) => {
+            const numeric = comparisonRef.current?.source?.expectedType === "number";
+            const parsed = numeric ? Number(value) : value.toLowerCase() === "true";
+            if (!numeric || Number.isFinite(parsed as number)) comparisonChangeRef.current(comparisonRef.current?.condition?.operator ?? "equals", parsed as boolean | number);
+            return value;
+          }), "VALUE");
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
-          this.setTooltip("Tijdelijke invoegpositie voor de conditie binnen een duurblok.");
+          this.setTooltip("Vergelijk een geselecteerde Homey-bron. Dit blok kan in een duurblok worden geplaatst.");
         }
       };
     }
