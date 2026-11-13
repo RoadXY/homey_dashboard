@@ -3,7 +3,7 @@ import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
-import { getDashboardNotifications } from "./notifications.js";
+import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotificationConfigsForSettings } from "./notifications.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
@@ -262,6 +262,23 @@ app.post<{ Params: { id: string } }>("/api/homey/quick-actions/:id/execute", asy
     return { ...result, actionId: action.id };
   } catch (error) {
     return reply.code(502).send({ error: error instanceof Error ? error.message : "Homey-actie uitvoeren mislukt." });
+  }
+});
+
+app.get("/api/settings/notifications", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try { return { notifications: await getNotificationConfigsForSettings() }; }
+  catch (error) { return reply.code(500).send({ error: error instanceof Error ? error.message : "Meldingen konden niet worden geladen." }); }
+});
+app.post("/api/settings/notifications", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const body = request.body as { notifications?: unknown } | undefined;
+    const notifications = await saveNotificationConfigsForSettings(body?.notifications);
+    broadcastSettingsUpdated("quick-actions");
+    return { notifications };
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Meldingen opslaan mislukt." });
   }
 });
 
