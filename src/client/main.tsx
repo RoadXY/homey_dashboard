@@ -1280,7 +1280,9 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
-  const notificationSourceIssues = sourceCatalog ? configs.map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
+  // Disabled notifications are intentionally excluded from source-health warnings.
+  // Their conditions are checked again as soon as the notification is enabled.
+  const notificationSourceIssues = sourceCatalog ? configs.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
     if (!selected || !key) return;
@@ -1299,6 +1301,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const updateCondition = (condition: any) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition } : item));
+  };
+  const updateEnabled = (enabled: boolean) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, enabled } : item));
   };
   const updateSeverity = (severity: "critical" | "warning" | "info") => {
     if (!selected) return;
@@ -1401,7 +1407,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     </section>}
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div>
+        {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-heading-controls"><button type="button" className={"notification-enabled-toggle" + (selected.enabled ? " is-enabled" : " is-disabled")} aria-pressed={selected.enabled} disabled={busy || saving} onClick={() => updateEnabled(!selected.enabled)}><span className="notification-toggle-indicator" aria-hidden="true"/>{selected.enabled ? "Melding ingeschakeld" : "Melding uitgeschakeld"}</button><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
