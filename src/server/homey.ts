@@ -556,6 +556,50 @@ export async function getMeasurementSourceCatalog() {
   return { retrievedAt: new Date().toISOString(), zones: zoneList, devices: deviceList, variables: logicList };
 }
 
+
+/** Read-only source catalog for the notification Blockly editor. */
+export async function getNotificationSourceCatalog() {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+
+  const [devices, zones, variables] = await Promise.all([
+    api.devices.getDevices(), api.zones.getZones(), api.logic.getVariables(),
+  ]);
+  const zoneList = Object.values(zones as Record<string, any>).map((zone: any) => ({
+    id: String(zone.id), name: String(zone.name ?? "Ruimte"),
+    parent: typeof zone.parent === "string" ? zone.parent : null,
+  }));
+  const deviceList = Object.values(devices as Record<string, any>).flatMap((device: any) => {
+    const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
+    const supported = capabilities.flatMap(capabilityId => {
+      const descriptor = device.capabilitiesObj?.[capabilityId] as Record<string, any> | undefined;
+      const type = descriptor?.type;
+      if (type !== "number" && type !== "boolean") return [];
+      return [{
+        id: capabilityId,
+        title: typeof descriptor.title === "string" ? descriptor.title : capabilityId,
+        type,
+        units: typeof descriptor.units === "string" ? descriptor.units : "",
+      }];
+    });
+    if (!supported.length) return [];
+    return [{
+      id: String(device.id), name: String(device.name ?? "Onbekend apparaat"),
+      zone: typeof device.zone === "string" ? device.zone : null,
+      available: device.available !== false, capabilities: supported,
+    }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
+
+  const logicList = Object.values(variables as Record<string, any>).flatMap((variable: any) => {
+    if (variable.type !== "number" && variable.type !== "boolean") return [];
+    if (variable.type === "number" && (typeof variable.value !== "number" || !Number.isFinite(variable.value))) return [];
+    if (variable.type === "boolean" && typeof variable.value !== "boolean") return [];
+    return [{ id: String(variable.id), name: String(variable.name ?? "Logic-variabele"), type: variable.type }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
+
+  return { retrievedAt: new Date().toISOString(), zones: zoneList, devices: deviceList, variables: logicList };
+}
+
 export async function getMeasurementTileValues(tiles: Array<{ id: string; source: { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null }>) {
   if (!api || snapshot.state !== "online") await connectHomey();
   if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
