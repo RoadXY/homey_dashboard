@@ -42,10 +42,6 @@ function formatMeasurementParts(reading: MeasurementTileValue | undefined, local
   const units = magnitude > 99.99 ? "" : (reading.units ?? "");
   return { value: formatter.format(reading.value), units };
 }
-function formatMeasurementValue(reading: MeasurementTileValue | undefined, locale: string = "nl"): string {
-  const formatted = formatMeasurementParts(reading, locale);
-  return formatted.value + (formatted.units ? " " + formatted.units : "");
-}
 type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null; booleanMode: "on" | "off" | "toggle" };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
 type QuickActionDevice = { id: string; name: string; zone: string; available: boolean; capabilities: QuickActionCapability[] };
