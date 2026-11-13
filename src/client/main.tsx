@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
+import * as BlocklyLibrary from "blockly/core";
+import "blockly/blocks";
 import "@mdi/font/css/materialdesignicons.css";
-declare global { interface Window { Blockly?: any; } }
 import mdiMeta from "@mdi/svg/meta.json";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
@@ -654,8 +655,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   comparisonChangeRef.current = onComparisonChange;
   conditionChangeRef.current = onConditionChange;
   React.useEffect(() => {
-    const Blockly = window.Blockly;
-    if (!Blockly || !host.current) { setBlocklyUnavailable(true); return; }
+    const Blockly: any = BlocklyLibrary;
+    if (!host.current) { setBlocklyUnavailable(true); return; }
     const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
