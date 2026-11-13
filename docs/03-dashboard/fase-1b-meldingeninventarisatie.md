@@ -177,3 +177,43 @@ Het in de oorspronkelijke YAML gebruikte `schedule.boven_ramen_open` wordt als h
 ### Bronbevestiging – Wateralarm wasmachines! (12 november 2026)
 
 Gekozen Homey-bron: afzonderlijke **Water sensor wasmachine**, capability `alarm_water`. Niet de wasmachine zelf. De oorspronkelijke YAML-voorwaarde blijft leidend; meldingsniveau **kritiek**. Exact apparaat-ID en actuele waarde zijn nog niet in deze bevestiging opgenomen.
+
+### Live Homey-inventarisatie – apparaatbronnen gecontroleerd (13 november 2026)
+
+De Homey Pro 2023 is read-only geïnventariseerd via de actuele apparaatlijst. Onderstaande apparaat-ID's en capabilitynamen zijn rechtstreeks uit Homey opgehaald. Waarden uit deze inventarisatie zijn momentopnames en worden niet als vaste configuratie gebruikt.
+
+| Onderdeel | Homey-apparaat | Apparaat-ID | Relevante capability(s) | Status |
+|---|---|---|---|---|
+| Droger | Samsung wasdroger | `134d7e99-5067-4891-bb1e-222d1e970222` | `localthings_machine_state`, `localthings_progress`, `localthings_remaining_minutes` | Bron en velden gevonden; exacte weergaveconversie van eindtijd naar resterende minuten nog nalopen |
+| Truus | Truus | `1f76bd9a-b6f6-4f78-8734-742b9d054cfc` | `measure_work_status` | Bron gevonden; exacte statuswaarden moeten in de notificatieconfiguratie worden gevalideerd |
+| Muurtablet-batterij | Muur tablet | `3047fdb8-2dea-4cea-b023-27c9693b4635` | `measure_battery` | Bron gevonden |
+| Lamp Sem | Lamp Sem | `b164e453-6fba-4d9c-81ba-82596082eef5` | `onoff` | Bron gevonden; schema `slapen_sem` blijft nog te vertalen |
+| Lamp Bram | Lamp Bram | `489075ba-fe6d-4b15-9e33-8a7539dafbda` | `onoff` | Bron gevonden; schema `slapen_bram` blijft nog te vertalen |
+| Wateralarm wasmachine | Water Sensor wasmachines | `8fbc6198-191f-4bdd-bc40-a09158441d2f` | `alarm_water` | Exacte bron-ID bevestigd; actuele waarde was `false` |
+| Wateralarm vaatwasser | Water sensor vaatwasser | `5ae0730c-27ca-4559-b1f2-ffeba8fb1565` | `alarm_water` | Bron gevonden; actuele waarde was `false` |
+| Airco keuken | Airco keuken | `835913ba-2608-45be-bc69-c1f7f5441be3` | `onoff`, `thermostat_mode`, `target_temperature` | Bron en relevante velden gevonden |
+| Airco zolder | Airco zolder | `746e2538-bf25-45b0-8e98-3e0100bff811` | `onoff`, `thermostat_mode`, `target_temperature` | Bron en relevante velden gevonden |
+| Regenwaarschijnlijkheid | Raamsdonksveer | `b2fa37bb-45e2-4fda-87b7-24dcecf64420` | `measure_precipitation_probability` | Reeds eerder bevestigd; opnieuw aangetroffen |
+| CO₂ woonkamer | Multisensor woonkamer | `2c7a4148-1042-4dd5-80d4-81d07bcf66ed` | `measure_co2` | Bron gevonden; grens >1200 ppm blijft leidend |
+| Vriezer keuken | Koelkast keuken temperatuur | `64fc846e-01b0-438a-9114-4498ea8005e7` | `measure_temperature` | Reeds eerder bevestigd; grens >10 °C blijft leidend |
+| Achterdeur | Achterdeur | `8bd0184e-5cd7-443f-bafc-8d509ab32e7a` | `alarm_contact` | Reeds eerder bevestigd |
+| Buitentemperatuur | Weer | `c7e68c38-d722-4bda-81b1-9b7f5f9e5c0` | `measure_temperature` | Apparaat-ID in deze live inventarisatie is leidend; eerder vastgelegde ID moet bij migratie worden gecontroleerd |
+
+#### Raam- en contactapparaten aangetroffen
+
+De volgende Homey-apparaten met `alarm_contact` zijn in de actuele inventarisatie aangetroffen. De apparaatnamen zijn vastgelegd, maar de precieze koppeling aan de afzonderlijke YAML-meldingen wordt pas definitief gemaakt na vergelijking met de oorspronkelijke entiteiten/voorwaarden; namen alleen zijn onvoldoende om bijvoorbeeld bovenraam en onderraam te verwisselen.
+
+| Homey-apparaat | Apparaat-ID |
+|---|---|
+| Voordeur | `ae20dbd0-2b61-4f46-9638-c2a38cd2f2e6` |
+| Deur tuinhuis | `0f02abca-04cb-405a-b7d1-437cf2b4c050` |
+| Bovenraam Bram | `7972a10c-da9b-4d15-b4eb-305d9cb097e3` |
+| Onder raam Bram | `952d6163-bda4-44ae-a346-7fbf7e980dbc` |
+| Boven raam Tess | `68528dbf-b2cb-49dc-89e6-0425cbd7db97` |
+| Onder raam Tess | `f929115b-18d9-41bb-bf67-e9a633f00ee7` |
+| Bovenraam ouderslaapkamer | `3c8d2ab7-bc67-4d4d-a92d-4c66c9338f6b` |
+| Ouderslaapkamer onderraam | `129f22a4-1f01-420c-a1a9-c41a25c6c46d` |
+| Dakraam Sem | `d1ef5cbd-ba35-48b7-8219-0112403c80bf` |
+| Raam Sem | `f5a84ac4-1819-49ad-823f-c473c03b6043` |
+
+**Controlepunt:** de eerder in deze documentatie genoemde ID voor apparaat **Weer** moet worden gecorrigeerd/vergeleken met de live Homey-inventarisatie voordat een nieuwe configuratie hierop wordt gebaseerd. De live inventarisatie retourneerde apparaat-ID `c7e68c38-1588-4c93-9db8-e854f4d251ab`; deze waarde is leidend. De ID in de tabel hierboven is daarom niet als definitief vastgelegd.
