@@ -832,8 +832,44 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
       init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
+    const toolbox = {
+      kind: "categoryToolbox",
+      contents: [
+        {
+          kind: "category",
+          name: "Voorwaarden",
+          categorystyle: "logic_category",
+          contents: [
+            { kind: "block", type: "homey_condition_comparison" }
+          ]
+        },
+        {
+          kind: "category",
+          name: "Logica",
+          categorystyle: "logic_category",
+          contents: [
+            { kind: "block", type: "homey_condition_and" },
+            { kind: "block", type: "homey_condition_or" },
+            { kind: "block", type: "homey_condition_not" }
+          ]
+        },
+        {
+          kind: "category",
+          name: "Tijd",
+          categorystyle: "logic_category",
+          contents: [
+            { kind: "block", type: "homey_condition_schedule" },
+            { kind: "block", type: "homey_condition_weekday" },
+            { kind: "block", type: "homey_condition_duration" },
+            { kind: "block", type: "homey_condition_duration_inactive" }
+          ]
+        }
+      ]
+    };
     const ws = Blockly.inject(host.current, {
-      trashcan: false, move: { scrollbars: true, drag: true, wheel: true },
+      toolbox,
+      trashcan: true,
+      move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
       grid: { spacing: 20, length: 3, colour: "#46505d", snap: true }
     });
