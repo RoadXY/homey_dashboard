@@ -473,6 +473,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [saved, setSaved] = React.useState<MeasurementTile[]>([]);
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
   const [selectedId, setSelectedId] = React.useState("measurement-1");
+  const [editorOpen, setEditorOpen] = React.useState(false);
   const [zoneId, setZoneId] = React.useState("");
   const [deviceId, setDeviceId] = React.useState("");
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
@@ -547,21 +548,10 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <h2><span>♙</span>Meetwaardetegels</h2>
         <p className="quick-card-description">Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
         <div className="quick-action-list measurement-tile-list">
-          {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => setSelectedId(tile.id)}>
+          {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
-        {selected && <div className="measurement-inline-editor">
-          <h3>Tegel {tiles.findIndex(tile => tile.id === selected.id) + 1} configureren</h3>
-          <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
-          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
-          {sourceType === "device" ? <>
-            <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
-            <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
-            <label>Meetwaarde<select disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
-          </> : <label>Numerieke Logic-variabele<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
-          <p className="measurement-source-note">Eenheid en precisie komen automatisch uit Homey-metadata wanneer beschikbaar. Logic-variabelen tonen geen eenheid.</p>
-        </div>}
         <div className="quick-info">ⓘ <span>Selecteer een tegel om de naam en Homey-meetbron aan te passen.</span></div>
       </section>
       <section className="settings-card quick-preview-card">
@@ -573,6 +563,20 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
             return <div className="quick-preview-item measurement-preview-item" key={tile.id}><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
           })}
         </div>
+      {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
+        <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
+        <h2>Meetwaardetegel {tiles.findIndex(tile => tile.id === selected.id) + 1} bewerken</h2>
+        <div className="measurement-inline-editor">
+          <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
+          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
+          {sourceType === "device" ? <>
+            <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
+            <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+            <label>Meetwaarde<select disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
+          </> : <label>Numerieke Logic-variabele<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+          <p className="measurement-source-note">Eenheid en precisie komen automatisch uit Homey-metadata wanneer beschikbaar. Logic-variabelen tonen geen eenheid.</p>
+        </div>
+      </section>}
       </section>
     </div>
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
