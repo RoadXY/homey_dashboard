@@ -311,3 +311,9 @@ Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div
 - Op de functionele instellingenpagina's is de dubbele paginakop (decoratief icoon + grote titel) verwijderd; de toelichtende regel blijft staan en lijnt links uit met de kaart eronder. Dit is centraal via `.quick-settings-page` gestyled en geldt voor Snelle acties, Temperatuurtegels en de Weer-placeholder.
 - De instellingencontent is een CSS-container geworden. De twee-koloms werkruimtes schakelen op basis van de werkelijk beschikbare contentbreedte (dus ná aftrek van het linkermenu) over naar één kolom. Daardoor kunnen de lijst-/bewerkkaart en Voorbeeld-kaart niet meer naast of over elkaar heen worden gedrukt wanneer het venster smaller wordt.
 - In de smalle layout krijgen de kaarten een automatische hoogte en staat de Voorbeeld-kaart onder de lijst/editor; geen vaste minimale hoogte die onnodige overlap of lege ruimte veroorzaakt.
+
+
+## Herstel lege instellingenpagina na sidebar-aanpassing (13 november 2026)
+- Oorzaak: de klikbare `.settings-brand`-knop met `sidebarCollapsed`-state was per ongeluk in `SettingsPinGate` terechtgekomen. Die component heeft deze state niet; hierdoor ontstond bij renderen `ReferenceError: sidebarCollapsed is not defined` en bleef de pagina leeg.
+- Herstel: de PIN-gate gebruikt weer een statische merkweergave. De klikbare merkknop staat nu in `GeneralSettingsPage`, waar `sidebarCollapsed` en `setSidebarCollapsed` daadwerkelijk bestaan.
+- De sidebar-toggle blijft alleen actief op desktopbreedtes (vanaf 701 px), met toegankelijke `aria-expanded`- en `aria-controls`-attributen.
