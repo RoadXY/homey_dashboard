@@ -201,9 +201,20 @@ function App() {
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
     const syncRoute = () => {
-      const isSettingsRoute = window.location.pathname.startsWith("/settings");
+      const legacyRoutes: Record<string, string> = {
+        "/settings/dashboard": "/settings/quick-actions",
+        "/settings/dashboard/quick-actions": "/settings/quick-actions",
+        "/settings/dashboard/measurement-tiles": "/settings/measurement-tiles",
+        "/settings/devices": "/settings/general",
+        "/settings/homey": "/settings/general",
+        "/settings/system": "/settings/general",
+      };
+      const currentPath = window.location.pathname;
+      const canonicalPath = legacyRoutes[currentPath] ?? currentPath;
+      if (canonicalPath !== currentPath) window.history.replaceState({}, "", canonicalPath);
+      const isSettingsRoute = canonicalPath.startsWith("/settings");
       setSettingsOpen(isSettingsRoute);
-      setSettingsPath(window.location.pathname);
+      setSettingsPath(canonicalPath);
       if (!isSettingsRoute) { void fetch("/api/settings/logout", { method: "POST" }); setSettingsUnlocked(false); return; }
       void fetch("/api/settings/session").then(response => {
         if (response.ok) { setSettingsUnlocked(true); setPin(""); setPinError(""); lastSessionRefresh.current = 0; }
@@ -259,7 +270,7 @@ function App() {
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/devices") ? "devices" : settingsPath.startsWith("/settings/homey") ? "homey" : settingsPath.startsWith("/settings/system") ? "system" : "general"} />
+    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
@@ -523,8 +534,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">▦</div><div><h1>{t("settings.dashboard")}</h1><p>Configureer de vier meetwaardetegels op het dashboard.</p></div></div>
-    <div className="quick-tabs"><button type="button" className="active">♙ &nbsp;{t("settings.temperatureTiles")}</button><span>☁ &nbsp;{t("settings.weatherTab")}</span><button type="button" onClick={() => onNavigate("/settings/dashboard/quick-actions")}>ϟ &nbsp;{t("settings.quickActions")}</button></div>
+    <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.temperatureTiles")}</h1><p>Configureer de vier meetwaardetegels op het dashboard.</p></div></div>
     <div className="quick-workspace measurement-workspace">
       <section className="settings-card quick-list-card measurement-list-card">
         <h2><span>♙</span>Meetwaardetegels</h2>
@@ -1191,11 +1201,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   </div>;
 }
 
-function DashboardSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
-  const measurement = window.location.pathname.includes("measurement-tiles");
-  return measurement
-    ? <MeasurementTilesSettingsPage t={t} onNavigate={onNavigate}/>
-    : <QuickActionsSettingsPage locale={locale} t={t} onNavigate={onNavigate}/>;
+function DashboardSettingsPage({ page, locale, t }: { page: "quick-actions" | "measurement-tiles"; locale: string; t: (key: string) => string }) {
+  return page === "measurement-tiles"
+    ? <MeasurementTilesSettingsPage t={t} onNavigate={() => {}}/>
+    : <QuickActionsSettingsPage locale={locale} t={t} onNavigate={() => {}}/>;
 }
 
 function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
@@ -1276,8 +1285,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   };
   const formatValue = (value: unknown, units: string) => value === null || value === undefined ? "—" : String(value) + (units ? " " + units : "");
   return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">▦</div><div><h1>{t("settings.dashboard")}</h1><p>{t("settings.quickActionsSubtitle")}</p></div></div>
-    <div className="quick-tabs"><button type="button" onClick={() => onNavigate("/settings/dashboard/measurement-tiles")}>♙ &nbsp;{t("settings.temperatureTiles")}</button><span>☁ &nbsp;{t("settings.weatherTab")}</span><button type="button" className="active">ϟ &nbsp;{t("settings.quickActions")}</button></div>
+    <div className="settings-title"><div className="quick-settings-title-icon">ϟ</div><div><h1>{t("settings.quickActions")}</h1><p>{t("settings.quickActionsSubtitle")}</p></div></div>
     <div className="quick-workspace">
       <section className="settings-card quick-list-card">
         <h2><span>ϟ</span>{t("settings.quickActions")}</h2>
@@ -1389,8 +1397,8 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard" | "notifications" | "devices" | "homey" | "system"; onNavigate: (path: string) => void }) {
-  const [page, setPage] = React.useState<"general" | "dashboard" | "notifications" | "devices" | "homey" | "system">(initialPage);
+function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather"; onNavigate: (path: string) => void }) {
+  const [page, setPage] = React.useState<"general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather">(initialPage);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
@@ -1501,10 +1509,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     </header>
     <aside className="settings-sidebar" id="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),t("settings.notifications"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
-        const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/notifications","/settings/devices","/settings/homey","/settings/system"] as const;
-        const pages = ["general","dashboard","notifications","devices","homey","system"] as const;
-        const icons = ["mdi-cog-outline","mdi-view-dashboard-outline","mdi-bell-outline","mdi-devices","mdi-home-outline","mdi-monitor-dashboard"];
+      {[t("settings.general"),t("settings.quickActions"),t("settings.notifications"),t("settings.temperatureTiles"),t("settings.weather")].map((name,index)=>{
+        const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
+        const pages = ["general","quick-actions","notifications","measurement-tiles","weather"] as const;
+        const icons = ["mdi-cog-outline","mdi-flash-outline","mdi-bell-outline","mdi-thermometer","mdi-weather-partly-cloudy"];
         return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
       })}
       <div className="sidebar-product"><i className="mdi mdi-information-outline" aria-hidden="true" /><span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
@@ -1545,13 +1553,31 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} /> : <section className="settings-card system-card">
-        <h2>{page === "devices" ? t("settings.devices") : page === "homey" ? t("settings.homey") : t("settings.system")}</h2>
-        <p>{locale.toLowerCase().startsWith("nl") ? "Deze instellingenpagina heeft alvast een eigen, beveiligde URL. De inhoud wordt in een volgende ontwikkelstap geïmplementeerd." : "This settings page already has its own protected URL. Its contents will be implemented in a later development step."}</p>
-      </section>}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} /> : page === "weather" ? <WeatherSettingsPlaceholder t={t} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
+}
+
+
+function WeatherSettingsPlaceholder({ t }: { t: (key: string) => string }) {
+  return <div className="quick-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon">☁</div><div><h1>{t("settings.weather")}</h1><p>{t("settings.weatherPlaceholderDescription")}</p></div></div>
+    <section className="settings-card system-card weather-placeholder-card">
+      <h2><span className="mdi mdi-weather-partly-cloudy" aria-hidden="true" />{t("settings.weatherPlaceholderTitle")}</h2>
+      <p>{t("settings.weatherPlaceholderBody")}</p>
+      <ul>
+        <li>{t("settings.weatherOutdoorTemperature")}</li>
+        <li>{t("settings.weatherFeelsLike")}</li>
+        <li>{t("settings.weatherCondition")}</li>
+        <li>{t("settings.weatherWind")}</li>
+        <li>{t("settings.weatherHumidity")}</li>
+        <li>{t("settings.weatherRain")}</li>
+        <li>{t("settings.weatherPressure")}</li>
+        <li>{t("settings.weatherSunriseSunset")}</li>
+      </ul>
+    </section>
+  </div>;
 }
 
 function WeatherIcon({ category }: { category: WeatherCategory }) {
