@@ -13,6 +13,8 @@ In `config/notifications/` staan zes bestanden. Daarvan zijn vijf bedoeld als pr
 |---|---|---|
 | `achterdeur-open.json` | Contact achterdeur open én buitentemperatuur <18 °C of >24 °C | Voorwaarde en niveau `warning` komen overeen met het besluit. Homey-bronnen zijn in de inventarisatie bevestigd. |
 | `co2-woonkamer-test.json` | Handmatige Logic-boolean `dashboard_test_co2_melding` | Tijdelijke testconfiguratie (`testOnly: true`), geen productieconfiguratie. Nog vervangen/aanvullen met de echte CO₂-melding. |
+| `lamp-sem-aan.json` | Lamp Sem `onoff == true` én leeg schema `slapen_sem` | Nieuw toegevoegd; schema is bewust ongeconfigureerd en blijft inactief totdat het via Blockly wordt ingesteld. |
+| `lamp-bram-aan.json` | Lamp Bram `onoff == true` én leeg schema `slapen_bram` | Nieuw toegevoegd; schema is bewust ongeconfigureerd en blijft inactief totdat het via Blockly wordt ingesteld. |
 | `ouderslaapkamer-koud.json` | Temperatuur <12 °C | Bron en grens komen overeen met de huidige inventarisatie; severity staat nog op `warning`, terwijl het gebruikersbesluit `info` is. |
 | `slaapkamer-bram-koud.json` | Temperatuur <12 °C | Bron en grens komen overeen met de huidige inventarisatie; severity staat nog op `warning`, terwijl het gebruikersbesluit `info` is. |
 | `slaapkamer-tess-koud.json` | Temperatuur <12 °C | Bron en grens komen overeen met de huidige inventarisatie; severity staat nog op `warning`, terwijl het gebruikersbesluit `info` is. |
@@ -97,8 +99,10 @@ De eerdere mappingnotitie dat `schedule.slapen_sem` en `schedule.slapen_bram` ni
 
 De gebruiker geeft aan de weekdagen en tijden van `slapen_sem` en `slapen_bram` later zelf in te stellen. De oorspronkelijke HA-helperinstellingen hoeven hiervoor niet meer te worden opgezocht.
 
-- Maak twee afzonderlijke, configureerbare schema-instanties via dezelfde generieke Blockly-bouwsteen en backend-evaluator.
-- Beide schema's starten zonder geselecteerde actieve dagen en zijn daardoor standaard inactief totdat de gebruiker ze instelt.
-- De gebruiker kan de weekdagen en begin-/eindtijden later onafhankelijk aanpassen.
-- Behoud de voorwaarden voor de meldingen: Lamp Sem aan én `slapen_sem` actief; Lamp Bram aan én `slapen_bram` actief.
+- Twee afzonderlijke meldings-JSON's zijn aangemaakt: `lamp-sem-aan.json` en `lamp-bram-aan.json`.
+- Beide bevatten een eigen ongeconfigureerde schema-node (`configured: false`, `weekdays: []`) en zijn daardoor standaard inactief totdat de gebruiker ze instelt.
+- De backend valideert deze lege vorm en evalueert deze als `inactive`; er wordt geen volgende tijdgrens ingepland.
+- De gebruiker kan de weekdagen en begin-/eindtijden later onafhankelijk via Blockly aanpassen.
+- De voorwaarden blijven: Lamp Sem aan én `slapen_sem` actief; Lamp Bram aan én `slapen_bram` actief.
 - Kopieer geen tijden van `boven_ramen_open` naar de slaap-schema's.
+- GitHub Actions is geslaagd voor beide nieuwe configuratiebestanden: runs [43382190242](https://github.com/RoadXY/homey_dashboard/actions/runs/43382190242) en [43382195856](https://github.com/RoadXY/homey_dashboard/actions/runs/43382195856).
