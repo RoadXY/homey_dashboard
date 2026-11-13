@@ -566,8 +566,12 @@ body {
 
 /* Meldingen / Blockly tijdschema-editor */
 .notification-settings-page { min-height: 100%; }
-.notification-settings-layout { display: grid; grid-template-columns: minmax(250px, .8fr) minmax(520px, 1.8fr); gap: 18px; align-items: start; }
-.notification-list-card, .notification-editor-card { min-width: 0; }
+.notification-rule-selector { display: grid; grid-template-columns: auto minmax(220px, 420px); align-items: center; gap: 12px; margin: 0 0 14px; padding: 12px 16px; border: 1px solid rgba(150,165,185,.18); border-radius: 12px; background: var(--surface-card-background); }
+.notification-rule-selector label { color: var(--text-secondary); font-size: 12px; font-weight: 650; }
+.notification-rule-selector select { width: 100%; min-height: 40px; padding: 8px 12px; border: 1px solid rgba(150,165,185,.28); border-radius: 8px; background: #202630; color: var(--text-primary); font: inherit; font-size: 13px; }
+.notification-rule-selector p { grid-column: 1 / -1; margin: 0; color: var(--text-muted); font-size: 12px; }
+.notification-settings-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
+.notification-editor-card { min-width: 0; }
 .notification-list-card h2, .notification-editor-card h2 { margin: 0 0 8px; font-size: 18px; }
 .notification-rule-row { width: 100%; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; border-radius: 12px; padding: 13px 12px; margin-top: 8px; background: rgba(255,255,255,.025); color: var(--text-primary); text-align: left; cursor: pointer; }
 .notification-rule-row:hover, .notification-rule-row.selected { border-color: rgba(145,165,190,.35); background: rgba(130,150,175,.10); }
@@ -593,8 +597,7 @@ body {
 .schedule-blockly-workspace .blocklyScrollbarHandle { fill: #657386; }
 .notification-editor-hint { display: flex; gap: 8px; align-items: flex-start; margin: 14px 2px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
 .notification-editor-hint i { color: #9eb2c8; font-size: 16px; }
-@media (max-width: 1050px) { .notification-settings-layout { grid-template-columns: 1fr; } .notification-list-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; } .notification-list-card h2, .notification-list-card > p { grid-column: 1/-1; } }
-@media (max-width: 680px) { .notification-list-card { display: block; } .schedule-blockly-workspace { height: 320px; } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 680px) { .notification-rule-selector { grid-template-columns: 1fr; gap: 7px; } .schedule-blockly-workspace { height: 320px; } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
 
 .notification-source-picker { display: grid; gap: 7px; margin: 0 0 14px; padding: 13px 14px; border: 1px solid rgba(150,165,185,.18); border-radius: 12px; background: rgba(23,27,34,.72); }
 .notification-source-picker label { color: var(--text-primary); font-size: 12px; font-weight: 650; }
