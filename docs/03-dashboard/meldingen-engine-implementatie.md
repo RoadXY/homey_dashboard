@@ -171,3 +171,10 @@ De serializer schrijft nu een normale newline. De reader herkent daarnaast uitsl
 Bij de geselecteerde melding toont de editor nu het label **Huidig niveau** met een keuzelijst voor de drie ondersteunde niveaus: `critical`, `warning` en `info`. De zichtbare namen komen uit de Nederlandse en Engelse i18n-bestanden. De selectie wijzigt het `severity`-veld van de geselecteerde configuratie en wordt met dezelfde Opslaan-actie als de overige meldingseigenschappen opgeslagen.
 
 De badge naast de keuzelijst toont direct de geselecteerde waarde en gebruikt de bestaande afgesproken severity-kleuren en CSS-tokens: kritisch rood, waarschuwing amber/geel en informatie neutraal. De keuze blijft onderdeel van het canonieke meldingsconfiguratiebestand; er is geen aparte opslagroute.
+
+
+## Blockly – bronvalidatie en foutmeldingen (13 november 2026)
+
+De meldingeneditor controleert de bronverwijzingen van de geselecteerde melding tegen de actuele Homey-broncatalogus. Verwijzingen naar niet meer bestaande apparaten, ontbrekende capabilities en niet meer bestaande Logic-variabelen worden afzonderlijk benoemd in een waarschuwing boven de Blockly-werkruimte. Een bestaand maar momenteel niet beschikbaar apparaat wordt eveneens expliciet genoemd. Zo is zichtbaar welke bron hersteld moet worden, in plaats van alleen een generieke melding dat Homey-bronnen ontbreken.
+
+Validatiefouten die tijdens het bewerken van Blockly ontstaan, worden buiten de Blockly-werkruimte weergegeven, maar blijven binnen de kaart van de meldingeneditor. De Blockly-kaart zelf bevat daardoor alleen de werkruimte en de eigen werkbalk.
