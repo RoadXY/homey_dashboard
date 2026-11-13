@@ -158,3 +158,9 @@ De catalogusfout is bewust onafhankelijk van het laden van meldingsconfiguraties
 De bronkeuze op de meldingeninstellingenpagina is aangesloten op het opgeslagen condition-model. Bij een melding met een vergelijkingsnode wordt de geselecteerde apparaat-capability of Logic-variabele als bron op de eerste vergelijkingsnode toegepast. De rest van de condition-boom blijft behouden. De selectie gebruikt uitsluitend stabiele Homey-ID's; namen en eenheden dienen alleen voor de presentatie.
 
 Bij een bronwissel blijft de vergelijking behouden als de waarde bij het datatype past. Past deze niet, dan wordt voor een numerieke bron `equals 0` en voor een booleaanse bron `equals false` gebruikt. Zo wordt geen ongeldige datatype/operator-combinatie in het JSON-model opgeslagen. Meldingconfiguraties zonder vergelijkingsnode houden de bronkeuze uitgeschakeld. Dit is een tussenstap richting het uiteindelijke Blockly-bronblok; de huidige bronkeuze is nog een instellingenveld en nog geen Blockly-bouwsteen.
+
+### 11.2 Homey-bron als zichtbare Blockly-bouwsteen
+
+De losse HTML-bronkeuze is vervangen door een eigen Blockly-blok `homey_notification_source`. De dropdown in dit blok wordt gevuld vanuit de opgehaalde broncatalogus en toont apparaat/capability of Logic-variabele. De geselecteerde waarde blijft gebaseerd op stabiele IDs en wordt doorgegeven aan de bestaande bron-updatefunctie voor het condition-model.
+
+Het bestaande tijdschema-blok blijft in dezelfde Blockly-workspace beschikbaar. De Homey-bron en het tijdschema zijn op dit moment afzonderlijke zichtbare blokken; de volledige verbinding van bron → vergelijking → logische combinaties en het round-trip laden van de volledige condition-boom zijn nog vervolgstappen. Deze tussenstatus is bewust expliciet: een los bronblok mag niet de indruk wekken dat de volledige visuele regel-editor al gereed is.
