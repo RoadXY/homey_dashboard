@@ -5,7 +5,7 @@ import "@mdi/font/css/materialdesignicons.css";
 declare global { interface Window { Blockly?: any; } }
 import mdiMeta from "@mdi/svg/meta.json";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
-import { comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
+import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
