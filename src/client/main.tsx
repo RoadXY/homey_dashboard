@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
 import "@mdi/font/css/materialdesignicons.css";
+declare global { interface Window { Blockly?: any; } }
 import mdiMeta from "@mdi/svg/meta.json";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 
@@ -15,6 +16,8 @@ type NotificationsResponse = { retrievedAt: string; notifications: DashboardNoti
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
+type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
+type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
 type MeasurementTile = { id: string; name: string; icon: string; source: MeasurementTileSource };
@@ -253,7 +256,7 @@ function App() {
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : settingsPath.startsWith("/settings/devices") ? "devices" : settingsPath.startsWith("/settings/homey") ? "homey" : settingsPath.startsWith("/settings/system") ? "system" : "general"} />
+    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath.includes("/settings/dashboard") ? "dashboard" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/devices") ? "devices" : settingsPath.startsWith("/settings/homey") ? "homey" : settingsPath.startsWith("/settings/system") ? "system" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
@@ -565,6 +568,134 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   </div>;
 }
 
+
+function findScheduleNode(node: any): any | null {
+  if (!node || typeof node !== "object") return null;
+  if (node.type === "schedule") return node;
+  if (Array.isArray(node.conditions)) {
+    for (const child of node.conditions) { const found = findScheduleNode(child); if (found) return found; }
+  }
+  if (node.condition) return findScheduleNode(node.condition);
+  return null;
+}
+function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
+  if (!node || typeof node !== "object") return node;
+  if (node.type === "schedule") return schedule;
+  if (Array.isArray(node.conditions)) return { ...node, conditions: node.conditions.map((child: any) => replaceScheduleNode(child, schedule)) };
+  if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
+  return node;
+}
+function ScheduleBlocklyEditor({ schedule, onChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void }) {
+  const host = React.useRef<HTMLDivElement>(null);
+  const workspace = React.useRef<any>(null);
+  const changeRef = React.useRef(onChange);
+  changeRef.current = onChange;
+  React.useEffect(() => {
+    const Blockly = window.Blockly;
+    if (!Blockly || !host.current) return;
+    if (!Blockly.Blocks.schedule_active) {
+      Blockly.Blocks.schedule_active = {
+        init() {
+          this.appendDummyInput().appendField("Tijdschema actief?");
+          const days = [["Ma", "MON"], ["Di", "TUE"], ["Wo", "WED"], ["Do", "THU"], ["Vr", "FRI"], ["Za", "SAT"], ["Zo", "SUN"]];
+          const row = this.appendDummyInput().appendField("Dagen:");
+          days.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
+          this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00"), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00"), "END");
+          this.setOutput(true, "Boolean");
+          this.setColour(210);
+          this.setTooltip("Geeft true terug binnen de ingestelde weekdagen en tijden.");
+        }
+      };
+    }
+    const ws = Blockly.inject(host.current, {
+      toolbox: { kind: "categoryToolbox", contents: [
+        { kind: "category", name: "Logica", categorystyle: "logic_category", contents: [
+          { kind: "block", type: "logic_boolean" }, { kind: "block", type: "logic_operation" }, { kind: "block", type: "logic_negate" }
+        ] }
+      ] },
+      trashcan: true,
+      move: { scrollbars: true, drag: true, wheel: true },
+      zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
+      grid: { spacing: 20, length: 3, colour: "#46505d", snap: true }
+    });
+    workspace.current = ws;
+    const block = ws.newBlock("schedule_active");
+    const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
+    days.forEach(([day, field]) => block.setFieldValue(schedule?.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
+    if (schedule?.startTime) block.setFieldValue(schedule.startTime, "START");
+    if (schedule?.endTime) block.setFieldValue(schedule.endTime, "END");
+    block.initSvg(); block.render();
+    const emit = (event: any) => {
+      if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
+      const current = ws.getTopBlocks(false).find((item: any) => item.type === "schedule_active");
+      if (!current) return;
+      const weekdays = days.filter(([, field]) => current.getFieldValue(field) === "TRUE").map(([day]) => day);
+      if (!weekdays.length) { changeRef.current({ type: "schedule", configured: false, weekdays: [] }); return; }
+      changeRef.current({ type: "schedule", weekdays, startTime: current.getFieldValue("START"), endTime: current.getFieldValue("END"), timeZone: schedule?.timeZone ?? "Europe/Amsterdam" });
+    };
+    ws.addChangeListener(emit);
+    return () => { ws.dispose(); workspace.current = null; };
+  }, []);
+  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> Blockly-bouwsteen</span><small>Vink de dagen aan en stel het tijdvenster in</small></div><div ref={host} className="schedule-blockly-workspace" /></div>;
+}
+function NotificationSettingsPage() {
+  const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
+  const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
+  const [selectedId, setSelectedId] = React.useState("");
+  const [busy, setBusy] = React.useState(true);
+  const [saving, setSaving] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [isError, setIsError] = React.useState(false);
+  React.useEffect(() => {
+    let active = true;
+    fetch("/api/settings/notifications").then(async response => {
+      if (!response.ok) throw new Error((await response.json()).error ?? "Meldingen laden mislukt.");
+      return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
+    }).then(result => {
+      if (!active) return;
+      setConfigs(result.notifications); setSaved(result.notifications);
+      const first = result.notifications.find(item => findScheduleNode(item.condition));
+      setSelectedId(first?.id ?? "");
+    }).catch(error => { if (active) { setMessage(error instanceof Error ? error.message : "Meldingen laden mislukt."); setIsError(true); } })
+      .finally(() => { if (active) setBusy(false); });
+    return () => { active = false; };
+  }, []);
+  const scheduled = configs.filter(item => findScheduleNode(item.condition));
+  const selected = scheduled.find(item => item.id === selectedId) ?? scheduled[0];
+  const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
+  const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
+  const updateSchedule = (value: ScheduleEditorValue) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
+  };
+  const save = async () => {
+    setSaving(true); setMessage(""); setIsError(false);
+    try {
+      const response = await fetch("/api/settings/notifications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notifications: configs }) });
+      const result = await response.json() as { notifications?: NotificationConfigEditor[]; error?: string };
+      if (!response.ok || !result.notifications) throw new Error(result.error ?? "Meldingen opslaan mislukt.");
+      setConfigs(result.notifications); setSaved(result.notifications); setMessage("Meldingen opgeslagen.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Meldingen opslaan mislukt."); setIsError(true); }
+    finally { setSaving(false); }
+  };
+  return <div className="quick-settings-page notification-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-bell-cog-outline"/></div><div><h1>Meldingen</h1><p>Beheer de voorwaarden achter dashboardmeldingen met Blockly.</p></div></div>
+    <div className="notification-settings-layout">
+      <section className="settings-card notification-list-card"><h2>Schema's</h2><p className="quick-card-description">Elke melding gebruikt een eigen tijdschema-instantie.</p>
+        {busy ? <p>Laden…</p> : scheduled.map(item => <button key={item.id} className={"notification-rule-row" + (item.id === selected?.id ? " selected" : "")} onClick={() => setSelectedId(item.id)}><span className="notification-rule-icon"><i className="mdi mdi-clock-time-four-outline"/></span><span><strong>{item.title}</strong><small>{findScheduleNode(item.condition)?.configured === false ? "Nog niet ingesteld" : "Tijdschema ingesteld"}</small></span><i className="mdi mdi-chevron-right"/></button>)}
+        {!busy && !scheduled.length && <p>Er zijn nog geen meldingen met een tijdschema.</p>}
+      </section>
+      <section className="settings-card notification-editor-card">
+        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>Voorwaarde: tijdschema actief binnen de geselecteerde dagen en tijden.</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
+          <ScheduleBlocklyEditor key={selected.id} schedule={selectedSchedule} onChange={updateSchedule}/>
+          <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> Een schema zonder geselecteerde dagen blijft inactief. De lampmelding vereist daarnaast dat de lamp zelf aan staat.</p>
+        </> : <p>{busy ? "Meldingen laden…" : "Geen tijdschema beschikbaar."}</p>}
+      </section>
+    </div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
+  </div>;
+}
+
 function DashboardSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
   const measurement = window.location.pathname.includes("measurement-tiles");
   return measurement
@@ -763,8 +894,8 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard" | "devices" | "homey" | "system"; onNavigate: (path: string) => void }) {
-  const [page, setPage] = React.useState<"general" | "dashboard" | "devices" | "homey" | "system">(initialPage);
+function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard" | "notifications" | "devices" | "homey" | "system"; onNavigate: (path: string) => void }) {
+  const [page, setPage] = React.useState<"general" | "dashboard" | "notifications" | "devices" | "homey" | "system">(initialPage);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
@@ -874,10 +1005,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     </header>
     <aside className="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
-        const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/devices","/settings/homey","/settings/system"] as const;
-        const pages = ["general","dashboard","devices","homey","system"] as const;
-        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}}><span>{["⚙","▦","♧","◉","▤"][index]}</span>{name}</button>;
+      {[t("settings.general"),t("settings.dashboard"),"Meldingen",t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
+        const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/notifications","/settings/devices","/settings/homey","/settings/system"] as const;
+        const pages = ["general","dashboard","notifications","devices","homey","system"] as const;
+        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}}><span>{["⚙","▦","♧","♧","◉","▤"][index]}</span>{name}</button>;
       })}
       <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
@@ -917,7 +1048,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : <section className="settings-card system-card">
+      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : page === "notifications" ? <NotificationSettingsPage /> : <section className="settings-card system-card">
         <h2>{page === "devices" ? t("settings.devices") : page === "homey" ? t("settings.homey") : t("settings.system")}</h2>
         <p>{locale.toLowerCase().startsWith("nl") ? "Deze instellingenpagina heeft alvast een eigen, beveiligde URL. De inhoud wordt in een volgende ontwikkelstap geïmplementeerd." : "This settings page already has its own protected URL. Its contents will be implemented in a later development step."}</p>
       </section>}
