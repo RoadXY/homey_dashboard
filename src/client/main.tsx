@@ -816,11 +816,17 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     const durationActiveBlock = ws.newBlock("homey_notification_duration_active");
     durationActiveBlock.initSvg(); durationActiveBlock.render(); durationActiveBlock.moveBy(1120, 0);
     const activeConditionSlot = ws.newBlock("homey_notification_condition_statement");
+    activeConditionSlot.setFieldValue(sourceKeyRef.current || "", "SOURCE");
+    activeConditionSlot.setFieldValue(comparisonRef.current?.condition?.operator ?? "equals", "OP");
+    activeConditionSlot.setFieldValue(String(comparisonRef.current?.condition?.value ?? false), "VALUE");
     activeConditionSlot.initSvg(); activeConditionSlot.render();
     durationActiveBlock.getInput("CONDITION")?.connection?.connect(activeConditionSlot.previousConnection);
     const durationInactiveBlock = ws.newBlock("homey_notification_duration_inactive");
     durationInactiveBlock.initSvg(); durationInactiveBlock.render(); durationInactiveBlock.moveBy(1120, 180);
     const inactiveConditionSlot = ws.newBlock("homey_notification_condition_statement");
+    inactiveConditionSlot.setFieldValue(sourceKeyRef.current || "", "SOURCE");
+    inactiveConditionSlot.setFieldValue(comparisonRef.current?.condition?.operator ?? "equals", "OP");
+    inactiveConditionSlot.setFieldValue(String(comparisonRef.current?.condition?.value ?? false), "VALUE");
     inactiveConditionSlot.initSvg(); inactiveConditionSlot.render();
     durationInactiveBlock.getInput("CONDITION")?.connection?.connect(inactiveConditionSlot.previousConnection);
     const andBlock = ws.newBlock("homey_notification_logic_and");
