@@ -83,8 +83,8 @@ De actuele Logic-inventarisatie bevestigt onder andere:
 
 Er zijn geen Logic-variabelen gevonden die de HA-schema's rechtstreeks bevestigen. De gebruiker heeft de schema's als volgt beoordeeld:
 - `schedule.boven_ramen_open`: **Migreren**. Onderzoeken of het schema kan worden gereproduceerd en als herbruikbare bouwsteen in Blockly beschikbaar kan worden gemaakt.
-- `schedule.slapen_sem`: **Niet migreren**.
-- `schedule.slapen_bram`: **Niet migreren**.
+- `schedule.slapen_sem`: **Migreren**. De gebruiker bevestigt op 13 november dat dit schema in Blockly moet kunnen worden nagemaakt en aangepast.
+- `schedule.slapen_bram`: **Migreren**. De gebruiker bevestigt op 13 november dat dit schema in Blockly moet kunnen worden nagemaakt en aangepast.
 
 De Homey-Flow-timeoutvariabelen mogen niet als vervanging voor het oorspronkelijke bovenramenschema worden gebruikt.
 
@@ -99,12 +99,12 @@ De Homey-Flow-timeoutvariabelen mogen niet als vervanging voor het oorspronkelij
 - Alle vier plantmeldingen (vochtigheid en voedingswaarde).
 - Alle vijf telefoonbatterijmeldingen.
 - Zon op raam Tess.
-- Slaap-/schema-afhankelijkheid voor lamp Sem en lamp Bram.
+- De slaap-schema's worden juist wel gemigreerd: `slapen_sem` en `slapen_bram` blijven elk een zelfstandige tijdschema-voorwaarde bij de bijbehorende lampmelding.
 
 **Nog open / bronmapping nodig**
 - Temperatuursensor Tess.
 - Bevestiging welke zoldertemperatuursensor voor de koude-zoldermelding bedoeld is.
-- Reproductie van het bovenramenschema en de Blockly-bouwsteen.
+- Reproductie van de drie schema's (`boven_ramen_open`, `slapen_sem`, `slapen_bram`) en de generieke Blockly-bouwsteen; voor de twee slaapvensters moeten de exacte weekdagen/tijden nog uit de HA-helperinstellingen worden vastgesteld.
 - Geschikte bron/app voor neerslagkans.
 
 ## 8. Volgende stap
@@ -190,3 +190,18 @@ Bij een tweede controle is niet op logtitels gefilterd, maar op het exacte appar
 De numerieke logs zijn getest met resolutie `last24Hours`. Voor elk van de drie belangrijkste meetreeksen (`energy_power`, `meter_power`, `meter_power_today`) zijn 288 tijdstempels teruggekomen, met een interval van 5 minuten. `energy_power` varieerde in de opgehaalde periode van 0 tot 533 W en bevatte 109 niet-nulmetingen. `meter_power` liep op van circa 13441.071 naar 13443.572 kWh (ongeveer 2.5 kWh verschil). De `today`-resolutie leverde op het moment van testen 11 punten voor de lopende lokale dag op; de tijdstempels zijn UTC en moeten in de dashboardweergave naar de lokale tijdzone worden geconverteerd.
 
 Conclusie: Homey Insights is voldoende voor de eerste historische zonnepanelengrafiek; er is voor deze grafiek geen eigen meetpuntenopslag in Docker nodig. Gebruik `energy_power` voor de vermogenscurve (W) en desgewenst `meter_power_today` of het verschil in `meter_power` voor energieopbrengst (kWh). De backend haalt de logmetadata op via `getLogs()` en de tijdreeks via `getLogEntries()` met een expliciete resolutie. Vereiste API-scope: `homey.insights.readonly`. Houd rekening met de door Homey gekozen aggregatie/resolutie bij langere perioden.
+
+
+## 10. Correctie gebruikersbesluit – slaap-schema's migreren (13 november 2026)
+
+De eerdere status **Niet migreren** voor `schedule.slapen_sem` en `schedule.slapen_bram` is vervallen. De gebruiker bevestigt dat beide schema's, net als `schedule.boven_ramen_open`, in het nieuwe dashboard moeten worden gereproduceerd en via Blockly instelbaar moeten zijn.
+
+### Functionele koppeling
+- `Lamp Sem staat aan`: `Lamp Sem.onoff == true` **EN** `slapen_sem` is actief.
+- `Lamp Bram staat aan`: `Lamp Bram.onoff == true` **EN** `slapen_bram` is actief.
+
+### Technische afspraak
+Gebruik één generieke Blockly-bouwsteen `Tijdschema actief?` en dezelfde backend-evaluator voor alle drie schema's. Elk schema blijft een afzonderlijke persistente instantie met eigen weekdagen, tijden en eventuele datumuitzonderingen. De schema's mogen niet aan elkaar gekoppeld worden en er wordt geen Homey-Flow aangestuurd.
+
+### Nog te onderzoeken
+De exacte weekplanning van `slapen_sem` en `slapen_bram` is in de tot nu toe geraadpleegde mappingdocumentatie niet vastgelegd. Haal deze waarden uit de oorspronkelijke Home Assistant schedule-helperconfiguratie voordat de schema-instanties of de bijbehorende lampmeldingen als definitieve JSON worden aangemaakt. Neem de tijden van `boven_ramen_open` niet over.
