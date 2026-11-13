@@ -1,6 +1,6 @@
 # Blockly-bouwsteen – tijdschema's per dashboardmelding
 
-**Status:** backend-evaluator aanwezig; Blockly-editor en instellingenopslag nog te implementeren  
+**Status:** backend-evaluator en eerste Blockly-tijdschema-editor geïmplementeerd; verdere condition-editor en lokale bundeling van Blockly blijven vervolgwerk  
 **Scope:** generieke Blockly-bouwsteen voor `schedule.boven_ramen_open`, `schedule.slapen_sem` en `schedule.slapen_bram` uit de oorspronkelijke Home Assistant-configuratie  
 **Doel:** de oorspronkelijke planning per dashboardmelding afzonderlijk vastleggen, zodat elke melding later onafhankelijk in Blockly kan worden aangepast of geïmporteerd. De evaluatielogica mag technisch wel gedeeld zijn.
 
@@ -161,3 +161,30 @@ De eerste codewijzigingen voor lege schema-instanties zijn toegevoegd op branch 
 3. De Blockly-workspace koppelen aan het canonieke JSON-model; geen tweede evaluator introduceren.
 4. Configuraties veilig persistent opslaan in `DATA_DIR`, inclusief validatie vóór opslaan.
 5. De vier afzonderlijke `boven_ramen_open`-instanties toevoegen wanneer de vier raamregels als JSON-configuraties worden gemigreerd.
+
+
+### 10.1 Instellingenpagina en Blockly-editor
+
+De eerste bewerkbare Blockly-interface is toegevoegd onder **Instellingen → Meldingen**.
+
+- De pagina toont meldingen die een tijdschema-node bevatten en laat de gebruiker per melding de eigen schema-instantie selecteren.
+- De custom Blockly-outputblock `Tijdschema actief?` bevat zeven onafhankelijke weekdagkeuzes en velden voor begin- en eindtijd.
+- Een schema zonder geselecteerde weekdagen wordt opgeslagen als `configured: false` met een lege `weekdays`-lijst. Zodra ten minste één dag is geselecteerd, wordt een volledig schema-object opgeslagen.
+- De editor schrijft wijzigingen terug naar dezelfde `schedule`-node in het canonieke notification-v1 JSON-model. Er is geen aparte Blockly-evaluator of tweede regelrepresentatie.
+- De gebruiker slaat alle wijzigingen expliciet op via **Opslaan**. Opslag wordt server-side gevalideerd voordat deze actief wordt.
+- De bestaande meldingen worden niet door de Blockly-editor herschreven zolang de gebruiker niets opslaat.
+
+### 10.2 Beveiligde API en persistente opslag
+
+- `GET /api/settings/notifications` en `POST /api/settings/notifications` vereisen de bestaande PIN-instellingen-sessie.
+- Opgeslagen configuratie wordt als overridebestand `DATA_DIR/notifications.json` bewaard; het bestand wordt met permissie `0600` aangemaakt.
+- De runtime-meldingenengine leest dezelfde opgeslagen configuratie als de instellingenpagina.
+- Bij het laden worden opgeslagen configuraties per stabiele melding-ID samengevoegd met de standaardconfiguraties uit `config/notifications`. Nieuwe standaardmeldingen blijven daardoor zichtbaar wanneer later nieuwe configuratiebestanden aan de repository worden toegevoegd.
+- Een ongeldige JSON-configuratie of dubbele melding-ID wordt geweigerd.
+- De UI-teksten zijn opgenomen in zowel de Nederlandse als Engelse locale.
+
+### 10.3 Bekende technische vervolgstappen
+
+- Blockly 12.3.1 wordt voor deze eerste versie via een vastgepinde CDN-script geladen. Daardoor heeft alleen de Blockly-instellingenpagina een internetverbinding nodig om de editorbibliotheek op te halen. Het normale dashboard en de backend blijven lokaal functioneren. Voor een volledig zelfvoorzienende Docker-image moet Blockly in een volgende stap lokaal worden gebundeld.
+- De huidige Blockly-interface bewerkt de tijdschema-bouwsteen. De volledige visuele editor voor alle AND/OR-, vergelijking-, duur- en databronblokken wordt stapsgewijs uitgebreid; de bestaande JSON-runtime ondersteunt deze conditiontypen al.
+- De vier afzonderlijke `boven_ramen_open`-schema-instanties worden toegevoegd zodra de vier raamregels als meldingsconfiguraties worden gemigreerd.
