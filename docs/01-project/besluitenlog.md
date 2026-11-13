@@ -377,3 +377,7 @@ Het blok `Genereer melding` is als sleepbaar blok toegevoegd aan de toolboxcateg
 
 ## Meldingen – bevestiging bij verlaten met onopgeslagen wijzigingen (13 november 2026)
 Bij wisselen tussen meldingen of navigeren naar een andere instellingenpagina/het dashboard verschijnt een bevestiging wanneer de meldingeneditor onopgeslagen wijzigingen bevat. OK/Doorgaan verwerpt de conceptwijzigingen en navigeert; Annuleren blijft op de huidige melding/pagina en behoudt de wijzigingen. Het opslaan blijft expliciet en afzonderlijk.
+
+
+## Meldingen / Blockly – Genereer melding blijft een vast blok (13 november 2026)
+De hoofdconstructie `Genereer melding` wordt automatisch aangemaakt en kan niet worden verwijderd of verplaatst. Deze hoeft dus niet in de toolbox beschikbaar te zijn. De tijdelijke wijziging waarbij het rootblok als sleepbaar toolboxblok werd aangeboden en dubbele rootblokken werden gecontroleerd, is teruggedraaid.
