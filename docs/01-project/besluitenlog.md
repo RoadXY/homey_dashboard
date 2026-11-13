@@ -276,3 +276,28 @@ Dit besluit vervangt de eerdere implementatiekeuze waarbij de Homey-capabilityma
 - Op smalle schermen blijft de bestaande horizontale navigatie intact; de schakelaar verandert daar niets.
 - Navigatie-iconen zijn verduidelijkt. Voor Meldingen gebruiken we het bel-icoon (mdi-bell-outline), passend bij meldingen/waarschuwingen.
 - De actieve pagina blijft visueel gemarkeerd. Dit is een presentatiewijziging; routes en instellingenlogica blijven ongewijzigd.
+
+
+## Navigatieherziening instellingen (13 november 2026)
+
+De instellingen navigeren voortaan rechtstreeks per functie, in deze vaste volgorde:
+1. Algemeen — `/settings/general`
+2. Snelle acties — `/settings/quick-actions`
+3. Meldingen — `/settings/notifications`
+4. Temperatuurtegels — `/settings/measurement-tiles`
+5. Weer — `/settings/weather`
+
+Het verzamelmenu-item **Dashboard** vervalt; de twee nog relevante onderdelen (Snelle acties en Temperatuurtegels) zijn zelfstandige menu-items. De menu-items Apparaten, Homey en Systeem vervallen eveneens. Informatie over Homey- en dashboardstatus blijft op de pagina Algemeen staan waar die al onderdeel is van het overzicht; er is geen bestaande statusfunctionaliteit verwijderd.
+
+De pagina Weer is als placeholder toegevoegd. De toekomstige instellingen zijn alvast benoemd: buitentemperatuur, gevoelstemperatuur, weericoon/-omschrijving, wind, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang. De placeholder doet nog geen instellingenwijzigingen.
+
+### Compatibiliteit oude URL's
+Bestaande bookmarks blijven bruikbaar via client-side canonicalisatie:
+- `/settings/dashboard` en `/settings/dashboard/quick-actions` → `/settings/quick-actions`
+- `/settings/dashboard/measurement-tiles` → `/settings/measurement-tiles`
+- oude routes `/settings/devices`, `/settings/homey` en `/settings/system` → `/settings/general`
+
+De browseradresbalk wordt met `history.replaceState` bijgewerkt; de pagina blijft binnen de bestaande beveiligde instellingen-sessie.
+
+### i18n-opruiming
+De ongebruikte sleutels `settings.dashboard`, `settings.devices`, `settings.homey` en `settings.weatherTab` zijn uit zowel de Nederlandse als Engelse vertaling verwijderd. Er zijn nieuwe gelokaliseerde labels en beschrijvingen voor de Weer-placeholder toegevoegd. `settings.system` blijft behouden omdat deze nog in de statusweergave op Algemeen wordt gebruikt.
