@@ -305,3 +305,16 @@ Een eventuele toekomstige uitleg van de opgebouwde flow wordt niet met vaste tek
 ### 11.17 Blockly-toolbox gebruikt expliciet dark theme
 
 De eerdere CSS-correctie richtte zich vooral op de legacy Blockly tree-toolbox. De gebruikte category toolbox gebruikt daarnaast `.blocklyToolboxContents`, `.blocklyToolboxCategory` en `.blocklyToolboxCategoryLabel`; daardoor bleef de standaard lichtgrijze achtergrond zichtbaar. De editor initialiseert nu een expliciet `homeyDark` Blockly-theme met donkere workspace-, toolbox- en flyoutkleuren. Aanvullende CSS dekt zowel de moderne category toolbox als de legacy tree-selectors, inclusief hover- en geselecteerde categorieën.
+
+
+### 11.18 Vaste hoofdconstructie Genereer melding en geneste containers
+
+De meldingeneditor gebruikt nu één vaste, niet-verplaatsbare en niet-verwijderbare Blockly-hoofdconstructie **Genereer melding**. De hoofdconstructie bevat een statement-invoegpunt voor de volledige conditieflow en toont de actie **Melding genereren zodra de voorwaarden waar zijn** als vast onderdeel onderaan. De hoofdconstructie zelf is geen nieuwe JSON-node: het bestaande canonieke conditiemodel blijft ongewijzigd en de meldingconfiguratie impliceert de actie.
+
+Binnen de hoofdconstructie kunnen meerdere voorwaarden en EN-/OF-containers naast elkaar worden geplaatst. Meerdere directe onderdelen in de hoofdconstructie worden semantisch gecombineerd met **EN**. EN- en OF-containers hebben ieder één C-vormig statement-invoegpunt waarin meerdere voorwaarden en andere EN-/OF-containers kunnen worden genest. Hierdoor kunnen verschillende containertypen op hetzelfde niveau worden gecombineerd en onbeperkt diep worden genest, binnen de praktische grenzen van Blockly en de backend.
+
+EN betekent dat alle ingesloten voorwaarden waar moeten zijn; OF betekent dat minimaal één ingesloten voorwaarde waar moet zijn. Een EN-/OF-container vereist minimaal twee ingesloten voorwaarden. NIET en de duurblokken blijven unary voorwaarden en kunnen in dezelfde containers worden geplaatst. De backend blijft de uiteindelijke validator en evaluator.
+
+De Homey-apparaat- en Logic-variabeleblokken bevatten voortaan ook hun eigen vergelijkingsoperator en waarde. Het losse groene vergelijkingsblok is uit de toolbox verwijderd. Hierdoor is een bronselectie en de bijbehorende vergelijking één logisch blok; de gebruiker kan geen losse vergelijking meer toevoegen zonder bron. De operatorlijst wordt bepaald door het brontype: numeriek toont zes operatoren, boolean toont gelijk aan en niet gelijk aan.
+
+Bij het laden wordt de bestaande conditieboom in de vaste hoofdconstructie geplaatst. Bij opslaan wordt één directe conditie ongewijzigd opgeslagen; meerdere directe onderdelen worden als canonieke AND-node opgeslagen. Geneste EN-/OF-constructies blijven canonieke operator/conditions-nodes. Er is geen nieuwe evaluator en geen wijziging van het configuratieschema nodig.
