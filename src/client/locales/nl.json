@@ -194,5 +194,10 @@
   "settings.weatherSunriseSunset": "Zonsopkomst en zonsondergang",
   "notifications.activeIndicator": "Er zijn actieve meldingen",
   "notifications.unknownIndicator": "De meldingsstatus kan niet volledig worden gecontroleerd",
-  "settings.automaticHomeyLanguage": "Automatisch (Homey-taal)"
+  "settings.automaticHomeyLanguage": "Automatisch (Homey-taal)",
+  "notifications.create": "Nieuwe melding",
+  "notifications.newTitle": "Nieuwe melding",
+  "notifications.name": "Naam van de melding",
+  "notifications.defaultMessage": "Er is een dashboardmelding actief.",
+  "notifications.emptyList": "Er zijn nog geen meldingen. Maak je eerste melding aan."
 }
