@@ -245,3 +245,8 @@ Het vaste Blockly-hoofdblok `Genereer melding` bevat nu twee tekstvelden: **Tite
 ## Meldingsindicator en kleurcodering op ernst (14 november 2026)
 
 De indicator in de kop van het dashboardmeldingenpaneel wordt uitsluitend bepaald door actieve meldingen (`state === "active"`). Kritiek heeft prioriteit boven waarschuwing: zodra minimaal één kritieke melding actief is, wordt de indicator rood; anders wordt hij geel wanneer minimaal één waarschuwing actief is. Informatieve meldingen tonen geen knipperindicator. Onbekende bronstatussen, offline apparaten en API-/laadfouten activeren de indicator niet; de bestaande inhoudelijke fout-/onbekendmeldingen in het paneel blijven wel bestaan. De koptekst Meldingen krijgt dezelfde severity-accentkleur als de indicator, maar blijft statisch. Kaartberichttekst volgt de semantische severity-tokens: kritisch gebruikt de kritieke tekstkleur, waarschuwing de waarschuwingskleur en informatie de neutrale lichte tekstkleur. Indicator, koptekst en bericht gebruiken uitsluitend CSS-design-tokens (`--severity-*-accent` en `--severity-info-text`), zodat toekomstige thema's deze kleuren centraal kunnen overschrijven.
+
+
+## Meldingenlijst alfabetisch sorteren (14 november 2026)
+
+De dropdown met aangemaakte meldingen toont de flow-/meldingsnamen alfabetisch op titel. De sortering gebruikt `localeCompare` met de actieve dashboardtaal, hoofdletterongevoelige vergelijking en numerieke sortering (bijvoorbeeld 'Melding 2' vóór 'Melding 10'). De sortering wordt alleen op een afgeleide kopie voor de keuzelijst toegepast; de opgeslagen configuratievolgorde, geselecteerde melding en opslagstructuur blijven ongewijzigd. Zo blijft ook zoeken werken binnen de alfabetisch gesorteerde resultaten.
