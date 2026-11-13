@@ -385,3 +385,7 @@ De hoofdconstructie `Genereer melding` wordt automatisch aangemaakt en kan niet 
 
 ## Meldingen – browser Back bevestigen bij onopgeslagen wijzigingen (13 november 2026)
 Browsergeschiedenisnavigatie (popstate/Back) is toegevoegd aan dezelfde bescherming als interne menu- en flowwissels. Bij onopgeslagen meldingswijzigingen wordt de huidige route hersteld en verschijnt een bevestiging. Annuleren blijft op de huidige route; bevestigen voert Back alsnog uit en verwerpt het concept.
+
+
+## Algemene instelling – timeout tijdelijke foutmeldingen (13 november 2026)
+De gebruiker wil tijdelijke foutmeldingen na acties automatisch laten verdwijnen. In Instellingen → Algemeen → Meldingen is een dropdown toegevoegd: Nooit, 1 s, 2 s, 5 s, 10 s, 30 s, 1 min, 5 min, 15 min of 30 min. De default is Nooit om bestaand gedrag te behouden. De timeout geldt voor tijdelijke Quick Action-foutmeldingen (zoals een apparaat dat niet reageert); actieve Homey-conditiemeldingen blijven zichtbaar zolang de voorwaarde actief is. De instelling wordt opgeslagen in settings.json, server-side gevalideerd en op het dashboard gehonoreerd. Nederlandse en Engelse vertalingen zijn toegevoegd.
