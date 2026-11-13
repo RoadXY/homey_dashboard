@@ -1031,7 +1031,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     hydrating = false;
     return () => ws.dispose();
   }, []);
-  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <><div ref={host} className="schedule-blockly-workspace" />{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>}</div>;
+  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <><div ref={host} className="schedule-blockly-workspace" />{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>}</div>;
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
@@ -1118,9 +1118,8 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     </div>
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
+        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2></div><span className="notification-severity-pill">{selected.severity}</span></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
-          <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
     </div>
