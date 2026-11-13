@@ -385,3 +385,7 @@ Een nieuwe melding start met een geldig, maar niet-geconfigureerd tijdschema (`c
 
 ### Correctie create-notification handler (13 november 2026)
 Bij de eerste implementatie van de knop **Nieuwe melding** waren de handlers `createNotification` en `updateTitle` per ongeluk in de component voor meetwaardetegels terechtgekomen, terwijl de meldingenpagina ze aanriep. Daardoor ontstond in de browser de fout `ReferenceError: createNotification is not defined` en crashte de pagina bij renderen. Beide handlers zijn verplaatst naar de scope van `NotificationSettingsPage`. De correctie is vastgelegd in commit `dedd78ab58fe9ff091f8875d57427e5e38cbd7e4`. Hercontrole via CI en daarna browserpraktijktest blijft vereist.
+
+
+### Volgorde niveau-indicator (13 november 2026)
+In de kop van de meldingseditor staat de volgorde nu als **Huidig niveau → gekleurde statuschip → keuzelijst**. De tussenruimte in deze groep is 14px, gelijk aan de `gap: 14px` van de balk met de meldingenkeuzelijst en de knop **Nieuwe melding**. Zo blijft de huidige status direct zichtbaar naast het label, terwijl de dropdown er duidelijk van gescheiden staat.
