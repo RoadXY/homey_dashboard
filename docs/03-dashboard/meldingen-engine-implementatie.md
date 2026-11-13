@@ -226,3 +226,7 @@ Onder **Instellingen → Algemeen → Meldingen** is de instelling **Timeout aut
 ## Handmatig sluiten en meerdere tijdelijke foutmeldingen (13 november 2026)
 
 Tijdelijke foutmeldingen van dashboardacties worden bijgehouden als afzonderlijke records met een unieke ID, bron (`quick-action`), bericht, aanmaaktijd en status. De statussen zijn `active`, `dismissed` en `expired`. Alleen actieve meldingen worden getoond. Elke zichtbare melding heeft een eigen sluitknop (×), die de status op `dismissed` zet, onafhankelijk van de ingestelde automatische timeout. De timeout zet een actieve melding op `expired`; bij instelling `never` gebeurt dat niet. Meerdere foutmeldingen kunnen naast elkaar blijven bestaan en worden afzonderlijk beheerd. De client bewaart maximaal 50 records in de sessiestatus; oudere records worden bij nieuwe meldingen uit de lijst verwijderd. De sluitknop heeft een toegankelijke, vertaalde naam in Nederlands en Engels. Dit datamodel vormt een basis om later andere bronnen en meldingstypen toe te voegen.
+
+
+## Algemeen – breedte kaart Meldingen (13 november 2026)
+De kaart Meldingen met de instelling voor automatisch verbergen gebruikt de volledige beschikbare breedte van de instellingencontent, gelijk aan de kaarten Weer-API-tokens en Systeemstatus. De eerdere maximale breedte van 760 px is verwijderd. De twee bovenste kaarten Taal en Datum en tijd behouden hun bestaande tweekolomsindeling.
