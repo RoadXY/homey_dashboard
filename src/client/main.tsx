@@ -707,10 +707,65 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         }
       };
     }
+    class SearchableSourceDropdown extends Blockly.FieldDropdown {
+      showEditor_() {
+        const dropdown = Blockly.DropDownDiv;
+        const content = dropdown.getContentDiv();
+        content.replaceChildren();
+        const wrapper = document.createElement('div');
+        wrapper.className = 'notification-source-dropdown';
+        const searchWrap = document.createElement('div');
+        searchWrap.className = 'notification-source-dropdown-search';
+        const icon = document.createElement('span');
+        icon.textContent = '⌕';
+        icon.setAttribute('aria-hidden', 'true');
+        const search = document.createElement('input');
+        search.type = 'search';
+        search.autocomplete = 'off';
+        search.placeholder = 'Zoek apparaat, meetmogelijkheid of Logic-variabele…';
+        search.setAttribute('aria-label', 'Zoek Homey-bron');
+        searchWrap.append(icon, search);
+        const results = document.createElement('div');
+        results.className = 'notification-source-dropdown-results';
+        results.setAttribute('role', 'listbox');
+        const footer = document.createElement('div');
+        footer.className = 'notification-source-dropdown-footer';
+        wrapper.append(searchWrap, results, footer);
+        content.appendChild(wrapper);
+        dropdown.setColour('#172b40', '#344a60');
+        const renderOptions = () => {
+          const query = search.value.trim().toLocaleLowerCase();
+          const options = this.getOptions(false).filter((option: [string, string]) => !query || (String(option[0]) + ' ' + option[1]).toLocaleLowerCase().includes(query));
+          results.replaceChildren();
+          options.forEach((option: [string, string]) => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'notification-source-dropdown-option' + (option[1] === this.getValue() ? ' selected' : '');
+            item.setAttribute('role', 'option');
+            item.setAttribute('aria-selected', option[1] === this.getValue() ? 'true' : 'false');
+            item.textContent = option[0];
+            item.addEventListener('mousedown', event => event.preventDefault());
+            item.addEventListener('click', () => { this.setValue(option[1]); dropdown.hideIfOwner(this); });
+            results.appendChild(item);
+          });
+          if (!options.length) {
+            const empty = document.createElement('div');
+            empty.className = 'notification-source-dropdown-empty';
+            empty.textContent = 'Geen Homey-bronnen gevonden.';
+            results.appendChild(empty);
+          }
+          footer.textContent = options.length + (options.length === 1 ? ' resultaat' : ' resultaten');
+        };
+        search.addEventListener('input', renderOptions);
+        renderOptions();
+        dropdown.showPositionedByField(this, () => content.replaceChildren());
+        search.focus();
+      }
+    }
     if (!Blockly.Blocks.homey_notification_source) {
       Blockly.Blocks.homey_notification_source = {
         init() {
-          this.appendDummyInput().appendField("Homey-bron").appendField(new Blockly.FieldDropdown(() => {
+          this.appendDummyInput().appendField("Homey-bron").appendField(new SearchableSourceDropdown(() => {
             const catalog = catalogRef.current;
             const options: Array<[string, string]> = [["— selecteer bron —", ""]];
             (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : ""), "device:" + device.id + ":" + capability.id])));
@@ -760,7 +815,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_notification_condition_statement) {
       Blockly.Blocks.homey_notification_condition_statement = {
         init() {
-          this.appendDummyInput().appendField("Als").appendField(new Blockly.FieldDropdown(() => {
+          this.appendDummyInput().appendField("Als").appendField(new SearchableSourceDropdown(() => {
             const catalog = catalogRef.current;
             const options: Array<[string, string]> = [["— selecteer Homey-bron —", ""]];
             (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title, "device:" + device.id + ":" + capability.id])));
@@ -839,7 +894,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const block = this;
         this.appendDummyInput()
           .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
-          .appendField(new Blockly.FieldDropdown(() => sourceOptions(type)), "SOURCE")
+          .appendField(new SearchableSourceDropdown(() => sourceOptions(type)), "SOURCE")
           .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
           .appendField(new Blockly.FieldTextInput(resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current)?.expectedType === "boolean" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
