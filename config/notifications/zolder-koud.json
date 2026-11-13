@@ -1,18 +1,21 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "zolder-koud",
   "title": "Zolder koud",
   "message": "De temperatuur op zolder is lager dan 12 °C.",
   "severity": "warning",
   "enabled": true,
-  "source": {
-    "type": "device-capability",
-    "deviceId": "ba9336e2-f4ed-417c-bba6-3fafb735e61a",
-    "capabilityId": "measure_temperature",
-    "expectedType": "number"
-  },
   "condition": {
-    "operator": "lessThan",
-    "value": 12
+    "type": "comparison",
+    "source": {
+      "type": "device-capability",
+      "deviceId": "ba9336e2-f4ed-417c-bba6-3fafb735e61a",
+      "capabilityId": "measure_temperature",
+      "expectedType": "number"
+    },
+    "condition": {
+      "operator": "lessThan",
+      "value": 12
+    }
   }
 }
