@@ -1,6 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getHomeyDeviceCapabilityValues, getHomeyLogicVariables } from "./homey.js";
+import { evaluateDurationGate, isScheduleActive, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
 type ExpectedType = "boolean" | "number";
@@ -16,7 +17,11 @@ type ConditionGroup = {
   conditions: ConditionNode[];
 };
 type ConditionLeaf = { source: Source; condition: Comparison };
-type ConditionNode = ConditionGroup | ConditionLeaf;
+type DurationNode = { type: "duration"; id: string; durationMs: number; condition: ConditionNode };
+type ScheduleNode = { type: "schedule" } & ScheduleCondition;
+type ConditionNode = ConditionGroup | ConditionLeaf | DurationNode | ScheduleNode;
+
+const durationStartedAt = new Map<string, number>();
 
 type NotificationConfig = {
   schemaVersion: number;
@@ -77,6 +82,17 @@ function isConditionGroup(value: unknown): value is ConditionGroup {
 function isConditionNode(value: unknown): value is ConditionNode {
   if (!value || typeof value !== "object") return false;
   const node = value as Record<string, unknown>;
+  if (node.type === "schedule") {
+    return Array.isArray(node.weekdays) && node.weekdays.length > 0 &&
+      node.weekdays.every((day) => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6) &&
+      typeof node.startTime === "string" && typeof node.endTime === "string" &&
+      (node.timeZone === undefined || typeof node.timeZone === "string");
+  }
+  if (node.type === "duration") {
+    return typeof node.id === "string" && node.id.length > 0 &&
+      Number.isSafeInteger(node.durationMs) && Number(node.durationMs) > 0 &&
+      isConditionNode(node.condition);
+  }
   if (node.operator === "and" || node.operator === "or") return isConditionGroup(node);
   return isSource(node.source) && isComparison(node.condition);
 }
@@ -88,9 +104,11 @@ function sourceKey(source: Source): SourceKey {
 }
 
 function collectSources(config: NotificationConfig): Source[] {
-  if (isConditionGroup(config.condition)) {
+  if (isConditionNode(config.condition)) {
     const collect = (node: ConditionNode): Source[] => {
       if ("conditions" in node) return node.conditions.flatMap(collect);
+      if (node.type === "duration") return collect(node.condition);
+      if (node.type === "schedule") return [];
       return [node.source];
     };
     return collect(config.condition);
@@ -100,7 +118,7 @@ function collectSources(config: NotificationConfig): Source[] {
 
 function isValidConfig(config: NotificationConfig): boolean {
   const hasLegacyShape = isSource(config.source) && isComparison(config.condition);
-  const hasTreeShape = !config.source && isConditionGroup(config.condition);
+  const hasTreeShape = !config.source && isConditionNode(config.condition);
   return config.schemaVersion === 1 && Boolean(config.id) && Boolean(config.title) &&
     (hasLegacyShape || hasTreeShape) &&
     ["critical", "warning", "info"].includes(config.severity) &&
@@ -145,8 +163,32 @@ export function combineConditionResults(operator: "and" | "or", results: Evaluat
 function evaluateNode(
   node: ConditionNode,
   values: Map<SourceKey, { value?: unknown; expectedType: ExpectedType; error?: string }>,
+  notificationId: string,
+  now: Date,
 ): Evaluation {
-  if ("conditions" in node) return combineConditionResults(node.operator, node.conditions.map((child) => evaluateNode(child, values)));
+  if (node.type === "schedule") {
+    try {
+      return { state: isScheduleActive(node, now) ? "active" : "inactive" };
+    } catch {
+      return { state: "unknown", reason: "schedule_invalid" };
+    }
+  }
+  if (node.type === "duration") {
+    const child = evaluateNode(node.condition, values, notificationId, now);
+    return evaluateDurationGate(
+      `${notificationId}:${node.id}`,
+      child as ConditionResult,
+      node.durationMs,
+      now.getTime(),
+      durationStartedAt,
+    );
+  }
+  if ("conditions" in node) {
+    return combineConditionResults(
+      node.operator,
+      node.conditions.map((child) => evaluateNode(child, values, notificationId, now)),
+    );
+  }
   const sourceValue = values.get(sourceKey(node.source));
   if (!sourceValue) return { state: "unknown", reason: "source_missing" };
   if (sourceValue.error) return { state: "unknown", reason: sourceValue.error };
@@ -200,10 +242,11 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
     else values.set(sourceKey(source), { expectedType: source.expectedType, value: reading.value });
   }
 
+  const evaluationTime = new Date();
   const notifications = configs.map((config): DashboardNotification => {
     const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
-    if (isConditionGroup(config.condition)) {
-      const result = evaluateNode(config.condition, values);
+    if (isConditionNode(config.condition)) {
+      const result = evaluateNode(config.condition, values, config.id, evaluationTime);
       return { ...base, ...result };
     }
     if (!config.source) return { ...base, state: "unknown", reason: "configuration_invalid" };
