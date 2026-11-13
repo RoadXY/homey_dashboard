@@ -906,9 +906,12 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP");
         const makeValueField = (expectedType: "number" | "boolean", rawValue: string) => {
           const normalized = comparisonInputValue(expectedType, rawValue);
-          return expectedType === "boolean"
-            ? new Blockly.FieldDropdown([["false", "false"], ["true", "true"]], String(normalized))
-            : new Blockly.FieldNumber(Number(normalized));
+          if (expectedType === "boolean") {
+            const field = new Blockly.FieldDropdown([["false", "false"], ["true", "true"]]);
+            field.setValue(String(normalized));
+            return field;
+          }
+          return new Blockly.FieldNumber(Number(normalized));
         };
         input.appendField(makeValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
