@@ -81,3 +81,15 @@ export function durationNodeFromBlockly(blockId: string, storedId: unknown, minu
     condition: inactive ? { type: "not", condition: child } : child
   };
 }
+
+/**
+ * Direct children of the fixed "Genereer melding" root are implicitly ANDed.
+ * A single child is returned unchanged to preserve existing condition JSON.
+ */
+export function combineRootConditions(conditions: any[]): any {
+  if (!Array.isArray(conditions) || conditions.length === 0) {
+    throw new Error("Genereer melding vereist minimaal één voorwaarde.");
+  }
+  if (conditions.length === 1) return conditions[0];
+  return { operator: "and", conditions };
+}
