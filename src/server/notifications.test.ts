@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { combineConditionResults } from "./notifications.js";
+import { combineConditionResults, parseNotificationConfigJson } from "./notifications.js";
 
 describe("combineConditionResults", () => {
   it("requires every child to be active for AND", () => {
@@ -52,5 +52,19 @@ describe("combineConditionResults", () => {
       { state: "inactive", reevaluateAt: 8_000 },
       { state: "inactive", reevaluateAt: 6_000 },
     ])).toEqual({ state: "inactive", reevaluateAt: 6_000 });
+  });
+});
+
+describe("parseNotificationConfigJson", () => {
+  it("accepts normal JSON with a real trailing newline", () => {
+    expect(parseNotificationConfigJson('[{"id":"test"}]\n')).toEqual([{ id: "test" }]);
+  });
+
+  it("repairs the literal escaped newline written by the previous serializer", () => {
+    expect(parseNotificationConfigJson('[{"id":"test"}]\\n')).toEqual([{ id: "test" }]);
+  });
+
+  it("still rejects unrelated trailing data", () => {
+    expect(() => parseNotificationConfigJson('[{"id":"test"}] garbage')).toThrow();
   });
 });
