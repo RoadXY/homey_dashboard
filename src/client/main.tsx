@@ -1375,6 +1375,12 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
+  const sortedConfigs = [...configs].sort((a, b) =>
+    a.title.localeCompare(b.title, locale, { sensitivity: "base", numeric: true })
+  );
+  const matchingNotifications = sortedConfigs.filter(item =>
+    item.title.toLocaleLowerCase(locale).includes(notificationSearch.trim().toLocaleLowerCase(locale))
+  );
   const selected = configs.find(item => item.id === selectedId) ?? configs[0];
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
@@ -1505,13 +1511,13 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
         {notificationPickerOpen && <div className="notification-rule-menu">
           <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder="Zoek een melding..." aria-label="Zoek een melding"/></div>
           <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
-            {configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())).map(item =>
+            {matchingNotifications.map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
                 onClick={() => switchNotification(item.id)}>{item.title}</button>
             )}
-            {!configs.some(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())) && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
+            {matchingNotifications.length === 0 && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
           </div>
-          <div className="notification-rule-footer">{configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())).length} resultaten</div>
+          <div className="notification-rule-footer">{matchingNotifications.length} resultaten</div>
         </div>}
       </div>
       <button type="button" className="notification-create-button" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
