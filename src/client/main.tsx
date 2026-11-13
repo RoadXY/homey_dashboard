@@ -72,6 +72,9 @@ function App() {
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(() => window.location.pathname.startsWith("/settings"));
   const [settingsPath, setSettingsPath] = React.useState(() => window.location.pathname);
+  const notificationDirtyRef = React.useRef(false);
+  const currentRouteRef = React.useRef(window.location.pathname);
+  const allowNextPopstateRef = React.useRef(false);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
   const [pin, setPin] = React.useState("");
   const [pinError, setPinError] = React.useState("");
@@ -218,8 +221,24 @@ function App() {
         "/settings/homey": "/settings/general",
         "/settings/system": "/settings/general",
       };
+      if (allowNextPopstateRef.current) {
+        allowNextPopstateRef.current = false;
+      } else if (notificationDirtyRef.current) {
+        const targetPath = window.location.pathname;
+        const currentPath = currentRouteRef.current;
+        // A popstate cannot be cancelled. Restore the current history entry,
+        // ask the user, then replay the Back action only after confirmation.
+        window.history.pushState({}, "", currentPath);
+        const shouldLeave = window.confirm("Je hebt niet-opgeslagen wijzigingen in je meldingen. Als je teruggaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+        if (!shouldLeave) return;
+        notificationDirtyRef.current = false;
+        allowNextPopstateRef.current = true;
+        window.history.back();
+        return;
+      }
       const currentPath = window.location.pathname;
       const canonicalPath = legacyRoutes[currentPath] ?? currentPath;
+      currentRouteRef.current = canonicalPath;
       if (canonicalPath !== currentPath) window.history.replaceState({}, "", canonicalPath);
       const isSettingsRoute = canonicalPath.startsWith("/settings");
       setSettingsOpen(isSettingsRoute);
@@ -272,14 +291,14 @@ function App() {
   const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
-    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); setSettingsPath("/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
+    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); currentRouteRef.current = "/settings/general"; setSettingsPath("/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
   };
   const cancelSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = null;
   };
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onNavigate={path => { window.history.pushState({}, "", path); setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
+    ? <GeneralSettingsPage onDirtyChange={dirty => { notificationDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
@@ -1630,10 +1649,11 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   </div>;
 }
 
-function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather"; onNavigate: (path: string) => void }) {
+function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }: { onBack: () => void; initialPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather"; onNavigate: (path: string) => void; onDirtyChange: (dirty: boolean) => void }) {
   const [page, setPage] = React.useState<"general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather">(initialPage);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [notificationDirty, setNotificationDirty] = React.useState(false);
+  React.useEffect(() => { onDirtyChange(notificationDirty); }, [notificationDirty, onDirtyChange]);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const confirmLeaveNotifications = () => {
     if (page !== "notifications" || !notificationDirty) return true;
