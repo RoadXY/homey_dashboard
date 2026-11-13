@@ -157,3 +157,21 @@ Versie 1 blijft voorlopig ondersteund. De backend moet v1-configuraties naar het
 Het JSON Schema dekt de structurele vorm. De bestaande backendvalidatie blijft verantwoordelijk voor domeinregels zoals maximum 12 niveaus, maximaal 100 nodes, unieke duration-ID's, IANA-tijdzonevaliditeit en compatibiliteit tussen brontype en vergelijkingsoperator/-waarde.
 
 **Nog niet geïmplementeerd:** v2 runtime-parser/normalisatie, v1-migratie en bijbehorende tests. De bestaande v1-configuraties blijven daarom voorlopig ongewijzigd. De Blockly-editor wordt pas op dit stabiele v2-model aangesloten.
+
+
+## Backendnormalisatie schema v1/v2 – 13 november 2026
+
+De eerste backendstap voor het versiebeheer is geïmplementeerd:
+
+- De configuratievalidator accepteert nu versie 1 en versie 2, met verschillende vormregels. V1 blijft zowel het oudere top-level `source` + vergelijking-formaat als de eerdere samengestelde boom ondersteunen.
+- V2 accepteert uitsluitend een conditieboom met expliciete `type: "comparison"`-bladen. De bron in een Logic-comparison gebruikt `variableId`; apparaatbronnen blijven `deviceId` + `capabilityId`.
+- Bij het laden worden beide versies genormaliseerd naar één intern conditiemodel. Oude leaf-nodes worden intern expliciete comparison-nodes; groepen, duur- en tijdschema-nodes blijven composable.
+- V1-configuraties en bronbestanden worden niet automatisch herschreven. De bestaande JSON-bestanden blijven dus ongewijzigd.
+- Homey Logic kan nu zowel op naam (voor v1) als op stabiele variabele-ID (voor v2) worden opgevraagd. Een ontbrekende bron resulteert in `source_missing`; een niet-unieke v1-naam resulteert in `source_ambiguous`. Er wordt nooit stilzwijgend een willekeurige variabele gekozen.
+- Device-capability-evaluatie en de bestaande duur-/schema-deadlines blijven via hetzelfde interne model lopen.
+
+Tests toegevoegd voor v2-validatie, afwijzen van v1/v2-bronvormen in de verkeerde versie, normalisatie van beide bestaande v1-vormen en compositie van v2 comparison/duration/schedule-nodes.
+
+**Verificatie:** GitHub Actions-run [43378301001](https://github.com/RoadXY/homey_dashboard/actions/runs/43378301001) is groen. Alle 31 tests in 3 testbestanden zijn geslaagd; OpenAPI-validatie en frontend-/backendbuild zijn eveneens geslaagd.
+
+**Nog open:** migratie van de bestaande JSON-bestanden naar v2 is bewust nog niet uitgevoerd. Eerst moet de v2-runtime op representatieve configuraties en de echte Homey-inventarisatie worden gevalideerd; daarna kunnen we de bestanden gecontroleerd migreren en de migratie permanent met fixtures/tests afdekken.
