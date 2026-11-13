@@ -170,3 +170,14 @@ Het bestaande tijdschema-blok blijft in dezelfde Blockly-workspace beschikbaar. 
 De Blockly-workspace bevat nu ook een afzonderlijk vergelijkingsblok met operator- en waardekeuze. De operatorlijst is datatypebewust: numerieke bronnen bieden alle zes afgesproken operatoren; booleaanse bronnen alleen `equals` en `notEquals`. Wijzigingen aan operator en waarde worden teruggeschreven naar de eerste vergelijkingsnode in het bestaande condition-model, zonder de omliggende EN/OF-structuur te vervangen.
 
 Dit is nog een tussenstap: bron- en vergelijkingsblokken zijn zichtbaar naast elkaar en nog niet via Blockly-verbindingen tot één expressie gekoppeld. Het round-trip laden van willekeurige bestaande condition-bomen en de visuele EN/OF/NIET-compositie volgen hierna. Tot die tijd blijft de bestaande JSON-configuratie de bron van waarheid.
+### 11.4 Eerste logische Blockly-blokken
+
+De Blockly-workspace toont nu drie aanvullende logische blokken:
+
+- **EN** (`homey_notification_logic_and`): twee boolean-aansluitingen; beide voorwaarden moeten waar zijn.
+- **OF** (`homey_notification_logic_or`): twee boolean-aansluitingen; minimaal één voorwaarde moet waar zijn.
+- **NIET** (`homey_notification_logic_not`): één boolean-aansluiting; keert de uitkomst om.
+
+Het vergelijkingsblok levert nu eveneens een boolean-uitgang, zodat het technisch op de logische aansluitingen kan worden aangesloten. De blokken gebruiken het afgesproken canonieke typegedrag; de backend combineert bestaande AND/OR-nodes al met drie-waardige logica en ondersteunt ook de NOT-node.
+
+**Status en beperking:** dit is de eerste visuele/verbindingstechnische stap, nog geen complete Blockly-editor. De workspace maakt de blokken zichtbaar, maar laadt de volledige bestaande conditieboom nog niet als verbonden blokken en vertaalt gewijzigde verbindingen nog niet terug naar JSON. Ook is de bediening van EN/OF momenteel op twee ingangen ingericht. Het bestaande JSON-model en de backend blijven leidend; er wordt nog niets beweerd over round-trip of opslaan van een via verbindingen gebouwde logische boom. De volgende stap is de volledige conditieboom veilig inlezen en serialiseren, inclusief behoud van onbekende of niet-bewerkbare constructies.
