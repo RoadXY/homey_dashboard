@@ -1242,6 +1242,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
   const missingSources = selected && sourceCatalog ? findMissingNotificationSources(selected.condition, sourceCatalog) : [];
+  const notificationSourceIssues = sourceCatalog ? configs.map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
     if (!selected || !key) return;
@@ -1333,10 +1334,17 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       {!busy && !configs.length && <p>{t("notifications.emptyList")}</p>}
       {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
     </div>
+    {notificationSourceIssues.length > 0 && <section className="notification-source-issues" aria-label="Meldingen met Homey-bronproblemen">
+      <h2>Homey-bronnen controleren</h2>
+      {notificationSourceIssues.map((issue, index) => <div className="notification-source-warning" role="alert" key={index}>
+        <strong>{issue.title}</strong>
+        <ul>{issue.sources.map((source, sourceIndex) => <li key={sourceIndex}>{source}</li>)}</ul>
+        <span>Controleer de genoemde bron in Homey of pas de betreffende voorwaarde in deze melding aan.</span>
+      </div>)}
+    </section>}
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div>
-          {missingSources.length > 0 && <div className="notification-source-warning" role="alert"><strong>Homey-bronnen ontbreken of zijn niet beschikbaar:</strong><ul>{missingSources.map((source, index) => <li key={index}>{source}</li>)}</ul><span>Controleer de genoemde apparaten, meetmogelijkheden of Logic-variabelen in Homey. Pas daarna de betreffende voorwaarde in Blockly aan.</span></div>}
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
