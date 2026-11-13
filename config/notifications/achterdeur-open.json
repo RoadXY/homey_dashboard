@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "achterdeur-open",
   "title": "Achterdeur open",
   "message": "De achterdeur staat open terwijl het buiten kouder dan 18 °C of warmer dan 24 °C is.",
@@ -9,34 +9,46 @@
     "operator": "and",
     "conditions": [
       {
+        "type": "comparison",
         "source": {
           "type": "device-capability",
           "deviceId": "8bd0184e-5cd7-443f-bafc-8d509ab32e7a",
           "capabilityId": "alarm_contact",
           "expectedType": "boolean"
         },
-        "condition": { "operator": "equals", "value": true }
+        "condition": {
+          "operator": "equals",
+          "value": true
+        }
       },
       {
         "operator": "or",
         "conditions": [
           {
+            "type": "comparison",
             "source": {
               "type": "device-capability",
               "deviceId": "c7e68c38-1588-4c93-9db8-e854f4d251ab",
               "capabilityId": "measure_temperature",
               "expectedType": "number"
             },
-            "condition": { "operator": "lessThan", "value": 18 }
+            "condition": {
+              "operator": "lessThan",
+              "value": 18
+            }
           },
           {
+            "type": "comparison",
             "source": {
               "type": "device-capability",
               "deviceId": "c7e68c38-1588-4c93-9db8-e854f4d251ab",
               "capabilityId": "measure_temperature",
               "expectedType": "number"
             },
-            "condition": { "operator": "greaterThan", "value": 24 }
+            "condition": {
+              "operator": "greaterThan",
+              "value": 24
+            }
           }
         ]
       }
