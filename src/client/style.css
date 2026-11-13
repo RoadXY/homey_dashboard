@@ -256,7 +256,7 @@ body {
 .topbar-time { font-size:21px; letter-spacing:.02em; margin-right:48px; }
 .settings-top-label { padding:10px 17px; border-radius:9px; background:#123b67; color:#37b8ff; font-weight:650; }
 .settings-sidebar { position:relative; grid-column:1; grid-row:2; display:flex; flex-direction:column; padding:38px 18px 24px; border-right:1px solid rgba(155,182,212,.25); background:rgba(10,22,38,.72); }
-.settings-sidebar h2 { margin:0 0 20px 20px; font-size:21px; }
+.settings-sidebar h2 { width:100%; margin:0 0 20px; padding:0 12px; text-align:center; font-size:26px; line-height:1.2; font-weight:700; color:var(--text-primary); }
 .sidebar-collapse-toggle { position:absolute; z-index:2; top:34px; right:-15px; width:30px; height:30px; display:grid; place-items:center; padding:0; border:0; border-radius:8px; background:var(--dashboard-background); color:var(--sidebar-toggle-color); cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
 .sidebar-collapse-toggle .mdi { font-size:20px; line-height:1; }
 .sidebar-collapse-toggle:hover { color:var(--text-primary); background:var(--nav-button-background); }
