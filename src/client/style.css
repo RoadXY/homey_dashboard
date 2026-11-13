@@ -257,10 +257,11 @@ body {
 .settings-top-label { padding:10px 17px; border-radius:9px; background:#123b67; color:#37b8ff; font-weight:650; }
 .settings-sidebar { position:relative; grid-column:1; grid-row:2; display:flex; flex-direction:column; padding:38px 18px 24px; border-right:1px solid rgba(155,182,212,.25); background:rgba(10,22,38,.72); }
 .settings-sidebar h2 { width:100%; margin:0 0 20px; padding:0 12px; text-align:center; font-size:26px; line-height:1.2; font-weight:700; color:var(--text-primary); }
-.sidebar-collapse-toggle { position:absolute; z-index:2; top:34px; right:-15px; width:30px; height:30px; display:grid; place-items:center; padding:0; border:0; border-radius:8px; background:var(--dashboard-background); color:var(--sidebar-toggle-color); cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-.sidebar-collapse-toggle .mdi { font-size:20px; line-height:1; }
-.sidebar-collapse-toggle:hover { color:var(--text-primary); background:var(--nav-button-background); }
+.sidebar-collapse-toggle { position:absolute; z-index:2; top:34px; right:8px; width:30px; height:30px; display:grid; place-items:center; padding:0; border:0; border-radius:0; background:transparent; color:var(--sidebar-toggle-color); cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.sidebar-collapse-toggle svg { display:block; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.sidebar-collapse-toggle:hover { color:var(--text-primary); background:transparent; }
 .sidebar-collapse-toggle:focus-visible { outline:2px solid var(--nav-button-active-border); outline-offset:2px; }
+.settings-shell.sidebar-collapsed .sidebar-collapse-toggle { right:8px; }
 .settings-shell.sidebar-collapsed .sidebar-collapse-toggle { right:-15px; }
 
 .settings-nav { min-height:50px; display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:14px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
