@@ -76,3 +76,19 @@ De gebruiker keurt de volgende drie logische blokken goed voor de volledige Bloc
 EN en OF sluiten aan op de bestaande conditieboomstructuur met `operator` en `conditions`. Het NIET-blok vereist een expliciete uitbreiding van het canonieke JSON-schema, backendvalidatie, evaluator en tests. Bestaande AND/OR-configuraties blijven geldig en hoeven niet te worden herschreven.
 
 De Blockly-editor moet voorkomen dat een onvolledige logische constructie als geldige configuratie wordt opgeslagen. EN/OF moeten minimaal één aangesloten conditie hebben; NIET moet precies één aangesloten conditie hebben. De backend blijft de uiteindelijke validatie uitvoeren.
+
+## Blockly – tijd- en duurblokken (13 november 2026)
+
+De gebruiker keurt de volgende vier blokken goed voor de Blockly-toolbox:
+- **Tijdschema actief?**: boolean-voorwaarde die waar is binnen de ingestelde weekdagen en begin-/eindtijd.
+- **Gedurende X minuten actief**: onderliggende voorwaarde moet onafgebroken waar zijn gedurende de ingestelde duur.
+- **Gedurende X minuten inactief**: onderliggende voorwaarde moet onafgebroken onwaar zijn gedurende de ingestelde duur.
+- **Dag van de week**: boolean-voorwaarde voor één of meer geselecteerde weekdagen.
+
+### Semantiek van tijdschema als gewone conditie
+
+Een tijdschema is een herbruikbare boolean-voorwaarde in de conditieboom; het is geen zelfstandige trigger en toont niet op zichzelf een melding. De gebruiker combineert het schema met andere voorwaarden via EN/OF/NIET.
+
+Voorbeeld: de melding **Raam Bram niet open** wordt getoond wanneer (1) het tijdschema actief is, bijvoorbeeld tussen 08:00 en 20:00, EN (2) de contactcapability van het bovenraam Bram onwaar is. Buiten het tijdschema is de samengestelde conditie onwaar, ook wanneer het raam dicht is. De tijden in dit voorbeeld zijn illustratief; de concrete bestaande weekplanning van `boven_ramen_open` blijft vastgelegd in `blockly-bouwsteen-tijdschema.md`.
+
+Tijdschema-, dag-van-de-week- en duurblokken leveren boolean-condities en moeten daarom op dezelfde manier als andere voorwaarden in EN/OF/NIET kunnen worden aangesloten. De duurblokken bevatten precies één onderliggende conditie. De evaluator moet de bestaande duursemantiek behouden: de timer loopt alleen zolang de onderliggende conditie ononderbroken in de vereiste toestand blijft.
