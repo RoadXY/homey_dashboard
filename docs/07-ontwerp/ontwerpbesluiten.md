@@ -65,3 +65,14 @@ De gebruiker keurt voor de eerste volledige Blockly-editor de volgende zes verge
 De editor toont alleen operatoren die bij het verwachte brontype passen: booleaanse bronnen krijgen gelijk aan / niet gelijk aan met boolean-waarden; numerieke bronnen krijgen alle zes operatoren met numerieke waarden. De bronselectie bepaalt het verwachte type en de editor voorkomt ongeldige combinaties.
 
 **Technische consequentie:** het huidige canonieke JSON-schema en de backend ondersteunen op dit moment alleen `equals`, `lessThan` en `greaterThan`. De twee nieuwe relationele operatoren en `notEquals` moeten daarom als uitbreiding worden toegevoegd aan schema, validator, evaluator en tests voordat de bijbehorende Blockly-blokken worden vrijgegeven. Bestaande JSON-configuraties met de huidige operatoren blijven ongewijzigd geldig.
+
+## Blockly – logische combinatieblokken (13 november 2026)
+
+De gebruiker keurt de volgende drie logische blokken goed voor de volledige Blockly-editor:
+- **EN** (`and`): alle aangesloten onderliggende voorwaarden moeten waar zijn.
+- **OF** (`or`): minimaal één aangesloten onderliggende voorwaarde moet waar zijn.
+- **NIET** (`not`): keert de uitkomst van precies één onderliggende voorwaarde om.
+
+EN en OF sluiten aan op de bestaande conditieboomstructuur met `operator` en `conditions`. Het NIET-blok vereist een expliciete uitbreiding van het canonieke JSON-schema, backendvalidatie, evaluator en tests. Bestaande AND/OR-configuraties blijven geldig en hoeven niet te worden herschreven.
+
+De Blockly-editor moet voorkomen dat een onvolledige logische constructie als geldige configuratie wordt opgeslagen. EN/OF moeten minimaal één aangesloten conditie hebben; NIET moet precies één aangesloten conditie hebben. De backend blijft de uiteindelijke validatie uitvoeren.
