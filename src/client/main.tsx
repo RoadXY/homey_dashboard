@@ -8,7 +8,7 @@ import * as BlocklyEn from "blockly/msg/en";
 import "@mdi/font/css/materialdesignicons.css";
 import mdiMeta from "@mdi/svg/meta.json";
 import { availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
-import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, normalizeScheduleTimeInput, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
+import { combineRootConditions, comparisonInputValue, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, normalizeScheduleTimeInput, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -899,11 +899,18 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     const defineSourceBlock = (type: "device" | "logic") => ({
       init(this: any) {
         const block = this;
-        this.appendDummyInput()
+        const initialSource = resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current);
+        const input = this.appendDummyInput()
           .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
           .appendField(new SearchableSourceDropdown(() => sourceOptions(type)), "SOURCE")
-          .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
-          .appendField(new Blockly.FieldTextInput(resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current)?.expectedType === "boolean" ? "false" : "0"), "VALUE");
+          .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP");
+        const makeValueField = (expectedType: "number" | "boolean", rawValue: string) => {
+          const normalized = comparisonInputValue(expectedType, rawValue);
+          return expectedType === "boolean"
+            ? new Blockly.FieldDropdown([["false", "false"], ["true", "true"]], String(normalized))
+            : new Blockly.FieldNumber(Number(normalized));
+        };
+        input.appendField(makeValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
         this.setOnChange((event: any) => {
           if (event.type !== Blockly.Events.BLOCK_FIELD_CHANGED || event.blockId !== block.id || event.name !== "SOURCE") return;
@@ -911,10 +918,10 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           if (!source) return;
           if (!comparisonOptions(block).some(([, operator]) => operator === block.getFieldValue("OP"))) block.setFieldValue("equals", "OP");
           const raw = block.getFieldValue("VALUE");
-          if (source.expectedType === "number" && (raw.trim() === "" || !Number.isFinite(Number(raw)))) block.setFieldValue("0", "VALUE");
-          if (source.expectedType === "boolean" && raw !== "true" && raw !== "false") block.setFieldValue("false", "VALUE");
+          input.removeField("VALUE");
+          input.appendField(makeValueField(source.expectedType, raw), "VALUE");
         });
-        this.setTooltip("Selecteer een Homey-bron en stel direct de vergelijking in.");
+        this.setTooltip("Selecteer een Homey-bron. Boolean-bronnen gebruiken true/false; numerieke bronnen gebruiken een numeriek invoerveld.");
       }
     });
     if (!Blockly.Blocks.homey_condition_device_source) Blockly.Blocks.homey_condition_device_source = defineSourceBlock("device");
