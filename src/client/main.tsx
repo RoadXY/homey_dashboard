@@ -803,8 +803,17 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
           .appendField(new Blockly.FieldDropdown(() => sourceOptions(type)), "SOURCE")
           .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
-          .appendField(new Blockly.FieldTextInput(type === "device" ? "false" : "0"), "VALUE");
+          .appendField(new Blockly.FieldTextInput(resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current)?.expectedType === "boolean" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
+        this.setOnChange((event: any) => {
+          if (event.type !== Blockly.Events.BLOCK_FIELD_CHANGED || event.blockId !== block.id || event.name !== "SOURCE") return;
+          const source = resolveNotificationSourceFromKey(block.getFieldValue("SOURCE"), catalogRef.current);
+          if (!source) return;
+          if (!comparisonOptions(block).some(([, operator]) => operator === block.getFieldValue("OP"))) block.setFieldValue("equals", "OP");
+          const raw = block.getFieldValue("VALUE");
+          if (source.expectedType === "number" && (raw.trim() === "" || !Number.isFinite(Number(raw)))) block.setFieldValue("0", "VALUE");
+          if (source.expectedType === "boolean" && raw !== "true" && raw !== "false") block.setFieldValue("false", "VALUE");
+        });
         this.setTooltip("Selecteer een Homey-bron en stel direct de vergelijking in.");
       }
     });
@@ -940,10 +949,18 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           block.data = JSON.stringify(node);
         } else {
           const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
-          block = ws.newBlock(sourceType);
-          block.setFieldValue(sourceKey, "SOURCE");
-          block.setFieldValue(node.condition?.operator ?? "equals", "OP");
-          block.setFieldValue(String(node.condition?.value ?? false), "VALUE");
+          const candidate = ws.newBlock(sourceType);
+          candidate.setFieldValue(sourceKey, "SOURCE");
+          const operator = node.condition?.operator ?? "equals";
+          if (!comparisonOptions(candidate).some(([, option]) => option === operator)) {
+            candidate.dispose();
+            block = ws.newBlock("homey_condition_unsupported");
+            block.data = JSON.stringify(node);
+          } else {
+            candidate.setFieldValue(operator, "OP");
+            candidate.setFieldValue(String(node.condition?.value ?? false), "VALUE");
+            block = candidate;
+          }
         }
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
