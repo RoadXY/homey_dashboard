@@ -188,3 +188,16 @@ De eerste bewerkbare Blockly-interface is toegevoegd onder **Instellingen → Me
 - Blockly 12.3.1 wordt voor deze eerste versie via een vastgepinde CDN-script geladen. Daardoor heeft alleen de Blockly-instellingenpagina een internetverbinding nodig om de editorbibliotheek op te halen. Het normale dashboard en de backend blijven lokaal functioneren. Voor een volledig zelfvoorzienende Docker-image moet Blockly in een volgende stap lokaal worden gebundeld.
 - De huidige Blockly-interface bewerkt de tijdschema-bouwsteen. De volledige visuele editor voor alle AND/OR-, vergelijking-, duur- en databronblokken wordt stapsgewijs uitgebreid; de bestaande JSON-runtime ondersteunt deze conditiontypen al.
 - De vier afzonderlijke `boven_ramen_open`-schema-instanties worden toegevoegd zodra de vier raamregels als meldingsconfiguraties worden gemigreerd.
+
+## 10. Huidige editorbeperking en vervolgimplementatie – 13 november 2026
+
+Bij de eerste praktijktest van de instellingenpagina is vastgesteld dat de Blockly-werkruimte alleen het losse blok `Tijdschema actief?` toont. Dit blok heeft een boolean-uitgang, maar de werkruimte heeft nog geen toolbox en bevat nog geen bron-, vergelijking-, EN/OF- of duurblokken. Daardoor kan de gebruiker nog geen conditieketen samenstellen. Dit is een ontbrekend implementatieonderdeel, geen bedieningsprobleem.
+
+Vervolgimplementatie:
+- Voeg een toolbox toe met bouwstenen voor Homey-apparaat/capability, Logic-variabele, vergelijking, EN, OF, tijdschema en duur.
+- Maak de aansluitingen compatibel met het canonieke voorwaardenmodel: conditieblokken leveren een boolean-conditie; bron- en vergelijkingsvelden worden als één comparison-node opgeslagen; EN/OF bevatten één of meer onderliggende condities; duur bevat een onderliggende conditie.
+- Serialiseer de Blockly-werkruimte naar het bestaande `schemaVersion: 1` JSON-model en laad bestaande JSON-configuraties terug in Blockly.
+- Blijf dezelfde backendvalidatie en evaluator gebruiken. Er komt geen afzonderlijke Blockly-evaluator.
+- Behoud de bestaande instellingen voor meldingstitel, bericht, ernst en ingeschakeld-status; deze editoruitbreiding verandert alleen de manier waarop de conditieboom wordt bewerkt.
+
+De huidige tijdschema-editor geldt daarom als eerste technische proef, niet als afgeronde Blockly-conditie-editor. De volledige conditie-editor is pas gereed wanneer bestaande combinaties van comparison-, AND/OR-, duration- en schedule-nodes visueel kunnen worden opgebouwd, geopend, gewijzigd en opgeslagen.
