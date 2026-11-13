@@ -115,3 +115,15 @@ De eerder besproken CO₂-waarden (waarschuwing vanaf 1000 ppm, kritiek vanaf 20
 Deze bouwsteen wordt **niet** geïmplementeerd voordat de eerste JSON-gedreven meldingen werken. Eerst worden de bestaande goedgekeurde meldingen uit de Home Assistant-YAML naar JSON-configuratie vertaald en door de dashboardapplicatie uitgevoerd. Daarna wordt Blockly als editor op die bestaande JSON-configuratie aangesloten, zodat Blockly configuraties kan lezen, bewerken en genereren.
 
 Deze schets beschrijft dus het latere Blockly-doel en is geen opdracht om nu al Blockly te bouwen.
+
+
+## 10. Implementatiestap – read-only broncatalogus
+
+De backend biedt nu een afzonderlijke broncatalogus voor de meldingeneditor via `GET /api/settings/notification-sources`.
+
+- De route is uitsluitend beschikbaar met een geldige instellingen-PIN-sessie.
+- De catalogus bevat Homey-apparaten, hun boolean- en numerieke capabilities, ruimtes en boolean-/numerieke Logic-variabelen.
+- Apparaat-ID's, capability-ID's en Logic-variable-ID's zijn de opgeslagen sleutels; namen zijn uitsluitend presentatietekst.
+- Tekst- en enum-capabilities/variabelen worden bewust nog niet aangeboden, omdat het huidige canonieke notification-v1-bronmodel alleen `boolean` en `number` ondersteunt.
+- De bestaande meetwaardetegelcatalogus blijft ongewijzigd en numeriek; deze uitbreiding beïnvloedt de instellingen voor meetwaardetegels niet.
+- Deze stap levert alleen de broncatalogus. De Blockly-blokken en JSON-roundtrip volgen in de volgende implementatiestappen.
