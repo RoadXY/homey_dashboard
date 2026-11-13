@@ -159,10 +159,10 @@ export function normalizeNotificationConfig(config: NotificationConfig): Normali
     return { ...config, condition: normalizeConditionNode(config.condition as ConditionNode, 2) };
   }
   if (config.source) {
+    const { source, ...metadata } = config;
     return {
-      ...config,
-      source: undefined,
-      condition: { type: "comparison", source: config.source, condition: config.condition as Comparison },
+      ...metadata,
+      condition: { type: "comparison", source, condition: config.condition as Comparison },
     };
   }
   return { ...config, condition: normalizeConditionNode(config.condition as LegacyConditionNode, 1) };
