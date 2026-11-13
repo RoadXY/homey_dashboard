@@ -477,40 +477,22 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - Nog te testen na deployment: icon selecteren, opslaan, pagina herladen en controleren op instellingenpreview en dashboard.
 
 
-## Meldingsconfiguratie – versie 2 (13 november 2026)
+## Meldingsconfiguratie – canoniek schema v1 (13 november 2026)
 
-Het canonieke meldingsmodel wordt vanaf versie 2 expliciet en uniform opgebouwd. Het JSON Schema staat in `docs/04-configuratie/schemas/notification-v2.schema.json`.
+Het enige officiële meldingsmodel is schemaVersion 1. Het JSON Schema staat in `docs/04-configuratie/schemas/notification-v1.schema.json`. Dit is een schone ontwikkelbasis; er is geen compatibiliteit met of migratie vanuit de eerder gebruikte legacy-v1-structuur.
 
-- Iedere configuratie bevat `schemaVersion: 2` en één `condition`-boom. De oude top-level combinatie van `source` plus `condition` wordt niet meer gebruikt in nieuwe configuraties.
-- Een vergelijkingsblad is expliciet `type: "comparison"` en bevat `source` plus `condition`. Een bron is een Homey-apparaat-capability (apparaat-ID + capability-ID) of een Homey Logic-variabele (variabele-ID).
-- AND/OR-groepen bevatten een niet-lege lijst `conditions`; een groep mag andere groepen bevatten.
+- Iedere configuratie bevat `schemaVersion: 1` en één expliciete `condition`-boom.
+- Een vergelijkingsblad is `type: "comparison"` en bevat `source` plus `condition`.
+- Een bron is een Homey-apparaat-capability (stabiele apparaat-ID + capability-ID) of een Homey Logic-variabele (stabiele variabele-ID). Namen zijn uitsluitend presentatietekst en worden nooit als bronidentiteit opgeslagen.
+- AND/OR-groepen bevatten een niet-lege lijst `conditions`; groepen mogen andere groepen bevatten.
 - Duurvoorwaarden zijn `type: "duration"` met een stabiele blok-ID, `durationMs` en een onderliggende conditie.
-- Tijdschema's zijn `type: "schedule"` met weekdagen (zondag=0 t/m zaterdag=6), lokale begin-/eindtijd en optioneel een IANA-tijdzone. Bij ontbrekende tijdzone gebruikt de backend de servertijdzone; de dashboardstandaard blijft `Europe/Amsterdam`.
-- De bestaande grenzen blijven gelden: maximaal 12 niveaus en 100 conditienodes per melding; duration-ID's zijn binnen één melding uniek.
+- Tijdschema's zijn `type: "schedule"` met weekdagen (zondag=0 t/m zaterdag=6), lokale begin-/eindtijd en optioneel een IANA-tijdzone.
+- Maximaal 12 niveaus en 100 conditienodes per melding; duration-ID's zijn binnen één melding uniek.
 - Vergelijkingswaarden moeten overeenkomen met het brontype. `lessThan` en `greaterThan` zijn alleen geldig voor numerieke bronnen.
-- Metadata blijft dashboard-eigendom: stabiele melding-ID, titel, bericht, severity en actief/inactief. Een optioneel pictogramveld kan worden gebruikt wanneer de editor dit aanbiedt.
+- Metadata blijft dashboard-eigendom: stabiele melding-ID, titel, bericht, severity, enabled en optioneel testOnly/icon.
 
-### Compatibiliteit en migratie
+### Besluit: geen legacy-compatibiliteit
 
-Bestaande versie-1-configuraties blijven leesbaar. De backend normaliseert ze naar het interne conditiemodel; bestaande bestanden worden niet stilzwijgend herschreven. Nieuwe of opnieuw opgeslagen configuraties worden versie 2.
+De eerdere v1-vorm (legacy top-level `source` + vergelijking en bladeren zonder `type: "comparison"`) vervalt volledig. Ook de tussentijdse naam schemaVersion 2 vervalt: de structuur die eerder als v2 was vastgelegd, wordt hernummerd naar schemaVersion 1. Dit project bevindt zich nog in de ontwikkelfase; er hoeft niets te worden bewaard of gemigreerd.
 
-Voor de migratie van een versie-1 Logic-bron die alleen een variabelenaam bevat, moet de backend de actuele Homey Logic-inventarisatie gebruiken om de naam naar de stabiele variabele-ID om te zetten. Als Homey offline is of de variabele niet meer bestaat, mag de configuratie niet worden gegokt of automatisch aan een andere variabele worden gekoppeld; de melding wordt als onopgelost gerapporteerd totdat de bron weer eenduidig kan worden vastgesteld.
-
-De JSON Schema-validatie wordt aangevuld met domeinvalidatie in de backend, onder andere voor unieke duration-ID's, maximumdiepte/-omvang, geldige IANA-tijdzones en typecompatibiliteit tussen bron en vergelijking. Het schema alleen is dus niet de volledige runtime-validatie.
-
-De versie-2-normalisatie en regressietests zijn inmiddels geïmplementeerd. De eerste zes bestaande configuraties zijn op 13 november 2026 gecontroleerd gemigreerd; zie de migratiestatus hieronder.
-
-
-### Implementatiestatus v1/v2-normalisatie (13 november 2026)
-
-De backend ondersteunt inmiddels het inlezen en normaliseren van zowel schemaVersion 1 als 2. V1-bestanden blijven ongewijzigd; v2 gebruikt stabiele Homey Logic variable-ID's. Bij een dubbele Logic-variabelenaam wordt een v1-bron als ambigu gemarkeerd in plaats van willekeurig gekoppeld. De volledige normalisatie en regressietests zijn beschreven in `docs/03-dashboard/meldingen-engine-implementatie.md`.
-
-
-### Eerste migratie bestaande meldingen naar schema v2 (13 november 2026)
-
-De eerste zes bestaande bestanden zijn gecontroleerd omgezet naar schemaVersion 2:
-- `achterdeur-open.json`: samengestelde AND/OR-conditie en beide apparaat-capabilitybronnen behouden.
-- `co2-woonkamer-test.json`: Logic-bron `dashboard_test_co2_melding` is tijdens de migratie live in Homey gevonden en vastgelegd met stabiele variabele-ID `965b5973-bd5f-4843-aa6e-8f79173141af` (boolean). De testOnly-markering en vergelijkingswaarde `true` zijn behouden.
-- `ouderslaapkamer-koud.json`, `slaapkamer-bram-koud.json`, `slaapkamer-tess-koud.json` en `zolder-koud.json`: apparaat-ID's, capability `measure_temperature`, grenswaarde <12 °C en bestaande metadata zijn behouden.
-
-De migratie wijzigt alleen de JSON-structuur naar het canonieke v2-model; meldings-ID's, titels, berichten, severity, enabled/testOnly en de functionele voorwaarden zijn niet inhoudelijk aangepast. De overige bestaande meldingsbestanden worden gefaseerd geïnventariseerd en gemigreerd. Iedere Logic-bron wordt vóór omzetting tegen de actuele Homey-inventaris gecontroleerd; onbekende of dubbelzinnige bronnen worden niet gegokt.
+De backend accepteert uitsluitend het canonieke schema hierboven. Er is geen normalisatielaag, geen naamgebaseerde Logic-lookup en geen ondersteuning voor schemaVersion 2. De zes bestaande ontwikkelconfiguraties gebruiken voortaan allemaal schemaVersion 1 in de canonieke vorm. Blockly wordt rechtstreeks op dit contract gebouwd en deelt dezelfde validatie- en evaluatielogica met de backend.
