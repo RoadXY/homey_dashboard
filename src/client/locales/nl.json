@@ -193,5 +193,6 @@
   "settings.weatherPressure": "Luchtdruk",
   "settings.weatherSunriseSunset": "Zonsopkomst en zonsondergang",
   "notifications.activeIndicator": "Er zijn actieve meldingen",
-  "notifications.unknownIndicator": "De meldingsstatus kan niet volledig worden gecontroleerd"
+  "notifications.unknownIndicator": "De meldingsstatus kan niet volledig worden gecontroleerd",
+  "settings.automaticHomeyLanguage": "Automatisch (Homey-taal)"
 }
