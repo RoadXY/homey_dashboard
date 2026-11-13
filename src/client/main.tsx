@@ -1109,6 +1109,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <><div ref={host} className="schedule-blockly-workspace" />{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>}</div>;
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
+  const t = (key: string) => translate(locale, key);
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
   const [sourceCatalog, setSourceCatalog] = React.useState<NotificationSourceCatalog | null>(null);
   const [sourceCatalogError, setSourceCatalogError] = React.useState("");
