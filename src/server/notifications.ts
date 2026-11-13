@@ -71,6 +71,12 @@ function isComparison(value: unknown): value is Comparison {
     typeof comparison.value === "number" && Number.isFinite(comparison.value);
 }
 
+function isValidSourceCondition(source: unknown, condition: unknown): source is Source {
+  if (!isSource(source) || !isComparison(condition)) return false;
+  if (condition.operator === "equals") return typeof condition.value === source.expectedType;
+  return source.expectedType === "number";
+}
+
 const MAX_CONDITION_DEPTH = 12;
 const MAX_CONDITION_NODES = 100;
 
@@ -98,7 +104,7 @@ function isConditionNode(
     return Array.isArray(node.conditions) && node.conditions.length > 0 &&
       node.conditions.every((child) => isConditionNode(child, depth + 1, seenDurationIds, counter));
   }
-  return isSource(node.source) && isComparison(node.condition);
+  return isValidSourceCondition(node.source, node.condition);
 }
 
 export function isValidConditionNode(value: unknown): value is ConditionNode {
@@ -127,7 +133,7 @@ function collectSources(config: NotificationConfig): Source[] {
 export function isValidNotificationConfig(value: unknown): value is NotificationConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const config = value as Record<string, unknown>;
-  const hasLegacyShape = isSource(config.source) && isComparison(config.condition);
+  const hasLegacyShape = isValidSourceCondition(config.source, config.condition);
   const hasTreeShape = config.source === undefined && isConditionNode(config.condition);
   return config.schemaVersion === 1 &&
     typeof config.id === "string" && config.id.trim().length > 0 &&
