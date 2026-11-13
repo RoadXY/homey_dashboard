@@ -231,7 +231,7 @@ De Blockly-editor heeft nu een toolbox met drie categorieën, zodat voorwaarden 
 
 De werkruimte toont de toolbox naast de bestaande conditieboom. Een prullenbak is ingeschakeld om blokken te verwijderen. De nieuwe blokken blijven statementblokken en worden door dezelfde serializer naar het canonieke JSON-voorwaardenmodel vertaald; er is geen aparte Blockly-evaluator.
 
-**Afbakening:** de vergelijking bevat in deze eerste toolboxversie zelf de bronkeuze. De eerder vastgelegde UX-keuze voor twee afzonderlijke bronblokken (Homey-apparaat en Homey Logic-variabele) moet nog als volgende verbetering worden doorgevoerd, zonder de opgeslagen bronidentiteit of het JSON-model te wijzigen. Ook moet de round-trip van alle nieuwe combinaties nog met gerichte frontendtests worden afgedekt.
+**Afbakening (historische tussenstap):** bij de eerste toolboxversie bevatte de vergelijking zelf de bronkeuze. Dit is in stap 11.10 vervangen door twee afzonderlijke bronblokken. De opslagstructuur en stabiele bronidentiteit zijn daarbij ongewijzigd gebleven.
 
 
 ### 11.10 Afzonderlijke bronblokken
@@ -246,3 +246,21 @@ Een bronblok wordt direct vóór het vergelijkingsblok geplaatst. De combinatie 
 De vergelijking zelf bevat alleen de operator en vergelijkingswaarde. Daardoor is het type bron in de Blockly-werkruimte direct herkenbaar en kan de gebruiker niet per ongeluk een Logic-variabele kiezen in het apparaatbronblok of andersom.
 
 **Nog te testen:** de complete keten moet in de draaiende dashboardomgeving worden gecontroleerd op laden, wijzigen, opslaan en opnieuw openen. Ook blijven geautomatiseerde frontend round-trip-tests een openstaand kwaliteitscriterium.
+
+
+### 11.11 Gerichte tests voor Blockly-conversies
+
+De bron- en duurconversies zijn uit de React/Blockly-component gehaald naar `src/client/notification-condition-blockly.ts`. De editor gebruikt deze gedeelde functies daadwerkelijk; de tests valideren dus dezelfde conversielogica die tijdens runtime wordt gebruikt.
+
+De nieuwe Vitest-tests controleren:
+
+- bronresolutie op stabiele apparaat-ID + capability-ID en Logic-variable-ID;
+- afwijzing van ontbrekende of ongeldige bronkeys;
+- datatypebewuste conversie van numerieke en booleaanse vergelijkingswaarden;
+- afwijzing van ongeldige operator-/datatypecombinaties en ongeldige waarden;
+- round-trip van actieve en inactieve duurblokken;
+- behoud van de bestaande `duration.id` bij opnieuw openen en opslaan;
+- gebruik van een nieuwe Blockly-ID uitsluitend voor nieuw aangemaakte duurblokken;
+- afwijzing van ontbrekende onderliggende voorwaarden en duurwaarden buiten 1–1440 minuten.
+
+Dit zijn gerichte unit-tests van de conversiehelpers die de editor gebruikt. Ze vervangen nog niet de volledige browser-/Blockly-integratietest waarbij een gebruiker blokken sleept, opslaat en de melding opnieuw opent. Die integratietest blijft een afzonderlijk acceptatiepunt.
