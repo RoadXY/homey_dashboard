@@ -294,3 +294,8 @@ Naar aanleiding van de eerste praktijktest is de vaste Blockly-hoofdcontainer **
 - De semantiek, JSON-serialisatie en backend-evaluatie zijn niet gewijzigd.
 
 De breedte van de hoofdcontainer wordt nu vooral bepaald door de daadwerkelijk geplaatste voorwaarden en geneste containers, in plaats van door lange toelichtende tekst. Praktische controle op de tablet volgt na het bijwerken van de Docker-container.
+
+
+### 12.4 Label van de hoofdcontainer verwijderd – 13 november 2026
+
+Na de volgende praktijktest is ook het korte label **Voorwaarden:** uit de invoeropening van **Genereer melding** verwijderd. De hoofdcontainer toont nu alleen de titel en de inhoud die erin wordt geplaatst. Dit verkleint de visuele drukte; de statement-opening en de onderliggende conditielogica blijven ongewijzigd.
