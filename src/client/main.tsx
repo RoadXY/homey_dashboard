@@ -1201,6 +1201,8 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [sourceCatalogError, setSourceCatalogError] = React.useState("");
   const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
   const [selectedId, setSelectedId] = React.useState("");
+  const [notificationSearch, setNotificationSearch] = React.useState("");
+  const [notificationPickerOpen, setNotificationPickerOpen] = React.useState(false);
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -1306,10 +1308,24 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   return <div className="quick-settings-page notification-settings-page">
     <div className="settings-title"><p>{t("notifications.subtitle")}</p></div>
     <div className="notification-rule-selector">
-      <label htmlFor="notification-rule-select">Meldingen</label>
-      <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !configs.length} onChange={event => setSelectedId(event.target.value)}>
-        {configs.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
-      </select>
+      <label id="notification-rule-label">Meldingen</label>
+      <div className="notification-rule-picker">
+        <button type="button" className="notification-rule-trigger" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
+          onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
+          <span>{selected?.title ?? "Selecteer een melding"}</span><span aria-hidden="true">▾</span>
+        </button>
+        {notificationPickerOpen && <div className="notification-rule-menu">
+          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder="Zoek een melding..." aria-label="Zoek een melding"/></div>
+          <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
+            {configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())).map(item =>
+              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
+                onClick={() => { setSelectedId(item.id); setNotificationPickerOpen(false); setNotificationSearch(""); }}>{item.title}</button>
+            )}
+            {!configs.some(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())) && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
+          </div>
+          <div className="notification-rule-footer">{configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())).length} resultaten</div>
+        </div>}
+      </div>
       <button type="button" className="notification-create-button" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
       {!busy && !configs.length && <p>{t("notifications.emptyList")}</p>}
       {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
