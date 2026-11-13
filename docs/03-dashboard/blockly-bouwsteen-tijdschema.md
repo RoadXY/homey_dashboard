@@ -361,3 +361,7 @@ Bij het terugzetten van bestaande vergelijkingsblokken wordt eerst de Homey-bron
 
 ## Meldingenkiezer in dezelfde kaartstijl (13 november 2026)
 De balk waarmee boven de Blockly-editor een melding wordt geselecteerd, gebruikt nu dezelfde donkerblauwe gradient, rand, afronding en subtiele schaduw als de overige instellingenkaarten. Het label **Meldingen** is vergroot naar 21 px en krijgt dezelfde visuele nadruk als de titel van de geselecteerde melding (bijvoorbeeld **Achterdeur open**). De keuzelijst gebruikt dezelfde donkere invoerstijl als de algemene instellingen. Op smallere schermen mag de bestaande mobiele regel de label- en selectiekolom onder elkaar plaatsen.
+
+
+## Sidebar inklapknop – positie en pictogram (13 november 2026)
+De inklapknop staat nu volledig aan de binnenzijde van de sidebar, links van de verticale scheidingslijn. De knop heeft geen eigen achtergrond of afgeronde achtergrondvorm; de achtergrond blijft dus die van de sidebar. Het pictogram is vervangen door een compact, zelfgetekend SVG-paneelicoon met dezelfde lijnstijl als het voorbeeld. De lijnkleur komt uit de semantische CSS-token `--sidebar-toggle-color`, zodat toekomstige thema's en light/dark mode het pictogram kunnen aanpassen zonder componentcode te wijzigen. De knop blijft toetsenbord-focusbaar.
