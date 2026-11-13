@@ -654,10 +654,17 @@ body {
     white-space: nowrap;
     font-size: 13px;
   }
-  .settings-nav span {
+  .settings-nav > .mdi {
     width: 20px;
-    flex-basis: 20px;
+    flex: 0 0 20px;
     font-size: 19px;
+    line-height: 1;
+  }
+  .settings-nav .settings-nav-label {
+    width: auto;
+    min-width: max-content;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
   .settings-content {
     min-width: 0;
