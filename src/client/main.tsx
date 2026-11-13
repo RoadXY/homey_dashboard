@@ -5,6 +5,7 @@ import "@mdi/font/css/materialdesignicons.css";
 declare global { interface Window { Blockly?: any; } }
 import mdiMeta from "@mdi/svg/meta.json";
 import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
+import { comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -897,7 +898,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (!node || typeof node !== "object") return null;
       let block: any = null;
       if (node.type === "comparison") {
-        const sourceKey = node.source?.type === "device-capability" ? "device:" + node.source.deviceId + ":" + node.source.capabilityId : "logic:" + node.source?.variableId;
+        const sourceKey = sourceKeyFromNode(node.source);
         const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
         const sourceBlock = ws.newBlock(sourceType);
         sourceBlock.setFieldValue(sourceKey, "SOURCE");
@@ -920,10 +921,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const child = buildCondition(node.condition);
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.type === "duration") {
-        const inactive = node.condition?.type === "not";
-        block = ws.newBlock(inactive ? "homey_condition_duration_inactive" : "homey_condition_duration");
-        block.setFieldValue(String(Math.max(1, Math.round(node.durationMs / 60000))), "MINUTES");
-        const child = buildCondition(inactive ? node.condition.condition : node.condition);
+        const durationModel = durationNodeToBlockly(node);
+        block = ws.newBlock(durationModel.blockType);
+        block.data = durationModel.id ?? null;
+        block.setFieldValue(String(durationModel.minutes), "MINUTES");
+        const child = buildCondition(durationModel.child);
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.operator === "and" || node.operator === "or") {
         block = ws.newBlock("homey_condition_" + node.operator);
@@ -941,19 +943,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     const rootBlock = buildCondition(condition);
     if (rootBlock) rootBlock.moveBy(30, 30);
     let hydrating = true;
-    const sourceFromKey = (key: string) => {
-      if (key.startsWith("device:")) {
-        const [, deviceId, capabilityId] = key.split(":");
-        const capability = catalogRef.current?.devices.find(item => item.id === deviceId)?.capabilities.find(item => item.id === capabilityId);
-        return capability ? { type: "device-capability", deviceId, capabilityId, expectedType: capability.type } : null;
-      }
-      if (key.startsWith("logic:")) {
-        const variableId = key.slice(6);
-        const variable = catalogRef.current?.variables.find(item => item.id === variableId);
-        return variable ? { type: "logic-variable", variableId, expectedType: variable.type } : null;
-      }
-      return null;
-    };
+    const sourceFromKey = (key: string) => resolveNotificationSourceFromKey(key, catalogRef.current);
     const serializeChain = (first: any): any[] => {
       const result: any[] = [];
       let current = first;
@@ -978,9 +968,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         if (!source) throw new Error("Plaats een Homey-apparaat- of Logic-bronblok vóór iedere vergelijking.");
         const operator = block.getFieldValue("OP");
         const raw = block.getFieldValue("VALUE");
-        const numeric = source.expectedType === "number";
-        const value: number | boolean = numeric ? Number(raw) : raw === "true";
-        if (numeric && !Number.isFinite(Number(value))) throw new Error("Vul een geldig getal in bij de vergelijking.");
+        const value = comparisonValueFromBlockly(source, operator, raw);
         return { type: "comparison", source, condition: { operator, value } };
       }
       if (block.type === "homey_condition_schedule") {
@@ -999,9 +987,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const children = serializeChain(block.getInputTargetBlock("CONDITION"));
         if (children.length !== 1) throw new Error("Een duurblok vereist precies één voorwaarde.");
         const minutes = Number(block.getFieldValue("MINUTES"));
-        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) throw new Error("De duur moet tussen 1 en 1440 minuten liggen.");
-        const child = block.type === "homey_condition_duration_inactive" ? { type: "not", condition: children[0] } : children[0];
-        return { type: "duration", id: block.id, durationMs: minutes * 60000, condition: child };
+        return durationNodeFromBlockly(block.id, block.data, minutes, children[0], block.type === "homey_condition_duration_inactive");
       }
       if (block.type === "homey_condition_and" || block.type === "homey_condition_or") {
         const conditions: any[] = [];
