@@ -389,3 +389,7 @@ Browsergeschiedenisnavigatie (popstate/Back) is toegevoegd aan dezelfde bescherm
 
 ## Algemene instelling – timeout tijdelijke foutmeldingen (13 november 2026)
 De gebruiker wil tijdelijke foutmeldingen na acties automatisch laten verdwijnen. In Instellingen → Algemeen → Meldingen is een dropdown toegevoegd: Nooit, 1 s, 2 s, 5 s, 10 s, 30 s, 1 min, 5 min, 15 min of 30 min. De default is Nooit om bestaand gedrag te behouden. De timeout geldt voor tijdelijke Quick Action-foutmeldingen (zoals een apparaat dat niet reageert); actieve Homey-conditiemeldingen blijven zichtbaar zolang de voorwaarde actief is. De instelling wordt opgeslagen in settings.json, server-side gevalideerd en op het dashboard gehonoreerd. Nederlandse en Engelse vertalingen zijn toegevoegd.
+
+
+## Dashboardmeldingen – individueel sluiten en status bijhouden (13 november 2026)
+Tijdelijke foutmeldingen na Quick Actions krijgen een unieke ID en status (`active`, `dismissed` of `expired`), plus bron en aanmaaktijd. Elke actieve melding krijgt een eigen ×-knop waarmee deze altijd handmatig kan worden gesloten, ook als automatisch verdwijnen op Nooit staat. De timeout markeert meldingen als expired; handmatig sluiten markeert ze als dismissed. Meerdere meldingen kunnen gelijktijdig zichtbaar zijn. Er worden maximaal 50 records in de clientstatus bijgehouden. De datastructuur is voorbereid op uitbreiding met andere bronnen en meldingstypen. De sluitknop is via i18n vertaald.
