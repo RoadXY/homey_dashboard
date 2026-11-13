@@ -18,6 +18,7 @@ type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
+type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" }[] };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
 type MeasurementTile = { id: string; name: string; icon: string; source: MeasurementTileSource };
@@ -636,6 +637,9 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; 
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
+  const [sourceCatalog, setSourceCatalog] = React.useState<NotificationSourceCatalog | null>(null);
+  const [sourceCatalogError, setSourceCatalogError] = React.useState("");
+  const [selectedSourceKey, setSelectedSourceKey] = React.useState("");
   const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
   const [selectedId, setSelectedId] = React.useState("");
   const [busy, setBusy] = React.useState(true);
@@ -644,10 +648,17 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [isError, setIsError] = React.useState(false);
   React.useEffect(() => {
     let active = true;
-    fetch("/api/settings/notifications").then(async response => {
+    Promise.all([fetch("/api/settings/notifications").then(async response => {
       if (!response.ok) throw new Error((await response.json()).error ?? translate(locale, "notifications.loadError"));
       return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
-    }).then(result => {
+    }), fetch("/api/settings/notification-sources").then(async response => {
+      if (!response.ok) throw new Error("Broncatalogus kon niet worden geladen.");
+      return response.json() as Promise<NotificationSourceCatalog>;
+    })]).then(([result, catalog]) => {
+      if (!active) return;
+      setSourceCatalog(catalog);
+    }).catch(error => { if (active) setSourceCatalogError(error instanceof Error ? error.message : "Broncatalogus kon niet worden geladen."); });
+    fetch("/api/settings/notifications").then(async response => {
       if (!active) return;
       setConfigs(result.notifications); setSaved(result.notifications);
       const first = result.notifications.find(item => findScheduleNode(item.condition));
@@ -683,6 +694,15 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       </section>
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
+          <div className="notification-source-picker">
+            <label htmlFor="notification-source-select">Homey-databron</label>
+            <select id="notification-source-select" value={selectedSourceKey} onChange={event => setSelectedSourceKey(event.target.value)}>
+              <option value="">Selecteer een apparaat of Logic-variabele…</option>
+              {(sourceCatalog?.devices ?? []).flatMap(device => device.capabilities.map(capability => ({ key: "device:" + device.id + ":" + capability.id, label: device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : "") + (device.available ? "" : " · niet beschikbaar"), type: capability.type }))).map(source => <option key={source.key} value={source.key}>{source.label}</option>)}
+              {(sourceCatalog?.variables ?? []).map(variable => <option key={"logic:" + variable.id} value={"logic:" + variable.id}>Logic · {variable.name} ({variable.type === "boolean" ? "ja/nee" : "getal"})</option>)}
+            </select>
+            <small>{sourceCatalogError || (sourceCatalog ? (sourceCatalog.devices.length + " apparaten en " + sourceCatalog.variables.length + " Logic-variabelen beschikbaar") : "Broncatalogus laden…")}</small>
+          </div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
