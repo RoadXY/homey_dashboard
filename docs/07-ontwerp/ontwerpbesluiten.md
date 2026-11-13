@@ -43,3 +43,11 @@ Zie `goedkeuringsstatus.md` voor de actuele status per scherm. Visuele besluiten
 - Er is geen compatibiliteitslaag, normalisatie of migratiepad. Het project bevindt zich in de ontwikkelfase en hoeft geen eerdere configuraties te bewaren.
 - De zes bestaande ontwikkelconfiguraties zijn op het canonieke model gezet door uitsluitend het versienummer van 2 naar 1 te veranderen; de condities zijn inhoudelijk ongewijzigd.
 - Blockly, JSON-configuraties en backend gebruiken hetzelfde schema en dezelfde evaluator. Een tweede evaluatie-implementatie in Blockly is niet toegestaan.
+
+## Blockly – afzonderlijke Homey-bronblokken (13 november 2026)
+
+De gebruiker kiest voor twee afzonderlijke bronblokken in de Blockly-editor:
+- **Homey-apparaat**: selecteert een apparaat en capability.
+- **Homey Logic-variabele**: selecteert een Logic-variabele.
+
+De twee bronnen worden niet samengevoegd tot één generiek bronblok met een keuzeschakelaar. Dit maakt voor de gebruiker direct zichtbaar welk type bron wordt gebruikt. Beide blokken moeten naar de bestaande bronstructuren in het canonieke voorwaardenmodel worden vertaald; de stabiele apparaat-/capability-ID's en Logic-variable-ID's blijven de opgeslagen identiteit, niet de zichtbare namen.
