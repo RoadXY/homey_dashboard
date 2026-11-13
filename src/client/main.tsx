@@ -648,23 +648,26 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [isError, setIsError] = React.useState(false);
   React.useEffect(() => {
     let active = true;
-    Promise.all([fetch("/api/settings/notifications").then(async response => {
-      if (!response.ok) throw new Error((await response.json()).error ?? translate(locale, "notifications.loadError"));
-      return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
-    }), fetch("/api/settings/notification-sources").then(async response => {
-      if (!response.ok) throw new Error("Broncatalogus kon niet worden geladen.");
-      return response.json() as Promise<NotificationSourceCatalog>;
-    })]).then(([result, catalog]) => {
-      if (!active) return;
-      setSourceCatalog(catalog);
-    }).catch(error => { if (active) setSourceCatalogError(error instanceof Error ? error.message : "Broncatalogus kon niet worden geladen."); });
-    fetch("/api/settings/notifications").then(async response => {
+    Promise.all([
+      fetch("/api/settings/notifications").then(async response => {
+        if (!response.ok) throw new Error((await response.json()).error ?? translate(locale, "notifications.loadError"));
+        return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
+      }),
+      fetch("/api/settings/notification-sources").then(async response => {
+        if (!response.ok) throw new Error("Broncatalogus kon niet worden geladen.");
+        return response.json() as Promise<NotificationSourceCatalog>;
+      })
+    ]).then(([result, catalog]) => {
       if (!active) return;
       setConfigs(result.notifications); setSaved(result.notifications);
       const first = result.notifications.find(item => findScheduleNode(item.condition));
       setSelectedId(first?.id ?? "");
-    }).catch(error => { if (active) { setMessage(error instanceof Error ? error.message : translate(locale, "notifications.loadError")); setIsError(true); } })
-      .finally(() => { if (active) setBusy(false); });
+      setSourceCatalog(catalog);
+    }).catch(error => {
+      if (!active) return;
+      setMessage(error instanceof Error ? error.message : translate(locale, "notifications.loadError"));
+      setIsError(true);
+    }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
   const scheduled = configs.filter(item => findScheduleNode(item.condition));
