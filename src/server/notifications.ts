@@ -1,13 +1,11 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { getHomeyDeviceCapabilityValues, getHomeyLogicVariables, getHomeyLogicVariablesByIds } from "./homey.js";
+import { getHomeyDeviceCapabilityValues, getHomeyLogicVariablesByIds } from "./homey.js";
 import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, nextScheduleTransition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
 type ExpectedType = "boolean" | "number";
-type LogicSource =
-  | { type: "logic-variable"; name: string; expectedType: ExpectedType }
-  | { type: "logic-variable"; variableId: string; expectedType: ExpectedType };
+type LogicSource = { type: "logic-variable"; variableId: string; expectedType: ExpectedType };
 type DeviceSource = { type: "device-capability"; deviceId: string; capabilityId: string; expectedType: ExpectedType };
 type Source = LogicSource | DeviceSource;
 type Comparison =
@@ -19,10 +17,6 @@ type ConditionGroup = {
   conditions: ConditionNode[];
 };
 type ConditionLeaf = { type: "comparison"; source: Source; condition: Comparison };
-type LegacyConditionLeaf = { source: Source; condition: Comparison };
-type LegacyConditionGroup = { operator: "and" | "or"; conditions: LegacyConditionNode[] };
-type LegacyDurationNode = { type: "duration"; id: string; durationMs: number; condition: LegacyConditionNode };
-type LegacyConditionNode = LegacyConditionGroup | LegacyConditionLeaf | LegacyDurationNode | ScheduleNode;
 type DurationNode = { type: "duration"; id: string; durationMs: number; condition: ConditionNode };
 type ScheduleNode = { type: "schedule" } & ScheduleCondition;
 type ConditionNode = ConditionGroup | ConditionLeaf | DurationNode | ScheduleNode;
@@ -30,16 +24,14 @@ type ConditionNode = ConditionGroup | ConditionLeaf | DurationNode | ScheduleNod
 const durationStartedAt = new Map<string, number>();
 
 type NotificationConfig = {
-  schemaVersion: 1 | 2;
+  schemaVersion: 1;
   id: string;
   title: string;
   message: string;
   severity: Severity;
   enabled: boolean;
   testOnly?: boolean;
-  // Legacy schemaVersion 1 format remains supported during migration.
-  source?: Source;
-  condition: Comparison | LegacyConditionNode | ConditionNode;
+  condition: ConditionNode;
 };
 
 export type DashboardNotification = {
@@ -55,14 +47,12 @@ export type DashboardNotification = {
 export type Evaluation = { state: "active" | "inactive" | "unknown"; reason?: string; reevaluateAt?: number };
 type SourceKey = string;
 
-function isSource(value: unknown, schemaVersion: 1 | 2): value is Source {
+function isSource(value: unknown): value is Source {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const source = value as Record<string, unknown>;
   if (!["boolean", "number"].includes(String(source.expectedType))) return false;
   if (source.type === "logic-variable") {
-    return schemaVersion === 1
-      ? typeof source.name === "string" && source.name.trim().length > 0 && source.variableId === undefined
-      : typeof source.variableId === "string" && source.variableId.trim().length > 0 && source.name === undefined;
+    return typeof source.variableId === "string" && source.variableId.trim().length > 0 && source.name === undefined;
   }
   if (source.type === "device-capability") {
     return typeof source.deviceId === "string" && source.deviceId.trim().length > 0 &&
@@ -81,8 +71,8 @@ function isComparison(value: unknown): value is Comparison {
     typeof comparison.value === "number" && Number.isFinite(comparison.value);
 }
 
-function isValidSourceCondition(source: unknown, condition: unknown, schemaVersion: 1 | 2): source is Source {
-  if (!isSource(source, schemaVersion) || !isComparison(condition)) return false;
+function isValidSourceCondition(source: unknown, condition: unknown): source is Source {
+  if (!isSource(source) || !isComparison(condition)) return false;
   if (condition.operator === "equals") return typeof condition.value === source.expectedType;
   return source.expectedType === "number";
 }
@@ -92,7 +82,7 @@ const MAX_CONDITION_NODES = 100;
 
 function isConditionNode(
   value: unknown,
-  schemaVersion: 1 | 2 = 1,
+
   depth = 1,
   seenDurationIds = new Set<string>(),
   counter = { count: 0 },
@@ -109,66 +99,25 @@ function isConditionNode(
     if (typeof node.id !== "string" || node.id.trim().length === 0 || seenDurationIds.has(node.id) ||
         !Number.isSafeInteger(node.durationMs) || Number(node.durationMs) <= 0) return false;
     seenDurationIds.add(node.id);
-    return isConditionNode(node.condition, schemaVersion, depth + 1, seenDurationIds, counter);
+    return isConditionNode(node.condition, depth + 1, seenDurationIds, counter);
   }
   if (node.operator === "and" || node.operator === "or") {
     return Array.isArray(node.conditions) && node.conditions.length > 0 &&
-      node.conditions.every((child) => isConditionNode(child, schemaVersion, depth + 1, seenDurationIds, counter));
+      node.conditions.every((child) => isConditionNode(child, depth + 1, seenDurationIds, counter));
   }
-  if (schemaVersion === 2) {
-    if (node.type === "comparison") return isValidSourceCondition(node.source, node.condition, 2);
-    return false;
-  }
-  if (node.type === "comparison") return false;
-  return isValidSourceCondition(node.source, node.condition, 1);
+  return node.type === "comparison" && isValidSourceCondition(node.source, node.condition);
 }
 
 export function isValidConditionNode(value: unknown): value is ConditionNode {
-  return isConditionNode(value, 1);
-}
-
-export function isValidConditionNodeV2(value: unknown): value is ConditionNode {
-  return isConditionNode(value, 2);
+  return isConditionNode(value);
 }
 
 function sourceKey(source: Source): SourceKey {
-  if (source.type === "logic-variable") {
-    return "variableId" in source ? `logic:id:${source.variableId}` : `logic:name:${source.name}`;
-  }
+  if (source.type === "logic-variable") return `logic:id:${source.variableId}`;
   return `device:${source.deviceId}:${source.capabilityId}`;
 }
 
-type NormalizedNotificationConfig = Omit<NotificationConfig, "condition" | "source"> & {
-  condition: ConditionNode;
-};
-
-function normalizeConditionNode(node: LegacyConditionNode | ConditionNode, schemaVersion: 1 | 2): ConditionNode {
-  if ("type" in node && node.type === "schedule") return node;
-  if ("type" in node && node.type === "duration") {
-    return { ...node, condition: normalizeConditionNode(node.condition, schemaVersion) };
-  }
-  if ("conditions" in node) {
-    return { ...node, conditions: node.conditions.map((child) => normalizeConditionNode(child, schemaVersion)) };
-  }
-  if (schemaVersion === 2) return node as ConditionLeaf;
-  return { type: "comparison", source: node.source, condition: node.condition };
-}
-
-export function normalizeNotificationConfig(config: NotificationConfig): NormalizedNotificationConfig {
-  if (config.schemaVersion === 2) {
-    return { ...config, condition: normalizeConditionNode(config.condition as ConditionNode, 2) };
-  }
-  if (config.source) {
-    const { source, ...metadata } = config;
-    return {
-      ...metadata,
-      condition: { type: "comparison", source, condition: config.condition as Comparison },
-    };
-  }
-  return { ...config, condition: normalizeConditionNode(config.condition as LegacyConditionNode, 1) };
-}
-
-function collectSources(config: NormalizedNotificationConfig): Source[] {
+function collectSources(config: NotificationConfig): Source[] {
   const collect = (node: ConditionNode): Source[] => {
     if ("conditions" in node) return node.conditions.flatMap(collect);
     if ("type" in node && node.type === "duration") return collect(node.condition);
@@ -181,31 +130,24 @@ function collectSources(config: NormalizedNotificationConfig): Source[] {
 export function isValidNotificationConfig(value: unknown): value is NotificationConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const config = value as Record<string, unknown>;
-  if (typeof config.id !== "string" || config.id.trim().length === 0 ||
+  if (config.schemaVersion !== 1 ||
+      typeof config.id !== "string" || config.id.trim().length === 0 ||
       typeof config.title !== "string" || config.title.trim().length === 0 ||
       typeof config.message !== "string" ||
       !["critical", "warning", "info"].includes(String(config.severity)) ||
       typeof config.enabled !== "boolean" ||
-      (config.testOnly !== undefined && typeof config.testOnly !== "boolean")) return false;
-
-  if (config.schemaVersion === 1) {
-    const hasLegacyShape = config.source !== undefined && isValidSourceCondition(config.source, config.condition, 1);
-    const hasTreeShape = config.source === undefined && isConditionNode(config.condition, 1);
-    return hasLegacyShape || hasTreeShape;
-  }
-  if (config.schemaVersion === 2) {
-    return config.source === undefined && isConditionNode(config.condition, 2);
-  }
-  return false;
+      (config.testOnly !== undefined && typeof config.testOnly !== "boolean") ||
+      config.source !== undefined) return false;
+  return isConditionNode(config.condition);
 }
 
-async function loadConfigs(): Promise<NormalizedNotificationConfig[]> {
+async function loadConfigs(): Promise<NotificationConfig[]> {
   const directory = join(process.cwd(), "config", "notifications");
   const filenames = (await readdir(directory)).filter((filename) => filename.endsWith(".json")).sort();
   const configs = await Promise.all(filenames.map(async (filename) => {
     const config = JSON.parse(await readFile(join(directory, filename), "utf8")) as unknown;
     if (!isValidNotificationConfig(config)) throw new Error(`Ongeldige meldingsconfiguratie: ${filename}`);
-    return normalizeNotificationConfig(config);
+    return config;
   }));
   if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
   return configs;
@@ -292,13 +234,8 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
 
   if (logicSources.length) {
     try {
-      const legacyNames = logicSources.filter((source): source is Extract<LogicSource, { name: string }> => "name" in source).map((source) => source.name);
-      const stableIds = logicSources.filter((source): source is Extract<LogicSource, { variableId: string }> => "variableId" in source).map((source) => source.variableId);
-      const [byName, byId] = await Promise.all([
-        legacyNames.length ? getHomeyLogicVariables(legacyNames) : Promise.resolve({ variables: [] as Array<{ id: string; name: string; type: string; value: unknown }> }),
-        stableIds.length ? getHomeyLogicVariablesByIds(stableIds) : Promise.resolve({ variables: [] as Array<{ id: string; name: string; type: string; value: unknown }> }),
-      ]);
-      logicVariables = [...byName.variables, ...byId.variables];
+      const variableIds = logicSources.map((source) => source.variableId);
+      logicVariables = (await getHomeyLogicVariablesByIds(variableIds)).variables;
     } catch { logicError = true; }
   }
   if (deviceSources.length) {
@@ -315,7 +252,7 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
       values.set(sourceKey(source), { expectedType: source.expectedType, error: "source_unavailable" });
       continue;
     }
-    const matches = logicVariables.filter((item) => "variableId" in source ? item.id === source.variableId : item.name === source.name);
+    const matches = logicVariables.filter((item) => item.id === source.variableId);
     if (matches.length === 0) values.set(sourceKey(source), { expectedType: source.expectedType, error: "source_missing" });
     else if (matches.length > 1) values.set(sourceKey(source), { expectedType: source.expectedType, error: "source_ambiguous" });
     else if (matches[0].type.toLowerCase() !== source.expectedType) values.set(sourceKey(source), { expectedType: source.expectedType, error: "source_type_mismatch" });
