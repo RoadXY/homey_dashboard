@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   combineRootConditions,
-  comparisonValueFromBlockly,
+  comparisonInputValue,\n  comparisonValueFromBlockly,
   durationNodeFromBlockly,
   durationNodeToBlockly,
   normalizeScheduleTimeInput,
@@ -42,6 +42,14 @@ describe("Blockly Homey source conversion", () => {
     expect(sourceFromKey("device:device-123", catalog)).toBeNull();
     expect(sourceFromKey("logic:missing", catalog)).toBeNull();
     expect(sourceFromKey("logic:logic-co2", null)).toBeNull();
+  });
+
+  it("normalizes the editable input when switching between numeric and boolean sources", () => {
+    expect(comparisonInputValue("boolean", "true")).toBe(true);
+    expect(comparisonInputValue("boolean", "1200")).toBe(false);
+    expect(comparisonInputValue("number", "24.5")).toBe(24.5);
+    expect(comparisonInputValue("number", "true")).toBe(0);
+    expect(comparisonInputValue("number", "")).toBe(0);
   });
 
   it("parses numeric and boolean comparison values according to the source datatype", () => {
