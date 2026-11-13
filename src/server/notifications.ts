@@ -1,5 +1,6 @@
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, mkdir, writeFile, rename } from "node:fs/promises";
 import { join } from "node:path";
+import { randomUUID } from "node:crypto";
 import { getHomeyDeviceCapabilityValues, getHomeyLogicVariablesByIds } from "./homey.js";
 import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, nextScheduleTransition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
@@ -140,16 +141,45 @@ export function isValidNotificationConfig(value: unknown): value is Notification
   return isConditionNode(config.condition);
 }
 
-async function loadConfigs(): Promise<NotificationConfig[]> {
+const notificationOverridePath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.json");
+
+async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
   const directory = join(process.cwd(), "config", "notifications");
   const filenames = (await readdir(directory)).filter((filename) => filename.endsWith(".json")).sort();
-  const configs = await Promise.all(filenames.map(async (filename) => {
+  return Promise.all(filenames.map(async (filename) => {
     const config = JSON.parse(await readFile(join(directory, filename), "utf8")) as unknown;
     if (!isValidNotificationConfig(config)) throw new Error(`Ongeldige meldingsconfiguratie: ${filename}`);
     return config;
   }));
+}
+
+export async function getNotificationConfigsForSettings(): Promise<NotificationConfig[]> {
+  try {
+    const saved = JSON.parse(await readFile(notificationOverridePath, "utf8")) as unknown;
+    if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
+    return saved;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    return loadDefaultConfigs();
+  }
+}
+
+export async function saveNotificationConfigsForSettings(value: unknown): Promise<NotificationConfig[]> {
+  if (!Array.isArray(value) || value.length > 200 || !value.every(isValidNotificationConfig)) {
+    throw new Error("De meldingsconfiguratie bevat ongeldige of ontbrekende velden.");
+  }
+  const configs = value as NotificationConfig[];
   if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+  const directory = join(process.env.DATA_DIR ?? join(process.cwd(), "data"));
+  await mkdir(directory, { recursive: true });
+  const temporaryPath = join(directory, `notifications.${randomUUID()}.tmp`);
+  await writeFile(temporaryPath, JSON.stringify(configs, null, 2) + "\\n", { encoding: "utf8", mode: 0o600 });
+  await rename(temporaryPath, notificationOverridePath);
   return configs;
+}
+
+async function loadConfigs(): Promise<NotificationConfig[]> {
+  return getNotificationConfigsForSettings();
 }
 
 function evaluateComparison(value: unknown, expectedType: ExpectedType, condition: Comparison): Evaluation {
