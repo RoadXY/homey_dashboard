@@ -673,7 +673,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
             (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
             return options;
           }, (value: string) => { if (value) sourceChangeRef.current(value); return value; }), "SOURCE");
-          this.setOutput(true, null); this.setColour(285);
+          this.setOutput(true, "HomeySource"); this.setColour(285);
           this.setTooltip("Selecteer een Homey-apparaat/capability of Logic-variabele.");
         }
       };
@@ -681,7 +681,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     if (!Blockly.Blocks.homey_notification_comparison) {
       Blockly.Blocks.homey_notification_comparison = {
         init() {
-          this.appendDummyInput().appendField("Vergelijking").appendField(new Blockly.FieldDropdown(() => {
+          this.appendValueInput("SOURCE").setCheck("HomeySource").appendField("Vergelijking");\n          this.appendDummyInput().appendField(new Blockly.FieldDropdown(() => {
             const numeric = comparisonRef.current?.source?.expectedType === "number";
             return numeric
               ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
@@ -739,7 +739,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     comparisonBlock.setFieldValue(comparison?.condition?.operator ?? "equals", "OP");
     comparisonBlock.setFieldValue(String(comparison?.condition?.value ?? false), "VALUE");
     comparisonBlock.setOutput(true, "Boolean");
-    comparisonBlock.initSvg(); comparisonBlock.render(); comparisonBlock.moveBy(360, 0);
+    comparisonBlock.initSvg(); comparisonBlock.render(); comparisonBlock.moveBy(360, 0);\n    if (sourceBlock.outputConnection && comparisonBlock.getInput("SOURCE")?.connection) {\n      comparisonBlock.getInput("SOURCE").connection.connect(sourceBlock.outputConnection);\n    }
     comparisonBlock.setOnChange((event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
       const operator = comparisonBlock.getFieldValue("OP");
