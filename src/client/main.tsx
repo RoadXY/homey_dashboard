@@ -19,7 +19,8 @@ type DashboardNotification = { id: string; title: string; message: string; sever
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
-type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
+type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
+type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
 type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" }[] };
@@ -59,6 +60,7 @@ function App() {
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
+  const [notificationTimeout, setNotificationTimeout] = React.useState<NotificationTimeout>("never");
   const [homeyLanguage, setHomeyLanguage] = React.useState<string | null>(null);
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
@@ -138,8 +140,9 @@ function App() {
         setHomeyLanguage(system.homeyLanguage ?? null);
       }
       if (languageResponse?.ok) {
-        const preference = await languageResponse.json() as { language?: string };
+        const preference = await languageResponse.json() as { language?: string; notificationTimeout?: NotificationTimeout };
         if (typeof preference.language === "string") setDashboardLanguage(preference.language);
+        if (preference.notificationTimeout && ["never", "1", "2", "5", "10", "30", "60", "300", "900", "1800"].includes(preference.notificationTimeout)) setNotificationTimeout(preference.notificationTimeout);
       }
       if (weatherResponse?.ok) {
         setWeatherCondition(await weatherResponse.json() as WeatherConditionResponse);
@@ -187,6 +190,11 @@ function App() {
   const refreshQuickActionStatuses = async () => {
     try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { /* Keep the last known Homey state when a poll temporarily fails. */ }
   };
+  React.useEffect(() => {
+    if (!actionError || notificationTimeout === "never") return;
+    const timeout = window.setTimeout(() => setActionError(""), Number(notificationTimeout) * 1000);
+    return () => window.clearTimeout(timeout);
+  }, [actionError, notificationTimeout]);
   const executeAction = async (id: string) => {
     if (executingAction) return;
     setExecutingAction(id); setActionError("");
@@ -399,7 +407,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
   </form></main>;
 }
 
-const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday" };
+const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday", notificationTimeout: "never" };
 function homeyLanguageName(language: string, locale: string): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale.toLowerCase().startsWith("nl") ? 0 : 1] ?? language.toUpperCase(); }
 
 const quickActionDefaults: QuickAction[] = [
@@ -1799,6 +1807,15 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
+      <section className="settings-card notification-timeout-card">
+        <h2><span>♧</span>{t("settings.notificationBehavior")}</h2>
+        <label className="setting-row"><span>{t("settings.notificationTimeout")}</span><select value={settings.notificationTimeout} onChange={e=>update("notificationTimeout",e.target.value as NotificationTimeout)}>
+          <option value="never">{t("settings.timeoutNever")}</option>
+          <option value="1">1 s</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option>
+          <option value="60">1 min</option><option value="300">5 min</option><option value="900">15 min</option><option value="1800">30 min</option>
+        </select></label>
+        <p className="setting-description">{t("settings.notificationTimeoutDescription")}</p>
+      </section>
       <section className="settings-card system-card weather-token-card">
         <h2><span>⌑</span>{t("settings.weatherTokens")}</h2>
         <p>{t("settings.weatherTokensDescription")}</p>
