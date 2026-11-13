@@ -117,3 +117,19 @@ describe("evaluateDurationGate", () => {
     });
   });
 });
+
+
+describe("time-only schedule semantics", () => {
+  it("is active every day within the selected time range", () => {
+    const everyDay = { weekdays: [0, 1, 2, 3, 4, 5, 6], startTime: "07:00", endTime: "22:00", timeZone: "Europe/Amsterdam" };
+    expect(isScheduleActive(everyDay, new Date("2026-11-15T12:00:00.000Z"))).toBe(true);
+    expect(isScheduleActive(everyDay, new Date("2026-11-16T22:00:00.000Z"))).toBe(false);
+  });
+
+  it("supports a time-only interval crossing midnight on every day", () => {
+    const overnight = { weekdays: [0, 1, 2, 3, 4, 5, 6], startTime: "22:00", endTime: "07:00", timeZone: "Europe/Amsterdam" };
+    expect(isScheduleActive(overnight, new Date("2026-11-16T22:30:00.000Z"))).toBe(true);
+    expect(isScheduleActive(overnight, new Date("2026-11-17T05:30:00.000Z"))).toBe(true);
+    expect(isScheduleActive(overnight, new Date("2026-11-17T07:00:00.000Z"))).toBe(false);
+  });
+});
