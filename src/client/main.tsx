@@ -317,6 +317,17 @@ function App() {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
     holdTimer.current = null;
   };
+  // The header indicator reflects active alert severity only. Unknown device
+  // states and API errors remain visible in the panel body, never as alerts.
+  const activeNotifications = notifications.filter(item => item.state === "active");
+  const notificationIndicatorSeverity = activeNotifications.some(item => item.severity === "critical")
+    ? "critical"
+    : activeNotifications.some(item => item.severity === "warning")
+      ? "warning"
+      : null;
+  const notificationHeadingClass = notificationIndicatorSeverity
+    ? "notifications-heading has-" + notificationIndicatorSeverity
+    : "notifications-heading";
   if (settingsOpen) return settingsUnlocked
     ? <GeneralSettingsPage onDirtyChange={dirty => { notificationDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
@@ -385,7 +396,7 @@ function App() {
           ))}
         </div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
-          <div className="notifications-heading"><h1>{t("notifications.heading")}</h1>{(notifications.some((item) => item.state === "active") || notifications.some((item) => item.state === "unknown") || Boolean(loadError)) && <span className={"notification-status-indicator" + (notifications.some((item) => item.state === "unknown") || Boolean(loadError) ? " is-unknown" : "")} role="img" aria-label={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")} title={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")}>!</span>}</div>
+          <div className={notificationHeadingClass}><h1>{t("notifications.heading")}</h1>{notificationIndicatorSeverity && <span className={"notification-status-indicator is-" + notificationIndicatorSeverity} role="img" aria-label={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")} title={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")}>!</span>}</div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
