@@ -1,0 +1,87 @@
+export type ScheduleCondition = {
+  weekdays: number[];
+  startTime: string;
+  endTime: string;
+  timeZone?: string;
+};
+
+export type ConditionResult = {
+  state: "active" | "inactive" | "unknown";
+  reason?: string;
+};
+
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
+};
+
+function parseClockTime(value: string): number {
+  if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value)) {
+    throw new Error(`Ongeldige schematijd: ${value}`);
+  }
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+/**
+ * Evaluates a weekly local-time schedule. The selected weekday owns the
+ * start of an overnight interval (e.g. Monday 22:00–Tuesday 07:00).
+ * Intl handles the selected IANA timezone, including DST transitions.
+ */
+export function isScheduleActive(schedule: ScheduleCondition, now: Date): boolean {
+  if (!Array.isArray(schedule.weekdays) || schedule.weekdays.length === 0 ||
+      schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) {
+    throw new Error("Een tijdschema moet minimaal één geldige weekdag bevatten.");
+  }
+
+  const start = parseClockTime(schedule.startTime);
+  const end = parseClockTime(schedule.endTime);
+  if (start === end) throw new Error("Begin- en eindtijd van een tijdschema mogen niet gelijk zijn.");
+
+  const timeZone = schedule.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const weekday = WEEKDAY_INDEX[values.weekday];
+  const minuteOfDay = Number(values.hour) * 60 + Number(values.minute);
+  const selected = new Set(schedule.weekdays);
+
+  if (start < end) {
+    return selected.has(weekday) && minuteOfDay >= start && minuteOfDay < end;
+  }
+
+  const previousWeekday = (weekday + 6) % 7;
+  return (selected.has(weekday) && minuteOfDay >= start) ||
+    (selected.has(previousWeekday) && minuteOfDay < end);
+}
+
+/**
+ * Stateful gate for "the child condition must remain active for durationMs".
+ * A stable key (notification ID + Blockly block ID) is required per gate.
+ * Pending duration is reported as inactive, so it never flashes prematurely.
+ */
+export function evaluateDurationGate(
+  key: string,
+  child: ConditionResult,
+  durationMs: number,
+  now: number,
+  activeSince: Map<string, number>,
+): ConditionResult {
+  if (!Number.isSafeInteger(durationMs) || durationMs <= 0) {
+    return { state: "unknown", reason: "duration_invalid" };
+  }
+  if (child.state !== "active") {
+    activeSince.delete(key);
+    return child;
+  }
+
+  const startedAt = activeSince.get(key) ?? now;
+  activeSince.set(key, startedAt);
+  return now - startedAt >= durationMs
+    ? { state: "active" }
+    : { state: "inactive" };
+}
