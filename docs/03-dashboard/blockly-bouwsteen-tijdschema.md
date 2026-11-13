@@ -409,3 +409,18 @@ De meldingenpagina controleert niet alleen de geselecteerde melding, maar alle o
 ## Standaardvoorwaarde bij nieuwe meldingen (13 november 2026)
 
 Een nieuwe melding start voortaan met de eerste beschikbare apparaat-meetmogelijkheid uit de geladen Homey-broncatalogus, in plaats van standaard met een leeg tijdschema. De voorwaarde gebruikt de operator `equals`; de beginwaarde is `0` voor numerieke bronnen en `true` voor boolean-bronnen. De gebruiker kan bron, operator en waarde direct in Blockly wijzigen. Als er geen apparaat met een ondersteunde meetmogelijkheid in de catalogus staat (of de catalogus niet kon worden geladen), blijft het veilige lege, niet-geconfigureerde tijdschema de terugvaloptie.
+
+
+## Datatype-gestuurd vergelijkingsveld in Blockly (13 november 2026)
+
+Het waardeveld van de Homey-bronblokken past zich nu aan het datatype van de geselecteerde bron aan:
+
+- **Boolean-bron:** een keuzelijst met uitsluitend `false` en `true`; vrije tekst of getallen kunnen niet meer worden ingevoerd.
+- **Numerieke bron:** een numeriek Blockly-veld (`FieldNumber`) in plaats van vrije tekst.
+- Bij het wisselen van bron wordt het waardeveld vervangen. Een waarde die bij het nieuwe datatype past blijft behouden; anders wordt veilig teruggevallen op `false` of `0`.
+- De operator-dropdown blijft datatype-afhankelijk. Als de bestaande operator niet bij de nieuwe bron past, wordt deze teruggezet naar `is gelijk aan`.
+- De bestaande serialisatie- en backendvalidatie blijven actief als tweede beveiligingslaag. Ongeldige of verouderde opgeslagen JSON wordt dus niet alleen op basis van de visuele invoer vertrouwd.
+
+De wijziging is beperkt tot de bestaande Blockly-bronblokken en het herbruikbare datatype-hulpfunctietje. Het notificatie-JSON-model en de Homey-API veranderen niet.
+
+Geautomatiseerde unit-tests controleren de datatype-normalisatie (onder meer `1200` bij boolean wordt `false`, en `24.5` blijft numeriek). De daadwerkelijke dynamische veldwisseling in de browser moet na CI nog handmatig in de Blockly-editor worden gecontroleerd, inclusief wisselen van boolean naar numeriek en terug.
