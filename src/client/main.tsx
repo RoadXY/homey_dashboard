@@ -896,33 +896,37 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
         : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
     };
+    const makeComparisonValueField = (expectedType: "number" | "boolean", rawValue: string) => {
+      const normalized = comparisonInputValue(expectedType, rawValue);
+      if (expectedType === "boolean") {
+        const field = new Blockly.FieldDropdown([["false", "false"], ["true", "true"]]);
+        field.setValue(String(normalized));
+        return field;
+      }
+      return new Blockly.FieldNumber(Number(normalized));
+    };
+    const replaceComparisonValueField = (block: any, expectedType: "number" | "boolean", rawValue: string) => {
+      const input = block.getInput("SOURCE_FIELDS");
+      if (!input) return;
+      input.removeField("VALUE");
+      input.appendField(makeComparisonValueField(expectedType, rawValue), "VALUE");
+    };
     const defineSourceBlock = (type: "device" | "logic") => ({
       init(this: any) {
         const block = this;
         const initialSource = resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current);
-        const input = this.appendDummyInput()
+        this.appendDummyInput("SOURCE_FIELDS")
           .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
           .appendField(new SearchableSourceDropdown(() => sourceOptions(type)), "SOURCE")
-          .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP");
-        const makeValueField = (expectedType: "number" | "boolean", rawValue: string) => {
-          const normalized = comparisonInputValue(expectedType, rawValue);
-          if (expectedType === "boolean") {
-            const field = new Blockly.FieldDropdown([["false", "false"], ["true", "true"]]);
-            field.setValue(String(normalized));
-            return field;
-          }
-          return new Blockly.FieldNumber(Number(normalized));
-        };
-        input.appendField(makeValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : "0"), "VALUE");
+          .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
+          .appendField(makeComparisonValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
         this.setOnChange((event: any) => {
           if (event.type !== Blockly.Events.BLOCK_FIELD_CHANGED || event.blockId !== block.id || event.name !== "SOURCE") return;
           const source = resolveNotificationSourceFromKey(block.getFieldValue("SOURCE"), catalogRef.current);
           if (!source) return;
           if (!comparisonOptions(block).some(([, operator]) => operator === block.getFieldValue("OP"))) block.setFieldValue("equals", "OP");
-          const raw = block.getFieldValue("VALUE");
-          input.removeField("VALUE");
-          input.appendField(makeValueField(source.expectedType, raw), "VALUE");
+          replaceComparisonValueField(block, source.expectedType, String(block.getFieldValue("VALUE") ?? ""));
         });
         this.setTooltip("Selecteer een Homey-bron. Boolean-bronnen gebruiken true/false; numerieke bronnen gebruiken een numeriek invoerveld.");
       }
@@ -1062,9 +1066,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
           const candidate = ws.newBlock(sourceType);
           candidate.setFieldValue(sourceKey, "SOURCE");
+          // Set the value field explicitly from the resolved source datatype.
+          // Do not rely on the asynchronous Blockly change event during hydration:
+          // it can otherwise leave a boolean dropdown holding an old numeric value.
+          replaceComparisonValueField(candidate, resolvedSource.expectedType, String(node.condition?.value ?? ""));
           // Refresh Blockly's cached dynamic dropdown options after SOURCE changes.
-          // During block initialization OP may have been generated for the first
-          // catalog item (often boolean), before hydration selects a numeric source.
           const operatorField = candidate.getField("OP");
           if (operatorField && typeof operatorField.getOptions === "function") operatorField.getOptions(false);
           const operator = node.condition?.operator ?? "equals";
@@ -1074,7 +1080,6 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             block.data = JSON.stringify(node);
           } else {
             candidate.setFieldValue(operator, "OP");
-            candidate.setFieldValue(String(node.condition?.value ?? false), "VALUE");
             block = candidate;
           }
         }
