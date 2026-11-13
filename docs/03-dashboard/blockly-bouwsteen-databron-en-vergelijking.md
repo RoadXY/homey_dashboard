@@ -300,3 +300,8 @@ De Blockly-toolbox gebruikte op sommige schermen de standaard lichtgrijze achter
 De vaste omschrijving boven Blockly (`notifications.conditionDescription`), de toolbar-instructie (`notifications.blockHelp`) en de algemene hint onder de werkruimte (`notifications.inactiveHint`) zijn uit de meldingeneditor verwijderd. Deze teksten suggereerden dat iedere melding een tijdschema gebruikt en waren niet passend bij algemene conditiebomen. De ernstbadge blijft staan als afzonderlijke metadata.
 
 Een eventuele toekomstige uitleg van de opgebouwde flow wordt niet met vaste tekst ingevuld, maar uitsluitend gegenereerd uit het opgeslagen conditiemodel. Voorwaarden die niet volledig en aantoonbaar ondersteund worden, moeten expliciet als niet uitlegbaar worden gemarkeerd; er mag geen gegokte samenvatting worden getoond.
+
+
+### 11.17 Blockly-toolbox gebruikt expliciet dark theme
+
+De eerdere CSS-correctie richtte zich vooral op de legacy Blockly tree-toolbox. De gebruikte category toolbox gebruikt daarnaast `.blocklyToolboxContents`, `.blocklyToolboxCategory` en `.blocklyToolboxCategoryLabel`; daardoor bleef de standaard lichtgrijze achtergrond zichtbaar. De editor initialiseert nu een expliciet `homeyDark` Blockly-theme met donkere workspace-, toolbox- en flyoutkleuren. Aanvullende CSS dekt zowel de moderne category toolbox als de legacy tree-selectors, inclusief hover- en geselecteerde categorieën.
