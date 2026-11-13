@@ -203,5 +203,6 @@
   "notifications.newTitle": "New notification",
   "notifications.name": "Notification name",
   "notifications.defaultMessage": "A dashboard notification is active.",
-  "notifications.emptyList": "There are no notifications yet. Create your first notification."
+  "notifications.emptyList": "There are no notifications yet. Create your first notification.",
+  "notifications.dismiss": "Dismiss notification"
 }
