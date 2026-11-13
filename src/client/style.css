@@ -541,6 +541,10 @@ body {
 .measurement-workspace { min-height:560px; }
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
 .measurement-tile-list { margin-bottom:18px; }
+/* Meetwaardetegels hebben geen pictogramkolom: geef de naam alle resterende ruimte en plaats Bewerken uiterst rechts. */
+.measurement-tile-list .quick-action-row { grid-template-columns:42px minmax(0,1fr) 28px; }
+.measurement-tile-list .quick-action-name { min-width:0; }
+.measurement-tile-list .quick-action-edit { justify-self:end; }
 .measurement-inline-editor { display:flex; flex-direction:column; gap:12px; padding-top:16px; border-top:1px solid rgba(164,190,218,.14); }
 .measurement-inline-editor h3 { margin:0; color:#e8f1fc; font-size:17px; }
 .measurement-inline-editor label { display:flex; flex-direction:column; gap:7px; color:#c3d0df; font-size:14px; }
