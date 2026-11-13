@@ -273,3 +273,10 @@ De Blockly-editor toont nu de reden wanneer een onvolledige of ongeldige werkrui
 Bij het opnieuw openen wordt een vergelijking waarvan de Homey-bron niet meer in de actuele broncatalogus voorkomt als expliciet niet-ondersteund blok getoond, met de oorspronkelijke node-JSON als block-data. De editor probeert zo'n bron niet stilzwijgend naar een andere dropdownoptie om te zetten. Opslaan blijft geblokkeerd zolang dit blok aanwezig is.
 
 Dit verbetert de foutfeedback en behoudt onbekende brondata. Het is geen vervanging voor de afgesproken handmatige browserintegratietest van slepen, verbinden, opslaan en opnieuw openen.
+
+
+### 11.13 Alle meldingen beschikbaar maken in Blockly-instellingen
+
+De meldingeninstellingen filterden de keuzelijst onbedoeld op regels die een tijdschema-node bevatten. Daardoor waren gewone vergelijkingsmeldingen, waaronder Logic-testmeldingen zonder tijdschema, niet selecteerbaar en werd de Blockly-editor helemaal niet getoond.
+
+De selectie toont nu alle bestaande meldingsconfiguraties. Een tijdschema is optioneel en geen voorwaarde meer om een melding in Blockly te kunnen openen. De editor kan daardoor ook een conditieboom met alleen een Homey-apparaat- of Logic-vergelijking laden en bewerken. De keuzelijst heet voortaan **Meldingen**.
