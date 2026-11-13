@@ -826,6 +826,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         this.setTooltip("Dit conditietype wordt nog niet visueel bewerkt. De oorspronkelijke JSON blijft ongewijzigd zolang je niet opslaat vanuit een volledige editor.");
       }
     };
+    if (!Blockly.Blocks.homey_condition_duration_inactive) Blockly.Blocks.homey_condition_duration_inactive = {
+      init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten inactief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
+    };
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
       init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
@@ -856,9 +859,10 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const child = buildCondition(node.condition);
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.type === "duration") {
-        block = ws.newBlock("homey_condition_duration");
+        const inactive = node.condition?.type === "not";
+        block = ws.newBlock(inactive ? "homey_condition_duration_inactive" : "homey_condition_duration");
         block.setFieldValue(String(Math.max(1, Math.round(node.durationMs / 60000))), "MINUTES");
-        const child = buildCondition(node.condition);
+        const child = buildCondition(inactive ? node.condition.condition : node.condition);
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.operator === "and" || node.operator === "or") {
         block = ws.newBlock("homey_condition_" + node.operator);
@@ -922,14 +926,13 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         if (children.length !== 1) throw new Error("NIET vereist precies één voorwaarde.");
         return { type: "not", condition: children[0] };
       }
-      if (block.type === "homey_condition_duration") {
+      if (block.type === "homey_condition_duration" || block.type === "homey_condition_duration_inactive") {
         const children = serializeChain(block.getInputTargetBlock("CONDITION"));
         if (children.length !== 1) throw new Error("Een duurblok vereist precies één voorwaarde.");
         const minutes = Number(block.getFieldValue("MINUTES"));
         if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) throw new Error("De duur moet tussen 1 en 1440 minuten liggen.");
-        const child = children[0];
-        const id = block.id;
-        return { type: "duration", id, durationMs: minutes * 60000, condition: child };
+        const child = block.type === "homey_condition_duration_inactive" ? { type: "not", condition: children[0] } : children[0];
+        return { type: "duration", id: block.id, durationMs: minutes * 60000, condition: child };
       }
       if (block.type === "homey_condition_and" || block.type === "homey_condition_or") {
         const conditions: any[] = [];
