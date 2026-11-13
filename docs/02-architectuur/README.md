@@ -86,3 +86,23 @@ The settings menu must visibly distinguish **Automatic (Homey: <language>)** fro
 - Homey device names, zone names, Flow names, Logic variable names, and other user-defined values are displayed unchanged and are not passed through translation dictionaries.
 
 This localization architecture is independent of provider mappings such as weather condition normalization. Technical identifiers, APIs, JSON schemas, and code remain English.
+
+
+## Runtime-isolatie en lokale frontend-assets (13 november 2026)
+
+Doel: de draaiende dashboardcontainer en tabletbrowser mogen voor de dashboardweergave geen publieke internet-CDN's nodig hebben.
+
+### Asset-audit
+- **Material Design Icons** worden geleverd via de npm-pakketten `@mdi/font` en `@mdi/svg`. De stylesheet wordt lokaal geïmporteerd in `src/client/main.tsx`; Vite neemt de fontbestanden mee in de frontend-build. Er is geen runtime-aanroep naar een icon-CDN nodig.
+- **Blockly 12.3.1** wordt als npm-module geïmporteerd (`blockly/core` en `blockly/blocks`) en door Vite gebundeld. De browser hoeft Blockly niet van unpkg of een andere CDN te laden.
+- **Weericonen** zijn inline SVG in de React-code; ze worden niet van een externe beeldserver opgehaald.
+- **Overige interface-iconen** zijn teksttekens/emoji of MDI-iconen. Er is geen afzonderlijke externe icon-service aangetroffen.
+- **Lettertypen** gebruiken de lokaal gebundelde MDI-fontbestanden en systeemfont-fallbacks (Inter indien lokaal aanwezig, daarna platformfonts). Er is geen Google Fonts-import aangetroffen.
+- De frontend gebruikt relatieve `/api/...`-routes naar de eigen container. De Homey-koppeling gebruikt `HomeyAPI.createLocalAPI` naar het geconfigureerde Homey-adres. De weerstatus wordt lokaal opgeslagen en via de eigen API aangeboden; de servercode in deze audit bevat geen uitgaande weerprovider-aanroep.
+
+### Operationele nuance
+De runtime kan voor de dashboardassets en normale werking zonder publieke internetverbinding functioneren, mits Homey via het lokale netwerk bereikbaar is. **Build en installatie zijn niet automatisch offline:** `npm ci` heeft de npm-pakketten nodig (tenzij de npm-cache beschikbaar is) en de Docker-build heeft de benodigde Node-basisimage nodig (tenzij die lokaal aanwezig is). Daarom is het gewenste ontwerp: alle frontend-assets in de image bundelen en tijdens runtime geen publieke CDN's of externe font-/icon-hosts benaderen.
+
+### Nog te valideren
+- Na deployment kan een praktijktest met geblokkeerde uitgaande internettoegang bevestigen dat geen verborgen browserrequests naar publieke hosts plaatsvinden.
+- Deze audit is gebaseerd op de huidige broncode en dependency-imports; controleer nieuwe dependencies en frontend-assets bij toekomstige wijzigingen opnieuw.
