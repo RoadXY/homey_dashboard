@@ -164,3 +164,10 @@ De validator- en regressietests zijn aangepast om uitsluitend het canonieke sche
 Een fout in de serializer voegde de twee letterlijke tekens `\\n` toe achter het JSON-document, in plaats van een echte regeleinde. Daardoor kon de instellingen-API een eerder opgeslagen `data/notifications.json` niet meer parsen en bleef de meldingenkeuzelijst leeg.
 
 De serializer schrijft nu een normale newline. De reader herkent daarnaast uitsluitend deze bekende foutieve suffix en verwijdert die vóór het parsen, zodat bestaande configuraties behouden blijven. Andere ongeldige trailing data blijft een parsefout geven. Regressietests dekken normale JSON, herstel van de oude suffix en afwijzing van willekeurige extra tekst.
+
+
+## Instelbaar meldingsniveau in de Blockly-instellingen – 13 november 2026
+
+Bij de geselecteerde melding toont de editor nu het label **Huidig niveau** met een keuzelijst voor de drie ondersteunde niveaus: `critical`, `warning` en `info`. De zichtbare namen komen uit de Nederlandse en Engelse i18n-bestanden. De selectie wijzigt het `severity`-veld van de geselecteerde configuratie en wordt met dezelfde Opslaan-actie als de overige meldingseigenschappen opgeslagen.
+
+De badge naast de keuzelijst toont direct de geselecteerde waarde en gebruikt de bestaande afgesproken severity-kleuren en CSS-tokens: kritisch rood, waarschuwing amber/geel en informatie neutraal. De keuze blijft onderdeel van het canonieke meldingsconfiguratiebestand; er is geen aparte opslagroute.
