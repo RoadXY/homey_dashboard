@@ -114,3 +114,18 @@ describe("fixed notification root semantics", () => {
     expect(() => combineRootConditions([])).toThrow();
   });
 });
+
+
+describe("normalizeScheduleTimeInput", () => {
+  it("adds a leading zero to one-digit hours", () => {
+    expect(normalizeScheduleTimeInput("7:00")).toBe("07:00");
+    expect(normalizeScheduleTimeInput("0:05")).toBe("00:05");
+  });
+
+  it("keeps valid two-digit times and leaves invalid or incomplete input for validation", () => {
+    expect(normalizeScheduleTimeInput("20:00")).toBe("20:00");
+    expect(normalizeScheduleTimeInput(" 7:00 ")).toBe("07:00");
+    expect(normalizeScheduleTimeInput("7:")).toBe("7:");
+    expect(normalizeScheduleTimeInput("25:00")).toBe("25:00");
+  });
+});
