@@ -317,3 +317,7 @@ Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div
 - Oorzaak: de klikbare `.settings-brand`-knop met `sidebarCollapsed`-state was per ongeluk in `SettingsPinGate` terechtgekomen. Die component heeft deze state niet; hierdoor ontstond bij renderen `ReferenceError: sidebarCollapsed is not defined` en bleef de pagina leeg.
 - Herstel: de PIN-gate gebruikt weer een statische merkweergave. De klikbare merkknop staat nu in `GeneralSettingsPage`, waar `sidebarCollapsed` en `setSidebarCollapsed` daadwerkelijk bestaan.
 - De sidebar-toggle blijft alleen actief op desktopbreedtes (vanaf 701 px), met toegankelijke `aria-expanded`- en `aria-controls`-attributen.
+
+
+## Algemeen-instellingen – responsive uitlijning (13 november 2026)
+De Algemeen-pagina gebruikt container queries op `.settings-content` zodat de layout rekening houdt met de beschikbare breedte ná aftrek van de zijbalk. Bij een contentbreedte tot 900 px stapelen Taal en Datum en tijd, worden de formulierrijen flexibel en loopt de Systeemstatus over naar drie kolommen met detail op een tweede regel. Onder 520 px komen labels boven hun invoervelden en worden de kaartpadding en statusrij compacter. Hiermee voorkomen we dat vaste minimumkolommen keuzelijsten buiten hun kaart drukken wanneer de browserbreedte of het DevTools-paneel de inhoud beperkt.
