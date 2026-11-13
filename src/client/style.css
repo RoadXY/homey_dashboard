@@ -59,7 +59,8 @@
   --severity-info-background: var(--notification-card-background);
   --severity-info-border: var(--notification-card-border);
   --severity-info-accent: var(--notification-label-color);
-  --severity-info-text: var(--notification-message-color);
+  /* Info is neutral and clearly readable; themes may override this semantic token. */
+  --severity-info-text: var(--notification-title-color);
   --severity-info-icon: var(--notification-label-color);
 }
 html, body, #root { width: 100%; min-width: 320px; height: 100%; min-height: 100%; margin: 0; }
@@ -237,8 +238,7 @@ body {
 .severity-info .notification-level,
 .severity-info .notification-icon,
 .severity-info > span:last-child { color: var(--severity-info-text); }
-/* De berichtregel gebruikt bewust altijd de gele waarschuwingskleur, ongeacht het niveau. */
-.notification-card > span:last-child { color: var(--severity-warning-text); }
+/* Message text follows its severity token: critical red, warning yellow, info neutral white. */
 
 
 
@@ -788,19 +788,25 @@ body {
 }
 
 .notifications-heading { justify-content:space-between; }
+/* Heading and indicator share the active severity's semantic theme color. */
+.notifications-heading.has-critical h1 { color:var(--severity-critical-accent); }
+.notifications-heading.has-warning h1 { color:var(--severity-warning-accent); }
 .notification-status-indicator {
   width:clamp(34px,3vw,44px); height:clamp(34px,3vw,44px); flex:0 0 auto;
   display:inline-flex; align-items:center; justify-content:center;
-  border:3px solid #ff3434; border-radius:50%;
-  color:#ff3434; font-size:clamp(22px,1.8vw,29px); font-weight:800; line-height:1;
-  text-shadow:0 0 10px rgba(255,45,45,.5);
-  box-shadow:0 0 0 2px rgba(255,52,52,.12),0 0 16px rgba(255,52,52,.22);
+  border:3px solid currentColor; border-radius:50%;
+  font-size:clamp(22px,1.8vw,29px); font-weight:800; line-height:1;
   animation:notification-status-blink 2.88s ease-in-out infinite;
 }
-.notification-status-indicator.is-unknown {
-  border-color:#ffb547; color:#ffb547;
-  text-shadow:0 0 10px rgba(255,181,71,.5);
-  box-shadow:0 0 0 2px rgba(255,181,71,.12),0 0 16px rgba(255,181,71,.22);
+.notification-status-indicator.is-critical {
+  color:var(--severity-critical-accent);
+  text-shadow:0 0 10px color-mix(in srgb,var(--severity-critical-accent) 55%,transparent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--severity-critical-accent) 18%,transparent),0 0 16px color-mix(in srgb,var(--severity-critical-accent) 32%,transparent);
+}
+.notification-status-indicator.is-warning {
+  color:var(--severity-warning-accent);
+  text-shadow:0 0 10px color-mix(in srgb,var(--severity-warning-accent) 55%,transparent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--severity-warning-accent) 18%,transparent),0 0 16px color-mix(in srgb,var(--severity-warning-accent) 32%,transparent);
 }
 @keyframes notification-status-blink {
   0%,100% { opacity:1; transform:scale(1); }
