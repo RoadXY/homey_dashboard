@@ -106,3 +106,18 @@ De gebruiker geeft aan de weekdagen en tijden van `slapen_sem` en `slapen_bram` 
 - De voorwaarden blijven: Lamp Sem aan én `slapen_sem` actief; Lamp Bram aan én `slapen_bram` actief.
 - Kopieer geen tijden van `boven_ramen_open` naar de slaap-schema's.
 - GitHub Actions is geslaagd voor beide nieuwe configuratiebestanden: runs [43382190242](https://github.com/RoadXY/homey_dashboard/actions/runs/43382190242) en [43382195856](https://github.com/RoadXY/homey_dashboard/actions/runs/43382195856).
+
+
+## Blockly-instellingen – eerste implementatie (13 november 2026)
+
+De eerste Blockly-tijdschema-editor is toegevoegd onder **Instellingen → Meldingen**. De editor toont de meldingen die een schema-node bevatten, waaronder de twee nieuwe lampmeldingen.
+
+- De gebruiker kan per melding de weekdagen en begin-/eindtijd instellen.
+- De Blockly-bouwsteen schrijft rechtstreeks terug naar de bestaande `schedule`-node in notification-v1 JSON.
+- De beveiligde instellingen-API gebruikt de bestaande PIN-sessie.
+- Opgeslagen wijzigingen komen in `DATA_DIR/notifications.json`; de runtime-meldingenengine leest deze overrides.
+- Standaardconfiguraties uit `config/notifications` worden op stabiele ID samengevoegd met de opgeslagen overrides.
+- De volledige AND/OR-/vergelijkings-/duur-editor is nog niet gebouwd; deze stap beperkt zich tot de tijdschema-bouwsteen.
+- Blockly 12.3.1 wordt voor deze eerste iteratie via CDN geladen. Lokale bundeling in de Docker-image is een open vervolgstap.
+
+Zie [Blockly-bouwsteen tijdschema's](blockly-bouwsteen-tijdschema.md) voor de implementatie- en testdetails.
