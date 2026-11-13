@@ -97,6 +97,19 @@
         {
           "type": "object",
           "additionalProperties": false,
+          "required": ["type", "configured", "weekdays"],
+          "properties": {
+            "type": { "const": "schedule" },
+            "configured": { "const": false },
+            "weekdays": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
           "required": ["type", "weekdays", "startTime", "endTime"],
           "properties": {
             "type": { "const": "schedule" },
