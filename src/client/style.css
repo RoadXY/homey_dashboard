@@ -696,6 +696,11 @@ body {
 }
 
 
+.notification-source-issues { margin: 0 0 14px; }
+.notification-source-issues h2 { margin: 0 0 10px; color: var(--text-primary); font-size: 15px; font-weight: 700; }
+.notification-source-issues .notification-source-warning { margin-bottom: 8px; }
+.notification-source-issues .notification-source-warning:last-child { margin-bottom: 0; }
+
 .notification-source-warning {
   margin: 0 0 16px;
   padding: 12px 14px;
