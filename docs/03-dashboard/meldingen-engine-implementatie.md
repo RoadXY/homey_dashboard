@@ -250,3 +250,12 @@ De indicator in de kop van het dashboardmeldingenpaneel wordt uitsluitend bepaal
 ## Meldingenlijst alfabetisch sorteren (14 november 2026)
 
 De dropdown met aangemaakte meldingen toont de flow-/meldingsnamen alfabetisch op titel. De sortering gebruikt `localeCompare` met de actieve dashboardtaal, hoofdletterongevoelige vergelijking en numerieke sortering (bijvoorbeeld 'Melding 2' vóór 'Melding 10'). De sortering wordt alleen op een afgeleide kopie voor de keuzelijst toegepast; de opgeslagen configuratievolgorde, geselecteerde melding en opslagstructuur blijven ongewijzigd. Zo blijft ook zoeken werken binnen de alfabetisch gesorteerde resultaten.
+
+
+## Losse tijd- en weekdagvoorwaarden (14 november 2026)
+
+In de Blockly-categorie Tijd zijn twee losse voorwaarden toegevoegd naast het bestaande volledige tijdschema:
+- **Tijd tussen**: controleert alleen een dagelijks tijdvenster. De opslag gebruikt een schedule-node met `mode: "time-only"`, alle zeven weekdagen en de bestaande tijdzone `Europe/Amsterdam`. Daarmee hergebruikt de runtime de bestaande tijds- en DST-bewuste evaluatie, inclusief intervallen over middernacht. De expliciete mode zorgt dat Blockly het blok bij opnieuw openen als tijd-only blijft tonen.
+- **Dagen van de week**: biedt zeven onafhankelijke vinkjes en slaat de selectie op als de bestaande `weekday`-node met één of meer weekdagen. De bestaande enkele-weekdag dropdown blijft ondersteund voor compatibiliteit.
+
+Beide blokken zijn gewone statement-voorwaarden en kunnen dus in EN/OF/NIET-containers worden gebruikt. Het bestaande gecombineerde tijdschema blijft ongewijzigd.
