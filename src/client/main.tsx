@@ -31,13 +31,16 @@ type MeasurementTileValue = { id: string; value: number | null; units: string; d
 type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
 function formatMeasurementParts(reading: MeasurementTileValue | undefined, locale: string = "nl"): { value: string; units: string } {
   if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return { value: "—", units: "" };
-  // Keep readings compact: values with four or more integer digits are rounded to whole units.
-  const decimals = Math.abs(reading.value) >= 1000 ? 0 : Math.max(0, Math.min(3, reading.decimals ?? 1));
+  // Keep readings compact and consistent across dashboard and settings preview.
+  const magnitude = Math.abs(reading.value);
+  const decimals = magnitude >= 1000 ? 0 : Math.max(0, Math.min(3, reading.decimals ?? 1));
   const formatter = new Intl.NumberFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : "en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   });
-  return { value: formatter.format(reading.value), units: reading.units ?? "" };
+  // Large readings omit their unit to preserve room for the value on tablet-sized tiles.
+  const units = magnitude > 99.99 ? "" : (reading.units ?? "");
+  return { value: formatter.format(reading.value), units };
 }
 function formatMeasurementValue(reading: MeasurementTileValue | undefined, locale: string = "nl"): string {
   const formatted = formatMeasurementParts(reading, locale);
@@ -560,7 +563,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <div className="quick-preview-grid measurement-preview-grid">
           {tiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
-            return <div className="quick-preview-item measurement-preview-item" key={tile.id}><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
+            const formatted = formatMeasurementParts(reading);
+            return <div className="quick-preview-item measurement-preview-item" key={tile.id}>
+              <TemperatureTile label={tile.name || "Tegel"} value={formatted.value} units={formatted.units} className="measurement-preview-dashboard-tile"/>
+              <small>{sourceDescription(tile)}</small>
+            </div>;
           })}
         </div>
       </section>
@@ -1751,8 +1758,8 @@ function WeatherIcon({ category }: { category: WeatherCategory }) {
     </div>
   );
 }
-function TemperatureTile({ label, value, units }: { label: string; value: string; units: string }) {
-  return <article className="card temperature-tile"><span className="temperature-label">{label}</span><strong className="temperature-reading"><span className="temperature-reading-value">{value}</span>{units && <small className="temperature-reading-unit">{units}</small>}</strong></article>;
+function TemperatureTile({ label, value, units, className = "" }: { label: string; value: string; units: string; className?: string }) {
+  return <article className={("card temperature-tile " + className).trim()}><span className="temperature-label">{label}</span><strong className="temperature-reading"><span className="temperature-reading-value">{value}</span>{units && <small className="temperature-reading-unit">{units}</small>}</strong></article>;
 }
 void loadTranslations().finally(() => {
   ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
