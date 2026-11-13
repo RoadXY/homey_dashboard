@@ -15,14 +15,14 @@ type HomeyDevice = { id: string; name?: string; zone?: string; available?: boole
 type DeviceReadings = { retrievedAt: string; devices: HomeyDevice[] };
 type LogicResponse = { retrievedAt: string; variables: { name: string; value: unknown }[] };
 type HomeyStatus = { state: string; checkedAt: string | null; error: string | null; deviceCount?: number; zoneCount?: number };
-type DashboardNotification = { id: string; title: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
+type DashboardNotification = { id: string; title: string; notificationTitle: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
 type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
-type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
+type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; notificationTitle?: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
 type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" }[] };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
@@ -391,9 +391,8 @@ function App() {
               <div className="notification-list">
                 {notifications.filter((item) => item.state === "active").map((item) => (
                   <article className={`notification-card severity-${item.severity}`} key={item.id}>
-                    <div className="notification-heading"><span className="notification-icon" aria-hidden="true">{item.severity === "critical" ? "!" : item.severity === "warning" ? "⚠" : "i"}</span><span className="notification-level">{item.testOnly ? t("notifications.test") : ""}{item.severity === "critical" ? t("notifications.critical") : item.severity === "warning" ? t("notifications.warning") : t("notifications.info")}</span></div>
-                    <strong>{translate(locale, `notifications.${item.id}.title`) === `notifications.${item.id}.title` ? item.title : t(`notifications.${item.id}.title`)}</strong>
-                    <span>{translate(locale, `notifications.${item.id}.message`) === `notifications.${item.id}.message` ? item.message : t(`notifications.${item.id}.message`)}</span>
+                    <strong>{item.notificationTitle}</strong>
+                    <span>{item.message}</span>
                   </article>
                 ))}
               </div>
@@ -722,7 +721,7 @@ function findMissingNotificationSources(condition: any, catalog: NotificationSou
   visit(condition);
   return [...missing];
 }
-function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
+function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, notificationTitle, notificationMessage, onContentChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; notificationTitle: string; notificationMessage: string; onContentChange: (value: { notificationTitle: string; message: string }) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const [conditionError, setConditionError] = React.useState("");
@@ -735,6 +734,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   const comparisonRef = React.useRef(comparison);
   const comparisonChangeRef = React.useRef(onComparisonChange);
   const conditionChangeRef = React.useRef(onConditionChange);
+  const contentChangeRef = React.useRef(onContentChange);
+  const notificationTitleRef = React.useRef(notificationTitle);
+  const notificationMessageRef = React.useRef(notificationMessage);
   changeRef.current = onChange;
   sourceChangeRef.current = onSourceChange;
   catalogRef.current = sourceCatalog;
@@ -742,6 +744,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   comparisonRef.current = comparison;
   comparisonChangeRef.current = onComparisonChange;
   conditionChangeRef.current = onConditionChange;
+  contentChangeRef.current = onContentChange;
+  notificationTitleRef.current = notificationTitle;
+  notificationMessageRef.current = notificationMessage;
   React.useEffect(() => {
     const Blockly: any = BlocklyLibrary;
     // Blockly core imports do not automatically populate its message table. Context-menu labels require these translations.
@@ -1075,12 +1080,20 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
       init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
-    if (!Blockly.Blocks.homey_notification_root) Blockly.Blocks.homey_notification_root = {
+    // Re-register this fixed root block on editor mount so its labels follow
+    // the selected UI language. User-entered title and message remain literal.
+    Blockly.Blocks.homey_notification_root = {
       init() {
+        this.appendDummyInput("NOTIFICATION_TITLE")
+          .appendField(translate(locale, "notifications.blockNotificationTitle"))
+          .appendField(new Blockly.FieldTextInput(notificationTitleRef.current), "NOTIFICATION_TITLE");
+        this.appendDummyInput("NOTIFICATION_MESSAGE")
+          .appendField(translate(locale, "notifications.blockNotificationMessage"))
+          .appendField(new Blockly.FieldTextInput(notificationMessageRef.current), "NOTIFICATION_MESSAGE");
         this.appendStatementInput("CONDITIONS");
         this.appendDummyInput("FOOTER").appendField("🔔 Genereer melding");
         this.setColour(285);
-        this.setTooltip("De vaste hoofdconstructie van deze melding. Plaats hier voorwaarden en EN/OF-containers in.");
+        this.setTooltip(translate(locale, "notifications.blockHelp"));
         // This is the single fixed root block for the notification workspace.
         this.setMovable(false);
         this.setDeletable(false);
@@ -1296,6 +1309,14 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     };
     ws.addChangeListener((event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
+      if (event.type === Blockly.Events.BLOCK_FIELD_CHANGED && event.blockId === rootBlock.id &&
+          (event.name === "NOTIFICATION_TITLE" || event.name === "NOTIFICATION_MESSAGE")) {
+        contentChangeRef.current({
+          notificationTitle: String(rootBlock.getFieldValue("NOTIFICATION_TITLE") ?? ""),
+          message: String(rootBlock.getFieldValue("NOTIFICATION_MESSAGE") ?? "")
+        });
+        return;
+      }
       emitCondition();
     });
     hydrating = false;
@@ -1430,7 +1451,8 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
       schemaVersion: 1,
       id,
       title,
-      message: t("notifications.defaultMessage"),
+      notificationTitle: title,
+      message: "",
       severity: "info",
       enabled: true,
       condition: initialCondition
@@ -1445,6 +1467,10 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   const updateTitle = (title: string) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, title } : item));
+  };
+  const updateNotificationContent = (value: { notificationTitle: string; message: string }) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, notificationTitle: value.notificationTitle, message: value.message } : item));
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
@@ -1492,7 +1518,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-heading-controls"><button type="button" className={"notification-enabled-toggle" + (selected.enabled ? " is-enabled" : " is-disabled")} aria-pressed={selected.enabled} disabled={busy || saving} onClick={() => updateEnabled(!selected.enabled)}><span className="notification-toggle-indicator" aria-hidden="true"/>{selected.enabled ? "Melding ingeschakeld" : "Melding uitgeschakeld"}</button><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div></div>
-          <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} notificationTitle={selected.notificationTitle ?? selected.title} notificationMessage={selected.message} onContentChange={updateNotificationContent} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
     </div>
