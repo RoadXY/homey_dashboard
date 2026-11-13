@@ -83,6 +83,30 @@ describe("evaluateDurationGate", () => {
     expect(second.reevaluateAt).toBe(6_000);
   });
 
+  it("keeps an earlier child schedule transition while the duration is pending", () => {
+    const activeSince = new Map<string, number>();
+    const result = evaluateDurationGate(
+      "rule:block",
+      { state: "active", reevaluateAt: 4_000 },
+      5_000,
+      1_000,
+      activeSince,
+    );
+    expect(result).toEqual({ state: "inactive", reevaluateAt: 4_000 });
+  });
+
+  it("continues scheduling child transitions after the duration has elapsed", () => {
+    const activeSince = new Map<string, number>();
+    evaluateDurationGate("rule:block", { state: "active" }, 5_000, 1_000, activeSince);
+    expect(evaluateDurationGate(
+      "rule:block",
+      { state: "active", reevaluateAt: 10_000 },
+      5_000,
+      6_000,
+      activeSince,
+    )).toEqual({ state: "active", reevaluateAt: 10_000 });
+  });
+
   it("returns unknown for an invalid duration", () => {
     expect(evaluateDurationGate("rule:block", { state: "active" }, 0, 1_000, new Map())).toEqual({
       state: "unknown", reason: "duration_invalid",
