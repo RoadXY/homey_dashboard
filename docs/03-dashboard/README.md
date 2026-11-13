@@ -235,6 +235,7 @@ De gebruiker heeft bevestigd dat **alle conditionele kaarten** uit de bestaande 
 
 
 ## Blockly-bouwstenen
+- [Meldingen JSON-audit](meldingen-json-audit.md) – vergelijking van de goedgekeurde inventarisatie met de huidige JSON-configuraties en open bron-/schema-mappings.
 - [Databron selecteren en voorwaarde vergelijken](blockly-bouwsteen-databron-en-vergelijking.md) – eerste functionele ontwerpschets voor Homey-apparaatwaarden en Logic-variabelen als read-only bronnen, met interne vergelijking en vaste prioriteit per melding.
 - [Tijdschema's per dashboardmelding](blockly-bouwsteen-tijdschema.md) – afzonderlijke, configureerbare tijdschema-instanties.
 
