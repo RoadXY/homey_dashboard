@@ -9,7 +9,7 @@ Homey Pro 2023 levert uitsluitend actuele bronwaarden. Homey Dashboard beheert d
 
 ## Eerste backendstap – uitgevoerd
 
-De bestaande evaluator in `src/server/notifications.ts` ondersteunt de bestaande JSON-configuraties (schemaVersion 1), inclusief legacy bron + vergelijking en geneste AND/OR-groepen. Deze bestaande configuraties blijven geldig.
+De evaluator in `src/server/notifications.ts` gebruikt uitsluitend het canonieke schemaVersion 1-model: een expliciete conditieboom met comparison-, AND/OR-, duration- en schedule-nodes. Oude legacy-vormen worden niet ondersteund.
 
 De herbruikbare evaluatiebouwstenen staan in `src/server/notification-conditions.ts` en zijn aangesloten op de bestaande evaluator:
 
@@ -141,37 +141,19 @@ De berekening gebruikt de ingestelde IANA-tijdzone en doorloopt werkelijke tijds
 Tests toegevoegd voor start- en eindgrenzen, nachtoverschrijding, de voorjaars-DST-sprong en deadlines die door duurvoorwaarden behouden moeten blijven. Implementatiecommits: `8bab4c9`, `86e90c2`, `48bb690`, `ce13f7b` en `4c1c401`. De volledige CI-run voor `4c1c401` is geslaagd: alle tests in 3 testbestanden, OpenAPI-validatie en frontend-/backendbuild zijn groen. Run: https://github.com/RoadXY/homey_dashboard/actions/runs/43374513979.
 
 
-## Canoniek configuratiemodel v2 – 13 november 2026
+## Canoniek configuratiemodel – schemaVersion 1 (13 november 2026)
 
-Het formele JSON Schema voor nieuwe meldingsconfiguraties staat in `docs/04-configuratie/schemas/notification-v2.schema.json`. Versie 2 maakt de conditieboom expliciet en vermijdt dat een legacy-configuratie met top-level `source`/vergelijking en een samengestelde conditieboom dezelfde versiewaarde delen.
+Het project is nog in de ontwikkelfase. De gebruiker heeft expliciet besloten geen legacy-formaat of tussentijdse versies te bewaren. De structuur die eerder als schemaVersion 2 was ontworpen, wordt daarom het enige schemaVersion 1-model.
 
-V2 gebruikt:
-- expliciete `type: "comparison"`-bladen met `source` en `condition`;
-- geneste `and`- en `or`-groepen;
-- `type: "duration"` met stabiele blok-ID en duur in milliseconden;
-- `type: "schedule"` met weekdagen, begin-/eindtijd en optionele IANA-tijdzone;
-- bronidentiteit via Homey device-ID + capability-ID of Logic variable-ID.
+- Het contract staat in `docs/04-configuratie/schemas/notification-v1.schema.json`.
+- Iedere melding bevat één expliciete conditieboom.
+- Vergelijkingsbladen zijn `type: "comparison"` en bevatten `source` en `condition`.
+- Bronnen gebruiken uitsluitend stabiele Homey device-ID + capability-ID of Logic variable-ID.
+- AND/OR, duration en schedule zijn composable nodes.
+- De backend valideert en evalueert rechtstreeks dit model. Er is geen normalisatie- of compatibiliteitslaag.
+- Logic-variabelen worden uitsluitend op stabiele ID opgevraagd; naamgebaseerde lookup is verwijderd.
+- SchemaVersion 2 wordt niet meer geaccepteerd of gebruikt.
 
-Versie 1 blijft voorlopig ondersteund. De backend moet v1-configuraties naar hetzelfde interne model normaliseren zonder bronbestanden automatisch te wijzigen. Voor Logic-variabelen moet een v1-naam via de Homey-inventarisatie naar een ID worden vertaald. Bij ontbrekende of onbereikbare broninformatie wordt geen automatische gok gedaan.
+De zes bestaande ontwikkelconfiguraties zijn uitsluitend hernummerd van schemaVersion 2 naar schemaVersion 1; hun conditieboom en inhoud zijn niet aangepast. Dit is geen migratie van oude configuraties, maar het vastleggen van het enige model dat we tijdens ontwikkeling gaan gebruiken.
 
-Het JSON Schema dekt de structurele vorm. De bestaande backendvalidatie blijft verantwoordelijk voor domeinregels zoals maximum 12 niveaus, maximaal 100 nodes, unieke duration-ID's, IANA-tijdzonevaliditeit en compatibiliteit tussen brontype en vergelijkingsoperator/-waarde.
-
-**Nog niet geïmplementeerd:** v2 runtime-parser/normalisatie, v1-migratie en bijbehorende tests. De bestaande v1-configuraties blijven daarom voorlopig ongewijzigd. De Blockly-editor wordt pas op dit stabiele v2-model aangesloten.
-
-
-## Backendnormalisatie schema v1/v2 – 13 november 2026
-
-De eerste backendstap voor het versiebeheer is geïmplementeerd:
-
-- De configuratievalidator accepteert nu versie 1 en versie 2, met verschillende vormregels. V1 blijft zowel het oudere top-level `source` + vergelijking-formaat als de eerdere samengestelde boom ondersteunen.
-- V2 accepteert uitsluitend een conditieboom met expliciete `type: "comparison"`-bladen. De bron in een Logic-comparison gebruikt `variableId`; apparaatbronnen blijven `deviceId` + `capabilityId`.
-- Bij het laden worden beide versies genormaliseerd naar één intern conditiemodel. Oude leaf-nodes worden intern expliciete comparison-nodes; groepen, duur- en tijdschema-nodes blijven composable.
-- V1-configuraties en bronbestanden worden niet automatisch herschreven. De bestaande JSON-bestanden blijven dus ongewijzigd.
-- Homey Logic kan nu zowel op naam (voor v1) als op stabiele variabele-ID (voor v2) worden opgevraagd. Een ontbrekende bron resulteert in `source_missing`; een niet-unieke v1-naam resulteert in `source_ambiguous`. Er wordt nooit stilzwijgend een willekeurige variabele gekozen.
-- Device-capability-evaluatie en de bestaande duur-/schema-deadlines blijven via hetzelfde interne model lopen.
-
-Tests toegevoegd voor v2-validatie, afwijzen van v1/v2-bronvormen in de verkeerde versie, normalisatie van beide bestaande v1-vormen en compositie van v2 comparison/duration/schedule-nodes.
-
-**Verificatie:** GitHub Actions-run [43378301001](https://github.com/RoadXY/homey_dashboard/actions/runs/43378301001) is groen. Alle 31 tests in 3 testbestanden zijn geslaagd; OpenAPI-validatie en frontend-/backendbuild zijn eveneens geslaagd.
-
-**Migratiestatus 13 november 2026:** de eerste zes bestaande configuraties zijn gecontroleerd gemigreerd naar schemaVersion 2: Achterdeur open, CO₂ woonkamer (test), Ouderslaapkamer koud, Slaapkamer Bram koud, Slaapkamer Tess koud en Zolder koud. De samengestelde AND/OR-boom, apparaat-ID's, capability-ID's, vergelijkingsoperatoren en drempelwaarden zijn behouden. De Logic-testbron is live in Homey geverifieerd: `dashboard_test_co2_melding`, ID `965b5973-bd5f-4843-aa6e-8f79173141af`, type boolean. De overige meldingsbestanden blijven ongewijzigd totdat hun bronmapping is gecontroleerd. Volgende stap: alle resterende configuraties inventariseren, Logic-bronnen op ID controleren en gefaseerd migreren; daarna migratietests/fixtures toevoegen.
+De validator- en regressietests zijn aangepast om uitsluitend het canonieke schema te accepteren en legacy-vormen, Logic-namen en schemaVersion 2 expliciet af te wijzen. Blockly wordt rechtstreeks op dit schema gebouwd; JSON-configuratie, Blockly en backend delen één model en één evaluator.
