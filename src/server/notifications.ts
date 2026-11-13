@@ -20,7 +20,9 @@ type ConditionGroup = {
 };
 type ConditionLeaf = { type: "comparison"; source: Source; condition: Comparison };
 type LegacyConditionLeaf = { source: Source; condition: Comparison };
-type LegacyConditionNode = ConditionGroup | LegacyConditionLeaf | DurationNode | ScheduleNode;
+type LegacyConditionGroup = { operator: "and" | "or"; conditions: LegacyConditionNode[] };
+type LegacyDurationNode = { type: "duration"; id: string; durationMs: number; condition: LegacyConditionNode };
+type LegacyConditionNode = LegacyConditionGroup | LegacyConditionLeaf | LegacyDurationNode | ScheduleNode;
 type DurationNode = { type: "duration"; id: string; durationMs: number; condition: ConditionNode };
 type ScheduleNode = { type: "schedule" } & ScheduleCondition;
 type ConditionNode = ConditionGroup | ConditionLeaf | DurationNode | ScheduleNode;
