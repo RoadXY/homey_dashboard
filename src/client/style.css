@@ -595,3 +595,8 @@ body {
 .notification-editor-hint i { color: #9eb2c8; font-size: 16px; }
 @media (max-width: 1050px) { .notification-settings-layout { grid-template-columns: 1fr; } .notification-list-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; } .notification-list-card h2, .notification-list-card > p { grid-column: 1/-1; } }
 @media (max-width: 680px) { .notification-list-card { display: block; } .schedule-blockly-workspace { height: 320px; } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
+
+.notification-source-picker { display: grid; gap: 7px; margin: 0 0 14px; padding: 13px 14px; border: 1px solid rgba(150,165,185,.18); border-radius: 12px; background: rgba(23,27,34,.72); }
+.notification-source-picker label { color: var(--text-primary); font-size: 12px; font-weight: 650; }
+.notification-source-picker select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid rgba(150,165,185,.28); border-radius: 8px; background: #202630; color: var(--text-primary); font: inherit; font-size: 12px; }
+.notification-source-picker small { color: var(--text-muted); font-size: 11px; line-height: 1.45; }
