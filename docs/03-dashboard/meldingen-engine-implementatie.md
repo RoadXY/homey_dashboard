@@ -183,3 +183,11 @@ Validatiefouten die tijdens het bewerken van Blockly ontstaan, worden buiten de 
 ## Homey-bron zoeken in Blockly (13 november 2026)
 
 De keuzelijsten voor Homey-apparaten, capabilities en Logic-variabelen in Blockly hebben een zoekveld bovenaan gekregen. Het zoekveld filtert live op de zichtbare bronnaam en de onderliggende bron-ID. De lijst toont het aantal resultaten en een duidelijke lege status wanneer niets overeenkomt. De bediening volgt dezelfde visuele aanpak als de zoekbare Homey Flow-keuze bij Snelle acties.
+
+## Blockly-vergelijkingsveld synchroniseren bij het laden (13 november 2026)
+
+Bij het opnieuw opbouwen van bestaande meldingsvoorwaarden wordt het vergelijkingsveld nu expliciet afgestemd op het datatype van de gekozen Homey-bron. Dit gebeurt direct tijdens het hydrateren van het Blockly-blok, niet uitsluitend via het asynchrone `SOURCE`-wijzigingsevent.
+
+Daarmee wordt voorkomen dat een oude numerieke waarde (bijvoorbeeld `24`) tijdelijk in een boolean-dropdown met alleen `false` en `true` terechtkomt. Het vergelijkingsveld wordt eerst opnieuw aangemaakt als numeriek veld of boolean-keuzelijst en krijgt daarna een voor dat datatype geldige waarde. Dit voorkomt ook Blockly-consolewaarschuwingen over waarden die niet in de dropdown-opties voorkomen.
+
+Dezelfde synchronisatie wordt gebruikt wanneer de gebruiker tijdens het bewerken een andere bron selecteert. De JSON-structuur van meldingsvoorwaarden en de backendvalidatie blijven ongewijzigd.
