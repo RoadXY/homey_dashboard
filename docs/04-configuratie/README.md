@@ -499,3 +499,8 @@ Voor de migratie van een versie-1 Logic-bron die alleen een variabelenaam bevat,
 De JSON Schema-validatie wordt aangevuld met domeinvalidatie in de backend, onder andere voor unieke duration-ID's, maximumdiepte/-omvang, geldige IANA-tijdzones en typecompatibiliteit tussen bron en vergelijking. Het schema alleen is dus niet de volledige runtime-validatie.
 
 De bestaande versie-1-bestanden worden pas omgezet nadat de versie-2-normalisatie en migratietests zijn geïmplementeerd. Tot die tijd blijven ze ongewijzigd.
+
+
+### Implementatiestatus v1/v2-normalisatie (13 november 2026)
+
+De backend ondersteunt inmiddels het inlezen en normaliseren van zowel schemaVersion 1 als 2. V1-bestanden blijven ongewijzigd; v2 gebruikt stabiele Homey Logic variable-ID's. Bij een dubbele Logic-variabelenaam wordt een v1-bron als ambigu gemarkeerd in plaats van willekeurig gekoppeld. De volledige normalisatie en regressietests zijn beschreven in `docs/03-dashboard/meldingen-engine-implementatie.md`.
