@@ -186,3 +186,8 @@ Het vergelijkingsblok levert nu eveneens een boolean-uitgang, zodat het technisc
 Het Homey-bronblok heeft nu een eigen Blockly-uitgangstype (`HomeySource`) en het vergelijkingsblok een bijpassende broninvoer. De workspace verbindt de geselecteerde bron direct met het vergelijkingsblok. Daardoor is de eerste keten **Homey-bron → vergelijking** ook als Blockly-verbinding zichtbaar, in plaats van twee losse blokken naast elkaar.
 
 De selectie blijft gekoppeld aan de bestaande updatefunctie en gebruikt stabiele bron-ID's. Deze stap serializeert nog niet de volledige Blockly-verbindingen naar de condition-boom; dat blijft onderdeel van de round-trip-implementatie. De EN/OF/NIET-blokken zijn momenteel losse bouwstenen die als volgende met de conditieboom verbonden moeten worden.
+### 11.6 Meldingsselectie boven de editor en meer werkruimte
+
+De aparte lijstkolom met meldingen is vervangen door een compacte dropdown boven de Blockly-editor. De gebruiker kiest daar de melding die wordt bewerkt; wisselen van selectie behoudt de bestaande selectie-/configuratiestroom. De editor gebruikt nu de volledige beschikbare kaartbreedte.
+
+De grote paginaheading met meldingenicoon en titel is verwijderd, zodat de editor hoger op de pagina begint. De titel van de geselecteerde melding en de ernstbadge in de editorkaart blijven staan als context voor de actieve regel. Op smalle schermen stapelt de dropdownlabel en keuzelijst onder elkaar.
