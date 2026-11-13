@@ -378,3 +378,8 @@ De clientconfiguratie en serverconfiguratie bevatten geen pictogramveld meer. Be
 
 ### Meetwaardetegels – rij-indeling (13 november 2026)
 De lijst met meetwaardetegels gebruikt een eigen grid-indeling zonder gereserveerde pictogramkolom. De tegelnaam krijgt daardoor de volledige resterende breedte; het bewerkpotlood staat consequent uiterst rechts, onafhankelijk van de schermbreedte.
+
+
+## Meetwaardetegels – compacte waardeweergave (13 november 2026)
+
+De vier meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op één regel. De waarde schaalt responsief mee met de beschikbare tegelbreedte via container-relative typografie; de eenheid wordt kleiner weergegeven zodat de meetwaarde visueel leidend blijft. Eenheden blijven behouden (onder andere `ppm` en `%`). Bij absolute waarden vanaf 1.000 wordt de waarde op nul decimalen weergegeven om onnodig lange getallen te voorkomen. Onder die grens blijft de precisie uit Homey-metadata behouden, met maximaal drie decimalen. De instellingen-preview blijft dezelfde formatter gebruiken.
