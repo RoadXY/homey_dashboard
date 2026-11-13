@@ -1322,7 +1322,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (block.type === "homey_condition_time_only") {
         const startTime = normalizeScheduleTimeInput(block.getFieldValue("START"));
         const endTime = normalizeScheduleTimeInput(block.getFieldValue("END"));
-        if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(startTime) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(endTime) || startTime === endTime) {
+        if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(startTime) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(endTime) || startTime === endTime) {
           throw new Error("Vul twee verschillende geldige tijden in (UU:MM).");
         }
         return { type: "schedule", mode: "time-only", weekdays: [0,1,2,3,4,5,6], startTime, endTime, timeZone: "Europe/Amsterdam" };
