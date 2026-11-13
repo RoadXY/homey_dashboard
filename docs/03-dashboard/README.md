@@ -364,3 +364,7 @@ De eerste implementatie van de goedgekeurde Quick Actions-instellingen is toegev
 
 ### Meldingenindicator op het dashboard
 De kopregel Meldingen toont rechts een knipperend uitroepteken in een cirkel bij actieve meldingen (rood). Bij onbekende/onvolledige bronstatus verschijnt dezelfde indicator in amber. Als alles betrouwbaar is gecontroleerd en niets actief is, blijft de indicator verborgen. De indicator respecteert de instelling voor verminderde beweging van het apparaat.
+
+
+### Herstel runtimefout meldingeninstellingen (13 november 2026)
+De meldingeninstellingen gebruiken binnen `NotificationSettingsPage` de vertaalhelper `t`. Deze helper moet lokaal worden afgeleid van de ontvangen `locale` (`translate(locale, key)`); de pagina ontvangt geen `t`-prop. Een ontbrekende helper veroorzaakte een `ReferenceError: t is not defined` tijdens renderen, waardoor de volledige pagina leeg bleef. Dit is hersteld door de helper lokaal te definiëren. CI-build en tests controleren de code; controle in de browser blijft onderdeel van de praktijktest.
