@@ -48,7 +48,7 @@ describe("evaluateDurationGate", () => {
     evaluateDurationGate("rule:block", { state: "active" }, 5_000, 1_000, activeSince);
     expect(evaluateDurationGate("rule:block", { state: "inactive" }, 5_000, 2_000, activeSince)).toEqual({ state: "inactive" });
     expect(activeSince.has("rule:block")).toBe(false);
-    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 3_000, activeSince)).toEqual({ state: "inactive" });
+    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 3_000, activeSince)).toEqual({ state: "inactive", reevaluateAt: 8_000 });
     expect(evaluateDurationGate("rule:block", { state: "unknown", reason: "source_unavailable" }, 5_000, 4_000, activeSince)).toEqual({ state: "unknown", reason: "source_unavailable" });
     expect(activeSince.has("rule:block")).toBe(false);
   });
