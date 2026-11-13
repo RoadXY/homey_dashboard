@@ -1280,9 +1280,9 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
-  // Disabled notifications are intentionally excluded from source-health warnings.
-  // Their conditions are checked again as soon as the notification is enabled.
-  const notificationSourceIssues = sourceCatalog ? configs.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
+  // Source-health warnings reflect persisted configuration only. Draft edits
+  // (including the enabled toggle) become effective after the user presses Save.
+  const notificationSourceIssues = sourceCatalog ? saved.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
     if (!selected || !key) return;
