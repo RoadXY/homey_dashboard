@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "slaapkamer-bram-koud",
   "title": "Slaapkamer Bram koud",
   "message": "De temperatuur in slaapkamer Bram is lager dan 12 °C.",
