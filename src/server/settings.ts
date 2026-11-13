@@ -1,11 +1,15 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
+export const notificationTimeoutOptions = ["never", "1", "2", "5", "10", "30", "60", "300", "900", "1800"] as const;
+export type NotificationTimeout = typeof notificationTimeoutOptions[number];
+
 export type DashboardSettings = {
   language: string;
   dateFormat: string;
   timeFormat: "24h" | "12h";
   firstDayOfWeek: "monday" | "sunday";
+  notificationTimeout: NotificationTimeout;
 };
 
 export const defaultSettings: DashboardSettings = {
@@ -13,6 +17,7 @@ export const defaultSettings: DashboardSettings = {
   dateFormat: "short",
   timeFormat: "24h",
   firstDayOfWeek: "monday",
+  notificationTimeout: "never",
 };
 
 const settingsFile = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "settings.json");
@@ -25,6 +30,7 @@ export async function readDashboardSettings(): Promise<DashboardSettings> {
       dateFormat: typeof parsed.dateFormat === "string" ? parsed.dateFormat : defaultSettings.dateFormat,
       timeFormat: parsed.timeFormat === "12h" ? "12h" : "24h",
       firstDayOfWeek: parsed.firstDayOfWeek === "sunday" ? "sunday" : "monday",
+      notificationTimeout: notificationTimeoutOptions.includes(parsed.notificationTimeout as NotificationTimeout) ? parsed.notificationTimeout as NotificationTimeout : defaultSettings.notificationTimeout,
     };
   } catch {
     return { ...defaultSettings };
@@ -42,11 +48,13 @@ export async function saveDashboardSettings(input: unknown): Promise<DashboardSe
   }
   if (value.timeFormat !== "12h" && value.timeFormat !== "24h") throw new Error("Ongeldige tijdnotatie.");
   if (value.firstDayOfWeek !== "monday" && value.firstDayOfWeek !== "sunday") throw new Error("Ongeldige eerste weekdag.");
+  if (!notificationTimeoutOptions.includes(value.notificationTimeout as NotificationTimeout)) throw new Error("Ongeldige timeout voor meldingen.");
   const settings: DashboardSettings = {
     language: value.language,
     dateFormat: value.dateFormat,
     timeFormat: value.timeFormat,
     firstDayOfWeek: value.firstDayOfWeek,
+    notificationTimeout: value.notificationTimeout as NotificationTimeout,
   };
   await mkdir(dirname(settingsFile), { recursive: true });
   await writeFile(settingsFile, JSON.stringify(settings, null, 2) + "\n", { mode: 0o600 });
