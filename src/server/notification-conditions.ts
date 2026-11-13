@@ -1,7 +1,9 @@
 export type ScheduleCondition = {
+  /** False represents a newly-created Blockly schedule that has not been configured yet. */
+  configured?: false;
   weekdays: number[];
-  startTime: string;
-  endTime: string;
+  startTime?: string;
+  endTime?: string;
   timeZone?: string;
 };
 
@@ -26,8 +28,12 @@ function parseClockTime(value: string): number {
 
 export function isValidScheduleCondition(schedule: ScheduleCondition): boolean {
   try {
-    if (!Array.isArray(schedule.weekdays) || schedule.weekdays.length === 0 ||
+    if (!Array.isArray(schedule.weekdays) ||
         schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) return false;
+    if (schedule.configured === false) {
+      return schedule.weekdays.length === 0 && schedule.startTime === undefined && schedule.endTime === undefined;
+    }
+    if (schedule.weekdays.length === 0 || typeof schedule.startTime !== "string" || typeof schedule.endTime !== "string") return false;
     const start = parseClockTime(schedule.startTime);
     const end = parseClockTime(schedule.endTime);
     if (start === end) return false;
@@ -62,8 +68,10 @@ function isScheduleActiveWithFormatter(
   now: Date,
   formatter: Intl.DateTimeFormat,
 ): boolean {
+  if (schedule.configured === false) return false;
   if (!Array.isArray(schedule.weekdays) || schedule.weekdays.length === 0 ||
-      schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) {
+      schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6) ||
+      typeof schedule.startTime !== "string" || typeof schedule.endTime !== "string") {
     throw new Error("Een tijdschema moet minimaal één geldige weekdag bevatten.");
   }
 
