@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "achterdeur-open",
   "title": "Achterdeur open",
   "message": "De achterdeur staat open terwijl het buiten kouder dan 18 °C of warmer dan 24 °C is.",
