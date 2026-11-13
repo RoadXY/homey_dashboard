@@ -345,3 +345,7 @@ De kop 'Instellingen' is vergroot naar 26 px en horizontaal gecentreerd over de 
 
 ## Dashboardtaal – vertaling automatische keuze (13 november 2026)
 De optie voor automatische dashboardtaal gebruikt voortaan de normale i18n-vertalingen op basis van de opgeloste dashboardlocale in plaats van de vaste Engelstalige labeltekst uit `languages.json`. Nederlands toont `Automatisch (Homey-taal)`; Engels toont `Automatic (Homey language)`. Dit zorgt dat de keuzelijst aansluit bij de gedetecteerde Homey-taal en bij handmatig gekozen dashboardtaal.
+
+
+## Meetwaardetegels – gestapelde layout gecorrigeerd (13 november 2026)
+Bij de smalle/tablet-layout erfden de meetwaardetegels de algemene Quick Actions-gridplaatsing (preview op rij 3) en vaste minimale kaartafmetingen. Een specifieke breakpointoverride voor maximaal 1100 px zet de lijst en preview in normale documentvolgorde met automatische hoogtes; de preview blijft twee kolommen breed. De losse editor volgt daarna onder beide kaarten. Op brede schermen blijft de bestaande gelijke kaarthoogte naast elkaar behouden.
