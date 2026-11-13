@@ -211,3 +211,8 @@ De vaste hoofdconstructie `Genereer melding` is nu ook als sleepbaar blok beschi
 ## Bevestiging bij verlaten van onopgeslagen meldingswijzigingen (13 november 2026)
 
 De meldingeneditor meldt zijn dirty-status aan de instellingencontainer. Bij het wisselen naar een andere melding wordt eerst om bevestiging gevraagd als de huidige conceptconfiguratie afwijkt van de laatst opgeslagen configuratie. Annuleren houdt de gebruiker in dezelfde melding en behoudt alle conceptwijzigingen. Bevestigen gooit de conceptwijzigingen weg en opent de gekozen melding met de laatst opgeslagen gegevens. Hetzelfde bevestigingsprincipe geldt bij navigeren naar een andere instellingenpagina of terug naar het dashboard. Opslaan blijft de enige manier om wijzigingen permanent te maken.
+
+
+## Browser-terugknop en onopgeslagen meldingswijzigingen (13 november 2026)
+
+Ook browsernavigatie via Back (inclusief de fysieke Backspace-/terugknop waar de browser die als geschiedenisnavigatie behandelt) wordt bewaakt. Omdat een `popstate`-navigatie niet rechtstreeks geannuleerd kan worden, wordt de huidige geschiedenispositie eerst hersteld. Daarna verschijnt dezelfde bevestiging als bij interne navigatie. Annuleren houdt de gebruiker op de huidige route met alle conceptwijzigingen intact. Bevestigen voert de oorspronkelijke terugnavigatie alsnog uit en verwerpt de niet-opgeslagen wijzigingen. De dirty-status wordt vanuit de meldingeneditor aan de router doorgegeven.
