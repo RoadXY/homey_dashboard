@@ -894,7 +894,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         },
         {
           kind: "category",
-          name: "Logica",
+          name: "Containers",
           categorystyle: "logic_category",
           contents: [
             { kind: "block", type: "homey_condition_and" },
