@@ -521,35 +521,6 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
     return [device?.name, capability?.title].filter(Boolean).join(" · ") || "Apparaatbron";
   };
-  const createNotification = () => {
-    const baseTitle = t("notifications.newTitle");
-    let suffix = 1;
-    let title = baseTitle;
-    while (configs.some(item => item.title.trim().toLocaleLowerCase() === title.toLocaleLowerCase())) {
-      suffix += 1;
-      title = baseTitle + " " + suffix;
-    }
-    const id = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-      ? crypto.randomUUID()
-      : "notification-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
-    const next: NotificationConfigEditor = {
-      schemaVersion: 1,
-      id,
-      title,
-      message: t("notifications.defaultMessage"),
-      severity: "info",
-      enabled: true,
-      condition: { type: "schedule", configured: false, weekdays: [] }
-    };
-    setConfigs(current => [...current, next]);
-    setSelectedId(id);
-    setMessage("");
-    setIsError(false);
-  };
-  const updateTitle = (title: string) => {
-    if (!selected) return;
-    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, title } : item));
-  };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
     try {
@@ -1196,6 +1167,35 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
+  };
+  const createNotification = () => {
+    const baseTitle = t("notifications.newTitle");
+    let suffix = 1;
+    let title = baseTitle;
+    while (configs.some(item => item.title.trim().toLocaleLowerCase() === title.toLocaleLowerCase())) {
+      suffix += 1;
+      title = baseTitle + " " + suffix;
+    }
+    const id = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : "notification-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+    const next: NotificationConfigEditor = {
+      schemaVersion: 1,
+      id,
+      title,
+      message: t("notifications.defaultMessage"),
+      severity: "info",
+      enabled: true,
+      condition: { type: "schedule", configured: false, weekdays: [] }
+    };
+    setConfigs(current => [...current, next]);
+    setSelectedId(id);
+    setMessage("");
+    setIsError(false);
+  };
+  const updateTitle = (title: string) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, title } : item));
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
