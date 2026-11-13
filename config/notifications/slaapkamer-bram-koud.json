@@ -1,18 +1,21 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "slaapkamer-bram-koud",
   "title": "Slaapkamer Bram koud",
   "message": "De temperatuur in slaapkamer Bram is lager dan 12 °C.",
   "severity": "warning",
   "enabled": true,
-  "source": {
-    "type": "device-capability",
-    "deviceId": "58f20a55-90b3-49cf-9af0-53a40f6e501c",
-    "capabilityId": "measure_temperature",
-    "expectedType": "number"
-  },
   "condition": {
-    "operator": "lessThan",
-    "value": 12
+    "type": "comparison",
+    "source": {
+      "type": "device-capability",
+      "deviceId": "58f20a55-90b3-49cf-9af0-53a40f6e501c",
+      "capabilityId": "measure_temperature",
+      "expectedType": "number"
+    },
+    "condition": {
+      "operator": "lessThan",
+      "value": 12
+    }
   }
 }
