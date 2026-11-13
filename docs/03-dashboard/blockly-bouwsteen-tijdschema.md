@@ -357,3 +357,7 @@ Het vaste paarse hoofdblok toont de tekst **🔔 Genereer melding** nu onderaan 
 
 ## Blockly – dynamische vergelijkingsdropdown bij laden (13 november 2026)
 Bij het terugzetten van bestaande vergelijkingsblokken wordt eerst de Homey-bron (`SOURCE`) hersteld. Omdat de operator-dropdown dynamisch afhangt van het datatype van die bron, moet daarna de door Blockly gecachete dropdown-optieset opnieuw worden opgebouwd vóór de opgeslagen operator (`OP`) wordt ingesteld. Anders kan Blockly een numerieke operator zoals `lessThan` of `greaterThan` afwijzen op basis van de opties van de eerste (mogelijk booleaanse) bron in de catalogus. De loader ververst daarom `OP`-opties expliciet via `getOptions(false)` na het herstellen van `SOURCE`, en controleert daarna of de opgeslagen operator bij het datatype past. Onbekende of ongeldige combinaties blijven veilig als niet-ondersteund blok zichtbaar; bestaande configuratie wordt niet stilzwijgend aangepast.
+
+
+## Meldingenkiezer in dezelfde kaartstijl (13 november 2026)
+De balk waarmee boven de Blockly-editor een melding wordt geselecteerd, gebruikt nu dezelfde donkerblauwe gradient, rand, afronding en subtiele schaduw als de overige instellingenkaarten. Het label **Meldingen** is vergroot naar 21 px en krijgt dezelfde visuele nadruk als de titel van de geselecteerde melding (bijvoorbeeld **Achterdeur open**). De keuzelijst gebruikt dezelfde donkere invoerstijl als de algemene instellingen. Op smallere schermen mag de bestaande mobiele regel de label- en selectiekolom onder elkaar plaatsen.
