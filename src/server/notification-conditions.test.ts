@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluateDurationGate, isScheduleActive } from "./notification-conditions.js";
+import { evaluateDurationGate, isScheduleActive, nextScheduleTransition } from "./notification-conditions.js";
 
 describe("isScheduleActive", () => {
   const weekdays = [1, 2, 3, 4, 5, 6];
@@ -32,6 +32,28 @@ describe("isScheduleActive", () => {
   it("rejects invalid schedule definitions", () => {
     expect(() => isScheduleActive({ ...schedule, startTime: "7:00" }, new Date())).toThrow();
     expect(() => isScheduleActive({ ...schedule, endTime: "07:00" }, new Date())).toThrow();
+  });
+
+  it("finds the next start boundary while the schedule is inactive", () => {
+    const now = new Date("2026-11-16T05:59:30.000Z");
+    expect(nextScheduleTransition(schedule, now)).toBe(Date.parse("2026-11-16T06:00:00.000Z"));
+  });
+
+  it("finds the next end boundary while the schedule is active", () => {
+    const now = new Date("2026-11-16T06:30:00.000Z");
+    expect(nextScheduleTransition(schedule, now)).toBe(Date.parse("2026-11-16T19:00:00.000Z"));
+  });
+
+  it("finds overnight end boundaries on the following weekday", () => {
+    const overnight = { weekdays: [1], startTime: "22:00", endTime: "07:00", timeZone: "Europe/Amsterdam" };
+    const now = new Date("2026-11-17T05:30:00.000Z");
+    expect(nextScheduleTransition(overnight, now)).toBe(Date.parse("2026-11-17T06:00:00.000Z"));
+  });
+
+  it("handles a nonexistent local start time during the spring DST jump", () => {
+    const dstSchedule = { weekdays: [0], startTime: "02:30", endTime: "04:00", timeZone: "Europe/Amsterdam" };
+    const now = new Date("2026-03-29T00:59:30.000Z");
+    expect(nextScheduleTransition(dstSchedule, now)).toBe(Date.parse("2026-03-29T01:00:00.000Z"));
   });
 });
 
