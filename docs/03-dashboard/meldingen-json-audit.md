@@ -42,8 +42,8 @@ In `config/notifications/` staan zes bestanden. Daarvan zijn vijf bedoeld als pr
 | Truus wil opgehaald worden! | Truus `1f76bd9a-b6f6-4f78-8734-742b9d054cfc`, `measure_work_status == Standby`, severity `warning` | JSON maken; actuele enum-/statuswaarde bij live bron valideren. |
 | Muurtablet-batterij laag | Muur tablet `3047fdb8-2dea-4cea-b023-27c9693b4635`, `measure_battery <25`, severity `warning` | JSON maken. |
 | Tuinhuislamp te lang aan | Tuinhuis lamp `c9ad4266-3ead-4dfa-ac48-c4ecbe4554c6`, `onoff == true` gedurende 5 minuten, severity `info` | Bron en capability zijn in de actuele Homey-lijst bevestigd; duur als configureerbare duration-node opslaan. |
-| Lamp Sem staat aan | Lamp Sem `b164e453-6fba-4d9c-81ba-82596082eef5`, `onoff`, severity `info` | YAML-schema `slapen_sem` en eerdere keuze om slaap-/schema-afhankelijkheid niet te migreren met elkaar verzoenen vóór JSON. |
-| Lamp Bram staat aan | Lamp Bram `489075ba-fe6d-4b15-9e33-8a7539dafbda`, `onoff`, severity `info` | YAML-schema `slapen_bram` en eerdere keuze om slaap-/schema-afhankelijkheid niet te migreren met elkaar verzoenen vóór JSON. |
+| Lamp Sem staat aan | Lamp Sem `b164e453-6fba-4d9c-81ba-82596082eef5`, `onoff` én schema `slapen_sem`, severity `info` | Gebruikersbesluit 13 november: het schema moet worden gereproduceerd en als configureerbare Blockly-bouwsteen beschikbaar zijn. Exacte weekplanning nog uit de oorspronkelijke HA-helper vaststellen. |
+| Lamp Bram staat aan | Lamp Bram `489075ba-fe6d-4b15-9e33-8a7539dafbda`, `onoff` én schema `slapen_bram`, severity `info` | Gebruikersbesluit 13 november: het schema moet worden gereproduceerd en als configureerbare Blockly-bouwsteen beschikbaar zijn. Exacte weekplanning nog uit de oorspronkelijke HA-helper vaststellen. |
 
 ## 3. Conditionele statuskaarten – geen notificatie-JSON
 
@@ -60,9 +60,10 @@ Deze onderdelen zijn wel onderdeel van de dashboardmigratie, maar zijn status-/i
 1. De zes directe contactmeldingen zijn op basis van de exacte YAML-entity-ID's en de actuele Homey-apparaatlijst gemapt. Gebruik de in sectie 2 vastgelegde IDs; verwissel geen bovenraam/onderraam of Raam Sem/Dakraam Sem.
 2. De vier raam-niet-open-meldingen hebben eveneens een gemapte contactbron. De resterende mappingpunten zitten in aanvullende voorwaarden: de zon-op-raam-conditie bij Tess en het exacte gedrag van de Homey-airco-/weercapabilities.
 3. Tuinhuis lamp is bevestigd als `c9ad4266-3ead-4dfa-ac48-c4ecbe4554c6` met capability `onoff`.
-4. Bevestig de gewenste behandeling van `slapen_sem` en `slapen_bram`: de eerdere mappingnotitie zegt dat deze schema's niet worden gemigreerd, terwijl de exacte oorspronkelijke YAML-condities voor beide lampmeldingen het bijbehorende actieve slaapschema vereisen.
+4. De eerdere keuze om `slapen_sem` en `slapen_bram` niet te migreren is op 13 november expliciet vervangen: beide schema's moeten worden gereproduceerd en via Blockly instelbaar zijn. Haal de exacte weekdagen, tijden en eventuele uitzonderingen uit de oorspronkelijke HA-helperconfiguratie; neem niet automatisch de tijden van `boven_ramen_open` over.
 5. Truus heeft `measure_work_status`; de actuele waarde was `Sleeping`. De enumwaarden moeten worden gecontroleerd tegen de Homey-capabilitymetadata voordat de vergelijking `Standby` wordt vastgelegd.
 6. Werk de vier bestaande temperatuurconfiguraties bij naar severity `info`; maak de productie-CO₂-configuratie op basis van de echte sensor.
+7. Breid het generieke Blockly-tijdschemaontwerp uit zodat `boven_ramen_open`, `slapen_sem` en `slapen_bram` allemaal met dezelfde herbruikbare blokvorm kunnen worden gemodelleerd, maar elk een onafhankelijke schema-instantie en eigen planning behouden.
 
 ### Actuele read-only controle (13 november 2026)
 De apparaatlijst is opnieuw rechtstreeks uit Homey gelezen. De IDs hierboven zijn de actuele waarden uit deze controle. De momentopnamen (`alarm_contact`, `alarm_water`, temperaturen, batterij en werkstatus) zijn uitsluitend diagnostisch en worden niet als configuratie gebruikt. Deze controle corrigeert een oudere notitie waarin voor Onder raam Bram een afwijkend ID was vastgelegd: gebruik het actuele ID `952d6163-bda4-44ae-a346-7fbf7e980dbc`.
@@ -78,3 +79,15 @@ De apparaatlijst is opnieuw rechtstreeks uit Homey gelezen. De IDs hierboven zij
 7. Pas daarna Blockly als editor op hetzelfde JSON-model toe.
 
 **Belangrijk:** de JSON-inventarisatie is een voortgangsaudit, geen toestemming om open voorwaarden zelf in te vullen. Onbevestigde mapping blijft expliciet open.
+
+
+## 6. Aanvullend gebruikersbesluit – slaaplichtschema's ook migreren (13 november 2026)
+
+De eerdere mappingnotitie dat `schedule.slapen_sem` en `schedule.slapen_bram` niet zouden worden gemigreerd, is hiermee vervallen. De gebruiker bevestigt dat **beide schema's ook in Blockly nagemaakt en configureerbaar moeten kunnen worden**.
+
+- **Lamp Sem staat aan** blijft afhankelijk van zowel `Lamp Sem.onoff == true` als het actieve schema `slapen_sem`.
+- **Lamp Bram staat aan** blijft afhankelijk van zowel `Lamp Bram.onoff == true` als het actieve schema `slapen_bram`.
+- De twee slaapvensters worden als afzonderlijke schema-instanties opgeslagen. Een wijziging aan het schema van Sem mag dat van Bram niet wijzigen en andersom.
+- Gebruik dezelfde generieke Blockly-bouwsteen en backend-schema-evaluator als voor `boven_ramen_open`; er komt geen aparte slaap-schema-evaluator.
+- De bestaande planning van `boven_ramen_open` mag niet als standaard voor de slaapvensters worden gekopieerd. De exacte weekdagen, tijden en eventuele uitzonderingen van `slapen_sem` en `slapen_bram` moeten nog uit de oorspronkelijke Home Assistant-helperconfiguratie worden vastgesteld.
+- Totdat die exacte planningen zijn vastgesteld, worden de twee lampmeldingen nog niet als definitieve JSON-configuraties aangemaakt.
