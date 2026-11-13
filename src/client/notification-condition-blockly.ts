@@ -100,7 +100,7 @@ export function combineRootConditions(conditions: any[]): any {
  */
 export function normalizeScheduleTimeInput(value: string): string {
   const trimmed = value.trim();
-  const match = /^(\\d{1,2}):([0-5]\\d)$/.exec(trimmed);
+  const match = /^(\d{1,2}):([0-5]\d)$/.exec(trimmed);
   if (!match) return value;
   const hours = Number(match[1]);
   if (hours < 0 || hours > 23) return value;
