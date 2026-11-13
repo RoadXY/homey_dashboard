@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getHomeyDeviceCapabilityValues, getHomeyLogicVariables } from "./homey.js";
-import { evaluateDurationGate, isScheduleActive, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
+import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
 type ExpectedType = "boolean" | "number";
@@ -33,7 +33,7 @@ type NotificationConfig = {
   testOnly?: boolean;
   // Legacy schemaVersion 1 format remains supported during migration.
   source?: Source;
-  condition: Comparison | ConditionGroup;
+  condition: Comparison | ConditionNode;
 };
 
 export type DashboardNotification = {
@@ -71,30 +71,38 @@ function isComparison(value: unknown): value is Comparison {
     typeof comparison.value === "number" && Number.isFinite(comparison.value);
 }
 
-function isConditionGroup(value: unknown): value is ConditionGroup {
-  if (!value || typeof value !== "object") return false;
-  const group = value as Record<string, unknown>;
-  return (group.operator === "and" || group.operator === "or") &&
-    Array.isArray(group.conditions) && group.conditions.length > 0 &&
-    group.conditions.every((child) => isConditionNode(child));
-}
+const MAX_CONDITION_DEPTH = 12;
+const MAX_CONDITION_NODES = 100;
 
-function isConditionNode(value: unknown): value is ConditionNode {
-  if (!value || typeof value !== "object") return false;
+function isConditionNode(
+  value: unknown,
+  depth = 1,
+  seenDurationIds = new Set<string>(),
+  counter = { count: 0 },
+): value is ConditionNode {
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+      depth > MAX_CONDITION_DEPTH || ++counter.count > MAX_CONDITION_NODES) return false;
   const node = value as Record<string, unknown>;
   if (node.type === "schedule") {
-    return Array.isArray(node.weekdays) && node.weekdays.length > 0 &&
-      node.weekdays.every((day) => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6) &&
-      typeof node.startTime === "string" && typeof node.endTime === "string" &&
-      (node.timeZone === undefined || typeof node.timeZone === "string");
+    return typeof node.startTime === "string" && typeof node.endTime === "string" &&
+      (node.timeZone === undefined || typeof node.timeZone === "string") &&
+      isValidScheduleCondition(node as unknown as ScheduleCondition);
   }
   if (node.type === "duration") {
-    return typeof node.id === "string" && node.id.length > 0 &&
-      Number.isSafeInteger(node.durationMs) && Number(node.durationMs) > 0 &&
-      isConditionNode(node.condition);
+    if (typeof node.id !== "string" || node.id.trim().length === 0 || seenDurationIds.has(node.id) ||
+        !Number.isSafeInteger(node.durationMs) || Number(node.durationMs) <= 0) return false;
+    seenDurationIds.add(node.id);
+    return isConditionNode(node.condition, depth + 1, seenDurationIds, counter);
   }
-  if (node.operator === "and" || node.operator === "or") return isConditionGroup(node);
+  if (node.operator === "and" || node.operator === "or") {
+    return Array.isArray(node.conditions) && node.conditions.length > 0 &&
+      node.conditions.every((child) => isConditionNode(child, depth + 1, seenDurationIds, counter));
+  }
   return isSource(node.source) && isComparison(node.condition);
+}
+
+export function isValidConditionNode(value: unknown): value is ConditionNode {
+  return isConditionNode(value);
 }
 
 function sourceKey(source: Source): SourceKey {
@@ -116,13 +124,19 @@ function collectSources(config: NotificationConfig): Source[] {
   return config.source ? [config.source] : [];
 }
 
-function isValidConfig(config: NotificationConfig): boolean {
+export function isValidNotificationConfig(value: unknown): value is NotificationConfig {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const config = value as Record<string, unknown>;
   const hasLegacyShape = isSource(config.source) && isComparison(config.condition);
-  const hasTreeShape = !config.source && isConditionNode(config.condition);
-  return config.schemaVersion === 1 && Boolean(config.id) && Boolean(config.title) &&
+  const hasTreeShape = config.source === undefined && isConditionNode(config.condition);
+  return config.schemaVersion === 1 &&
+    typeof config.id === "string" && config.id.trim().length > 0 &&
+    typeof config.title === "string" && config.title.trim().length > 0 &&
+    typeof config.message === "string" &&
     (hasLegacyShape || hasTreeShape) &&
-    ["critical", "warning", "info"].includes(config.severity) &&
-    typeof config.enabled === "boolean";
+    ["critical", "warning", "info"].includes(String(config.severity)) &&
+    typeof config.enabled === "boolean" &&
+    (config.testOnly === undefined || typeof config.testOnly === "boolean");
 }
 
 async function loadConfigs(): Promise<NotificationConfig[]> {
@@ -130,7 +144,7 @@ async function loadConfigs(): Promise<NotificationConfig[]> {
   const filenames = (await readdir(directory)).filter((filename) => filename.endsWith(".json")).sort();
   const configs = await Promise.all(filenames.map(async (filename) => {
     const config = JSON.parse(await readFile(join(directory, filename), "utf8")) as NotificationConfig;
-    if (!isValidConfig(config)) throw new Error(`Ongeldige meldingsconfiguratie: ${filename}`);
+    if (!isValidNotificationConfig(config)) throw new Error(`Ongeldige meldingsconfiguratie: ${filename}`);
     return config;
   }));
   if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
