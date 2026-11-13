@@ -585,7 +585,7 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function ScheduleBlocklyEditor({ schedule, onChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void }) {
+function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string }) {
   const host = React.useRef<HTMLDivElement>(null);
   const workspace = React.useRef<any>(null);
   const changeRef = React.useRef(onChange);
@@ -596,14 +596,14 @@ function ScheduleBlocklyEditor({ schedule, onChange }: { schedule: any; onChange
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
-          this.appendDummyInput().appendField("Tijdschema actief?");
+          this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
           const days = [["Ma", "MON"], ["Di", "TUE"], ["Wo", "WED"], ["Do", "THU"], ["Vr", "FRI"], ["Za", "SAT"], ["Zo", "SUN"]];
-          const row = this.appendDummyInput().appendField("Dagen:");
+          const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
           days.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
-          this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00"), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00"), "END");
+          this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
           this.setOutput(true, "Boolean");
           this.setColour(210);
-          this.setTooltip("Geeft true terug binnen de ingestelde weekdagen en tijden.");
+          this.setTooltip(translate(locale, "notifications.conditionDescription"));
         }
       };
     }
@@ -636,9 +636,9 @@ function ScheduleBlocklyEditor({ schedule, onChange }: { schedule: any; onChange
     ws.addChangeListener(emit);
     return () => { ws.dispose(); workspace.current = null; };
   }, []);
-  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> Blockly-bouwsteen</span><small>Vink de dagen aan en stel het tijdvenster in</small></div><div ref={host} className="schedule-blockly-workspace" /></div>;
+  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div><div ref={host} className="schedule-blockly-workspace" /></div>;
 }
-function NotificationSettingsPage() {
+function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
   const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
   const [selectedId, setSelectedId] = React.useState("");
@@ -649,14 +649,14 @@ function NotificationSettingsPage() {
   React.useEffect(() => {
     let active = true;
     fetch("/api/settings/notifications").then(async response => {
-      if (!response.ok) throw new Error((await response.json()).error ?? "Meldingen laden mislukt.");
+      if (!response.ok) throw new Error((await response.json()).error ?? translate(locale, "notifications.loadError"));
       return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
     }).then(result => {
       if (!active) return;
       setConfigs(result.notifications); setSaved(result.notifications);
       const first = result.notifications.find(item => findScheduleNode(item.condition));
       setSelectedId(first?.id ?? "");
-    }).catch(error => { if (active) { setMessage(error instanceof Error ? error.message : "Meldingen laden mislukt."); setIsError(true); } })
+    }).catch(error => { if (active) { setMessage(error instanceof Error ? error.message : translate(locale, "notifications.loadError")); setIsError(true); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
@@ -673,26 +673,26 @@ function NotificationSettingsPage() {
     try {
       const response = await fetch("/api/settings/notifications", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notifications: configs }) });
       const result = await response.json() as { notifications?: NotificationConfigEditor[]; error?: string };
-      if (!response.ok || !result.notifications) throw new Error(result.error ?? "Meldingen opslaan mislukt.");
-      setConfigs(result.notifications); setSaved(result.notifications); setMessage("Meldingen opgeslagen.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Meldingen opslaan mislukt."); setIsError(true); }
+      if (!response.ok || !result.notifications) throw new Error(result.error ?? translate(locale, "notifications.saveError"));
+      setConfigs(result.notifications); setSaved(result.notifications); setMessage(translate(locale, "notifications.saved"));
+    } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "notifications.saveError")); setIsError(true); }
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page notification-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-bell-cog-outline"/></div><div><h1>Meldingen</h1><p>Beheer de voorwaarden achter dashboardmeldingen met Blockly.</p></div></div>
+    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-bell-cog-outline"/></div><div><h1>{translate(locale, "notifications.title")}</h1><p>{translate(locale, "notifications.subtitle")}</p></div></div>
     <div className="notification-settings-layout">
-      <section className="settings-card notification-list-card"><h2>Schema's</h2><p className="quick-card-description">Elke melding gebruikt een eigen tijdschema-instantie.</p>
-        {busy ? <p>Laden…</p> : scheduled.map(item => <button key={item.id} className={"notification-rule-row" + (item.id === selected?.id ? " selected" : "")} onClick={() => setSelectedId(item.id)}><span className="notification-rule-icon"><i className="mdi mdi-clock-time-four-outline"/></span><span><strong>{item.title}</strong><small>{findScheduleNode(item.condition)?.configured === false ? "Nog niet ingesteld" : "Tijdschema ingesteld"}</small></span><i className="mdi mdi-chevron-right"/></button>)}
-        {!busy && !scheduled.length && <p>Er zijn nog geen meldingen met een tijdschema.</p>}
+      <section className="settings-card notification-list-card"><h2>{translate(locale, "notifications.schemas")}</h2><p className="quick-card-description">{translate(locale, "notifications.schemasDescription")}</p>
+        {busy ? <p>{translate(locale, "notifications.loading")}</p> : scheduled.map(item => <button key={item.id} className={"notification-rule-row" + (item.id === selected?.id ? " selected" : "")} onClick={() => setSelectedId(item.id)}><span className="notification-rule-icon"><i className="mdi mdi-clock-time-four-outline"/></span><span><strong>{item.title}</strong><small>{findScheduleNode(item.condition)?.configured === false ? translate(locale, "notifications.notConfigured") : translate(locale, "notifications.configured")}</small></span><i className="mdi mdi-chevron-right"/></button>)}
+        {!busy && !scheduled.length && <p>{translate(locale, "notifications.noSchedules")}</p>}
       </section>
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>Voorwaarde: tijdschema actief binnen de geselecteerde dagen en tijden.</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <ScheduleBlocklyEditor key={selected.id} schedule={selectedSchedule} onChange={updateSchedule}/>
-          <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> Een schema zonder geselecteerde dagen blijft inactief. De lampmelding vereist daarnaast dat de lamp zelf aan staat.</p>
-        </> : <p>{busy ? "Meldingen laden…" : "Geen tijdschema beschikbaar."}</p>}
+        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
+          <ScheduleBlocklyEditor key={selected.id} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
+          <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
+        </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
   </div>;
 }
 
@@ -1005,7 +1005,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     </header>
     <aside className="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.dashboard"),"Meldingen",t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
+      {[t("settings.general"),t("settings.dashboard"),t("settings.notifications"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
         const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/notifications","/settings/devices","/settings/homey","/settings/system"] as const;
         const pages = ["general","dashboard","notifications","devices","homey","system"] as const;
         return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}}><span>{["⚙","▦","♧","♧","◉","▤"][index]}</span>{name}</button>;
@@ -1048,7 +1048,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : page === "notifications" ? <NotificationSettingsPage /> : <section className="settings-card system-card">
+      </> : page === "dashboard" ? <DashboardSettingsPage locale={locale} t={t} onNavigate={onNavigate} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} /> : <section className="settings-card system-card">
         <h2>{page === "devices" ? t("settings.devices") : page === "homey" ? t("settings.homey") : t("settings.system")}</h2>
         <p>{locale.toLowerCase().startsWith("nl") ? "Deze instellingenpagina heeft alvast een eigen, beveiligde URL. De inhoud wordt in een volgende ontwikkelstap geïmplementeerd." : "This settings page already has its own protected URL. Its contents will be implemented in a later development step."}</p>
       </section>}
