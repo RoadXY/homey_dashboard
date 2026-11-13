@@ -563,7 +563,9 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
             return <div className="quick-preview-item measurement-preview-item" key={tile.id}><strong>{tile.name || "Tegel"}</strong><span className="measurement-preview-value">{formatMeasurementValue(reading)}</span><small>{sourceDescription(tile)}</small></div>;
           })}
         </div>
-      {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
+      </section>
+    </div>
+    {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
         <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>Meetwaardetegel {tiles.findIndex(tile => tile.id === selected.id) + 1} bewerken</h2>
         <div className="measurement-inline-editor">
@@ -576,9 +578,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
           </> : <label>Numerieke Logic-variabele<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
           <p className="measurement-source-note">Eenheid en precisie komen automatisch uit Homey-metadata wanneer beschikbaar. Logic-variabelen tonen geen eenheid.</p>
         </div>
-      </section>}
-      </section>
-    </div>
+    </section>}
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
   </div>;
 }
