@@ -261,8 +261,7 @@ body {
 .sidebar-collapse-toggle svg { display:block; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 .sidebar-collapse-toggle:hover { color:var(--text-primary); background:transparent; }
 .sidebar-collapse-toggle:focus-visible { outline:2px solid var(--nav-button-active-border); outline-offset:2px; }
-.settings-shell.sidebar-collapsed .sidebar-collapse-toggle { right:8px; }
-.settings-shell.sidebar-collapsed .sidebar-collapse-toggle { right:-15px; }
+.settings-shell.sidebar-collapsed .sidebar-collapse-toggle { top:8px; right:8px; }
 
 .settings-nav { min-height:50px; display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:14px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .settings-nav > .mdi { width:22px; flex:0 0 22px; font-size:23px; line-height:1; text-align:center; }
