@@ -16,3 +16,7 @@ Het bewerken van een meetwaardetegel gebeurt voortaan in een afzonderlijke edito
 De kaart **Meetwaardetegels** en de kaart **Voorbeeld** worden even hoog weergegeven zolang ze naast elkaar staan. Dit is opgelost met de grid-uitlijning van `.measurement-workspace`: de grid-items rekken uit tot de hoogte van de hoogste kaart binnen dezelfde rij.
 
 Wanneer de beschikbare breedte kleiner wordt en de kaarten onder elkaar worden geplaatst, krijgt iedere kaart weer de hoogte die bij de eigen inhoud hoort. Er wordt dus geen vaste gelijke hoogte afgedwongen over afzonderlijke rijen. De wijziging is beperkt tot de meetwaardetegels-instellingen en verandert de Quick Actions- of dashboardtegels niet.
+
+## Gestapelde tablet-/smalle layout hersteld (13 november 2026)
+
+De meetwaardetegels gebruikten ook de algemene Quick Actions-breakpointregels. Die regels zetten de preview expliciet op gridrij 3 en lieten de meetwaardetegelspecifieke minimale kaarthoogtes staan. In de gestapelde weergave kon daardoor onnodige ruimte/een verkeerde gridplaatsing ontstaan. Een gerichte override voor maximaal 1100 px zet beide kaarten terug in normale documentvolgorde, maakt de kaarthoogte inhoudsafhankelijk en houdt de previewtegels in twee kolommen. De editor blijft daarna als afzonderlijke kaart onder beide kaarten staan. De gelijke hoogte geldt uitsluitend wanneer de twee kaarten naast elkaar staan.
