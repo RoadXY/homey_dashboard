@@ -1015,13 +1015,23 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         this.appendDummyInput("FOOTER").appendField("🔔 Genereer melding");
         this.setColour(285);
         this.setTooltip("De vaste hoofdconstructie van deze melding. Plaats hier voorwaarden en EN/OF-containers in.");
-        this.setMovable(false);
-        this.setDeletable(false);
+        // Toolbox instances must be draggable. The fixed workspace root is
+        // locked separately after it is created below.
+        this.setMovable(true);
+        this.setDeletable(true);
       }
     };
     const toolbox = {
       kind: "categoryToolbox",
       contents: [
+        {
+          kind: "category",
+          name: "Melding",
+          categorystyle: "logic_category",
+          contents: [
+            { kind: "block", type: "homey_notification_root" }
+          ]
+        },
         {
           kind: "category",
           name: "Voorwaarden",
@@ -1217,6 +1227,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (hydrating) return;
       try {
         const roots = ws.getTopBlocks(true);
+        const notificationRoots = roots.filter((block: any) => block.type === "homey_notification_root");
+        if (notificationRoots.length > 1) throw new Error("Er mag maar één blok 'Genereer melding' in het werkveld staan.");
         if (roots.length !== 1 || roots[0] !== rootBlock) throw new Error("Alle voorwaarden moeten binnen Genereer melding staan.");
         const nodes = serializeChain(rootBlock.getInputTargetBlock("CONDITIONS"));
         if (nodes.length === 0) throw new Error("Voeg minimaal één voorwaarde of container toe aan Genereer melding.");
