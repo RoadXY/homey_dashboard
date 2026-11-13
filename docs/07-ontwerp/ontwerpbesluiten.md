@@ -34,11 +34,12 @@ Volgorde: Q-Music, Q-Music Foute Uur, Rolluiken openen, Verjaardagmodus, Woonkam
 Zie `goedkeuringsstatus.md` voor de actuele status per scherm. Visuele besluiten worden niet afgeleid uit niet-goedgekeurde voorbeeldinhoud van mockups.
 
 
-## Meldingen – versiebeheer voorwaardenmodel (13 november 2026)
+## Meldingen – canoniek voorwaardenmodel (13 november 2026)
 
-- Nieuwe meldingsconfiguraties gebruiken `schemaVersion: 2` en één expliciete conditieboom.
-- Vergelijkingsbladen krijgen `type: "comparison"`; AND/OR, duration en schedule blijven composable nodes in dezelfde boom.
-- Homey-apparaatbronnen worden geïdentificeerd met device-ID + capability-ID. Logic-bronnen in v2 worden geïdentificeerd met de stabiele Logic variable-ID, niet met de veranderlijke variabelenaam.
-- Versie 1 blijft voorlopig compatibel via normalisatie naar hetzelfde interne model. Bestaande bestanden worden niet stilzwijgend herschreven. V1 Logic-bronnen worden alleen gemigreerd wanneer de naam via Homey eenduidig naar een variabele-ID kan worden vertaald.
-- Het formele structurele contract staat in `docs/04-configuratie/schemas/notification-v2.schema.json`; backendvalidatie blijft aanvullend verantwoordelijk voor domeinregels.
-- De Blockly-editor wordt gebouwd op v2 en mag geen eigen parallelle evaluatielogica introduceren.
+- Het enige officiële meldingsmodel is `schemaVersion: 1`, vastgelegd in `docs/04-configuratie/schemas/notification-v1.schema.json`.
+- Dit schema gebruikt één expliciete conditieboom met comparison-, AND/OR-, duration- en schedule-nodes.
+- Homey-apparaatbronnen gebruiken device-ID + capability-ID. Logic-bronnen gebruiken uitsluitend de stabiele Logic variable-ID; namen zijn geen bronidentiteit.
+- Het eerdere legacy-v1-formaat en de tussentijdse schemaVersion 2 worden niet ondersteund.
+- Er is geen compatibiliteitslaag, normalisatie of migratiepad. Het project bevindt zich in de ontwikkelfase en hoeft geen eerdere configuraties te bewaren.
+- De zes bestaande ontwikkelconfiguraties zijn op het canonieke model gezet door uitsluitend het versienummer van 2 naar 1 te veranderen; de condities zijn inhoudelijk ongewijzigd.
+- Blockly, JSON-configuraties en backend gebruiken hetzelfde schema en dezelfde evaluator. Een tweede evaluatie-implementatie in Blockly is niet toegestaan.
