@@ -201,3 +201,14 @@ Vervolgimplementatie:
 - Behoud de bestaande instellingen voor meldingstitel, bericht, ernst en ingeschakeld-status; deze editoruitbreiding verandert alleen de manier waarop de conditieboom wordt bewerkt.
 
 De huidige tijdschema-editor geldt daarom als eerste technische proef, niet als afgeronde Blockly-conditie-editor. De volledige conditie-editor is pas gereed wanneer bestaande combinaties van comparison-, AND/OR-, duration- en schedule-nodes visueel kunnen worden opgebouwd, geopend, gewijzigd en opgeslagen.
+
+## 11. Implementatiestart volledige conditie-editor – 13 november 2026
+
+De eerste backendstap voor de uitbreidbare conditie-editor is uitgevoerd:
+- Canoniek JSON-schema v1 uitgebreid met `not`- en `weekday`-nodes.
+- Vergelijkingsoperatoren uitgebreid met `notEquals`, `lessThanOrEqual` en `greaterThanOrEqual`; bestaande operatoren blijven behouden.
+- Backendvalidatie en evaluatie uitgebreid voor de nieuwe operatoren en nodes.
+- Bronnen blijven recursief uit de conditieboom verzameld, ook onder NOT- en duurblokken.
+- Validatietests toegevoegd voor de nieuwe vergelijkingsoperatoren, typebeperkingen en ongeldige weekday-configuraties.
+
+Dit is uitsluitend de backend-/schemafundering. De zichtbare Blockly-toolbox, bronkeuzeblokken, volledige conditieboom laden/serialiseren en browserinteractie zijn nog niet geïmplementeerd. De huidige tijdschema-UI is dus nog niet vervangen en deze commits zijn nog niet als werkende editor op de tablet te testen. CI moet de nieuwe backendwijzigingen nog valideren.
