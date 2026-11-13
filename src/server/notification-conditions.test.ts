@@ -34,6 +34,10 @@ describe("isScheduleActive", () => {
     expect(() => isScheduleActive({ ...schedule, endTime: "07:00" }, new Date())).toThrow();
   });
 
+  it("treats a newly-created, unconfigured schedule as inactive", () => {
+    expect(isScheduleActive({ configured: false, weekdays: [] }, new Date("2026-11-16T12:00:00.000Z"))).toBe(false);
+  });
+
   it("finds the next start boundary while the schedule is inactive", () => {
     const now = new Date("2026-11-16T05:59:30.000Z");
     expect(nextScheduleTransition(schedule, now)).toBe(Date.parse("2026-11-16T06:00:00.000Z"));
