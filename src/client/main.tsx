@@ -642,6 +642,33 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
+function findMissingNotificationSources(condition: any, catalog: NotificationSourceCatalog | null): string[] {
+  if (!catalog || !condition) return [];
+  const missing = new Set<string>();
+  const visit = (node: any) => {
+    if (!node || typeof node !== "object") return;
+    if (node.type === "comparison") {
+      const source = node.source;
+      if (source?.type === "device-capability") {
+        const device = catalog.devices.find(item => item.id === source.deviceId);
+        if (!device) missing.add("Homey-apparaat niet gevonden (ID: " + source.deviceId + ").");
+        else {
+          const capability = device.capabilities.find(item => item.id === source.capabilityId);
+          if (!capability) missing.add("Meetmogelijkheid '" + source.capabilityId + "' ontbreekt op apparaat '" + device.name + "'.");
+          else if (!device.available) missing.add("Apparaat '" + device.name + "' is momenteel niet beschikbaar.");
+        }
+      } else if (source?.type === "logic-variable") {
+        if (!catalog.variables.some(item => item.id === source.variableId)) missing.add("Logic-variabele niet gevonden (ID: " + source.variableId + ").");
+      } else {
+        missing.add("Een voorwaarde verwijst naar een onvolledig of onbekend Homey-bronrecord.");
+      }
+    }
+    if (Array.isArray(node.conditions)) node.conditions.forEach(visit);
+    if (node.condition) visit(node.condition);
+  };
+  visit(condition);
+  return [...missing];
+}
 function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
@@ -1106,7 +1133,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     hydrating = false;
     return () => ws.dispose();
   }, []);
-  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <><div ref={host} className="schedule-blockly-workspace" />{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>}</div>;
+  return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
   const t = (key: string) => translate(locale, key);
@@ -1150,6 +1177,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
+  const missingSources = selected && sourceCatalog ? findMissingNotificationSources(selected.condition, sourceCatalog) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
     if (!selected || !key) return;
@@ -1230,6 +1258,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div>
+          {missingSources.length > 0 && <div className="notification-source-warning" role="alert"><strong>Homey-bronnen ontbreken of zijn niet beschikbaar:</strong><ul>{missingSources.map((source, index) => <li key={index}>{source}</li>)}</ul><span>Controleer de genoemde apparaten, meetmogelijkheden of Logic-variabelen in Homey. Pas daarna de betreffende voorwaarde in Blockly aan.</span></div>}
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
