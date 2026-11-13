@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getHomeyDeviceCapabilityValues, getHomeyLogicVariables } from "./homey.js";
-import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
+import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, nextScheduleTransition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
 type ExpectedType = "boolean" | "number";
@@ -194,7 +194,10 @@ function evaluateNode(
 ): Evaluation {
   if ("type" in node && node.type === "schedule") {
     try {
-      return { state: isScheduleActive(node, now) ? "active" : "inactive" };
+      return {
+        state: isScheduleActive(node, now) ? "active" : "inactive",
+        reevaluateAt: nextScheduleTransition(node, now),
+      };
     } catch {
       return { state: "unknown", reason: "schedule_invalid" };
     }
