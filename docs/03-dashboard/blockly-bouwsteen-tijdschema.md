@@ -375,3 +375,9 @@ In de ingeklapte sidebar staat de toggle rechtsboven binnen de sidebar, met geli
 De Blockly-editor wordt via `blockly/core` als npm-module geladen. Deze import vult de interne `Blockly.Msg`-berichtentabel niet vanzelf met de vertalingen die Blockly's eigen contextmenu nodig heeft. Daardoor kon een rechtermuisklik falen bij het opbouwen van de menuopties (interne `displayText`-fout) en verscheen het contextmenu niet.
 
 De editor importeert nu de meegeleverde Nederlandse en Engelse Blockly-berichtentabellen lokaal uit de vastgepinde npm-dependency en activeert vóór workspace-initialisatie de tabel die past bij de dashboardtaal via `Blockly.setLocale`. Dit herstelt de standaard contextmenu-teksten zonder een runtime-internetafhankelijkheid of wijziging aan de eigen blokdefinities en notificatiegegevens.
+
+
+## Nieuwe dashboardmelding aanmaken (13 november 2026)
+Boven de Blockly-editor staat naast de meldingenkeuze de knop **+ Nieuwe melding**. Een klik maakt direct een nieuwe conceptconfiguratie aan en selecteert deze automatisch. De naam wordt automatisch uniek gemaakt (bijvoorbeeld *Nieuwe melding*, *Nieuwe melding 2*) en kan direct in de kop van de editor worden aangepast. Het standaardniveau is **Informatie**.
+
+Een nieuwe melding start met een geldig, maar niet-geconfigureerd tijdschema (`configured: false`, geen geselecteerde weekdagen). Daardoor is de melding veilig inactief totdat de gebruiker de voorwaarden in Blockly configureert. De nieuwe configuratie wordt pas persistent wanneer **Opslaan** wordt gebruikt; navigeren of verversen vóór opslaan bewaart het concept niet. De opslaanknop blijft uitgeschakeld zolang een meldingsnaam leeg is. De knop, lege-lijsttekst en naamlabels zijn beschikbaar in Nederlands en Engels. De selector en knop stapelen op smalle schermen onder elkaar.
