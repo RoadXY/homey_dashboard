@@ -139,3 +139,21 @@ Tijdschema's leveren nu net als duurvoorwaarden een `reevaluateAt`-deadline op. 
 De berekening gebruikt de ingestelde IANA-tijdzone en doorloopt werkelijke tijdstippen per minuut. Hierdoor worden ontbrekende en dubbele lokale klokminuten bij zomer-/wintertijd niet als fictieve UTC-tijdstippen behandeld. Bij een schema dat over middernacht loopt, blijft de weekdag van de start leidend. Dezelfde deadline wordt doorgegeven via AND/OR-groepen en blijft ook behouden wanneer een tijdschema binnen een duurvoorwaarde zit; anders zou een reeds geactiveerde duurvoorwaarde niet op tijd kunnen stoppen wanneer het schema eindigt.
 
 Tests toegevoegd voor start- en eindgrenzen, nachtoverschrijding, de voorjaars-DST-sprong en deadlines die door duurvoorwaarden behouden moeten blijven. Implementatiecommits: `8bab4c9`, `86e90c2`, `48bb690`, `ce13f7b` en `4c1c401`. De volledige CI-run voor `4c1c401` is geslaagd: alle tests in 3 testbestanden, OpenAPI-validatie en frontend-/backendbuild zijn groen. Run: https://github.com/RoadXY/homey_dashboard/actions/runs/43374513979.
+
+
+## Canoniek configuratiemodel v2 – 13 november 2026
+
+Het formele JSON Schema voor nieuwe meldingsconfiguraties staat in `docs/04-configuratie/schemas/notification-v2.schema.json`. Versie 2 maakt de conditieboom expliciet en vermijdt dat een legacy-configuratie met top-level `source`/vergelijking en een samengestelde conditieboom dezelfde versiewaarde delen.
+
+V2 gebruikt:
+- expliciete `type: "comparison"`-bladen met `source` en `condition`;
+- geneste `and`- en `or`-groepen;
+- `type: "duration"` met stabiele blok-ID en duur in milliseconden;
+- `type: "schedule"` met weekdagen, begin-/eindtijd en optionele IANA-tijdzone;
+- bronidentiteit via Homey device-ID + capability-ID of Logic variable-ID.
+
+Versie 1 blijft voorlopig ondersteund. De backend moet v1-configuraties naar hetzelfde interne model normaliseren zonder bronbestanden automatisch te wijzigen. Voor Logic-variabelen moet een v1-naam via de Homey-inventarisatie naar een ID worden vertaald. Bij ontbrekende of onbereikbare broninformatie wordt geen automatische gok gedaan.
+
+Het JSON Schema dekt de structurele vorm. De bestaande backendvalidatie blijft verantwoordelijk voor domeinregels zoals maximum 12 niveaus, maximaal 100 nodes, unieke duration-ID's, IANA-tijdzonevaliditeit en compatibiliteit tussen brontype en vergelijkingsoperator/-waarde.
+
+**Nog niet geïmplementeerd:** v2 runtime-parser/normalisatie, v1-migratie en bijbehorende tests. De bestaande v1-configuraties blijven daarom voorlopig ongewijzigd. De Blockly-editor wordt pas op dit stabiele v2-model aangesloten.
