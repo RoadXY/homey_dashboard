@@ -282,3 +282,15 @@ Nog te verifiëren in de draaiende dashboardomgeving:
 - bestaande meldingen zonder tijdschema blijven ongewijzigd.
 
 De wijziging is op 13 november 2026 samengevoegd in `phase_1_foundation` via pull request #1 (squash-commit `ad5ee612bfe743f29c31a9eb3c5be443a206a507`). CI- en praktijktests moeten nog volgen.
+
+
+### 12.3 Compactere hoofdcontainer – 13 november 2026
+
+Naar aanleiding van de eerste praktijktest is de vaste Blockly-hoofdcontainer **Genereer melding** compacter gemaakt.
+
+- Het lange label bij de statement-opening is vervangen door het korte label **Voorwaarden:**.
+- De afsluitende uitlegregel onderaan het blok is verwijderd; deze herhaalde informatie en maakte de hoofdcontainer onnodig hoog.
+- De titel **Genereer melding**, de vaste/niet-verplaatsbare hoofdrol en de statement-opening blijven behouden.
+- De semantiek, JSON-serialisatie en backend-evaluatie zijn niet gewijzigd.
+
+De breedte van de hoofdcontainer wordt nu vooral bepaald door de daadwerkelijk geplaatste voorwaarden en geneste containers, in plaats van door lange toelichtende tekst. Praktische controle op de tablet volgt na het bijwerken van de Docker-container.
