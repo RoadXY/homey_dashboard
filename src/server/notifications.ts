@@ -127,8 +127,8 @@ function sourceKey(source: Source): SourceKey {
 function collectSources(config: NotificationConfig): Source[] {
   const collect = (node: ConditionNode): Source[] => {
     if ("conditions" in node) return node.conditions.flatMap(collect);
-    if ("type" in node && node.type === "duration") return collect(node.condition);
-    if ("type" in node && node.type === "schedule") return [];
+    if ("type" in node && (node.type === "duration" || node.type === "not")) return collect(node.condition);
+    if ("type" in node && (node.type === "schedule" || node.type === "weekday")) return [];
     return [node.source];
   };
   return collect(config.condition);
@@ -252,11 +252,17 @@ function evaluateNode(
     const timeZone = "Europe/Amsterdam";
     const weekday = new Intl.DateTimeFormat("en-US", { timeZone, weekday: "short" }).format(now);
     const index: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-    const nextMidnight = new Date(now);
-    nextMidnight.setSeconds(0, 0);
-    nextMidnight.setMinutes(0);
-    nextMidnight.setHours(nextMidnight.getHours() + 1);
-    return { state: node.weekdays.includes(index[weekday]) ? "active" : "inactive", reevaluateAt: nextMidnight.getTime() };
+    const currentMinute = Math.floor(now.getTime() / 60_000) * 60_000;
+    let midnightTransition: number | undefined;
+    const formatter = new Intl.DateTimeFormat("en-US", { timeZone, weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+    const currentState = node.weekdays.includes(index[weekday]);
+    for (let minute = 1; minute <= 26 * 60; minute += 1) {
+      const candidate = new Date(currentMinute + minute * 60_000);
+      const parts = Object.fromEntries(formatter.formatToParts(candidate).map((part) => [part.type, part.value]));
+      const candidateState = node.weekdays.includes(index[parts.weekday]);
+      if (candidateState !== currentState) { midnightTransition = candidate.getTime(); break; }
+    }
+    return { state: currentState ? "active" : "inactive", ...(midnightTransition === undefined ? {} : { reevaluateAt: midnightTransition }) };
   }
   if ("type" in node && node.type === "duration") {
     const child = evaluateNode(node.condition, values, notificationId, now);
