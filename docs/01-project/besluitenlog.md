@@ -321,3 +321,7 @@ Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div
 
 ## Algemeen-instellingen – responsive uitlijning (13 november 2026)
 De Algemeen-pagina gebruikt container queries op `.settings-content` zodat de layout rekening houdt met de beschikbare breedte ná aftrek van de zijbalk. Bij een contentbreedte tot 900 px stapelen Taal en Datum en tijd, worden de formulierrijen flexibel en loopt de Systeemstatus over naar drie kolommen met detail op een tweede regel. Onder 520 px komen labels boven hun invoervelden en worden de kaartpadding en statusrij compacter. Hiermee voorkomen we dat vaste minimumkolommen keuzelijsten buiten hun kaart drukken wanneer de browserbreedte of het DevTools-paneel de inhoud beperkt.
+
+
+## Instellingen – navigatielabels bij smallere desktop/tabletbreedtes (13 november 2026)
+Bij viewportbreedtes van 701–1050 px blijft de instellingen-zijbalk in desktopmodus, maar kregen de navigatielabels onvoldoende horizontale ruimte en brak 'Temperatuurtegels' af. De zijbalk wordt in dit bereik 200 px breed met compactere padding, iconen, tussenruimte en tekstgrootte. Navigatielabels blijven op één regel (`white-space: nowrap`). Onder 700 px blijft de bestaande horizontaal scrollbare navigatie actief.
