@@ -92,3 +92,8 @@ Een tijdschema is een herbruikbare boolean-voorwaarde in de conditieboom; het is
 Voorbeeld: de melding **Raam Bram niet open** wordt getoond wanneer (1) het tijdschema actief is, bijvoorbeeld tussen 08:00 en 20:00, EN (2) de contactcapability van het bovenraam Bram onwaar is. Buiten het tijdschema is de samengestelde conditie onwaar, ook wanneer het raam dicht is. De tijden in dit voorbeeld zijn illustratief; de concrete bestaande weekplanning van `boven_ramen_open` blijft vastgelegd in `blockly-bouwsteen-tijdschema.md`.
 
 Tijdschema-, dag-van-de-week- en duurblokken leveren boolean-condities en moeten daarom op dezelfde manier als andere voorwaarden in EN/OF/NIET kunnen worden aangesloten. De duurblokken bevatten precies één onderliggende conditie. De evaluator moet de bestaande duursemantiek behouden: de timer loopt alleen zolang de onderliggende conditie ononderbroken in de vereiste toestand blijft.
+
+
+## Instellingen – mobiele navigatie (13 november 2026)
+
+De instellingen-navigatie blijft op desktop een linker zijbalk. Op schermen tot en met 700 px wordt deze omgezet naar één compacte horizontale navigatierij boven de inhoud. De rij kan horizontaal worden verschoven; knoppen wrappen niet en rekken niet verticaal uit. Zo blijven alle zes categorieën bereikbaar op smalle telefoons zonder de content onnodig naar beneden te duwen. De actieve categorie behoudt dezelfde blauwe accentkleur.
