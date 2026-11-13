@@ -1391,6 +1391,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
 
 function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "dashboard" | "notifications" | "devices" | "homey" | "system"; onNavigate: (path: string) => void }) {
   const [page, setPage] = React.useState<"general" | "dashboard" | "notifications" | "devices" | "homey" | "system">(initialPage);
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
@@ -1498,14 +1499,15 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
     <header className="settings-topbar">
       <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
     </header>
-    <aside className="settings-sidebar">
+    <aside className="settings-sidebar" id="settings-sidebar">
       <h2>{t("settings.navTitle")}</h2>
       {[t("settings.general"),t("settings.dashboard"),t("settings.notifications"),t("settings.devices"),t("settings.homey"),t("settings.system")].map((name,index)=>{
         const routes = ["/settings/general","/settings/dashboard/quick-actions","/settings/notifications","/settings/devices","/settings/homey","/settings/system"] as const;
         const pages = ["general","dashboard","notifications","devices","homey","system"] as const;
-        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}}><span>{["⚙","▦","♧","♧","◉","▤"][index]}</span>{name}</button>;
+        const icons = ["mdi-cog-outline","mdi-view-dashboard-outline","mdi-bell-outline","mdi-devices","mdi-home-outline","mdi-monitor-dashboard"];
+        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
       })}
-      <div className="sidebar-product">ⓘ<span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
+      <div className="sidebar-product"><i className="mdi mdi-information-outline" aria-hidden="true" /><span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
     <section className="settings-content">
       {page === "general" ? <>
