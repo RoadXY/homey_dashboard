@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "ouderslaapkamer-koud",
   "title": "Ouderslaapkamer koud",
   "message": "De temperatuur in de ouderslaapkamer is lager dan 12 °C.",
