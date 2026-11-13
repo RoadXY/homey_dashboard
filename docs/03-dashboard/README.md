@@ -360,3 +360,7 @@ De eerste implementatie van de goedgekeurde Quick Actions-instellingen is toegev
 ## Navigatie: terug naar dashboard
 - De knop rechtsboven in de instellingen gebruikt het MDI-pictogram `view-dashboard-outline` en de vertaalde tekst `settings.back`.
 - De vertaalwaarden staan in `src/client/locales/nl.json` en `src/client/locales/en.json` (respectievelijk `Terug naar dashboard` en `Back to dashboard`). Nieuwe talen moeten dezelfde sleutel `settings.back` opnemen.
+
+
+### Meldingenindicator op het dashboard
+De kopregel Meldingen toont rechts een knipperend uitroepteken in een cirkel bij actieve meldingen (rood). Bij onbekende/onvolledige bronstatus verschijnt dezelfde indicator in amber. Als alles betrouwbaar is gecontroleerd en niets actief is, blijft de indicator verborgen. De indicator respecteert de instelling voor verminderde beweging van het apparaat.
