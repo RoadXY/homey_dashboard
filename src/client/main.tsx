@@ -5,7 +5,7 @@ import * as BlocklyLibrary from "blockly/core";
 import "blockly/blocks";
 import "@mdi/font/css/materialdesignicons.css";
 import mdiMeta from "@mdi/svg/meta.json";
-import { automaticLanguageLabel, availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
+import { availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
 import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
@@ -1529,7 +1529,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
-          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{automaticLanguageLabel}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
+          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automaticHomeyLanguage")}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
           <div className="language-info"><div>ℹ <span><strong>{t("settings.automatic")}</strong><br/>{t("settings.autoDescription")}</span></div><div>● <span>{t("settings.detectedHomey")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("settings.notAvailable")}</strong></span><em>{status?.homeyLanguage ? t("settings.detected") : t("settings.fallback")}</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
