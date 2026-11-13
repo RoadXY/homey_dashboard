@@ -46,7 +46,7 @@ export type DashboardNotification = {
   reason?: string;
 };
 
-export type Evaluation = { state: "active" | "inactive" | "unknown"; reason?: string };
+export type Evaluation = { state: "active" | "inactive" | "unknown"; reason?: string; reevaluateAt?: number };
 type SourceKey = string;
 
 function isSource(value: unknown): value is Source {
@@ -170,14 +170,20 @@ function evaluateComparison(value: unknown, expectedType: ExpectedType, conditio
 
 export function combineConditionResults(operator: "and" | "or", results: Evaluation[]): Evaluation {
   // Three-valued logic: an unknown child is never silently treated as false.
+  // Preserve the earliest pending duration deadline so the client can refresh
+  // exactly when a condition may change without another Homey event.
+  const deadlines = results.flatMap((result) => result.reevaluateAt === undefined ? [] : [result.reevaluateAt]);
+  const reevaluateAt = deadlines.length ? Math.min(...deadlines) : undefined;
+  let combined: Evaluation;
   if (operator === "and") {
-    if (results.some((result) => result.state === "inactive")) return { state: "inactive" };
-    const unknown = results.find((result) => result.state === "unknown");
-    return unknown ?? { state: "active" };
+    if (results.some((result) => result.state === "inactive")) combined = { state: "inactive" };
+    else combined = results.find((result) => result.state === "unknown") ?? { state: "active" };
+  } else if (results.some((result) => result.state === "active")) {
+    combined = { state: "active" };
+  } else {
+    combined = results.find((result) => result.state === "unknown") ?? { state: "inactive" };
   }
-  if (results.some((result) => result.state === "active")) return { state: "active" };
-  const unknown = results.find((result) => result.state === "unknown");
-  return unknown ?? { state: "inactive" };
+  return reevaluateAt === undefined ? combined : { ...combined, reevaluateAt };
 }
 
 function evaluateNode(
@@ -216,7 +222,7 @@ function evaluateNode(
   return evaluateComparison(sourceValue.value, node.source.expectedType, node.condition);
 }
 
-export async function getDashboardNotifications(): Promise<{ retrievedAt: string; notifications: DashboardNotification[] }> {
+export async function getDashboardNotifications(): Promise<{ retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number }> {
   const configs = (await loadConfigs()).filter((config) => config.enabled);
   const sources = configs.flatMap(collectSources);
   const uniqueSources = [...new Map(sources.map((source) => [sourceKey(source), source])).values()];
@@ -263,11 +269,15 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
   }
 
   const evaluationTime = new Date();
+  let nextEvaluationAt: number | undefined;
   const notifications = configs.map((config): DashboardNotification => {
     const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
     if (isConditionNode(config.condition)) {
       const result = evaluateNode(config.condition, values, config.id, evaluationTime);
-      return { ...base, ...result };
+      if (result.reevaluateAt !== undefined) {
+        nextEvaluationAt = nextEvaluationAt === undefined ? result.reevaluateAt : Math.min(nextEvaluationAt, result.reevaluateAt);
+      }
+      return { ...base, state: result.state, ...(result.reason ? { reason: result.reason } : {}) };
     }
     if (!config.source) return { ...base, state: "unknown", reason: "configuration_invalid" };
     const value = values.get(sourceKey(config.source));
@@ -277,5 +287,9 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
     return { ...base, ...evaluateComparison(value.value, config.source.expectedType, config.condition) };
   });
 
-  return { retrievedAt: new Date().toISOString(), notifications };
+  return {
+    retrievedAt: new Date().toISOString(),
+    notifications,
+    ...(nextEvaluationAt === undefined ? {} : { nextEvaluationAt }),
+  };
 }
