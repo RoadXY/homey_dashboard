@@ -132,7 +132,7 @@ body {
 .temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
 .temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; container-type: inline-size; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
-.temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(28px, 16cqi, 78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(32px, 18cqi, 88px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
 .temperature-reading-value { min-width: 0; white-space: nowrap; }
 .temperature-reading-unit { flex: 0 0 auto; font-size: .34em; line-height: 1; font-weight: 500; letter-spacing: 0; white-space: nowrap; }
 .right-column { position: relative; }
@@ -565,9 +565,11 @@ body {
 }
 .measurement-inline-editor .measurement-source-note { color:#91a8c2; font-size:13px; line-height:1.45; margin:0; }
 .measurement-preview-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-.measurement-preview-item { min-height:150px; }
-.measurement-preview-item .measurement-preview-value { color:#f1f6fc; font-size:clamp(25px,2.1vw,36px); font-weight:600; line-height:1.1; }
-.measurement-preview-item small { max-width:100%; color:#91a8c2; font-size:11px; line-height:1.3; overflow-wrap:anywhere; }
+.measurement-preview-item { min-height:150px; display:flex; flex-direction:column; align-items:stretch; justify-content:center; gap:8px; min-width:0; }
+.measurement-preview-item .measurement-preview-dashboard-tile { flex:1 1 auto; min-height:126px; width:100%; padding:12px; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.measurement-preview-item .measurement-preview-dashboard-tile .temperature-label { font-size:clamp(13px,1vw,17px); }
+.measurement-preview-item .measurement-preview-dashboard-tile .temperature-reading { font-size:clamp(32px,18cqi,88px); }
+.measurement-preview-item small { max-width:100%; color:#91a8c2; font-size:11px; line-height:1.3; overflow-wrap:anywhere; text-align:center; }
 @media (max-width: 900px) {
   .measurement-preview-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
