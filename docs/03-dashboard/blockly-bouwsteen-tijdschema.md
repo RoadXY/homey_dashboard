@@ -1,6 +1,6 @@
 # Blockly-bouwsteen – tijdschema's per dashboardmelding
 
-**Status:** functioneel ontwerp, nog niet geïmplementeerd  
+**Status:** backend-evaluator aanwezig; Blockly-editor en instellingenopslag nog te implementeren  
 **Scope:** generieke Blockly-bouwsteen voor `schedule.boven_ramen_open`, `schedule.slapen_sem` en `schedule.slapen_bram` uit de oorspronkelijke Home Assistant-configuratie  
 **Doel:** de oorspronkelijke planning per dashboardmelding afzonderlijk vastleggen, zodat elke melding later onafhankelijk in Blockly kan worden aangepast of geïmporteerd. De evaluatielogica mag technisch wel gedeeld zijn.
 
@@ -8,7 +8,7 @@
 
 De gebruiker heeft drie Home Assistant-schema's voor migratie aangewezen: `boven_ramen_open`, `slapen_sem` en `slapen_bram`. Ze bepalen wanneer respectievelijk raamwaarschuwingen en lampmeldingen relevant zijn. Elk schema is een eigen tijdvenster/kalenderregel; schema's mogen niet worden verward met Homey-Flow-timeoutvariabelen zoals `regen_ramenOpenTimout` of `regen_deurOpenTimeout`.
 
-Voor `boven_ramen_open` is de weekplanning bevestigd via de Helper-instellingen: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00. Deze planning wordt als initiële configuratie voor de vier afzonderlijke raamregel-instanties gebruikt. De exacte weekplanningen van `slapen_sem` en `slapen_bram` moeten nog uit hun eigen HA-helperinstellingen worden vastgesteld; neem de tijden van het bovenramenschema niet over.
+Voor `boven_ramen_open` is de weekplanning bevestigd via de Helper-instellingen: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00. Deze planning wordt als initiële configuratie voor de vier afzonderlijke raamregel-instanties gebruikt. De gebruiker configureert `slapen_sem` en `slapen_bram` later zelf in Blockly. Beide beginnen als lege, inactieve schema-instanties; neem geen tijden over van het bovenramenschema.
 
 ## 2. Voorgestelde Blockly-blokvorm
 
@@ -57,10 +57,8 @@ Uitgang:
 
 ## 6. Nog te bevestigen
 
-1. De exacte weekdagen en begin-/eindtijden van `slapen_sem` en `slapen_bram` uit de oorspronkelijke HA-helperinstellingen.
-2. Of deze twee slaap-schema's datumgrenzen, uitzonderingsdagen of andere nuances bevatten.
-3. Of `boven_ramen_open` datumgrenzen, uitzonderingsdagen of een andere nuance bevat naast de bevestigde weekplanning.
-4. De vier raamregels krijgen elk een eigen instantie van `boven_ramen_open`; de lampregels krijgen elk hun eigen slaap-schema-instantie. De Blockly-bouwsteen blijft generiek inzetbaar.
+1. Of `boven_ramen_open` datumgrenzen, uitzonderingsdagen of een andere nuance bevat naast de bevestigde weekplanning.
+2. De vier raamregels krijgen elk een eigen instantie van `boven_ramen_open`; de lampregels krijgen elk hun eigen slaap-schema-instantie. De Blockly-bouwsteen blijft generiek inzetbaar.
 
 ## 7. Relatie met temperatuurregels
 
@@ -142,3 +140,24 @@ De gebruiker configureert de planning van `slapen_sem` en `slapen_bram` later ze
 - Een wijziging aan Sems schema heeft geen invloed op Brams schema en andersom.
 - De lampmelding blijft pas actief als zowel de bijbehorende lamp aan staat als het eigen schema actief is.
 - Gebruik nooit de planning van `boven_ramen_open` als impliciete standaard voor een slaap-schema.
+
+
+## 10. Implementatie – backendfundament (13 november 2026)
+
+De eerste codewijzigingen voor lege schema-instanties zijn toegevoegd op branch `phase_1_foundation`.
+
+- Het canonieke notification-v1-model accepteert nu ook een expliciet ongeconfigureerd schema: `{ "type": "schedule", "configured": false, "weekdays": [] }`.
+- Een ongeconfigureerd schema wordt door de backend als `inactive` geëvalueerd. Er wordt geen volgende tijdgrens ingepland zolang er geen weekdagen/tijden zijn ingesteld.
+- Een geconfigureerd schema behoudt de bestaande validatie en evaluator: minimaal één weekdag, geldige begin-/eindtijden en optioneel een geldige IANA-tijdzone.
+- Het JSON Schema en de TypeScript-validatie zijn op dit onderscheid afgestemd.
+- Tests dekken de lege schema-instantie en de afwijzing van ongeldige lege configuraties.
+- Twee initiële meldingsconfiguraties zijn toegevoegd: `lamp-sem-aan.json` en `lamp-bram-aan.json`. Ze combineren de lampstatus `onoff == true` met elk hun eigen lege slaap-schema. Severity is `info`.
+- GitHub Actions valideerde de backend- en schemawijzigingen tot en met commit `34a96b6493e2879d1c18dd4f5ffc86bad3246f19` succesvol. De CI-runs voor de twee nieuwe lampconfiguraties zijn gestart; de definitieve uitkomst wordt nog gecontroleerd.
+
+### Nog te bouwen
+
+1. De echte Blockly-library in de client integreren en een aangepaste `Tijdschema actief?`-block definiëren.
+2. De instellingenpagina voor meldingen toevoegen, beveiligd met de bestaande instellingen-sessie.
+3. De Blockly-workspace koppelen aan het canonieke JSON-model; geen tweede evaluator introduceren.
+4. Configuraties veilig persistent opslaan in `DATA_DIR`, inclusief validatie vóór opslaan.
+5. De vier afzonderlijke `boven_ramen_open`-instanties toevoegen wanneer de vier raamregels als JSON-configuraties worden gemigreerd.
