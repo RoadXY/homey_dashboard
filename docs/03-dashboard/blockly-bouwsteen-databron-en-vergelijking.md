@@ -232,3 +232,17 @@ De Blockly-editor heeft nu een toolbox met drie categorieën, zodat voorwaarden 
 De werkruimte toont de toolbox naast de bestaande conditieboom. Een prullenbak is ingeschakeld om blokken te verwijderen. De nieuwe blokken blijven statementblokken en worden door dezelfde serializer naar het canonieke JSON-voorwaardenmodel vertaald; er is geen aparte Blockly-evaluator.
 
 **Afbakening:** de vergelijking bevat in deze eerste toolboxversie zelf de bronkeuze. De eerder vastgelegde UX-keuze voor twee afzonderlijke bronblokken (Homey-apparaat en Homey Logic-variabele) moet nog als volgende verbetering worden doorgevoerd, zonder de opgeslagen bronidentiteit of het JSON-model te wijzigen. Ook moet de round-trip van alle nieuwe combinaties nog met gerichte frontendtests worden afgedekt.
+
+
+### 11.10 Afzonderlijke bronblokken
+
+De vergelijking gebruikt nu twee afzonderlijke bronblokken in de toolbox:
+
+- **Homey-apparaat:** toont uitsluitend apparaat-capabilities uit de read-only broncatalogus.
+- **Homey Logic-variabele:** toont uitsluitend Logic-variabelen uit diezelfde catalogus.
+
+Een bronblok wordt direct vóór het vergelijkingsblok geplaatst. De combinatie wordt door de serializer als één canonieke `comparison`-node opgeslagen. Bij het opnieuw openen wordt de bronnode weer als het juiste afzonderlijke blok opgebouwd. De opgeslagen bronidentiteit blijft device-ID + capability-ID of Logic-variable-ID; de zichtbare namen worden niet als sleutel gebruikt.
+
+De vergelijking zelf bevat alleen de operator en vergelijkingswaarde. Daardoor is het type bron in de Blockly-werkruimte direct herkenbaar en kan de gebruiker niet per ongeluk een Logic-variabele kiezen in het apparaatbronblok of andersom.
+
+**Nog te testen:** de complete keten moet in de draaiende dashboardomgeving worden gecontroleerd op laden, wijzigen, opslaan en opnieuw openen. Ook blijven geautomatiseerde frontend round-trip-tests een openstaand kwaliteitscriterium.
