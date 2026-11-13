@@ -51,6 +51,19 @@ Onderstaande lijst is een functionele catalogus, geen claim dat deze endpoints a
 
 Externe clients krijgen niet automatisch algemene toegang tot alle Homey-apparaten, Logic-variabelen, Flows of dashboardconfiguratie. Elke API-operatie wordt bewust ontworpen en aan een permissie gekoppeld.
 
+## Dashboardmeldingen via externe API – functionele richting (13 november 2026)
+
+Naast meldingen die Homey Dashboard zelf op basis van Homey-data en Blockly-voorwaarden evalueert, moet een geautoriseerde externe client later via de externe API een dashboardmelding kunnen **publiceren en beëindigen/verwijderen**. Bijwerken van een bestaande gepubliceerde melding wordt als gewenste lifecycle-operatie meegenomen.
+
+- Dit is toekomstige functionaliteit en wordt niet als bestaand endpoint beschouwd. De implementatie en het exacte contract vallen onder de reeds geplande fase 4.
+- De externe API is een invoerkanaal: Homey levert data/gebeurtenissen aan, maar Homey Dashboard blijft verantwoordelijk voor wat en hoe op het scherm wordt weergegeven.
+- Het API-contract moet een stabiele melding-ID ondersteunen, zodat een client een eerder gepubliceerde melding eenduidig kan bijwerken of beëindigen. Herhaalde requests moeten veilig/idempotent kunnen worden afgehandeld.
+- De API-payload en autorisatie moeten per client worden gevalideerd. De Homey API-key wordt nooit als extern API-credential gebruikt.
+- De drie dashboardniveaus blijven **kritiek**, **waarschuwing** en **info**, met de bestaande niveaugebonden styling en sortering uit `docs/03-dashboard/README.md`. Het API-contract moet deze niveaus op dezelfde manier kunnen aanduiden; de exacte veldnamen en payload worden later vastgelegd.
+- De externe meldingslifecycle staat los van de Blockly-voorwaardenengine voor dynamische meldingsregels. De twee soorten meldingen komen samen in de dashboardpresentatielaag, die de afgesproken vormgeving en ordening toepast.
+
+Nog te ontwerpen in fase 4: endpointpaden en HTTP-methoden, request-/response-schema's, verplichte velden, optionele vervaltijd, gedrag bij dubbele IDs, clientscopes, audit/logging, foutcodes en eventuele persistentie/retentie. Deze details worden niet vooruitlopend vastgezet.
+
 ## Versies en compatibiliteit
 
 - Externe HTTP-routes gebruiken een expliciete versieprefix, bij voorkeur `/api/v1`.
