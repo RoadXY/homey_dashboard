@@ -333,3 +333,7 @@ De mobiele CSS gebruikte `.settings-nav span` om het pictogram te dimensioneren.
 
 ## Dashboard – compact weerkaart en kloktypografie onder 900 px (13 november 2026)
 Onder 900 px wordt de weerkaart niet langer door de hoogte van de klokkaart uitgerekt: deze staat bovenaan naast de klok en krijgt een vaste compacte hoogte van 230 px. Onder 620 px (enkelkolomsindeling) is de weerkaart 180 px hoog. De klokkaart is een inline-size container; de tijd gebruikt `33cqi` met grenzen van 90–220 px zodat de cijfers ongeveer 90% van de beschikbare kaartbreedte benutten, en `.clock` zelf heeft 90% breedte. Dit schaalt op basis van de kaartbreedte in plaats van de viewportbreedte.
+
+
+## Instelbare inklapknop zijmenu (13 november 2026)
+Naast de bestaande klikactie op het Homey Dashboard-merk in de bovenbalk is nu een afzonderlijke inklapknop toegevoegd aan de rechterrand van de zijbalk, ongeveer ter hoogte van de navigatiekop. De knop gebruikt een zijbalk-layoutpictogram dat wisselt tussen inklappen en uitklappen, heeft toegankelijke naam-/statusattributen en is op desktop/tablet-touch bedienbaar. De kleur komt uit het semantische token `--sidebar-toggle-color`, standaard gekoppeld aan `--action-icon-color`; thema's en light/dark modes kunnen dit token later overschrijven zonder component-CSS aan te passen. De knop is verborgen in de mobiele horizontale navigatieweergave (maximaal 700 px), waar de inklapbare zijbalk niet van toepassing is.
