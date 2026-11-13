@@ -204,3 +204,18 @@ De instellingeneditor ontvangt nu de volledige `condition`-boom van de geselecte
 Een onbekend of nog niet ondersteund node-type wordt als expliciet blok **Niet-ondersteunde voorwaarde** weergegeven in plaats van stilzwijgend uit de werkruimte te verdwijnen. De oorspronkelijke JSON wordt aan dat blok meegegeven als Blockly block-data.
 
 **Status en beperking:** dit is de laad-/visualisatiestap. De volledige workspace wordt nog niet teruggeserialiseerd naar JSON en er is nog geen nieuwe opslagactie vanuit Blockly. De bestaande save-flow blijft de huidige config-data opslaan; deze loader schrijft geen wijzigingen terug. Daarmee kan de conditieboom nu worden bekeken als verbonden blokken, maar bewerken en round-trippen is nog niet afgerond. De onbekende-node placeholder is op dit moment alleen een zichtbare veiligheidsmarkering; behoud bij toekomstige serialisatie moet nog expliciet worden getest.
+### 11.8 Blockly-conditieboom terugschrijven naar JSON
+
+De editor heeft nu een eerste serializer die wijzigingen in de verbonden conditieblokken terugschrijft naar de `condition`-property van de geselecteerde melding. De serializer ondersteunt vergelijking, tijdschema, weekdag, EN, OF, NIET en `duration`. Bij een duurblok wordt de Blockly block-ID gebruikt als stabiele `duration.id` en wordt de ingestelde duur omgerekend naar milliseconden.
+
+De serializer controleert onder meer dat:
+- ieder vergelijkingsblok een bestaande bron uit de geladen Homey-catalogus gebruikt;
+- numerieke vergelijkingswaarden geldige getallen zijn;
+- NIET en duurblokken precies één voorwaarde bevatten;
+- EN/OF minimaal twee voorwaarden bevatten;
+- de werkruimte één verbonden hoofdconditie bevat;
+- onbekende/unsupported blokken niet opgeslagen kunnen worden.
+
+Onvolledige of ongeldige werkruimtes worden niet naar de configuratie geschreven. De gebruiker kan daardoor tijdens het bouwen tijdelijk een onvolledige boom hebben zonder dat die ongeldige toestand direct de opgeslagen configuratie vervangt.
+
+**Beperkingen van deze eerste serializer:** de huidige zichtbare editor gebruikt statementblokken voor de conditieboom. De oudere losse visuele blokken en de aparte `homey_notification_duration_active/inactive` proefblokken worden niet geserialiseerd. De inactieve duurvariant is nog niet als `duration(not(child))` beschikbaar in deze nieuwe boom-editor. Ook is geautomatiseerde frontend round-trip-testdekking nog nodig; CI/build moet deze implementatie valideren voordat ze op de server wordt getest.
