@@ -29,11 +29,19 @@ type MeasurementTile = { id: string; name: string; source: MeasurementTileSource
 type MeasurementSourceCatalog = { zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; units: string; decimals: number | null }[] }[]; variables: { id: string; name: string; type: "number" }[] };
 type MeasurementTileValue = { id: string; value: number | null; units: string; decimals: number | null; available: boolean };
 type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
+function formatMeasurementParts(reading: MeasurementTileValue | undefined, locale: string = "nl"): { value: string; units: string } {
+  if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return { value: "—", units: "" };
+  // Keep readings compact: values with four or more integer digits are rounded to whole units.
+  const decimals = Math.abs(reading.value) >= 1000 ? 0 : Math.max(0, Math.min(3, reading.decimals ?? 1));
+  const formatter = new Intl.NumberFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : "en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+  return { value: formatter.format(reading.value), units: reading.units ?? "" };
+}
 function formatMeasurementValue(reading: MeasurementTileValue | undefined, locale: string = "nl"): string {
-  if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return "—";
-  const number = reading.value.toFixed(reading.decimals ?? 1);
-  const localized = locale.toLowerCase().startsWith("nl") ? number.replace(".", ",") : number;
-  return localized + (reading.units ? " " + reading.units : "");
+  const formatted = formatMeasurementParts(reading, locale);
+  return formatted.value + (formatted.units ? " " + formatted.units : "");
 }
 type QuickAction = { id: string; name: string; icon: string; type: "flow" | "device"; flowId: string; flowType: "standard" | "advanced"; deviceId: string; capabilityId: string; value: boolean | number | string | null; booleanMode: "on" | "off" | "toggle" };
 type QuickActionCapability = { id: string; title: string; type: string; min: number | null; max: number | null; step: number | null; units: string; values: { id: string; title: string }[]; value: unknown };
@@ -311,7 +319,8 @@ function App() {
         <section className="temperature-grid" aria-label="Temperature sensors">
           {(measurementTileData?.tiles ?? []).map(tile => {
             const reading = measurementTileData?.values.find(value => value.id === tile.id);
-            return <TemperatureTile key={tile.id} label={tile.name} value={formatMeasurementValue(reading, locale)} />;
+            const formatted = formatMeasurementParts(reading, locale);
+            return <TemperatureTile key={tile.id} label={tile.name} value={formatted.value} units={formatted.units} />;
           })}
         </section>
       </section>
@@ -1638,8 +1647,8 @@ function WeatherIcon({ category }: { category: WeatherCategory }) {
     </div>
   );
 }
-function TemperatureTile({ label, value }: { label: string; value: string }) {
-  return <article className="card temperature-tile"><span className="temperature-label">{label}</span><strong>{value}</strong></article>;
+function TemperatureTile({ label, value, units }: { label: string; value: string; units: string }) {
+  return <article className="card temperature-tile"><span className="temperature-label">{label}</span><strong className="temperature-reading"><span className="temperature-reading-value">{value}</span>{units && <small className="temperature-reading-unit">{units}</small>}</strong></article>;
 }
 void loadTranslations().finally(() => {
   ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);
