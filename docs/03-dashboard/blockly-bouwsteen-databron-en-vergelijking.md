@@ -288,3 +288,8 @@ Wanneer de Homey-broncatalogus niet kan worden geladen, toont de instellingenpag
 ### 11.14 Blockly-werkruimte benut beschikbare schermhoogte
 
 De Blockly-werkruimte had vaste hoogtes van 360 px op desktop en 320 px op mobiel. Daardoor bleef onder de editor onnodig veel lege ruimte over voordat de vaste Opslaan-actie in beeld kwam. De werkruimte gebruikt nu viewport-afhankelijke hoogtes met onder- en bovengrenzen: `clamp(500px, 62vh, 760px)` op grotere schermen en `clamp(400px, 58vh, 620px)` op smalle schermen. Zo groeit het werkvlak mee met de beschikbare schermhoogte zonder onbeperkt groot te worden; de bestaande Blockly-scrollbalken blijven beschikbaar voor grotere conditiebomen.
+
+
+### 11.15 Contrast van Blockly-categorieën
+
+De Blockly-toolbox gebruikte op sommige schermen de standaard lichtgrijze achtergrond, terwijl de categorie-labels licht bleven. De dark-theme styling is aangescherpt met expliciete achtergrondkleuren voor de toolbox en categorie-rijen, plus contrasterende hover- en geselecteerde toestanden. De labelkleur wordt expliciet op de toolboxcategorieën toegepast zodat deze leesbaar blijft.
