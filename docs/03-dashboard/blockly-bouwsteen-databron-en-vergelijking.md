@@ -191,3 +191,16 @@ De selectie blijft gekoppeld aan de bestaande updatefunctie en gebruikt stabiele
 De aparte lijstkolom met meldingen is vervangen door een compacte dropdown boven de Blockly-editor. De gebruiker kiest daar de melding die wordt bewerkt; wisselen van selectie behoudt de bestaande selectie-/configuratiestroom. De editor gebruikt nu de volledige beschikbare kaartbreedte.
 
 De grote paginaheading met meldingenicoon en titel is verwijderd, zodat de editor hoger op de pagina begint. De titel van de geselecteerde melding en de ernstbadge in de editorkaart blijven staan als context voor de actieve regel. Op smalle schermen stapelt de dropdownlabel en keuzelijst onder elkaar.
+### 11.7 Bestaande conditieboom in Blockly laden
+
+De instellingeneditor ontvangt nu de volledige `condition`-boom van de geselecteerde melding en bouwt daaruit een verbonden Blockly-structuur op. De eerste loader ondersteunt:
+- `comparison`: bron-ID, operator en vergelijkingswaarde;
+- `schedule`: weekdagen en begin-/eindtijd;
+- `weekday`: geselecteerde weekdag;
+- `and` en `or`: alle onderliggende condities, inclusief meer dan twee kinderen;
+- `not`: precies één onderliggende conditie;
+- `duration`: duur in minuten en de geneste conditie.
+
+Een onbekend of nog niet ondersteund node-type wordt als expliciet blok **Niet-ondersteunde voorwaarde** weergegeven in plaats van stilzwijgend uit de werkruimte te verdwijnen. De oorspronkelijke JSON wordt aan dat blok meegegeven als Blockly block-data.
+
+**Status en beperking:** dit is de laad-/visualisatiestap. De volledige workspace wordt nog niet teruggeserialiseerd naar JSON en er is nog geen nieuwe opslagactie vanuit Blockly. De bestaande save-flow blijft de huidige config-data opslaan; deze loader schrijft geen wijzigingen terug. Daarmee kan de conditieboom nu worden bekeken als verbonden blokken, maar bewerken en round-trippen is nog niet afgerond. De onbekende-node placeholder is op dit moment alleen een zichtbare veiligheidsmarkering; behoud bij toekomstige serialisatie moet nog expliciet worden getest.
