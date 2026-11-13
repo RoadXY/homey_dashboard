@@ -618,52 +618,73 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string }) {
+function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
-  const workspace = React.useRef<any>(null);
   const changeRef = React.useRef(onChange);
+  const sourceChangeRef = React.useRef(onSourceChange);
+  const catalogRef = React.useRef(sourceCatalog);
+  const sourceKeyRef = React.useRef(sourceKey);
   changeRef.current = onChange;
+  sourceChangeRef.current = onSourceChange;
+  catalogRef.current = sourceCatalog;
+  sourceKeyRef.current = sourceKey;
   React.useEffect(() => {
     const Blockly = window.Blockly;
     if (!Blockly || !host.current) { setBlocklyUnavailable(true); return; }
+    const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
           this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
-          const days = locale.toLowerCase().startsWith("en") ? [["Mon", "MON"], ["Tue", "TUE"], ["Wed", "WED"], ["Thu", "THU"], ["Fri", "FRI"], ["Sat", "SAT"], ["Sun", "SUN"]] : [["Ma", "MON"], ["Di", "TUE"], ["Wo", "WED"], ["Do", "THU"], ["Vr", "FRI"], ["Za", "SAT"], ["Zo", "SUN"]];
+          const labels = locale.toLowerCase().startsWith("en") ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
           const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
-          days.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
+          labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
           this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
-          this.setOutput(true, "Boolean");
-          this.setColour(210);
-          this.setTooltip(translate(locale, "notifications.conditionDescription"));
+          this.setOutput(true, "Boolean"); this.setColour(210);
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_notification_source) {
+      Blockly.Blocks.homey_notification_source = {
+        init() {
+          this.appendDummyInput().appendField("Homey-bron").appendField(new Blockly.FieldDropdown(() => {
+            const catalog = catalogRef.current;
+            const options: Array<[string, string]> = [["— selecteer bron —", ""]];
+            (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : ""), "device:" + device.id + ":" + capability.id])));
+            (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
+            return options;
+          }, (value: string) => { if (value) sourceChangeRef.current(value); return value; }), "SOURCE");
+          this.setOutput(true, null); this.setColour(285);
+          this.setTooltip("Selecteer een Homey-apparaat/capability of Logic-variabele.");
         }
       };
     }
     const ws = Blockly.inject(host.current, {
-      trashcan: false,
-      move: { scrollbars: true, drag: true, wheel: true },
+      trashcan: false, move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
       grid: { spacing: 20, length: 3, colour: "#46505d", snap: true }
     });
-    workspace.current = ws;
-    const block = ws.newBlock("schedule_active");
-    const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
-    days.forEach(([day, field]) => block.setFieldValue(schedule?.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
-    if (schedule?.startTime) block.setFieldValue(schedule.startTime, "START");
-    if (schedule?.endTime) block.setFieldValue(schedule.endTime, "END");
-    block.initSvg(); block.render();
+    const scheduleBlock = ws.newBlock("schedule_active");
+    days.forEach(([day, field]) => scheduleBlock.setFieldValue(schedule?.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
+    if (schedule?.startTime) scheduleBlock.setFieldValue(schedule.startTime, "START");
+    if (schedule?.endTime) scheduleBlock.setFieldValue(schedule.endTime, "END");
+    scheduleBlock.initSvg(); scheduleBlock.render();
+    const sourceBlock = ws.newBlock("homey_notification_source");
+    sourceBlock.setFieldValue(sourceKeyRef.current || "", "SOURCE");
+    sourceBlock.initSvg(); sourceBlock.render();
+    sourceBlock.moveBy(0, 245);
     const emit = (event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
       const current = ws.getTopBlocks(false).find((item: any) => item.type === "schedule_active");
-      if (!current) return;
-      const weekdays = days.filter(([, field]) => current.getFieldValue(field) === "TRUE").map(([day]) => day);
-      if (!weekdays.length) { changeRef.current({ type: "schedule", configured: false, weekdays: [] }); return; }
-      changeRef.current({ type: "schedule", weekdays, startTime: current.getFieldValue("START"), endTime: current.getFieldValue("END"), timeZone: schedule?.timeZone ?? "Europe/Amsterdam" });
+      if (current) {
+        const weekdays = days.filter(([, field]) => current.getFieldValue(field) === "TRUE").map(([day]) => day);
+        if (!weekdays.length) changeRef.current({ type: "schedule", configured: false, weekdays: [] });
+        else changeRef.current({ type: "schedule", weekdays, startTime: current.getFieldValue("START"), endTime: current.getFieldValue("END"), timeZone: schedule?.timeZone ?? "Europe/Amsterdam" });
+      }
     };
     ws.addChangeListener(emit);
-    return () => { ws.dispose(); workspace.current = null; };
+    return () => ws.dispose();
   }, []);
   return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
 }
@@ -743,16 +764,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       </section>
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <div className="notification-source-picker">
-            <label htmlFor="notification-source-select">Homey-databron</label>
-            <select id="notification-source-select" value={currentSourceKey} disabled={!selectedComparison || !sourceCatalog} onChange={event => updateSource(event.target.value)}>
-              <option value="">Selecteer een apparaat of Logic-variabele…</option>
-              {(sourceCatalog?.devices ?? []).flatMap(device => device.capabilities.map(capability => ({ key: "device:" + device.id + ":" + capability.id, label: device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : "") + (device.available ? "" : " · niet beschikbaar"), type: capability.type }))).map(source => <option key={source.key} value={source.key}>{source.label}</option>)}
-              {(sourceCatalog?.variables ?? []).map(variable => <option key={"logic:" + variable.id} value={"logic:" + variable.id}>Logic · {variable.name} ({variable.type === "boolean" ? "ja/nee" : "getal"})</option>)}
-            </select>
-            <small>{sourceCatalogError || (sourceCatalog ? (sourceCatalog.devices.length + " apparaten en " + sourceCatalog.variables.length + " Logic-variabelen beschikbaar") : "Broncatalogus laden…")}</small><small>De bronselectie is nu een eerste cataloguscontrole; koppeling aan de opgeslagen Blockly-voorwaarde volgt in de volgende bouwstap.</small>
-          </div>
-          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
