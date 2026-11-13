@@ -178,5 +178,6 @@
   "notifications.saved": "Meldingen opgeslagen.",
   "notifications.loadError": "Meldingen laden mislukt.",
   "notifications.saveError": "Meldingen opslaan mislukt.",
-  "notifications.save": "Opslaan…"
+  "notifications.save": "Opslaan…",
+  "notifications.editorUnavailable": "Blockly kon niet worden geladen. Controleer de internetverbinding en herlaad de instellingenpagina."
 }
