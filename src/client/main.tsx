@@ -11,7 +11,7 @@ type DeviceReadings = { retrievedAt: string; devices: HomeyDevice[] };
 type LogicResponse = { retrievedAt: string; variables: { name: string; value: unknown }[] };
 type HomeyStatus = { state: string; checkedAt: string | null; error: string | null; deviceCount?: number; zoneCount?: number };
 type DashboardNotification = { id: string; title: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
-type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[] };
+type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday" };
@@ -63,14 +63,44 @@ function App() {
   const settingsIdleTimer = React.useRef<number | null>(null);
   const lastSessionRefresh = React.useRef(0);
   const holdTimer = React.useRef<number | null>(null);
+  const notificationRefreshTimer = React.useRef<number | null>(null);
+  const scheduleNotificationRefreshRef = React.useRef<(data: NotificationsResponse) => void>(() => {});
+  const scheduleNotificationRefresh = React.useCallback((data: NotificationsResponse) => {
+    if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
+    notificationRefreshTimer.current = null;
+    if (typeof data.nextEvaluationAt !== "number" || !Number.isFinite(data.nextEvaluationAt)) return;
+    const delay = Math.min(2_147_483_647, Math.max(0, data.nextEvaluationAt - Date.now() + 25));
+    notificationRefreshTimer.current = window.setTimeout(() => {
+      void fetch("/api/notifications")
+        .then(async (response) => {
+          if (!response.ok) throw new Error("notifications.loadErrorMessage");
+          return await response.json() as NotificationsResponse;
+        })
+        .then((nextData) => {
+          setNotifications(nextData.notifications);
+          scheduleNotificationRefreshRef.current(nextData);
+        })
+        .catch(() => {
+          setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+        });
+    }, delay);
+  }, []);
+  scheduleNotificationRefreshRef.current = scheduleNotificationRefresh;
   const refresh = React.useCallback(async () => {
     void fetch("/api/notifications")
       .then(async (response) => {
         if (!response.ok) throw new Error("notifications.loadErrorMessage");
         return await response.json() as NotificationsResponse;
       })
-      .then((data) => setNotifications(data.notifications))
-      .catch(() => setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]));
+      .then((data) => {
+        setNotifications(data.notifications);
+        scheduleNotificationRefresh(data);
+      })
+      .catch(() => {
+        if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
+        notificationRefreshTimer.current = null;
+        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+      });
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
     void fetch("/api/dashboard/measurement-tiles").then(r => r.ok ? r.json() as Promise<MeasurementTileResponse> : Promise.reject()).then(setMeasurementTileData).catch(() => undefined);
@@ -100,7 +130,7 @@ function App() {
       }
       setLoadError("");
     } catch (error) { setLoadError(error instanceof Error ? error.message : "settings.loadDataError"); }
-  }, []);
+  }, [scheduleNotificationRefresh]);
   React.useEffect(() => {
     const clock = window.setInterval(() => setNow(new Date()), 1000);
     let refreshTimer = 0;
@@ -120,6 +150,8 @@ function App() {
     return () => {
       window.clearInterval(clock);
       window.clearTimeout(refreshTimer);
+      if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
+      notificationRefreshTimer.current = null;
       stream.removeEventListener("ready", scheduleRefresh);
       stream.removeEventListener("homey-update", scheduleRefresh);
       stream.removeEventListener("homey-connected", scheduleRefresh);
