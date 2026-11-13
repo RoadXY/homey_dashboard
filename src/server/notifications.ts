@@ -157,7 +157,11 @@ export async function getNotificationConfigsForSettings(): Promise<NotificationC
   try {
     const saved = JSON.parse(await readFile(notificationOverridePath, "utf8")) as unknown;
     if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
-    return saved;
+    const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
+    for (const config of saved) merged.set(config.id, config);
+    const configs = [...merged.values()];
+    if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+    return configs;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     return loadDefaultConfigs();
