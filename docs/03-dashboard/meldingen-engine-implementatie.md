@@ -201,3 +201,8 @@ Elke melding heeft een eigen `enabled`-schakelaar in de editor. De bestaande con
 ## Opslaan bepaalt wanneer in-/uitschakelen actief wordt (13 november 2026)
 
 De schakelaar voor een melding wijzigt eerst alleen de lokale conceptconfiguratie (`configs`). De Homey-broncontrole en de zichtbare foutmeldingen zijn bewust gebaseerd op de laatst opgeslagen configuratie (`saved`), niet op conceptwijzigingen. Pas na een succesvolle POST op Opslaan worden `configs` en `saved` gelijkgetrokken; dan verandert ook de broncontrole. Navigeren tussen meldingen zonder op te slaan laat de bestaande foutmeldingen dus ongewijzigd. Bij een mislukte save blijft de opgeslagen situatie leidend. Hierdoor wordt een melding pas daadwerkelijk uitgeschakeld of ingeschakeld nadat de gebruiker Opslaan heeft bevestigd.
+
+
+## Genereer melding beschikbaar in de Blockly-toolbox (13 november 2026)
+
+De vaste hoofdconstructie `Genereer melding` is nu ook als sleepbaar blok beschikbaar in de toolbox onder de categorie **Melding**. De reeds aanwezige hoofdconstructie in het werkveld blijft automatisch aangemaakt en vergrendeld; de toolboxvariant is verplaatsbaar en verwijderbaar. Daarmee blijft het bestaande model met één vaste root behouden, terwijl de gebruiker de hoofdconstructie ook vanuit de toolbox kan herkennen en pakken. De workspacevalidatie telt expliciet het aantal rootblokken: zodra meer dan één `Genereer melding`-blok in het werkveld staat, wordt een duidelijke fout getoond en wordt de ongeldige Blockly-structuur niet naar de meldingsconfiguratie geschreven. De gebruiker kan het extra blok verwijderen; de bestaande hoofdconstructie en voorwaarden blijven intact.
