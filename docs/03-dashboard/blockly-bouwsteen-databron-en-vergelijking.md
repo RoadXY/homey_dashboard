@@ -283,3 +283,8 @@ De selectie toont nu alle bestaande meldingsconfiguraties. Een tijdschema is opt
 
 
 Wanneer de Homey-broncatalogus niet kan worden geladen, toont de instellingenpagina nu ook de concrete laadfout. Daarmee is onderscheid zichtbaar tussen een melding zonder bronblok, een lege broncatalogus en een mislukte API-aanvraag.
+
+
+### 11.14 Blockly-werkruimte benut beschikbare schermhoogte
+
+De Blockly-werkruimte had vaste hoogtes van 360 px op desktop en 320 px op mobiel. Daardoor bleef onder de editor onnodig veel lege ruimte over voordat de vaste Opslaan-actie in beeld kwam. De werkruimte gebruikt nu viewport-afhankelijke hoogtes met onder- en bovengrenzen: `clamp(500px, 62vh, 760px)` op grotere schermen en `clamp(400px, 58vh, 620px)` op smalle schermen. Zo groeit het werkvlak mee met de beschikbare schermhoogte zonder onbeperkt groot te worden; de bestaande Blockly-scrollbalken blijven beschikbaar voor grotere conditiebomen.
