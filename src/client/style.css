@@ -720,3 +720,26 @@ body {
   .quick-editor-card { grid-column:1; grid-row:auto; position:relative; left:auto; top:auto; transform:none; width:100%; }
   .quick-preview-card { grid-row:auto; }
 }
+
+.notifications-heading { justify-content:space-between; }
+.notification-status-indicator {
+  width:clamp(34px,3vw,44px); height:clamp(34px,3vw,44px); flex:0 0 auto;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:3px solid #ff3434; border-radius:50%;
+  color:#ff3434; font-size:clamp(22px,1.8vw,29px); font-weight:800; line-height:1;
+  text-shadow:0 0 10px rgba(255,45,45,.5);
+  box-shadow:0 0 0 2px rgba(255,52,52,.12),0 0 16px rgba(255,52,52,.22);
+  animation:notification-status-blink 1.15s ease-in-out infinite;
+}
+.notification-status-indicator.is-unknown {
+  border-color:#ffb547; color:#ffb547;
+  text-shadow:0 0 10px rgba(255,181,71,.5);
+  box-shadow:0 0 0 2px rgba(255,181,71,.12),0 0 16px rgba(255,181,71,.22);
+}
+@keyframes notification-status-blink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.28; transform:scale(.92); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .notification-status-indicator { animation:none; }
+}
