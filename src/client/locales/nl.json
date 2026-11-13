@@ -122,7 +122,7 @@
   "settings.tokenCopyError": "Kopiëren is niet gelukt. Selecteer en kopieer de token handmatig.",
   "settings.quickActions": "Snelle acties",
   "settings.quickActionsSubtitle": "Configureer de acht actieknoppen: pictogram, Flow of apparaatbediening.",
-  "settings.temperatureTiles": "Temperatuurtegels",
+  "settings.temperatureTiles": "Meetwaardetegels",
   "settings.quickActionsDescription": "Configureer de acht knoppen op het dashboard.",
   "settings.quickActionsHint": "Stel voor elke knop een naam, pictogram en Homey-actie in.",
   "settings.preview": "Voorbeeld",
