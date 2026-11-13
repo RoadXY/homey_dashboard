@@ -373,3 +373,7 @@ De schakelaar wijzigt alleen de conceptconfiguratie. De zichtbare Homey-bronfout
 
 ## Meldingen / Blockly – Genereer melding in toolbox en dubbele root blokkeren (13 november 2026)
 Het blok `Genereer melding` is als sleepbaar blok toegevoegd aan de toolboxcategorie **Melding**. De bestaande root in het werkveld blijft automatisch aanwezig en vergrendeld; toolbox-exemplaren zijn verplaatsbaar/verwijderbaar. De workspacecontrole detecteert expliciet meer dan één rootblok, toont de foutmelding “Er mag maar één blok 'Genereer melding' in het werkveld staan.” en slaat de ongeldige structuur niet op.
+
+
+## Meldingen – bevestiging bij verlaten met onopgeslagen wijzigingen (13 november 2026)
+Bij wisselen tussen meldingen of navigeren naar een andere instellingenpagina/het dashboard verschijnt een bevestiging wanneer de meldingeneditor onopgeslagen wijzigingen bevat. OK/Doorgaan verwerpt de conceptwijzigingen en navigeert; Annuleren blijft op de huidige melding/pagina en behoudt de wijzigingen. Het opslaan blijft expliciet en afzonderlijk.
