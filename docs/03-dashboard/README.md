@@ -374,3 +374,7 @@ De meldingeninstellingen gebruiken binnen `NotificationSettingsPage` de vertaalh
 Meetwaardetegels tonen op het dashboard uitsluitend de naam en de meetwaarde. Het pictogram boven de waarde is verwijderd om de beschikbare tegelruimte volledig te benutten. In Instellingen → Meetwaardetegels is de pictogramkiezer verwijderd; ook de lijst en voorbeeldweergave tonen geen pictogrammen meer. Per tegel blijven naam en Homey-meetbron configureerbaar.
 
 De clientconfiguratie en serverconfiguratie bevatten geen pictogramveld meer. Bestaande `measurement-tiles.json`-bestanden met een oud `icon`-veld blijven leesbaar: de server negeert dat verouderde veld en schrijft bij de eerstvolgende opslag de opgeschoonde structuur terug. Quick Actions behouden hun eigen pictogramselectie; deze wijziging geldt uitsluitend voor meetwaardetegels.
+
+
+### Meetwaardetegels – rij-indeling (13 november 2026)
+De lijst met meetwaardetegels gebruikt een eigen grid-indeling zonder gereserveerde pictogramkolom. De tegelnaam krijgt daardoor de volledige resterende breedte; het bewerkpotlood staat consequent uiterst rechts, onafhankelijk van de schermbreedte.
