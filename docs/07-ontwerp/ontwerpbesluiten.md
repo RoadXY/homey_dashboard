@@ -51,3 +51,17 @@ De gebruiker kiest voor twee afzonderlijke bronblokken in de Blockly-editor:
 - **Homey Logic-variabele**: selecteert een Logic-variabele.
 
 De twee bronnen worden niet samengevoegd tot één generiek bronblok met een keuzeschakelaar. Dit maakt voor de gebruiker direct zichtbaar welk type bron wordt gebruikt. Beide blokken moeten naar de bestaande bronstructuren in het canonieke voorwaardenmodel worden vertaald; de stabiele apparaat-/capability-ID's en Logic-variable-ID's blijven de opgeslagen identiteit, niet de zichtbare namen.
+
+## Blockly – vergelijkingsoperatoren (13 november 2026)
+
+De gebruiker keurt voor de eerste volledige Blockly-editor de volgende zes vergelijkingsoperatoren goed:
+- Is gelijk aan (`equals`)
+- Is niet gelijk aan (`notEquals`)
+- Groter dan (`greaterThan`)
+- Groter dan of gelijk aan (`greaterThanOrEqual`)
+- Kleiner dan (`lessThan`)
+- Kleiner dan of gelijk aan (`lessThanOrEqual`)
+
+De editor toont alleen operatoren die bij het verwachte brontype passen: booleaanse bronnen krijgen gelijk aan / niet gelijk aan met boolean-waarden; numerieke bronnen krijgen alle zes operatoren met numerieke waarden. De bronselectie bepaalt het verwachte type en de editor voorkomt ongeldige combinaties.
+
+**Technische consequentie:** het huidige canonieke JSON-schema en de backend ondersteunen op dit moment alleen `equals`, `lessThan` en `greaterThan`. De twee nieuwe relationele operatoren en `notEquals` moeten daarom als uitbreiding worden toegevoegd aan schema, validator, evaluator en tests voordat de bijbehorende Blockly-blokken worden vrijgegeven. Bestaande JSON-configuraties met de huidige operatoren blijven ongewijzigd geldig.
