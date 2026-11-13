@@ -31,7 +31,7 @@ export function isValidScheduleCondition(schedule: ScheduleCondition): boolean {
     if (!Array.isArray(schedule.weekdays) ||
         schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) return false;
     if (schedule.configured === false) {
-      return schedule.weekdays.length === 0 && schedule.startTime === undefined && schedule.endTime === undefined;
+      return schedule.weekdays.length === 0 && schedule.startTime === undefined && schedule.endTime === undefined && schedule.timeZone === undefined;
     }
     if (schedule.weekdays.length === 0 || typeof schedule.startTime !== "string" || typeof schedule.endTime !== "string") return false;
     const start = parseClockTime(schedule.startTime);
