@@ -24,6 +24,12 @@ describe("canonical notification schema v1", () => {
     })).toBe(true);
   });
 
+  it("accepts an empty schedule draft and rejects an invalid empty draft", () => {
+    expect(isValidConditionNode({ type: "schedule", configured: false, weekdays: [] })).toBe(true);
+    expect(isValidConditionNode({ type: "schedule", configured: false, weekdays: [1] })).toBe(false);
+    expect(isValidConditionNode({ type: "schedule", configured: false, weekdays: [], startTime: "07:00" })).toBe(false);
+  });
+
   it("rejects Logic names and malformed schedules", () => {
     expect(isValidConditionNode({
       ...comparison,
