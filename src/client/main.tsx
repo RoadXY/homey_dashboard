@@ -821,10 +821,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             });
             results.appendChild(item);
           });
-          // Keep the current source visible whenever the picker opens (and
-          // after filtering). The scroll is limited to the result list.
-          const selectedItem = results.querySelector('.notification-source-dropdown-option.selected') as HTMLButtonElement | null;
-          selectedItem?.scrollIntoView({ block: "nearest" });
+          // The selected option is scrolled into view after the dropdown has
+          // been laid out. Scrolling here is too early: Blockly has not shown
+          // its DropDownDiv yet, so the browser can leave the list at scrollTop 0.
           if (!options.length) {
             const empty = document.createElement('div');
             empty.className = 'notification-source-dropdown-empty';
@@ -833,10 +832,31 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           }
           footer.textContent = options.length + (options.length === 1 ? ' resultaat' : ' resultaten');
         };
-        search.addEventListener('input', renderOptions);
+        const scrollSelectedOptionIntoView = () => {
+          window.requestAnimationFrame(() => {
+            const selectedItem = results.querySelector('.notification-source-dropdown-option.selected') as HTMLButtonElement | null;
+            if (!selectedItem) return;
+            const resultsRect = results.getBoundingClientRect();
+            const selectedRect = selectedItem.getBoundingClientRect();
+            // Adjust only the results pane; never scroll the Blockly workspace
+            // or the page surrounding the DropDownDiv.
+            if (selectedRect.top < resultsRect.top) {
+              results.scrollTop -= resultsRect.top - selectedRect.top;
+            } else if (selectedRect.bottom > resultsRect.bottom) {
+              results.scrollTop += selectedRect.bottom - resultsRect.bottom;
+            }
+          });
+        };
+        search.addEventListener('input', () => {
+          renderOptions();
+          scrollSelectedOptionIntoView();
+        });
         renderOptions();
         dropdown.showPositionedByField(this, () => {});
         search.focus();
+        // Wait until Blockly has made the dropdown visible and the results
+        // pane has its final dimensions before calculating the scroll offset.
+        scrollSelectedOptionIntoView();
       }
     }
     if (!Blockly.Blocks.homey_notification_source) {
