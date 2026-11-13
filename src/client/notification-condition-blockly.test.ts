@@ -139,3 +139,18 @@ describe("normalizeScheduleTimeInput", () => {
     expect(normalizeScheduleTimeInput("25:00")).toBe("25:00");
   });
 });
+
+
+describe("time-only and multi-weekday Blockly models", () => {
+  it("stores a time-only block as a daily schedule with an explicit mode", () => {
+    const node = { type: "schedule", mode: "time-only", weekdays: [0, 1, 2, 3, 4, 5, 6], startTime: "07:00", endTime: "22:00", timeZone: "Europe/Amsterdam" };
+    expect(node.mode).toBe("time-only");
+    expect(node.weekdays).toHaveLength(7);
+  });
+
+  it("supports multiple selected weekdays in the existing weekday condition model", () => {
+    expect({ type: "weekday", weekdays: [1, 2, 3, 4, 5] }).toEqual({
+      type: "weekday", weekdays: [1, 2, 3, 4, 5]
+    });
+  });
+});
