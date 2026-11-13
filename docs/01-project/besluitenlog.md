@@ -357,3 +357,7 @@ De Homey-broncatalogus gebruikte uitsluitend het metadata-veld `descriptor.type`
 
 ## Meldingen / Blockly – bronselectie synchroniseert vergelijkingsveld direct (13 november 2026)
 De custom doorzoekbare Homey-bronkeuzelijst synchroniseerde het vergelijkingsveld alleen via de algemene Blockly-wijzigingslistener. Bij selectie via de custom dropdown kon die eventroute het datatype-afhankelijke invoerveld missen: de bron werd numeriek opgeslagen, terwijl de UI nog true/false toonde. De bronselectie synchroniseert nu direct het invoerveld en de toegestane operatoren. Een oude ongeldige boolean-waarde wordt bij omschakelen naar numeriek veilig genormaliseerd. Hiermee blijven bron, operator en waarde-invoer consistent.
+
+
+## Meldingen / Blockly – geselecteerde bron in beeld en robuuste waardeconversie (13 november 2026)
+De bronkeuzelijst positioneert bij openen automatisch de geselecteerde Homey-bron in beeld. De vergelijkingsserialisatie normaliseert Blockly-veldwaarden eerst naar tekst, omdat Blockly afhankelijk van het veldtype string-, number- of booleanwaarden kan leveren; hiermee wordt de fout `l.trim is not a function` voorkomen.
