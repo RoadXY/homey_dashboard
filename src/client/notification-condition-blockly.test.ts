@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   combineRootConditions,
-  comparisonInputValue,\n  comparisonValueFromBlockly,
+  comparisonInputValue,
+  comparisonValueFromBlockly,
   durationNodeFromBlockly,
   durationNodeToBlockly,
   normalizeScheduleTimeInput,
