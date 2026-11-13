@@ -503,3 +503,20 @@ De backend accepteert uitsluitend het canonieke schema hierboven. Er is geen nor
 De instellingenpagina **Instellingen → Meldingen** bevat de eerste Blockly-editor voor tijdschema-voorwaarden. De editor werkt rechtstreeks op het canonieke notification-v1 JSON-model. De server valideert alle configuraties en slaat gebruikerswijzigingen op in `DATA_DIR/notifications.json`; dit bestand hoort bij het persistente Docker-volume en wordt niet in Git opgeslagen.
 
 De API-routes `GET /api/settings/notifications` en `POST /api/settings/notifications` vereisen een geldige instellingen-PIN-sessie. De opgeslagen configuratie wordt door de meldingenengine als override op de standaardconfiguratie uit `config/notifications` toegepast. Zie [Blockly-tijdschema's](../03-dashboard/blockly-bouwsteen-tijdschema.md) voor de functionele en technische details.
+
+
+## Instellingenmenu en URL's (13 november 2026)
+
+De vaste menuvolgorde is **Algemeen**, **Snelle acties**, **Meldingen**, **Temperatuurtegels** en **Weer**. De oude bovenliggende categorie Dashboard is vervallen; snelle acties en meetwaardetegels zijn eigen instellingenpagina's. De aparte menu-items Apparaten, Homey en Systeem zijn vervallen. Algemene Homey-/serverstatus blijft onderdeel van Algemeen.
+
+| Menu-item | Canonieke URL |
+|---|---|
+| Algemeen | `/settings/general` |
+| Snelle acties | `/settings/quick-actions` |
+| Meldingen | `/settings/notifications` |
+| Temperatuurtegels | `/settings/measurement-tiles` |
+| Weer | `/settings/weather` |
+
+De Weer-pagina is voorlopig een placeholder. De beoogde afzonderlijke opties zijn buitentemperatuur, gevoelstemperatuur, weericoon/-omschrijving, wind, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang.
+
+Oude bookmarks worden naar de nieuwe canonieke routes omgezet: dashboard en de oude quick-actions route naar Snelle acties; de oude dashboard/measurement-tiles route naar Temperatuurtegels; de oude Apparaten-, Homey- en Systeemroutes naar Algemeen. De redirects wijzigen geen opgeslagen instellingen.
