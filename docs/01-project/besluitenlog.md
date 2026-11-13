@@ -325,3 +325,7 @@ De Algemeen-pagina gebruikt container queries op `.settings-content` zodat de la
 
 ## Instellingen – navigatielabels bij smallere desktop/tabletbreedtes (13 november 2026)
 Bij viewportbreedtes van 701–1050 px blijft de instellingen-zijbalk in desktopmodus, maar kregen de navigatielabels onvoldoende horizontale ruimte en brak 'Temperatuurtegels' af. De zijbalk wordt in dit bereik 200 px breed met compactere padding, iconen, tussenruimte en tekstgrootte. Navigatielabels blijven op één regel (`white-space: nowrap`). Onder 700 px blijft de bestaande horizontaal scrollbare navigatie actief.
+
+
+## Mobiele instellingen-navigatie – labelbreedte hersteld (13 november 2026)
+De mobiele CSS gebruikte `.settings-nav span` om het pictogram te dimensioneren. Omdat het label ook een `span` is, kreeg de volledige menutekst onbedoeld een breedte/flex-basis van 20 px; tekst liep daardoor over de volgende menu-items heen. De selector is beperkt tot het directe pictogramelement `.settings-nav > .mdi`. Het tekstlabel krijgt expliciet zijn natuurlijke breedte, blijft op één regel en kan binnen de bestaande horizontaal scrollbare navigatie worden bekeken.
