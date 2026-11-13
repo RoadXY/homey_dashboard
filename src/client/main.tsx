@@ -752,7 +752,27 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             item.setAttribute('aria-selected', option[1] === this.getValue() ? 'true' : 'false');
             item.textContent = option[0];
             item.addEventListener('mousedown', event => event.preventDefault());
-            item.addEventListener('click', () => { this.setValue(option[1]); dropdown.hideIfOwner(this); });
+            item.addEventListener('click', () => {
+              this.setValue(option[1]);
+              // A custom FieldDropdown does not reliably produce the same
+              // BLOCK_FIELD_CHANGED sequence as Blockly's native dropdown.
+              // Synchronize the comparison controls directly on selection so
+              // a numeric source can never retain a boolean true/false field.
+              const sourceBlock = this.getSourceBlock?.();
+              if (sourceBlock?.type === "homey_condition_device_source" || sourceBlock?.type === "homey_condition_logic_source") {
+                const selectedSource = resolveNotificationSourceFromKey(option[1], catalogRef.current);
+                if (selectedSource) {
+                  const allowedOperators = selectedSource.expectedType === "number"
+                    ? ["equals", "notEquals", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"]
+                    : ["equals", "notEquals"];
+                  if (!allowedOperators.includes(sourceBlock.getFieldValue("OP"))) sourceBlock.setFieldValue("equals", "OP");
+                  const operatorField = sourceBlock.getField("OP");
+                  if (operatorField && typeof operatorField.getOptions === "function") operatorField.getOptions(false);
+                  replaceComparisonValueField(sourceBlock, selectedSource.expectedType, String(sourceBlock.getFieldValue("VALUE") ?? ""));
+                }
+              }
+              dropdown.hideIfOwner(this);
+            });
             results.appendChild(item);
           });
           if (!options.length) {
