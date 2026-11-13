@@ -632,7 +632,7 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
+function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const changeRef = React.useRef(onChange);
@@ -773,68 +773,99 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
         }
       };
     }
+    const statementTypes = ["homey_condition_comparison", "homey_condition_schedule", "homey_condition_weekday", "homey_condition_and", "homey_condition_or", "homey_condition_not", "homey_condition_duration"];
+    if (!Blockly.Blocks.homey_condition_comparison) Blockly.Blocks.homey_condition_comparison = {
+      init() {
+        this.appendDummyInput().appendField("Als").appendField(new Blockly.FieldDropdown(() => {
+          const catalog = catalogRef.current;
+          const options: Array<[string,string]> = [];
+          (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title, "device:" + device.id + ":" + capability.id])));
+          (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
+          return options.length ? options : [["Geen Homey-bronnen beschikbaar",""]];
+        }), "SOURCE");
+        this.appendDummyInput().appendField(new Blockly.FieldDropdown([["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]), "OP");
+        this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput("false"), "VALUE");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
+      }
+    };
+    if (!Blockly.Blocks.homey_condition_schedule) Blockly.Blocks.homey_condition_schedule = {
+      init() {
+        this.appendDummyInput().appendField("Tijdschema actief?");
+        const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+        const row = this.appendDummyInput().appendField("Dagen:");
+        labels.forEach(([label,key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
+        this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00"), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00"), "END");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
+      }
+    };
+    if (!Blockly.Blocks.homey_condition_weekday) Blockly.Blocks.homey_condition_weekday = {
+      init() {
+        this.appendDummyInput().appendField("Dag van de week").appendField(new Blockly.FieldDropdown([["maandag","1"],["dinsdag","2"],["woensdag","3"],["donderdag","4"],["vrijdag","5"],["zaterdag","6"],["zondag","0"]]), "DAY");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
+      }
+    };
+    for (const type of ["and","or"]) {
+      const blockType = "homey_condition_" + type;
+      if (!Blockly.Blocks[blockType]) Blockly.Blocks[blockType] = {
+        init() {
+          this.appendDummyInput().appendField(type === "and" ? "EN" : "OF");
+          this.appendStatementInput("CONDITION0");
+          this.appendStatementInput("CONDITION1");
+          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120);
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_condition_not) Blockly.Blocks.homey_condition_not = {
+      init() { this.appendDummyInput().appendField("NIET"); this.appendStatementInput("CONDITION"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120); }
+    };
+    if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
+      init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
+    };
     const ws = Blockly.inject(host.current, {
       trashcan: false, move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
       grid: { spacing: 20, length: 3, colour: "#46505d", snap: true }
     });
-    const scheduleBlock = ws.newBlock("schedule_active");
-    days.forEach(([day, field]) => scheduleBlock.setFieldValue(schedule?.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
-    if (schedule?.startTime) scheduleBlock.setFieldValue(schedule.startTime, "START");
-    if (schedule?.endTime) scheduleBlock.setFieldValue(schedule.endTime, "END");
-    scheduleBlock.initSvg(); scheduleBlock.render();
-    const sourceBlock = ws.newBlock("homey_notification_source");
-    sourceBlock.setFieldValue(sourceKeyRef.current || "", "SOURCE");
-    sourceBlock.initSvg(); sourceBlock.render();
-    sourceBlock.moveBy(0, 245);
-    const comparisonBlock = ws.newBlock("homey_notification_comparison");
-    comparisonBlock.setFieldValue(comparison?.condition?.operator ?? "equals", "OP");
-    comparisonBlock.setFieldValue(String(comparison?.condition?.value ?? false), "VALUE");
-    comparisonBlock.setOutput(true, "Boolean");
-    comparisonBlock.initSvg(); comparisonBlock.render(); comparisonBlock.moveBy(360, 0);
-    if (sourceBlock.outputConnection && comparisonBlock.getInput("SOURCE")?.connection) {
-      comparisonBlock.getInput("SOURCE").connection.connect(sourceBlock.outputConnection);
-    }
-    comparisonBlock.setOnChange((event: any) => {
-      if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
-      const operator = comparisonBlock.getFieldValue("OP");
-      const rawValue = comparisonBlock.getFieldValue("VALUE");
-      const numeric = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(operator) || comparisonRef.current?.source?.expectedType === "number";
-      const value = numeric ? (Number.isFinite(Number(rawValue)) ? Number(rawValue) : 0) : rawValue === "true";
-      comparisonChangeRef.current(operator, value);
-    });
-    const emit = (event: any) => {
-      if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
-      const current = ws.getTopBlocks(false).find((item: any) => item.type === "schedule_active");
-      if (current) {
-        const weekdays = days.filter(([, field]) => current.getFieldValue(field) === "TRUE").map(([day]) => day);
-        if (!weekdays.length) changeRef.current({ type: "schedule", configured: false, weekdays: [] });
-        else changeRef.current({ type: "schedule", weekdays, startTime: current.getFieldValue("START"), endTime: current.getFieldValue("END"), timeZone: schedule?.timeZone ?? "Europe/Amsterdam" });
+    const buildCondition = (node: any): any => {
+      if (!node || typeof node !== "object") return null;
+      let block: any = null;
+      if (node.type === "comparison") {
+        block = ws.newBlock("homey_condition_comparison");
+        const source = node.source?.type === "device-capability" ? "device:" + node.source.deviceId + ":" + node.source.capabilityId : "logic:" + node.source?.variableId;
+        block.setFieldValue(source, "SOURCE");
+        block.setFieldValue(node.condition?.operator ?? "equals", "OP");
+        block.setFieldValue(String(node.condition?.value ?? false), "VALUE");
+      } else if (node.type === "schedule") {
+        block = ws.newBlock("homey_condition_schedule");
+        days.forEach(([day, field]) => block.setFieldValue(node.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
+        if (node.startTime) block.setFieldValue(node.startTime, "START");
+        if (node.endTime) block.setFieldValue(node.endTime, "END");
+      } else if (node.type === "weekday") {
+        block = ws.newBlock("homey_condition_weekday");
+        if (node.weekdays?.length === 1) block.setFieldValue(String(node.weekdays[0]), "DAY");
+      } else if (node.type === "not") {
+        block = ws.newBlock("homey_condition_not");
+        const child = buildCondition(node.condition);
+        if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
+      } else if (node.type === "duration") {
+        block = ws.newBlock("homey_condition_duration");
+        block.setFieldValue(String(Math.max(1, Math.round(node.durationMs / 60000))), "MINUTES");
+        const child = buildCondition(node.condition);
+        if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
+      } else if (node.operator === "and" || node.operator === "or") {
+        block = ws.newBlock("homey_condition_" + node.operator);
+        (node.conditions ?? []).forEach((childNode: any, index: number) => {
+          const inputName = "CONDITION" + index;
+          if (index > 1) block.appendStatementInput(inputName);
+          const child = buildCondition(childNode);
+          if (child) block.getInput(inputName)?.connection?.connect(child.previousConnection);
+        });
       }
+      if (block) { block.initSvg(); block.render(); }
+      return block;
     };
-    ws.addChangeListener(emit);
-    const durationActiveBlock = ws.newBlock("homey_notification_duration_active");
-    durationActiveBlock.initSvg(); durationActiveBlock.render(); durationActiveBlock.moveBy(1120, 0);
-    const activeConditionSlot = ws.newBlock("homey_notification_condition_statement");
-    activeConditionSlot.setFieldValue(sourceKeyRef.current || "", "SOURCE");
-    activeConditionSlot.setFieldValue(comparisonRef.current?.condition?.operator ?? "equals", "OP");
-    activeConditionSlot.setFieldValue(String(comparisonRef.current?.condition?.value ?? false), "VALUE");
-    activeConditionSlot.initSvg(); activeConditionSlot.render();
-    durationActiveBlock.getInput("CONDITION")?.connection?.connect(activeConditionSlot.previousConnection);
-    const durationInactiveBlock = ws.newBlock("homey_notification_duration_inactive");
-    durationInactiveBlock.initSvg(); durationInactiveBlock.render(); durationInactiveBlock.moveBy(1120, 180);
-    const inactiveConditionSlot = ws.newBlock("homey_notification_condition_statement");
-    inactiveConditionSlot.setFieldValue(sourceKeyRef.current || "", "SOURCE");
-    inactiveConditionSlot.setFieldValue(comparisonRef.current?.condition?.operator ?? "equals", "OP");
-    inactiveConditionSlot.setFieldValue(String(comparisonRef.current?.condition?.value ?? false), "VALUE");
-    inactiveConditionSlot.initSvg(); inactiveConditionSlot.render();
-    durationInactiveBlock.getInput("CONDITION")?.connection?.connect(inactiveConditionSlot.previousConnection);
-    const andBlock = ws.newBlock("homey_notification_logic_and");
-    andBlock.initSvg(); andBlock.render(); andBlock.moveBy(760, 0);
-    const orBlock = ws.newBlock("homey_notification_logic_or");
-    orBlock.initSvg(); orBlock.render(); orBlock.moveBy(760, 105);
-    const notBlock = ws.newBlock("homey_notification_logic_not");
-    notBlock.initSvg(); notBlock.render(); notBlock.moveBy(760, 210);
+    const rootBlock = buildCondition(condition);
+    if (rootBlock) rootBlock.moveBy(30, 30);
     return () => ws.dispose();
   }, []);
   return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
@@ -921,7 +952,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
