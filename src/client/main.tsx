@@ -570,6 +570,32 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
 }
 
 
+function findComparisonNode(node: any): any | null {
+  if (!node || typeof node !== "object") return null;
+  if (node.type === "comparison") return node;
+  if (Array.isArray(node.conditions)) {
+    for (const child of node.conditions) { const found = findComparisonNode(child); if (found) return found; }
+  }
+  if (node.condition) return findComparisonNode(node.condition);
+  return null;
+}
+function replaceFirstComparisonSource(node: any, source: any): any {
+  if (!node || typeof node !== "object") return node;
+  if (node.type === "comparison") {
+    const compatible = source.expectedType === "number" || ["equals", "notEquals"].includes(node.condition?.operator);
+    return { ...node, source, condition: compatible ? node.condition : { operator: "equals", value: false } };
+  }
+  if (Array.isArray(node.conditions)) {
+    let replaced = false;
+    return { ...node, conditions: node.conditions.map((child: any) => {
+      if (replaced || !findComparisonNode(child)) return child;
+      replaced = true;
+      return replaceFirstComparisonSource(child, source);
+    }) };
+  }
+  if (node.condition && findComparisonNode(node.condition)) return { ...node, condition: replaceFirstComparisonSource(node.condition, source) };
+  return node;
+}
 function findScheduleNode(node: any): any | null {
   if (!node || typeof node !== "object") return null;
   if (node.type === "schedule") return node;
@@ -676,7 +702,20 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const scheduled = configs.filter(item => findScheduleNode(item.condition));
   const selected = scheduled.find(item => item.id === selectedId) ?? scheduled[0];
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
+  const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
+  const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
+  const updateSource = (key: string) => {
+    setSelectedSourceKey(key);
+    if (!selected || !key) return;
+    const deviceMatch = key.startsWith("device:") ? key.slice(7).split(":") : null;
+    const device = deviceMatch ? sourceCatalog?.devices.find(item => item.id === deviceMatch[0]) : null;
+    const capability = device && deviceMatch ? device.capabilities.find(item => item.id === deviceMatch[1]) : null;
+    const variable = key.startsWith("logic:") ? sourceCatalog?.variables.find(item => item.id === key.slice(6)) : null;
+    const source = capability && deviceMatch ? { type: "device-capability", deviceId: deviceMatch[0], capabilityId: capability.id, expectedType: capability.type } : variable ? { type: "logic-variable", variableId: variable.id, expectedType: variable.type } : null;
+    if (!source) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparisonSource(item.condition, source) } : item));
+  };
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
@@ -702,7 +741,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
           <div className="notification-source-picker">
             <label htmlFor="notification-source-select">Homey-databron</label>
-            <select id="notification-source-select" value={selectedSourceKey} onChange={event => setSelectedSourceKey(event.target.value)}>
+            <select id="notification-source-select" value={currentSourceKey} disabled={!selectedComparison || !sourceCatalog} onChange={event => updateSource(event.target.value)}>
               <option value="">Selecteer een apparaat of Logic-variabele…</option>
               {(sourceCatalog?.devices ?? []).flatMap(device => device.capabilities.map(capability => ({ key: "device:" + device.id + ":" + capability.id, label: device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : "") + (device.available ? "" : " · niet beschikbaar"), type: capability.type }))).map(source => <option key={source.key} value={source.key}>{source.label}</option>)}
               {(sourceCatalog?.variables ?? []).map(variable => <option key={"logic:" + variable.id} value={"logic:" + variable.id}>Logic · {variable.name} ({variable.type === "boolean" ? "ja/nee" : "getal"})</option>)}
