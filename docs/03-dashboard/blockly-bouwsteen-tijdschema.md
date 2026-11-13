@@ -152,7 +152,7 @@ De eerste codewijzigingen voor lege schema-instanties zijn toegevoegd op branch 
 - Het JSON Schema en de TypeScript-validatie zijn op dit onderscheid afgestemd.
 - Tests dekken de lege schema-instantie en de afwijzing van ongeldige lege configuraties.
 - Twee initiële meldingsconfiguraties zijn toegevoegd: `lamp-sem-aan.json` en `lamp-bram-aan.json`. Ze combineren de lampstatus `onoff == true` met elk hun eigen lege slaap-schema. Severity is `info`.
-- GitHub Actions valideerde de backend- en schemawijzigingen tot en met commit `34a96b6493e2879d1c18dd4f5ffc86bad3246f19` succesvol. De CI-runs voor de twee nieuwe lampconfiguraties zijn gestart; de definitieve uitkomst wordt nog gecontroleerd.
+- GitHub Actions valideerde de backend-, schema- en testwijzigingen succesvol. Ook de twee nieuwe lampconfiguraties zijn door CI gevalideerd: [run 43382190242](https://github.com/RoadXY/homey_dashboard/actions/runs/43382190242) en [run 43382195856](https://github.com/RoadXY/homey_dashboard/actions/runs/43382195856).
 
 ### Nog te bouwen
 
