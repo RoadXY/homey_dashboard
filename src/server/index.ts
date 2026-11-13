@@ -27,7 +27,7 @@ const SETTINGS_SESSION_COOKIE = "homey_settings";
 const SETTINGS_SESSION_IDLE_MS = 30 * 60 * 1000;
 let settingsSessionSecret: Buffer;
 const settingsRealtime = new EventEmitter();
-function broadcastSettingsUpdated(section: "general" | "quick-actions"): void {
+function broadcastSettingsUpdated(section: "general" | "quick-actions" | "notifications"): void {
   settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
 }
 function settingsCookieValue(expiresAt: number): string {
