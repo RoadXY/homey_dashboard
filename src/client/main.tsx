@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./style.css";
 import * as BlocklyLibrary from "blockly/core";
 import "blockly/blocks";
+import * as BlocklyNl from "blockly/msg/nl";
+import * as BlocklyEn from "blockly/msg/en";
 import "@mdi/font/css/materialdesignicons.css";
 import mdiMeta from "@mdi/svg/meta.json";
 import { availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
@@ -653,6 +655,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   conditionChangeRef.current = onConditionChange;
   React.useEffect(() => {
     const Blockly: any = BlocklyLibrary;
+    // Blockly core imports do not automatically populate its message table. Context-menu labels require these translations.
+    Blockly.setLocale(locale.toLowerCase().startsWith("en") ? BlocklyEn : BlocklyNl);
     if (!host.current) { setBlocklyUnavailable(true); return; }
     const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
