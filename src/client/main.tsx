@@ -1362,7 +1362,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     };
     ws.addChangeListener((event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
-      if (event.type === Blockly.Events.BLOCK_FIELD_CHANGED && event.blockId === rootBlock.id &&
+      if (event.type === Blockly.Events.BLOCK_CHANGE && event.element === "field" && event.blockId === rootBlock.id &&
           (event.name === "NOTIFICATION_TITLE" || event.name === "NOTIFICATION_MESSAGE")) {
         contentChangeRef.current({
           notificationTitle: String(rootBlock.getFieldValue("NOTIFICATION_TITLE") ?? ""),
