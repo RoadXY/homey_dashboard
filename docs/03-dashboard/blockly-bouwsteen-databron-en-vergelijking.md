@@ -318,3 +318,8 @@ EN betekent dat alle ingesloten voorwaarden waar moeten zijn; OF betekent dat mi
 De Homey-apparaat- en Logic-variabeleblokken bevatten voortaan ook hun eigen vergelijkingsoperator en waarde. Het losse groene vergelijkingsblok is uit de toolbox verwijderd. Hierdoor is een bronselectie en de bijbehorende vergelijking één logisch blok; de gebruiker kan geen losse vergelijking meer toevoegen zonder bron. De operatorlijst wordt bepaald door het brontype: numeriek toont zes operatoren, boolean toont gelijk aan en niet gelijk aan.
 
 Bij het laden wordt de bestaande conditieboom in de vaste hoofdconstructie geplaatst. Bij opslaan wordt één directe conditie ongewijzigd opgeslagen; meerdere directe onderdelen worden als canonieke AND-node opgeslagen. Geneste EN-/OF-constructies blijven canonieke operator/conditions-nodes. Er is geen nieuwe evaluator en geen wijziging van het configuratieschema nodig.
+
+
+### 11.19 Numerieke Homey-meetwaarden krijgen een numerieke vergelijkingsinvoer
+
+De Homey-broncatalogus bepaalde het datatype van een apparaat-capability uitsluitend op basis van `capabilitiesObj[capabilityId].type`. Bij een meetwaarde met een fysieke eenheid (bijvoorbeeld °C) kan die metadata onjuist of inconsistent als boolean worden aangeleverd. De catalogus behandelt capabilities met een niet-lege eenheid daarom als numeriek; de eenheid is een betrouwbare aanwijzing dat de waarde meetbaar en numeriek is. Hierdoor toont Blockly voor temperatuur-, vochtigheids-, CO₂- en vergelijkbare meetwaarden een numeriek invoerveld en de zes numerieke vergelijkingsoperatoren. Boolean-capabilities zonder eenheid behouden true/false en alleen gelijk aan/niet gelijk aan. Logic-variabelen blijven hun eigen Homey-datatype volgen.
