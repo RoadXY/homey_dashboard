@@ -579,6 +579,20 @@ function findComparisonNode(node: any): any | null {
   if (node.condition) return findComparisonNode(node.condition);
   return null;
 }
+function replaceFirstComparison(node: any, comparison: any): any {
+  if (!node || typeof node !== "object") return node;
+  if (node.type === "comparison") return { ...node, condition: comparison };
+  if (Array.isArray(node.conditions)) {
+    let replaced = false;
+    return { ...node, conditions: node.conditions.map((child: any) => {
+      if (replaced || !findComparisonNode(child)) return child;
+      replaced = true;
+      return replaceFirstComparison(child, comparison);
+    }) };
+  }
+  if (node.condition && findComparisonNode(node.condition)) return { ...node, condition: replaceFirstComparison(node.condition, comparison) };
+  return node;
+}
 function replaceFirstComparisonSource(node: any, source: any): any {
   if (!node || typeof node !== "object") return node;
   if (node.type === "comparison") {
@@ -618,17 +632,21 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void }) {
+function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const changeRef = React.useRef(onChange);
   const sourceChangeRef = React.useRef(onSourceChange);
   const catalogRef = React.useRef(sourceCatalog);
   const sourceKeyRef = React.useRef(sourceKey);
+  const comparisonRef = React.useRef(comparison);
+  const comparisonChangeRef = React.useRef(onComparisonChange);
   changeRef.current = onChange;
   sourceChangeRef.current = onSourceChange;
   catalogRef.current = sourceCatalog;
   sourceKeyRef.current = sourceKey;
+  comparisonRef.current = comparison;
+  comparisonChangeRef.current = onComparisonChange;
   React.useEffect(() => {
     const Blockly = window.Blockly;
     if (!Blockly || !host.current) { setBlocklyUnavailable(true); return; }
@@ -660,6 +678,20 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
         }
       };
     }
+    if (!Blockly.Blocks.homey_notification_comparison) {
+      Blockly.Blocks.homey_notification_comparison = {
+        init() {
+          this.appendDummyInput().appendField("Vergelijking").appendField(new Blockly.FieldDropdown(() => {
+            const numeric = comparisonRef.current?.source?.expectedType === "number";
+            return numeric
+              ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
+              : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
+          }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
+          this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
+          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
+        }
+      };
+    }
     const ws = Blockly.inject(host.current, {
       trashcan: false, move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
@@ -674,6 +706,18 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     sourceBlock.setFieldValue(sourceKeyRef.current || "", "SOURCE");
     sourceBlock.initSvg(); sourceBlock.render();
     sourceBlock.moveBy(0, 245);
+    const comparisonBlock = ws.newBlock("homey_notification_comparison");
+    comparisonBlock.setFieldValue(comparison?.condition?.operator ?? "equals", "OP");
+    comparisonBlock.setFieldValue(String(comparison?.condition?.value ?? false), "VALUE");
+    comparisonBlock.initSvg(); comparisonBlock.render(); comparisonBlock.moveBy(360, 0);
+    comparisonBlock.setOnChange((event: any) => {
+      if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
+      const operator = comparisonBlock.getFieldValue("OP");
+      const rawValue = comparisonBlock.getFieldValue("VALUE");
+      const numeric = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(operator) || comparisonRef.current?.source?.expectedType === "number";
+      const value = numeric ? (Number.isFinite(Number(rawValue)) ? Number(rawValue) : 0) : rawValue === "true";
+      comparisonChangeRef.current(operator, value);
+    });
     const emit = (event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
       const current = ws.getTopBlocks(false).find((item: any) => item.type === "schedule_active");
@@ -741,6 +785,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     if (!source) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparisonSource(item.condition, source) } : item));
   };
+  const updateComparison = (operator: string, value: boolean | number) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparison(item.condition, { operator, value }) } : item));
+  };
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
@@ -764,7 +812,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       </section>
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
