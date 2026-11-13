@@ -931,3 +931,6 @@ body {
     margin-top: 0;
   }
 }
+
+.setting-description { margin:8px 0 0; color:#9fb1c7; font-size:14px; line-height:1.5; }
+.notification-timeout-card { max-width:760px; }
