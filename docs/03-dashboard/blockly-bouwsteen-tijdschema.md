@@ -212,3 +212,15 @@ De eerste backendstap voor de uitbreidbare conditie-editor is uitgevoerd:
 - Validatietests toegevoegd voor de nieuwe vergelijkingsoperatoren, typebeperkingen en ongeldige weekday-configuraties.
 
 Dit is uitsluitend de backend-/schemafundering. De zichtbare Blockly-toolbox, bronkeuzeblokken, volledige conditieboom laden/serialiseren en browserinteractie zijn nog niet geïmplementeerd. De huidige tijdschema-UI is dus nog niet vervangen en deze commits zijn nog niet als werkende editor op de tablet te testen. CI moet de nieuwe backendwijzigingen nog valideren.
+### 11.1 C-vormige duurblokken – eerste visuele stap
+
+De Blockly-workspace bevat nu twee C-vormige statementblokken:
+
+- **Gedurende X minuten actief**: de ingesloten voorwaarde moet onafgebroken waar blijven gedurende de ingestelde tijd.
+- **Gedurende X minuten inactief**: de ingesloten voorwaarde moet onafgebroken onwaar blijven gedurende de ingestelde tijd.
+
+Beide blokken hebben een instelbaar aantal minuten (1–1440) en een statement-invoegopening. In die opening staat momenteel een expliciete tijdelijke placeholder **Plaats hier de voorwaarde**. Daarmee is de gewenste C-vorm en de nesting in de workspace zichtbaar en testbaar.
+
+**Belangrijke beperking:** de placeholder is nog geen echte conditiebouwsteen en de duurblokken worden nog niet vanuit de bestaande JSON-conditieboom opgebouwd of teruggeserialiseerd. De backend ondersteunt op dit moment de canonieke `duration`-node voor een gedurende de tijd actieve child-conditie; de variant voor gedurende inactief moet in de JSON-serialisatie als negatie (`not`) van de child-conditie worden gemodelleerd of expliciet worden ondersteund. De huidige visuele blokken slaan hun waarde/inhoud dus nog niet op. Dit is bewust een vorm-/nestingstap, geen afgeronde duurfunctionaliteit.
+
+Vervolg: vervang de placeholder door echte statement-varianten van bron/vergelijking/logische voorwaarden, leg een stabiele duurblok-ID vast, en implementeer round-trip naar de bestaande `duration`- en `not`-nodes. Test ook dat de timer opnieuw begint zodra de ingesloten voorwaarde tussentijds niet meer aan de vereiste toestand voldoet.
