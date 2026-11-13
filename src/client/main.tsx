@@ -363,7 +363,7 @@ function App() {
 
 function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { locale: string; pin: string; setPin: (value: string) => void; error: string; onCancel: () => void; onUnlock: () => void }) {
   return <main className="settings-gate"><form className="pin-card" onSubmit={(event) => { event.preventDefault(); onUnlock(); }}>
-    <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div>
+    <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? "Menu uitklappen" : "Menu inklappen"} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button>
     <h1>{translate(locale, "settings.lockedTitle")}</h1><p>{translate(locale, "settings.pinPrompt")}</p>
     <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
@@ -1503,7 +1503,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
-  return <main className="settings-shell">
+  return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
     <header className="settings-topbar">
       <div className="settings-brand"><span className="brand-orb" />Homey Dashboard</div><div className="topbar-spacer" /><button className="crumb-button" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
     </header>
