@@ -124,3 +124,7 @@ De indicator heeft een toegankelijke label en tooltip in Nederlands en Engels. B
 
 ## Instellingen – omschrijving meldingenpagina (13 november 2026)
 De pagina Instellingen → Meldingen toont bovenaan dezelfde links uitgelijnde korte toelichting als de overige instellingenpagina's. De tekst gebruikt de bestaande i18n-sleutel `notifications.subtitle` (NL: 'Beheer de voorwaarden achter dashboardmeldingen met Blockly.'). Er wordt geen dubbele paginatitel toegevoegd, omdat de selectiekaart en editor hun eigen koppen hebben.
+
+
+## Meldingsindicator – rustiger knipperen (13 november 2026)
+Op verzoek is de knippercyclus van de meldingsindicator vertraagd van 1,15 naar 2,4 seconden. De bestaande animatievorm, kleuren en `prefers-reduced-motion`-ondersteuning blijven ongewijzigd.
