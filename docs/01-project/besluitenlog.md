@@ -409,3 +409,7 @@ De gebruiker kan in het bestaande vaste `Genereer melding`-blok nu zelf een tite
 
 ## Dashboardmeldingen – indicator volgt ernst (14 november 2026)
 De knipperindicator wordt alleen getoond bij actieve kritieke of waarschuwingsmeldingen. Kritiek heeft voorrang (rood); zonder kritieke melding maar met waarschuwing wordt de indicator geel. Alleen informatieve meldingen tonen geen indicator. Unknown-statussen, offline apparaten en API-/laadproblemen zetten de indicator niet aan. De koptekst Meldingen krijgt de overeenkomstige severity-accentkleur maar knippert niet. Berichttekst volgt per kaart de severity: kritisch rood, waarschuwing geel, informatie wit/neutraal. Alle kleuren zijn semantische CSS-tokens die toekomstige thema's kunnen overschrijven.
+
+
+## Instellingen Meldingen – alfabetische keuzelijst (14 november 2026)
+De dropdown met bestaande meldingen wordt alfabetisch gesorteerd op naam, met locale-aware, hoofdletterongevoelige en numerieke sortering. Alleen de presentatie van de keuzelijst wijzigt; de opgeslagen volgorde en selectie/configuraties worden niet aangepast. De zoekfilter en resultaatsteller gebruiken dezelfde gesorteerde, gefilterde lijst.
