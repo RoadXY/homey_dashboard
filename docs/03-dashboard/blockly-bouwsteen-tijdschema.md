@@ -389,3 +389,8 @@ Bij de eerste implementatie van de knop **Nieuwe melding** waren de handlers `cr
 
 ### Volgorde niveau-indicator (13 november 2026)
 In de kop van de meldingseditor staat de volgorde nu als **Huidig niveau → gekleurde statuschip → keuzelijst**. De tussenruimte in deze groep is 14px, gelijk aan de `gap: 14px` van de balk met de meldingenkeuzelijst en de knop **Nieuwe melding**. Zo blijft de huidige status direct zichtbaar naast het label, terwijl de dropdown er duidelijk van gescheiden staat.
+
+## Zoekbare meldingenselectie en Blockly-bronpopup (13 november 2026)
+
+- De keuzelijst met aangemaakte meldingen is vervangen door een zoekbare dropdown. De zoekbalk filtert direct op de naam van de melding en toont het aantal resultaten.
+- De Blockly-bronzoeker heeft een ruimer popup-oppervlak gekregen met een expliciete achtergrond, rand, schaduw en flexibele resultatenlijst. Daardoor hoort de popup-achtergrond ook bij langere lijsten de volledige inhoud te omvatten.
