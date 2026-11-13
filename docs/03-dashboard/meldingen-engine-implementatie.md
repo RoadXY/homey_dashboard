@@ -178,3 +178,8 @@ De badge naast de keuzelijst toont direct de geselecteerde waarde en gebruikt de
 De meldingeneditor controleert de bronverwijzingen van de geselecteerde melding tegen de actuele Homey-broncatalogus. Verwijzingen naar niet meer bestaande apparaten, ontbrekende capabilities en niet meer bestaande Logic-variabelen worden afzonderlijk benoemd in een waarschuwing boven de Blockly-werkruimte. Een bestaand maar momenteel niet beschikbaar apparaat wordt eveneens expliciet genoemd. Zo is zichtbaar welke bron hersteld moet worden, in plaats van alleen een generieke melding dat Homey-bronnen ontbreken.
 
 Validatiefouten die tijdens het bewerken van Blockly ontstaan, worden buiten de Blockly-werkruimte weergegeven, maar blijven binnen de kaart van de meldingeneditor. De Blockly-kaart zelf bevat daardoor alleen de werkruimte en de eigen werkbalk.
+
+
+## Homey-bron zoeken in Blockly (13 november 2026)
+
+De keuzelijsten voor Homey-apparaten, capabilities en Logic-variabelen in Blockly hebben een zoekveld bovenaan gekregen. Het zoekveld filtert live op de zichtbare bronnaam en de onderliggende bron-ID. De lijst toont het aantal resultaten en een duidelijke lege status wanneer niets overeenkomt. De bediening volgt dezelfde visuele aanpak als de zoekbare Homey Flow-keuze bij Snelle acties.
