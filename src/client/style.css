@@ -868,3 +868,27 @@ body {
 
 .measurement-editor-card { margin-top: 12px; }
 .measurement-editor-card .measurement-inline-editor { border-top:0; padding-top:0; }
+
+
+/* Zoekbare keuzelijst voor bestaande meldingen, in dezelfde stijl als de Blockly-bronzoeker. */
+.notification-rule-picker { position:relative; min-width:0; }
+.notification-rule-trigger { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-width:0; min-height:44px; padding:8px 13px; border:1px solid rgba(151,178,209,.32); border-radius:9px; background:#101d2d; color:var(--text-primary); font:inherit; font-size:16px; text-align:left; cursor:pointer; }
+.notification-rule-trigger:disabled { opacity:.55; cursor:not-allowed; }
+.notification-rule-trigger > span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.notification-rule-menu { position:absolute; z-index:30; top:calc(100% + 2px); left:0; right:0; overflow:hidden; border:1px solid #53677d; border-radius:0 0 9px 9px; background:#112237; box-shadow:0 14px 30px rgba(0,0,0,.42); }
+.notification-rule-search { display:flex; align-items:center; gap:9px; min-height:46px; padding:8px 12px; border-bottom:1px solid rgba(170,190,215,.18); background:#1a3047; color:#9bb8d6; }
+.notification-rule-search > span { font-size:19px; line-height:1; }
+.notification-rule-search input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:#f2f6fb; font:inherit; font-size:14px; }
+.notification-rule-search input::placeholder { color:#9aafc5; }
+.notification-rule-options { max-height:320px; overflow-y:auto; padding:4px 0; }
+.notification-rule-option { display:block; width:100%; padding:9px 13px; border:0; background:transparent; color:#edf3fa; text-align:left; font:inherit; font-size:15px; cursor:pointer; }
+.notification-rule-option:hover,.notification-rule-option.selected { background:#2c4b6b; }
+.notification-rule-empty { padding:14px 13px; color:#aabbd0; font-size:13px; }
+.notification-rule-footer { padding:6px 12px; border-top:1px solid rgba(170,190,215,.15); color:#9bb8d6; font-size:11px; }
+.notification-source-dropdown { width:min(560px,calc(100vw - 40px)); max-height:min(440px,calc(100vh - 32px)); display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(145,170,198,.42); border-radius:8px; background:#172b40; box-shadow:0 12px 28px rgba(0,0,0,.38); box-sizing:border-box; }
+.notification-source-dropdown-search { flex:0 0 auto; }
+.notification-source-dropdown-results { min-height:0; max-height:360px; flex:1 1 auto; overflow-y:auto; }
+.notification-source-dropdown-footer { flex:0 0 auto; background:#172b40; }
+.blocklyDropDownDiv { z-index:1000 !important; }
+.blocklyDropDownDiv .blocklyDropDownContent { overflow:visible !important; }
+@media (max-width:760px) { .notification-rule-menu { position:relative; top:auto; margin-top:4px; border-radius:9px; } }
