@@ -656,6 +656,9 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       fetch("/api/settings/notification-sources").then(async response => {
         if (!response.ok) throw new Error("Broncatalogus kon niet worden geladen.");
         return response.json() as Promise<NotificationSourceCatalog>;
+      }).catch(error => {
+        if (active) setSourceCatalogError(error instanceof Error ? error.message : "Broncatalogus kon niet worden geladen.");
+        return null;
       })
     ]).then(([result, catalog]) => {
       if (!active) return;
