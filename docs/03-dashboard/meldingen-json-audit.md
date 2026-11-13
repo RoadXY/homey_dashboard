@@ -31,17 +31,17 @@ In `config/notifications/` staan zes bestanden. Daarvan zijn vijf bedoeld als pr
 | Wateralarm vaatwasser! | Water sensor vaatwasser `5ae0730c-27ca-4559-b1f2-ffeba8fb1565`, `alarm_water`, severity `critical` | JSON maken; behoud de exacte oorspronkelijke YAML-trigger. |
 | Voordeur open | Voordeur `ae20dbd0-2b61-4f46-9638-c2a38cd2f2e6`, `alarm_contact`, severity `warning` | JSON maken na controle van de exacte YAML-conditie. |
 | Deur tuinhuis open | Deur tuinhuis `0f02abca-04cb-405a-b7d1-437cf2b4c050`, `alarm_contact`, severity `warning` | JSON maken na controle van de exacte YAML-conditie. |
-| Grote Bram | Kandidaat: Onder raam Bram; eerdere mapping bevatte meer dan één mogelijke raampositie | Exacte HA-entity-/devicekoppeling bevestigen vóór JSON. |
-| Grote Tess | Kandidaat: Onder raam Tess | Exacte HA-entity-/devicekoppeling bevestigen vóór JSON. |
-| Grote Ouders open | Bovenraam ouderslaapkamer en onderraam ouderslaapkamer zijn afzonderlijke Homey-apparaten | Exacte YAML-bron bevestigen vóór JSON. |
-| Raam Sem open | Raam Sem en Dakraam Sem zijn afzonderlijke Homey-apparaten | Exacte YAML-bron bevestigen vóór JSON. |
-| Raam Tess niet open | Boven raam Tess is kandidaat | Exacte YAML-conditie en schema controleren; JSON moet zelfstandig bewerkbaar zijn. |
-| Raam Bram niet open | Bovenraam Bram is kandidaat | Exacte YAML-conditie en schema controleren. |
-| Raam ouders niet open | Bovenraam ouderslaapkamer is kandidaat | Exacte YAML-conditie en schema controleren. |
-| Dakraam Sem niet open | Dakraam Sem is kandidaat | Exacte YAML-conditie en schema controleren. |
+| Grote Bram | Onder raam Bram `952d6163-bda4-44ae-a346-7fbf7e980dbc`, `alarm_contact == true` | Bron nu bevestigd door vergelijking van de exacte HA-entity met de actuele Homey-apparaatlijst. |
+| Grote Tess | Onder raam Tess `f929115b-18d9-41bb-bf67-e9a633f00ee7`, `alarm_contact == true` | Bron nu bevestigd. |
+| Grote Ouders open | Ouderslaapkamer onderraam `129f22a4-1f01-420c-a1a9-c41a25c6c46d`, `alarm_contact == true` | De YAML-entity verwijst expliciet naar het onderraam; niet verwisselen met het bovenraam. |
+| Raam Sem open | Raam Sem `f5a84ac4-1819-49ad-823f-c473c03b6043`, `alarm_contact == true` | De YAML-entity verwijst naar Raam Sem; niet naar Dakraam Sem. |
+| Raam Tess niet open | Boven raam Tess `68528dbf-b2cb-49dc-89e6-0425cbd7db97`, `alarm_contact == false` | Bron bevestigd. Voorwaarden omvatten schema, airco-modus, buitentemperatuur en de nog niet gemapte zon-op-raam-conditie. |
+| Raam Bram niet open | Bovenraam Bram `7972a10c-da9b-4d15-b4eb-305d9cb097e3`, `alarm_contact == false` | Bron bevestigd. Behoud daarnaast schema bovenramen en gevoelstemperatuur <18 °C. |
+| Raam ouders niet open | Bovenraam ouderslaapkamer `3c8d2ab7-bc67-4d4d-a92d-4c66c9338f6b`, `alarm_contact == false` | Bron bevestigd. Behoud daarnaast schema bovenramen en gevoelstemperatuur <18 °C. |
+| Dakraam Sem niet open | Dakraam Sem `d1ef5cbd-ba35-48b7-8219-0112403c80bf`, `alarm_contact == false` | Bron bevestigd. Behoud daarnaast schema, weersstatusuitsluitingen, airco-modus en neerslag <0,1. |
 | Truus wil opgehaald worden! | Truus `1f76bd9a-b6f6-4f78-8734-742b9d054cfc`, `measure_work_status == Standby`, severity `warning` | JSON maken; actuele enum-/statuswaarde bij live bron valideren. |
 | Muurtablet-batterij laag | Muur tablet `3047fdb8-2dea-4cea-b023-27c9693b4635`, `measure_battery <25`, severity `warning` | JSON maken. |
-| Tuinhuislamp te lang aan | Aan-voorwaarde langer dan 5 minuten, severity `info` | Exact Homey-apparaat/capability nog bevestigen; duur als configureerbare duration-node opslaan. |
+| Tuinhuislamp te lang aan | Tuinhuis lamp `c9ad4266-3ead-4dfa-ac48-c4ecbe4554c6`, `onoff == true` gedurende 5 minuten, severity `info` | Bron en capability zijn in de actuele Homey-lijst bevestigd; duur als configureerbare duration-node opslaan. |
 | Lamp Sem staat aan | Lamp Sem `b164e453-6fba-4d9c-81ba-82596082eef5`, `onoff`, severity `info` | YAML-schema `slapen_sem` en eerdere keuze om slaap-/schema-afhankelijkheid niet te migreren met elkaar verzoenen vóór JSON. |
 | Lamp Bram staat aan | Lamp Bram `489075ba-fe6d-4b15-9e33-8a7539dafbda`, `onoff`, severity `info` | YAML-schema `slapen_bram` en eerdere keuze om slaap-/schema-afhankelijkheid niet te migreren met elkaar verzoenen vóór JSON. |
 
@@ -57,12 +57,15 @@ Deze onderdelen zijn wel onderdeel van de dashboardmigratie, maar zijn status-/i
 
 ## 4. Nog te verifiëren vóór configuratie
 
-1. Vergelijk de exacte oorspronkelijke YAML-entiteiten en condities voor de zes directe contactmeldingen met de actuele Homey-contactapparaten. Gebruik geen naamgebaseerde gok wanneer bovenraam/onderraam of raam/dakraam kan worden verward.
-2. Haal de exacte oorspronkelijke YAML-voorwaarden en dagen/tijden op voor de vier raam-niet-open-meldingen en controleer hoe `schedule.boven_ramen_open` daarin wordt toegepast.
-3. Bevestig het Homey-apparaat en de capability voor de tuinhuislamp.
-4. Bevestig de gewenste behandeling van `slapen_sem` en `slapen_bram`: de eerdere mappingnotitie zegt dat deze schema's niet worden gemigreerd, terwijl de meldingenmatrix de oorspronkelijke combinatie met een actief slaapschema noemt.
-5. Valideer de Truus-statuswaarden aan de actuele Homey-bron voordat de vergelijking `Standby` wordt vastgelegd.
+1. De zes directe contactmeldingen zijn op basis van de exacte YAML-entity-ID's en de actuele Homey-apparaatlijst gemapt. Gebruik de in sectie 2 vastgelegde IDs; verwissel geen bovenraam/onderraam of Raam Sem/Dakraam Sem.
+2. De vier raam-niet-open-meldingen hebben eveneens een gemapte contactbron. De resterende mappingpunten zitten in aanvullende voorwaarden: de zon-op-raam-conditie bij Tess en het exacte gedrag van de Homey-airco-/weercapabilities.
+3. Tuinhuis lamp is bevestigd als `c9ad4266-3ead-4dfa-ac48-c4ecbe4554c6` met capability `onoff`.
+4. Bevestig de gewenste behandeling van `slapen_sem` en `slapen_bram`: de eerdere mappingnotitie zegt dat deze schema's niet worden gemigreerd, terwijl de exacte oorspronkelijke YAML-condities voor beide lampmeldingen het bijbehorende actieve slaapschema vereisen.
+5. Truus heeft `measure_work_status`; de actuele waarde was `Sleeping`. De enumwaarden moeten worden gecontroleerd tegen de Homey-capabilitymetadata voordat de vergelijking `Standby` wordt vastgelegd.
 6. Werk de vier bestaande temperatuurconfiguraties bij naar severity `info`; maak de productie-CO₂-configuratie op basis van de echte sensor.
+
+### Actuele read-only controle (13 november 2026)
+De apparaatlijst is opnieuw rechtstreeks uit Homey gelezen. De IDs hierboven zijn de actuele waarden uit deze controle. De momentopnamen (`alarm_contact`, `alarm_water`, temperaturen, batterij en werkstatus) zijn uitsluitend diagnostisch en worden niet als configuratie gebruikt. Deze controle corrigeert een oudere notitie waarin voor Onder raam Bram een afwijkend ID was vastgelegd: gebruik het actuele ID `952d6163-bda4-44ae-a346-7fbf7e980dbc`.
 
 ## 5. Voorgestelde implementatievolgorde
 
