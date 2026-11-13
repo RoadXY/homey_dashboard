@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "lamp-sem-aan",
+  "title": "Lamp Sem staat aan",
+  "message": "De lamp van Sem staat aan tijdens het ingestelde slaapschema.",
+  "severity": "info",
+  "enabled": true,
+  "condition": {
+    "operator": "and",
+    "conditions": [
+      {
+        "type": "comparison",
+        "source": {
+          "type": "device-capability",
+          "deviceId": "b164e453-6fba-4d9c-81ba-82596082eef5",
+          "capabilityId": "onoff",
+          "expectedType": "boolean"
+        },
+        "condition": {
+          "operator": "equals",
+          "value": true
+        }
+      },
+      {
+        "type": "schedule",
+        "configured": false,
+        "weekdays": []
+      }
+    ]
+  }
+}
