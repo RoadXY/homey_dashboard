@@ -833,7 +833,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const row = this.appendDummyInput().appendField("Dagen:");
         labels.forEach(([label,key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
         this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00"), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00"), "END");
-        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
+        this.appendStatementInput("CONDITIONS").appendField("Alleen wanneer:");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(265);
+        this.setTooltip("De voorwaarden binnen dit tijdschema gelden alleen op de geselecteerde dagen en tijden.");
       }
     };
     if (!Blockly.Blocks.homey_condition_weekday) Blockly.Blocks.homey_condition_weekday = {
@@ -982,16 +984,32 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const child = buildCondition(durationModel.child);
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.operator === "and" || node.operator === "or") {
-        block = ws.newBlock("homey_condition_" + node.operator);
-        let previous: any = null;
-        (node.conditions ?? []).forEach((childNode: any) => {
-          const child = buildCondition(childNode);
-          if (!child) return;
-          if (!previous) block.getInput("CONDITIONS")?.connection?.connect(child.previousConnection);
-          else previous.nextConnection?.connect(child.previousConnection);
-          previous = child;
-          while (previous?.getNextBlock?.()) previous = previous.getNextBlock();
-        });
+        const conditionNodes = node.conditions ?? [];
+        const scheduleIndex = node.operator === "and" ? conditionNodes.findIndex((child: any) => child?.type === "schedule") : -1;
+        if (scheduleIndex >= 0) {
+          const scheduleNode = conditionNodes[scheduleIndex];
+          block = buildCondition(scheduleNode);
+          let previous: any = null;
+          conditionNodes.filter((_: any, index: number) => index !== scheduleIndex).forEach((childNode: any) => {
+            const child = buildCondition(childNode);
+            if (!child) return;
+            if (!previous) block.getInput("CONDITIONS")?.connection?.connect(child.previousConnection);
+            else previous.nextConnection?.connect(child.previousConnection);
+            previous = child;
+            while (previous?.getNextBlock?.()) previous = previous.getNextBlock();
+          });
+        } else {
+          block = ws.newBlock("homey_condition_" + node.operator);
+          let previous: any = null;
+          conditionNodes.forEach((childNode: any) => {
+            const child = buildCondition(childNode);
+            if (!child) return;
+            if (!previous) block.getInput("CONDITIONS")?.connection?.connect(child.previousConnection);
+            else previous.nextConnection?.connect(child.previousConnection);
+            previous = child;
+            while (previous?.getNextBlock?.()) previous = previous.getNextBlock();
+          });
+        }
       }
       if (!block) { block = ws.newBlock("homey_condition_unsupported"); block.data = JSON.stringify(node); }
       if (block) { block.initSvg(); block.render(); }
@@ -1026,9 +1044,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       }
       if (block.type === "homey_condition_schedule") {
         const weekdays = days.filter(([day, field]) => block.getFieldValue(field) === "TRUE").map(([day]) => day);
-        return weekdays.length
+        const schedule = weekdays.length
           ? { type: "schedule", weekdays, startTime: block.getFieldValue("START"), endTime: block.getFieldValue("END"), timeZone: "Europe/Amsterdam" }
           : { type: "schedule", configured: false, weekdays: [] };
+        const children = serializeChain(block.getInputTargetBlock("CONDITIONS"));
+        return children.length ? { operator: "and", conditions: [schedule, ...children] } : schedule;
       }
       if (block.type === "homey_condition_weekday") return { type: "weekday", weekdays: [Number(block.getFieldValue("DAY"))] };
       if (block.type === "homey_condition_not") {
