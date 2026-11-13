@@ -404,3 +404,8 @@ De tijdvelden van de Blockly-bouwsteen vullen voortaan automatisch een voorloopn
 ## Globaal overzicht van meldingen met Homey-bronproblemen (13 november 2026)
 
 De meldingenpagina controleert niet alleen de geselecteerde melding, maar alle opgeslagen en momenteel bewerkte meldingen zodra de Homey-broncatalogus is geladen. Boven de Blockly-editor verschijnt voor iedere melding met een ontbrekend apparaat, ontbrekende meetmogelijkheid, niet-beschikbaar apparaat of ontbrekende Logic-variabele een eigen gele waarschuwing. De naam van de melding en de concrete bronproblemen worden getoond. Deze waarschuwingen blijven zichtbaar bij het wisselen van de geselecteerde melding en verdwijnen wanneer de broncatalogus na een herlaadactie geen probleem meer rapporteert. De waarschuwing staat buiten de Blockly-kaart, maar binnen de meldingenpagina.
+
+
+## Standaardvoorwaarde bij nieuwe meldingen (13 november 2026)
+
+Een nieuwe melding start voortaan met de eerste beschikbare apparaat-meetmogelijkheid uit de geladen Homey-broncatalogus, in plaats van standaard met een leeg tijdschema. De voorwaarde gebruikt de operator `equals`; de beginwaarde is `0` voor numerieke bronnen en `true` voor boolean-bronnen. De gebruiker kan bron, operator en waarde direct in Blockly wijzigen. Als er geen apparaat met een ondersteunde meetmogelijkheid in de catalogus staat (of de catalogus niet kon worden geladen), blijft het veilige lege, niet-geconfigureerde tijdschema de terugvaloptie.
