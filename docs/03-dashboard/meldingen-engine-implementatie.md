@@ -109,3 +109,19 @@ De validator controleert nu ook de combinatie van bron en vergelijking:
 - Deze controle geldt zowel voor het bestaande legacy-formaat als voor bladeren in de geneste conditieboom.
 
 Er zijn regressietests toegevoegd voor geldige en ongeldige combinaties in beide configuratievormen. De wijziging staat in commits `e8d0fe7` en `478e679`; de GitHub Actions-run moet nog worden gecontroleerd.
+
+
+## Automatische herbeoordeling van duurvoorwaarden – 13 november 2026
+
+Bij controle van de werkelijke dashboard-updatecyclus bleek dat meldingen alleen opnieuw werden opgehaald bij een Homey-event. Een duurvoorwaarde kon daardoor na het verstrijken van de ingestelde tijd blijven hangen op `inactive` zolang er geen nieuw Homey-event kwam.
+
+Dit is opgelost zonder periodiek alle Homey-bronnen opnieuw op te vragen:
+- Een actieve duurvoorwaarde geeft de backend nu ook het exacte eerstvolgende herbeoordelingstijdstip (`nextEvaluationAt`, Unix-tijd in milliseconden) terug.
+- Geneste AND/OR-groepen behouden de eerstvolgende relevante deadline.
+- De browser plant op basis van die deadline één gerichte nieuwe aanvraag naar `/api/notifications`.
+- Na de herbeoordeling wordt zo nodig de volgende deadline gepland. Een nieuw Homey-event vervangt de bestaande timer en zorgt direct voor een verse evaluatie.
+- Er wordt dus geen vaste vijfsecondenpoll voor alle meldingsbronnen toegevoegd.
+
+De timer blijft servergeheugenstatus en wordt na een containerherstart opnieuw opgebouwd zodra de voorwaarden weer worden geëvalueerd. Persistente timers/herstel over herstarts blijven een afzonderlijk toekomstig besluit. Tests controleren dat de oorspronkelijke deadline stabiel blijft en dat geneste groepen de vroegste deadline doorgeven.
+
+Code- en testcommits: `ba682f0`, `807a9da`, `ed2f4f0`, `2ee1c12` en `af1ae82`. CI moet nog bevestigen dat frontend en backend samen bouwen.
