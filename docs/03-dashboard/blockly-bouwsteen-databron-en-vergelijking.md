@@ -141,3 +141,14 @@ Na het uitrollen van de versie met de broncatalogus heeft de gebruiker de endpoi
 Hiermee is bevestigd dat de beveiligde instellingenroute op de draaiende Docker-installatie bereikbaar is en dat de backend de Homey-inventarisatie succesvol kan ophalen. De aantallen zijn een momentopname van deze test en kunnen veranderen wanneer de Homey-inventaris wijzigt.
 
 De test bevestigt nog niet dat bronselectie al in Blockly beschikbaar is; dat blijft onderdeel van de volgende frontend-implementatiestap.
+
+## 11. Eerste frontend-koppeling broncatalogus
+
+De instellingenpagina voor meldingen laadt nu naast de bestaande meldingsconfiguraties ook `GET /api/settings/notification-sources`. De catalogus wordt gebruikt voor een eerste bronkeuzecontrole met:
+
+- apparaatnaam en capabilitytitel;
+- capabilitytype (boolean/getal) en eventuele eenheid;
+- Logic-variabelen met hun datatype;
+- beschikbaarheidsinformatie in de apparaatopties.
+
+De catalogusfout is bewust onafhankelijk van het laden van meldingsconfiguraties: als Homey tijdelijk niet bereikbaar is, blijven bestaande meldingen en de editorpagina beschikbaar. De bronkeuze is in deze tussenstap nog niet gekoppeld aan de opgeslagen condition-JSON; de UI meldt dit expliciet. De volgende stap is de bronkeuze als Blockly-bouwsteen modelleren en de bestaande JSON-configuraties round-trip veilig houden.
