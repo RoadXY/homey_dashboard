@@ -393,3 +393,7 @@ De gebruiker wil tijdelijke foutmeldingen na acties automatisch laten verdwijnen
 
 ## Dashboardmeldingen – individueel sluiten en status bijhouden (13 november 2026)
 Tijdelijke foutmeldingen na Quick Actions krijgen een unieke ID en status (`active`, `dismissed` of `expired`), plus bron en aanmaaktijd. Elke actieve melding krijgt een eigen ×-knop waarmee deze altijd handmatig kan worden gesloten, ook als automatisch verdwijnen op Nooit staat. De timeout markeert meldingen als expired; handmatig sluiten markeert ze als dismissed. Meerdere meldingen kunnen gelijktijdig zichtbaar zijn. Er worden maximaal 50 records in de clientstatus bijgehouden. De datastructuur is voorbereid op uitbreiding met andere bronnen en meldingstypen. De sluitknop is via i18n vertaald.
+
+
+## Instellingen Algemeen – kaart Meldingen uitlijnen (13 november 2026)
+De kaart Meldingen moet dezelfde volledige contentbreedte gebruiken als Weer-API-tokens en Systeemstatus. De afwijkende max-width van 760 px is verwijderd; Taal en Datum en tijd blijven bovenaan in twee kolommen staan.
