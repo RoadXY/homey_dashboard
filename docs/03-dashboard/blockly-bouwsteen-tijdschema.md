@@ -224,3 +224,13 @@ Beide blokken hebben een instelbaar aantal minuten (1–1440) en een statement-i
 **Belangrijke beperking:** de placeholder is nog geen echte conditiebouwsteen en de duurblokken worden nog niet vanuit de bestaande JSON-conditieboom opgebouwd of teruggeserialiseerd. De backend ondersteunt op dit moment de canonieke `duration`-node voor een gedurende de tijd actieve child-conditie; de variant voor gedurende inactief moet in de JSON-serialisatie als negatie (`not`) van de child-conditie worden gemodelleerd of expliciet worden ondersteund. De huidige visuele blokken slaan hun waarde/inhoud dus nog niet op. Dit is bewust een vorm-/nestingstap, geen afgeronde duurfunctionaliteit.
 
 Vervolg: vervang de placeholder door echte statement-varianten van bron/vergelijking/logische voorwaarden, leg een stabiele duurblok-ID vast, en implementeer round-trip naar de bestaande `duration`- en `not`-nodes. Test ook dat de timer opnieuw begint zodra de ingesloten voorwaarde tussentijds niet meer aan de vereiste toestand voldoet.
+### 11.2 Eerste echte conditiebouwsteen in de duurblokken
+
+De tijdelijke tekstplaceholder in beide C-vormige duurblokken is vervangen door een bewerkbare statement-bouwsteen. Binnen de opening staat nu een voorwaardeblok met:
+- selectie van een Homey-apparaat/capability of Logic-variabele uit de broncatalogus;
+- datatype-afhankelijke vergelijkingsoperatoren;
+- een waardeveld.
+
+De velden worden bij het openen gevuld vanuit de momenteel geselecteerde melding. Wijzigingen aan bron en vergelijking gebruiken de bestaande updatecallbacks van de instellingenpagina.
+
+**Nog niet afgerond:** de duurwaarde en de geneste conditie worden nog niet als `duration`-node in de configuratieboom opgeslagen. De bestaande callbacks passen de geselecteerde melding haar eerste vergelijkingsnode aan, maar maken nog geen duurwrapper. Ook het onderscheid 'inactief gedurende' is nog niet als `duration(not(condition))` weggeschreven. De huidige stap maakt de binnenkant van de C-vorm bewerkbaar; de volgende stap is de boomserialisatie en round-trip, zodat de C-vorm ook echt betekenis krijgt in de opgeslagen configuratie.
