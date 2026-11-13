@@ -38,8 +38,8 @@ describe("isScheduleActive", () => {
 describe("evaluateDurationGate", () => {
   it("activates only after the child stayed active for the full duration", () => {
     const activeSince = new Map<string, number>();
-    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 1_000, activeSince)).toEqual({ state: "inactive" });
-    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 5_999, activeSince)).toEqual({ state: "inactive" });
+    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 1_000, activeSince)).toEqual({ state: "inactive", reevaluateAt: 6_000 });
+    expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 5_999, activeSince)).toEqual({ state: "inactive", reevaluateAt: 6_000 });
     expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 6_000, activeSince)).toEqual({ state: "active" });
   });
 
@@ -51,6 +51,14 @@ describe("evaluateDurationGate", () => {
     expect(evaluateDurationGate("rule:block", { state: "active" }, 5_000, 3_000, activeSince)).toEqual({ state: "inactive" });
     expect(evaluateDurationGate("rule:block", { state: "unknown", reason: "source_unavailable" }, 5_000, 4_000, activeSince)).toEqual({ state: "unknown", reason: "source_unavailable" });
     expect(activeSince.has("rule:block")).toBe(false);
+  });
+
+  it("keeps the original deadline when the condition is checked repeatedly", () => {
+    const activeSince = new Map<string, number>();
+    const first = evaluateDurationGate("rule:block", { state: "active" }, 5_000, 1_000, activeSince);
+    const second = evaluateDurationGate("rule:block", { state: "active" }, 5_000, 3_500, activeSince);
+    expect(first.reevaluateAt).toBe(6_000);
+    expect(second.reevaluateAt).toBe(6_000);
   });
 
   it("returns unknown for an invalid duration", () => {
