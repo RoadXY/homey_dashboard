@@ -57,6 +57,33 @@ describe("canonical notification schema v1", () => {
     expect(isValidConditionNode(tree)).toBe(false);
   });
 
+
+  it("accepts all six comparison operators with compatible source types", () => {
+    const numberSource = { type: "logic-variable", variableId: "number-id", expectedType: "number" };
+    for (const operator of ["equals", "notEquals", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"]) {
+      expect(isValidConditionNode({ type: "comparison", source: numberSource, condition: { operator, value: 10 } })).toBe(true);
+    }
+    expect(isValidConditionNode({
+      type: "comparison",
+      source: { type: "logic-variable", variableId: "bool-id", expectedType: "boolean" },
+      condition: { operator: "notEquals", value: false },
+    })).toBe(true);
+    expect(isValidConditionNode({
+      type: "comparison",
+      source: { type: "logic-variable", variableId: "bool-id", expectedType: "boolean" },
+      condition: { operator: "greaterThanOrEqual", value: 1 },
+    })).toBe(false);
+  });
+
+  it("accepts NOT and weekday nodes and rejects malformed versions", () => {
+    expect(isValidConditionNode({ type: "not", condition: comparison })).toBe(true);
+    expect(isValidConditionNode({ type: "not", condition: { type: "not", condition: comparison } })).toBe(true);
+    expect(isValidConditionNode({ type: "weekday", weekdays: [1, 3, 5] })).toBe(true);
+    expect(isValidConditionNode({ type: "weekday", weekdays: [] })).toBe(false);
+    expect(isValidConditionNode({ type: "weekday", weekdays: [1, 1] })).toBe(false);
+    expect(isValidConditionNode({ type: "weekday", weekdays: [7] })).toBe(false);
+  });
+
   it("validates notification metadata and requires the single canonical schemaVersion 1", () => {
     const valid = {
       schemaVersion: 1, id: "front-door", title: "Voordeur open",
