@@ -280,3 +280,6 @@ Dit verbetert de foutfeedback en behoudt onbekende brondata. Het is geen vervang
 De meldingeninstellingen filterden de keuzelijst onbedoeld op regels die een tijdschema-node bevatten. Daardoor waren gewone vergelijkingsmeldingen, waaronder Logic-testmeldingen zonder tijdschema, niet selecteerbaar en werd de Blockly-editor helemaal niet getoond.
 
 De selectie toont nu alle bestaande meldingsconfiguraties. Een tijdschema is optioneel en geen voorwaarde meer om een melding in Blockly te kunnen openen. De editor kan daardoor ook een conditieboom met alleen een Homey-apparaat- of Logic-vergelijking laden en bewerken. De keuzelijst heet voortaan **Meldingen**.
+
+
+Wanneer de Homey-broncatalogus niet kan worden geladen, toont de instellingenpagina nu ook de concrete laadfout. Daarmee is onderscheid zichtbaar tussen een melding zonder bronblok, een lege broncatalogus en een mislukte API-aanvraag.
