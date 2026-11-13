@@ -178,5 +178,6 @@
   "notifications.saved": "Notifications saved.",
   "notifications.loadError": "Failed to load notifications.",
   "notifications.saveError": "Failed to save notifications.",
-  "notifications.save": "Saving…"
+  "notifications.save": "Saving…",
+  "notifications.editorUnavailable": "Blockly could not be loaded. Check the internet connection and reload the settings page."
 }
