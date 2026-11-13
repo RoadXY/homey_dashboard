@@ -613,7 +613,7 @@ body {
 .notification-editor-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
 .notification-editor-heading p { margin: 0; color: var(--text-muted); font-size: 12px; }
 .notification-severity-pill { padding: 5px 9px; border-radius: 20px; background: rgba(255,255,255,.07); color: var(--text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
-.notification-severity-control { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.notification-severity-control { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 14px; }
 .notification-severity-control label { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
 .notification-severity-control select { min-width: 128px; min-height: 32px; padding: 5px 9px; border: 1px solid rgba(150,165,185,.28); border-radius: 8px; background: #202630; color: var(--text-primary); font: inherit; font-size: 12px; }
 .notification-severity-control .notification-severity-pill { border: 1px solid transparent; }
