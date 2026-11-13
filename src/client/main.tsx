@@ -1448,7 +1448,8 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
           {items.map(item => <div className="quick-preview-item" key={item.id}><MdiIcon name={item.icon} /><strong>{actionName(item)}</strong></div>)}
         </div>
       </section>
-      {editorOpen && <section className="settings-card quick-editor-card">
+    </div>
+    {editorOpen && <section className="settings-card quick-editor-card">
         <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("settings.editQuickAction")}</h2>
         <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name || actionName(selected)} onChange={event => updateSelected({ name: event.target.value })} /></label>
@@ -1536,8 +1537,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
         </>}
         <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
       </section>}
-    </div>
-    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+    <div className="settings-bottom">    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
   </div>;
 }
 
