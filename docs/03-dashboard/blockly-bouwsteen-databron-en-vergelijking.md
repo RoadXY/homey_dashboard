@@ -218,4 +218,17 @@ De serializer controleert onder meer dat:
 
 Onvolledige of ongeldige werkruimtes worden niet naar de configuratie geschreven. De gebruiker kan daardoor tijdens het bouwen tijdelijk een onvolledige boom hebben zonder dat die ongeldige toestand direct de opgeslagen configuratie vervangt.
 
-**Beperkingen van deze eerste serializer:** de huidige zichtbare editor gebruikt statementblokken voor de conditieboom. De oudere losse visuele blokken en de aparte `homey_notification_duration_active/inactive` proefblokken worden niet geserialiseerd. De inactieve duurvariant is nog niet als `duration(not(child))` beschikbaar in deze nieuwe boom-editor. Ook is geautomatiseerde frontend round-trip-testdekking nog nodig; CI/build moet deze implementatie valideren voordat ze op de server wordt getest.
+**Beperkingen van deze serializer:** de huidige zichtbare editor gebruikt statementblokken voor de conditieboom. De oudere losse visuele blokken en de aparte `homey_notification_duration_active/inactive` proefblokken worden niet geserialiseerd. De inactieve duurvariant is inmiddels wel beschikbaar als `duration(not(child))` en wordt bij opnieuw openen weer als inactief duurblok getoond. Geautomatiseerde frontend round-trip-testdekking is nog nodig; CI/build valideert de code, maar bewijst op zichzelf nog niet dat iedere Blockly-verbinding correct heen en terug wordt vertaald.
+
+
+### 11.9 Toolbox voor het samenstellen van voorwaarden
+
+De Blockly-editor heeft nu een toolbox met drie categorieën, zodat voorwaarden niet alleen kunnen worden bekeken en aangepast, maar ook vanuit een lege of bestaande conditieboom kunnen worden toegevoegd:
+
+- **Voorwaarden:** vergelijking met een selecteerbare Homey-bron, operator en waarde.
+- **Logica:** EN, OF en NIET.
+- **Tijd:** tijdschema actief, dag van de week, gedurende X minuten actief en gedurende X minuten inactief.
+
+De werkruimte toont de toolbox naast de bestaande conditieboom. Een prullenbak is ingeschakeld om blokken te verwijderen. De nieuwe blokken blijven statementblokken en worden door dezelfde serializer naar het canonieke JSON-voorwaardenmodel vertaald; er is geen aparte Blockly-evaluator.
+
+**Afbakening:** de vergelijking bevat in deze eerste toolboxversie zelf de bronkeuze. De eerder vastgelegde UX-keuze voor twee afzonderlijke bronblokken (Homey-apparaat en Homey Logic-variabele) moet nog als volgende verbetering worden doorgevoerd, zonder de opgeslagen bronidentiteit of het JSON-model te wijzigen. Ook moet de round-trip van alle nieuwe combinaties nog met gerichte frontendtests worden afgedekt.
