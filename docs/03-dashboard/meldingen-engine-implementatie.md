@@ -130,3 +130,12 @@ Code- en testcommits: `ba682f0`, `807a9da`, `ed2f4f0`, `2ee1c12`, `af1ae82` en `
 ## Openstaand aandachtspunt – tijdschema-overgangen
 
 De nieuwe automatische deadline behandelt duurvoorwaarden. Een tijdschema zelf kan ook precies op een begin- of eindtijd van status veranderen zonder Homey-event. De huidige schema-evaluator wordt bij Homey-updates opnieuw uitgevoerd; automatische herbeoordeling op schema-overgangen moet daarom nog worden toegevoegd voordat de Blockly-editor als compleet kan worden beschouwd. Dit wordt de eerstvolgende backendstap.
+
+
+## Automatische herbeoordeling van tijdschema's – 13 november 2026
+
+Tijdschema's leveren nu net als duurvoorwaarden een `reevaluateAt`-deadline op. De backend zoekt de eerstvolgende werkelijke minuut waarop de schema-uitkomst verandert en neemt die op in de bestaande `nextEvaluationAt`-planning. Daardoor worden zowel het begin als het einde van een schema automatisch verwerkt, ook wanneer Homey geen event verstuurt.
+
+De berekening gebruikt de ingestelde IANA-tijdzone en doorloopt werkelijke tijdstippen per minuut. Hierdoor worden ontbrekende en dubbele lokale klokminuten bij zomer-/wintertijd niet als fictieve UTC-tijdstippen behandeld. Bij een schema dat over middernacht loopt, blijft de weekdag van de start leidend. Dezelfde deadline wordt doorgegeven via AND/OR-groepen en blijft ook behouden wanneer een tijdschema binnen een duurvoorwaarde zit; anders zou een reeds geactiveerde duurvoorwaarde niet op tijd kunnen stoppen wanneer het schema eindigt.
+
+Tests toegevoegd voor start- en eindgrenzen, nachtoverschrijding, de voorjaars-DST-sprong en deadlines die door duurvoorwaarden behouden moeten blijven. Implementatiecommits: `8bab4c9`, `86e90c2`, `48bb690`, `ce13f7b` en `4c1c401`. CI moet nog worden gecontroleerd.
