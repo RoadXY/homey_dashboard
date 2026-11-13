@@ -234,3 +234,8 @@ De tijdelijke tekstplaceholder in beide C-vormige duurblokken is vervangen door 
 De velden worden bij het openen gevuld vanuit de momenteel geselecteerde melding. Wijzigingen aan bron en vergelijking gebruiken de bestaande updatecallbacks van de instellingenpagina.
 
 **Nog niet afgerond:** de duurwaarde en de geneste conditie worden nog niet als `duration`-node in de configuratieboom opgeslagen. De bestaande callbacks passen de geselecteerde melding haar eerste vergelijkingsnode aan, maar maken nog geen duurwrapper. Ook het onderscheid 'inactief gedurende' is nog niet als `duration(not(condition))` weggeschreven. De huidige stap maakt de binnenkant van de C-vorm bewerkbaar; de volgende stap is de boomserialisatie en round-trip, zodat de C-vorm ook echt betekenis krijgt in de opgeslagen configuratie.
+### 11.3 Inactieve duurvariant gekoppeld aan canonieke JSON
+
+De JSON-loader en serializer ondersteunen nu ook **Gedurende X minuten inactief** als expliciete Blockly-vorm. De opgeslagen structuur blijft canoniek: `duration` met als child een `not`-node rond de voorwaarde. Bij het openen herkent de loader deze combinatie en toont hij het inactieve duurblok; bij opslaan bouwt de serializer dezelfde combinatie terug op.
+
+Daarmee worden de actieve en inactieve variant allebei als dezelfde backend-duurconstructie geëvalueerd, zonder een tweede duursemantiek in het schema te introduceren. De duur blijft 1–1440 minuten en ieder duurblok behoudt zijn Blockly-ID als `duration.id`.
