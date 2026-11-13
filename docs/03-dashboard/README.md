@@ -386,6 +386,6 @@ De vier meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op éé
 
 ## Instellingen: editor voor Snelle acties (13 november 2026)
 
-- Het bewerkpaneel voor een Snelle actie staat als afzonderlijk blok direct onder de twee bovenste kaarten (lijst en preview), niet langer als derde grid-item binnen de twee-koloms werkruimte.
-- Daardoor neemt de editor zijn eigen hoogte in de normale documentflow in. Bij een lange editor of een scherm dat lager is dan de inhoud scrollt de instellingenpagina verticaal door; de editor overlapt de lijst niet.
+- Het bewerkpaneel voor een Snelle actie staat als derde grid-item binnen de werkruimte, onder de twee bovenste kaarten (lijst en preview) en beslaat beide kolommen.
+- De werkruimte gebruikt automatische inhoudsrijen en heeft geen vaste minimale hoogte; het bewerkpaneel blijft in de normale grid-flow (`position: static`) en kan de lijst of preview niet overlappen.
 - De lijst en preview behouden hun bestaande naast-elkaar-indeling op brede schermen en stapelen op smallere beschikbare contentbreedtes.
