@@ -281,4 +281,4 @@ Nog te verifiëren in de draaiende dashboardomgeving:
 - lege en ongeconfigureerde tijdschema's blijven inactief;
 - bestaande meldingen zonder tijdschema blijven ongewijzigd.
 
-De wijziging is nog niet samengevoegd in `phase_1_foundation`; eerst volgen CI- en praktijktests.
+De wijziging is op 13 november 2026 samengevoegd in `phase_1_foundation` via pull request #1 (squash-commit `ad5ee612bfe743f29c31a9eb3c5be443a206a507`). CI- en praktijktests moeten nog volgen.
