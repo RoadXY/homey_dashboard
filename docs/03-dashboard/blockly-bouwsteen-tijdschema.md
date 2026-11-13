@@ -394,3 +394,8 @@ In de kop van de meldingseditor staat de volgorde nu als **Huidig niveau → gek
 
 - De keuzelijst met aangemaakte meldingen is vervangen door een zoekbare dropdown. De zoekbalk filtert direct op de naam van de melding en toont het aantal resultaten.
 - De Blockly-bronzoeker heeft een ruimer popup-oppervlak gekregen met een expliciete achtergrond, rand, schaduw en flexibele resultatenlijst. Daardoor hoort de popup-achtergrond ook bij langere lijsten de volledige inhoud te omvatten.
+
+
+## 12. Automatische voorloopnul bij Blockly-tijden (13 november 2026)
+
+De tijdvelden van de Blockly-bouwsteen vullen voortaan automatisch een voorloopnul aan bij uren met één cijfer. Bijvoorbeeld: invoer `7:00` wordt `07:00`. Dit gebeurt direct in de invoervelden en nogmaals bij het laden/serialiseren van de configuratie, zodat de opgeslagen tijd altijd het canonieke `UU:MM`-formaat gebruikt. Onvolledige of ongeldige invoer wordt niet stilzwijgend aangepast; de bestaande validatie blijft daarvoor verantwoordelijk.
