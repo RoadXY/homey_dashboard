@@ -8,6 +8,8 @@ export type ScheduleCondition = {
 export type ConditionResult = {
   state: "active" | "inactive" | "unknown";
   reason?: string;
+  /** Unix timestamp (ms) when a pending duration gate must be evaluated again. */
+  reevaluateAt?: number;
 };
 
 const WEEKDAY_INDEX: Record<string, number> = {
@@ -98,7 +100,8 @@ export function evaluateDurationGate(
 
   const startedAt = activeSince.get(key) ?? now;
   activeSince.set(key, startedAt);
-  return now - startedAt >= durationMs
+  const reevaluateAt = startedAt + durationMs;
+  return now >= reevaluateAt
     ? { state: "active" }
-    : { state: "inactive" };
+    : { state: "inactive", reevaluateAt };
 }
