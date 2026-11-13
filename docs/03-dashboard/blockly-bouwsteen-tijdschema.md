@@ -353,3 +353,7 @@ De broncode en dependencyconfiguratie zijn omgezet naar de lokale package-import
 ## 15. Positie label hoofdblok (13 november 2026)
 
 Het vaste paarse hoofdblok toont de tekst **🔔 Genereer melding** nu onderaan in een footer-input. Boven de voorwaarden staat geen titel/label meer. De statement-input `CONDITIONS` staat als eerste in het blok, gevolgd door de footer. De inhoud en serialisatie van de voorwaarden veranderen hierdoor niet; dit is uitsluitend een visuele wijziging.
+
+
+## Blockly – dynamische vergelijkingsdropdown bij laden (13 november 2026)
+Bij het terugzetten van bestaande vergelijkingsblokken wordt eerst de Homey-bron (`SOURCE`) hersteld. Omdat de operator-dropdown dynamisch afhangt van het datatype van die bron, moet daarna de door Blockly gecachete dropdown-optieset opnieuw worden opgebouwd vóór de opgeslagen operator (`OP`) wordt ingesteld. Anders kan Blockly een numerieke operator zoals `lessThan` of `greaterThan` afwijzen op basis van de opties van de eerste (mogelijk booleaanse) bron in de catalogus. De loader ververst daarom `OP`-opties expliciet via `getOptions(false)` na het herstellen van `SOURCE`, en controleert daarna of de opgeslagen operator bij het datatype past. Onbekende of ongeldige combinaties blijven veilig als niet-ondersteund blok zichtbaar; bestaande configuratie wordt niet stilzwijgend aangepast.
