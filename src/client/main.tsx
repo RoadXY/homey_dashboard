@@ -582,8 +582,14 @@ function findComparisonNode(node: any): any | null {
 function replaceFirstComparisonSource(node: any, source: any): any {
   if (!node || typeof node !== "object") return node;
   if (node.type === "comparison") {
-    const compatible = source.expectedType === "number" || ["equals", "notEquals"].includes(node.condition?.operator);
-    return { ...node, source, condition: compatible ? node.condition : { operator: "equals", value: false } };
+    const comparison = node.condition;
+    const validForSource = source.expectedType === "number"
+      ? typeof comparison?.value === "number"
+      : ["equals", "notEquals"].includes(comparison?.operator) && typeof comparison?.value === "boolean";
+    const fallback = source.expectedType === "number"
+      ? { operator: "equals", value: 0 }
+      : { operator: "equals", value: false };
+    return { ...node, source, condition: validForSource ? comparison : fallback };
   }
   if (Array.isArray(node.conditions)) {
     let replaced = false;
@@ -665,7 +671,6 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
   const [sourceCatalog, setSourceCatalog] = React.useState<NotificationSourceCatalog | null>(null);
   const [sourceCatalogError, setSourceCatalogError] = React.useState("");
-  const [selectedSourceKey, setSelectedSourceKey] = React.useState("");
   const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
   const [selectedId, setSelectedId] = React.useState("");
   const [busy, setBusy] = React.useState(true);
@@ -706,7 +711,6 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
-    setSelectedSourceKey(key);
     if (!selected || !key) return;
     const deviceMatch = key.startsWith("device:") ? key.slice(7).split(":") : null;
     const device = deviceMatch ? sourceCatalog?.devices.find(item => item.id === deviceMatch[0]) : null;
