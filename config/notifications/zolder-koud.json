@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "zolder-koud",
   "title": "Zolder koud",
   "message": "De temperatuur op zolder is lager dan 12 °C.",
