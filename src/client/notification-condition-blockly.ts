@@ -42,25 +42,27 @@ export function sourceFromKey(key: string, catalog: NotificationSourceCatalog | 
 }
 
 /** Keep the editable Blockly value compatible with the selected source datatype. */
-export function comparisonInputValue(expectedType: "number" | "boolean", raw: string): number | boolean {
-  if (expectedType === "boolean") return raw === "true" ? true : false;
-  const value = Number(raw);
-  return raw.trim() !== "" && Number.isFinite(value) ? value : 0;
+export function comparisonInputValue(expectedType: "number" | "boolean", raw: string | number | boolean): number | boolean {
+  const text = String(raw ?? "");
+  if (expectedType === "boolean") return text === "true";
+  const value = Number(text);
+  return text.trim() !== "" && Number.isFinite(value) ? value : 0;
 }
 
-export function comparisonValueFromBlockly(source: NotificationSource, operator: string, raw: string): number | boolean {
+export function comparisonValueFromBlockly(source: NotificationSource, operator: string, raw: string | number | boolean): number | boolean {
   const numericOperators: ComparisonOperator[] = ["equals", "notEquals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"];
   const booleanOperators: ComparisonOperator[] = ["equals", "notEquals"];
   if (!(source.expectedType === "number" ? numericOperators : booleanOperators).includes(operator as ComparisonOperator)) {
     throw new Error("De gekozen vergelijkingsoperator past niet bij het datatype van de bron.");
   }
+  const text = String(raw ?? "");
   if (source.expectedType === "number") {
-    const value = Number(raw);
-    if (!Number.isFinite(value) || raw.trim() === "") throw new Error("Vul een geldig getal in bij de vergelijking.");
+    const value = Number(text);
+    if (!Number.isFinite(value) || text.trim() === "") throw new Error("Vul een geldig getal in bij de vergelijking.");
     return value;
   }
-  if (raw !== "true" && raw !== "false") throw new Error("Een booleaanse vergelijking vereist true of false.");
-  return raw === "true";
+  if (text !== "true" && text !== "false") throw new Error("Een booleaanse vergelijking vereist true of false.");
+  return text === "true";
 }
 
 export function durationNodeToBlockly(node: any): { blockType: string; minutes: number; child: any; id?: string } {
