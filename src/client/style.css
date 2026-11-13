@@ -641,3 +641,15 @@ body {
     padding: 18px 14px 24px;
   }
 }
+
+
+.notification-editor-error {
+  margin: 12px 2px 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(225, 139, 145, .42);
+  border-radius: 9px;
+  background: rgba(112, 35, 43, .2);
+  color: #f0b4b7;
+  font-size: 13px;
+  line-height: 1.45;
+}
