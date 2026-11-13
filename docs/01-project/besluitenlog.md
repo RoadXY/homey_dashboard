@@ -341,3 +341,7 @@ Naast de bestaande klikactie op het Homey Dashboard-merk in de bovenbalk is nu e
 
 ## Zijbalkkop Instellingen – groter en gecentreerd (13 november 2026)
 De kop 'Instellingen' is vergroot naar 26 px en horizontaal gecentreerd over de volledige binnenbreedte van de zijbalk (tussen de linker paginarand en de rechter scheidingslijn). De kop gebruikt het semantische teksttoken `--text-primary`, zodat kleur automatisch meebeweegt met toekomstige thema's en light/dark modes. De bestaande mobiele weergave verbergt deze kop en de ingeklapte desktopweergave verbergt hem eveneens.
+
+
+## Dashboardtaal – vertaling automatische keuze (13 november 2026)
+De optie voor automatische dashboardtaal gebruikt voortaan de normale i18n-vertalingen op basis van de opgeloste dashboardlocale in plaats van de vaste Engelstalige labeltekst uit `languages.json`. Nederlands toont `Automatisch (Homey-taal)`; Engels toont `Automatic (Homey language)`. Dit zorgt dat de keuzelijst aansluit bij de gedetecteerde Homey-taal en bij handmatig gekozen dashboardtaal.
