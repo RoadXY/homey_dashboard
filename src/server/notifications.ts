@@ -203,6 +203,7 @@ function evaluateComparison(value: unknown, expectedType: ExpectedType, conditio
     case "lessThan": return { state: (value as number) < condition.value ? "active" : "inactive" };
     case "lessThanOrEqual": return { state: (value as number) <= condition.value ? "active" : "inactive" };
     case "greaterThan": return { state: (value as number) > condition.value ? "active" : "inactive" };
+    case "greaterThanOrEqual": return { state: (value as number) >= condition.value ? "active" : "inactive" };
   }
 }
 
