@@ -203,5 +203,6 @@
   "notifications.newTitle": "Nieuwe melding",
   "notifications.name": "Naam van de melding",
   "notifications.defaultMessage": "Er is een dashboardmelding actief.",
-  "notifications.emptyList": "Er zijn nog geen meldingen. Maak je eerste melding aan."
+  "notifications.emptyList": "Er zijn nog geen meldingen. Maak je eerste melding aan.",
+  "notifications.dismiss": "Melding sluiten"
 }
