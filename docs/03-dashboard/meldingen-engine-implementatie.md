@@ -1,7 +1,7 @@
 # Meldingen-engine – implementatiestatus
 
 **Branch:** `phase_1_foundation`  
-**Bijgewerkt:** 13 november 2026
+**Bijgewerkt:** 14 november 2026
 
 ## Doelarchitectuur
 
@@ -259,3 +259,12 @@ In de Blockly-categorie Tijd zijn twee losse voorwaarden toegevoegd naast het be
 - **Dagen van de week**: biedt zeven onafhankelijke vinkjes en slaat de selectie op als de bestaande `weekday`-node met één of meer weekdagen. De bestaande enkele-weekdag dropdown blijft ondersteund voor compatibiliteit.
 
 Beide blokken zijn gewone statement-voorwaarden en kunnen dus in EN/OF/NIET-containers worden gebruikt. Het bestaande gecombineerde tijdschema blijft ongewijzigd.
+
+
+## Blockly-meldingsteksten – correctie 14 november 2026
+
+Bij het wijzigen van de titel of tekst in het vaste blok **Genereer melding** werden de wijzigingen niet naar het configuratiemodel doorgegeven. De editor luisterde naar `Blockly.Events.BLOCK_FIELD_CHANGED`, terwijl Blockly 12 voor veldwijzigingen het eventtype `Blockly.Events.BLOCK_CHANGE` gebruikt, met `element === "field"`.
+
+De listener controleert nu het juiste eventtype en verwerkt uitsluitend wijzigingen aan de twee tekstvelden van het vaste hoofdblok. Daardoor worden `notificationTitle` en `message` direct in de conceptconfiguratie bijgewerkt, wordt de pagina als gewijzigd gemarkeerd en wordt **Opslaan** actief. Na opslaan gebruikt het dashboard de door de gebruiker ingevoerde meldingstitel in plaats van terug te vallen op de interne regelnaam (bijvoorbeeld 'Nieuwe melding').
+
+De interne regelnaam (`title`, zichtbaar in de instellingenlijst) blijft bewust gescheiden van de titel op de dashboardkaart (`notificationTitle`). Dit maakt het mogelijk om een korte, herkenbare regelnaam te gebruiken en tegelijk een eigen meldingstitel te tonen. De tekstvelden zijn vrije gebruikersinhoud en worden niet via i18n vertaald.
