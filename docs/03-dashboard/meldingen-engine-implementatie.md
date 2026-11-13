@@ -96,4 +96,16 @@ Na de eerste integratie is de backendvalidatie aangescherpt voordat de Blockly-e
 - De volledige meldingsconfiguratie wordt nu als onbekende invoer gevalideerd, inclusief verplichte tekstvelden, severity, enabled en optionele testOnly. Zowel legacy-configuraties als het nieuwe boommodel blijven ondersteund.
 - Hiervoor zijn gerichte tests toegevoegd voor geldige schema's, ongeldige tijden/tijdzones, dubbele duur-IDs, maximale diepte en legacy-/boomconfiguraties.
 
-De code staat in commits `5a6f3a3`, `0d6b8be` en `24fabc3`. De GitHub Actions-builds voor deze wijzigingen zijn geslaagd. Tijdens controle bleek dat de CI-workflow nog geen `npm test` uitvoerde; daarom is commit `f4263a7` toegevoegd om voortaan ook de volledige Vitest-suite in CI te draaien. De eerste run met de nieuwe teststap faalde omdat Vitest door de Vite-clientroot alleen in `src/client` zocht. In commit `3677451` is daarom een aparte `vitest.config.ts` toegevoegd die tests uit zowel `src/server` als `src/client` ontdekt. De CI-run voor deze configuratie is gestart; de uitkomst moet nog worden gecontroleerd. De Blockly-editor start pas nadat zowel tests als build groen zijn.
+De code staat in commits `5a6f3a3`, `0d6b8be` en `24fabc3`. De GitHub Actions-builds voor deze wijzigingen zijn geslaagd. Tijdens controle bleek dat de CI-workflow nog geen `npm test` uitvoerde; daarom is commit `f4263a7` toegevoegd om voortaan ook de volledige Vitest-suite in CI te draaien. De eerste run met de nieuwe teststap faalde omdat Vitest door de Vite-clientroot alleen in `src/client` zocht. In commit `3677451` is daarom een aparte `vitest.config.ts` toegevoegd die tests uit zowel `src/server` als `src/client` ontdekt. De daaropvolgende volledige CI-run is geslaagd: 17 tests groen, OpenAPI-validatie geslaagd (met alleen waarschuwingen) en de build geslaagd. Ook de daaropvolgende documentatiecommit heeft een groene CI-run.
+
+
+## Typeveilige bronvergelijkingen – 13 november 2026
+
+Bij de voorbereiding op Blockly is een validatiegat gevonden: de validator accepteerde bijvoorbeeld een numerieke vergelijking op een boolean-bron, of een boolean-waarde bij een numerieke bron. De evaluator zou zulke configuraties niet op een betekenisvolle manier kunnen activeren.
+
+De validator controleert nu ook de combinatie van bron en vergelijking:
+- `equals` vereist een vergelijkingswaarde van exact hetzelfde type als de bron (`boolean` of `number`).
+- `lessThan` en `greaterThan` zijn uitsluitend toegestaan voor numerieke bronnen.
+- Deze controle geldt zowel voor het bestaande legacy-formaat als voor bladeren in de geneste conditieboom.
+
+Er zijn regressietests toegevoegd voor geldige en ongeldige combinaties in beide configuratievormen. De wijziging staat in commits `e8d0fe7` en `478e679`; de GitHub Actions-run moet nog worden gecontroleerd.
