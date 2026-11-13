@@ -1093,6 +1093,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition } : item));
   };
+  const updateSeverity = (severity: "critical" | "warning" | "info") => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, severity } : item));
+  };
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
@@ -1118,7 +1122,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     </div>
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2></div><span className="notification-severity-pill">{selected.severity}</span></div>
+        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2></div><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span></div></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
