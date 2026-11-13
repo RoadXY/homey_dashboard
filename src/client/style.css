@@ -586,7 +586,7 @@ body {
 .schedule-blockly-toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(150,165,185,.15); color: var(--text-secondary); font-size: 12px; }
 .schedule-blockly-toolbar span { display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 600; }
 .schedule-blockly-toolbar small { color: var(--text-muted); font-size: 11px; }
-.schedule-blockly-workspace { width: 100%; height: 360px; }
+.schedule-blockly-workspace { width: 100%; height: clamp(500px, 62vh, 760px); }
 .schedule-blockly-workspace .blocklyMainBackground { stroke: none; fill: #171b22; }
 .schedule-blockly-workspace .blocklyToolboxDiv { background: #202630; border-right: 1px solid rgba(150,165,185,.15); }
 .schedule-blockly-workspace .blocklyTreeLabel { color: #dce3ec; font-size: 12px; }
@@ -597,7 +597,7 @@ body {
 .schedule-blockly-workspace .blocklyScrollbarHandle { fill: #657386; }
 .notification-editor-hint { display: flex; gap: 8px; align-items: flex-start; margin: 14px 2px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
 .notification-editor-hint i { color: #9eb2c8; font-size: 16px; }
-@media (max-width: 680px) { .notification-rule-selector { grid-template-columns: 1fr; gap: 7px; } .schedule-blockly-workspace { height: 320px; } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 680px) { .notification-rule-selector { grid-template-columns: 1fr; gap: 7px; } .schedule-blockly-workspace { height: clamp(400px, 58vh, 620px); } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
 
 .notification-source-picker { display: grid; gap: 7px; margin: 0 0 14px; padding: 13px 14px; border: 1px solid rgba(150,165,185,.18); border-radius: 12px; background: rgba(23,27,34,.72); }
 .notification-source-picker label { color: var(--text-primary); font-size: 12px; font-weight: 650; }
