@@ -127,4 +127,18 @@ De gebruiker bevestigt dat de twee oorspronkelijke slaap-schema's eveneens moete
 - `Lamp Bram staat aan` blijft alleen actief wanneer de lamp aan staat **en** `slapen_bram` actief is.
 - `slapen_sem` en `slapen_bram` zijn afzonderlijke schema-instanties met eigen dagen/tijden; wijzigingen aan het ene schema beïnvloeden het andere niet.
 - Beide gebruiken dezelfde generieke `Tijdschema actief?`-Blockly-bouwsteen en backend-evaluator als `boven_ramen_open`.
-- De exacte planningen van beide slaap-schema's zijn nog niet vastgelegd in de geraadpleegde documentatie. Ze moeten uit de oorspronkelijke HA-helperinstellingen worden overgenomen. Er worden geen tijden geraden of gekopieerd van het bovenramenschema.
+- De gebruiker stelt de weekdagen en tijden van beide slaap-schema's later zelf in via Blockly; de oorspronkelijke HA-helperinstellingen hoeven hiervoor niet te worden opgezocht.
+- Maak beide schema-instanties aan zonder geselecteerde actieve dagen. Ze zijn daardoor standaard inactief totdat de gebruiker ze configureert; zo ontstaan geen onbedoelde lampmeldingen.
+- De gebruiker kan `slapen_sem` en `slapen_bram` later onafhankelijk configureren. Kopieer geen tijden van `boven_ramen_open`.
+
+
+### 9.1 Initiële configuratie van de slaap-schema's – gebruikersbesluit (13 november 2026)
+
+De gebruiker configureert de planning van `slapen_sem` en `slapen_bram` later zelf in de dashboardinstellingen via Blockly. De schema's hoeven niet vooraf uit Home Assistant te worden overgenomen.
+
+- Maak twee zelfstandige schema-instanties met dezelfde generieke `Tijdschema actief?`-bouwsteen.
+- Start beide schema's zonder geselecteerde weekdagen; een schema zonder actieve dagen evalueert als `false`.
+- De gebruiker stelt per schema de weekdagen en begin-/eindtijden in wanneer dat uitkomt.
+- Een wijziging aan Sems schema heeft geen invloed op Brams schema en andersom.
+- De lampmelding blijft pas actief als zowel de bijbehorende lamp aan staat als het eigen schema actief is.
+- Gebruik nooit de planning van `boven_ramen_open` als impliciete standaard voor een slaap-schema.
