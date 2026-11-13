@@ -694,6 +694,21 @@ body {
 }
 
 
+.notification-source-warning {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(231, 166, 66, .42);
+  border-radius: 10px;
+  background: rgba(126, 82, 22, .16);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.notification-source-warning strong { display: block; margin-bottom: 6px; color: #f0c477; }
+.notification-source-warning ul { margin: 0 0 8px; padding-left: 20px; }
+.notification-source-warning li + li { margin-top: 3px; }
+.notification-source-warning span { color: var(--text-secondary); }
+
 .notification-editor-error {
   margin: 12px 2px 0;
   padding: 10px 12px;
