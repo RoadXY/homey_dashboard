@@ -239,3 +239,46 @@ De velden worden bij het openen gevuld vanuit de momenteel geselecteerde melding
 De JSON-loader en serializer ondersteunen nu ook **Gedurende X minuten inactief** als expliciete Blockly-vorm. De opgeslagen structuur blijft canoniek: `duration` met als child een `not`-node rond de voorwaarde. Bij het openen herkent de loader deze combinatie en toont hij het inactieve duurblok; bij opslaan bouwt de serializer dezelfde combinatie terug op.
 
 Daarmee worden de actieve en inactieve variant allebei als dezelfde backend-duurconstructie geëvalueerd, zonder een tweede duursemantiek in het schema te introduceren. De duur blijft 1–1440 minuten en ieder duurblok behoudt zijn Blockly-ID als `duration.id`.
+
+
+## 12. Blockly-tijdschema als C-vormige container – 13 november 2026
+
+De Blockly-bouwsteen **Tijdschema actief?** is omgezet van een los statementblok naar een C-vormige statementcontainer.
+
+- De bestaande instellingen blijven bovenaan het blok staan: weekdagen, begintijd en eindtijd.
+- Onder **Alleen wanneer:** kunnen één of meer voorwaarden worden geplaatst.
+- Binnen de opening zijn ook de bestaande EN-, OF-, NIET-, duur- en bron/vergelijkingsblokken te nesten.
+- De inhoud van het tijdschema wordt alleen waar wanneer zowel het tijdschema actief is als de ingesloten voorwaarden waar zijn. De semantiek is dus: tijdschema **EN** alle direct ingesloten voorwaarden.
+- Een tijdschema zonder ingesloten voorwaarden blijft bruikbaar als zelfstandige tijdvoorwaarde. Een tijdschema zonder geselecteerde dagen wordt als ongeconfigureerd opgeslagen en evalueert inactief.
+
+### 12.1 Canonieke JSON en compatibiliteit
+
+Er is geen nieuw conditietype en geen tweede evaluator geïntroduceerd. Als een tijdschema voorwaarden bevat, serialiseert Blockly dit naar de bestaande canonieke vorm:
+
+```json
+{
+  "operator": "and",
+  "conditions": [
+    { "type": "schedule", "weekdays": [1, 2, 3, 4, 5], "startTime": "07:00", "endTime": "20:00", "timeZone": "Europe/Amsterdam" },
+    { "type": "comparison", "source": { "type": "logic-variable", "variableId": "voorbeeld", "expectedType": "boolean" }, "condition": { "operator": "equals", "value": true } }
+  ]
+}
+```
+
+Bij het openen van een bestaande AND-conditie waarin een tijdschema op hetzelfde niveau staat als andere voorwaarden, herkent de Blockly-loader deze combinatie en toont hij het tijdschema als container met de overige voorwaarden erin. Dit is semantisch gelijkwaardig omdat alle kinderen van die AND al gezamenlijk waar moesten zijn. Een los tijdschema blijft als lege C-vormige container zichtbaar.
+
+De bestaande backendvalidatie, JSON Schema en evaluator blijven leidend. Opslag blijft via de bestaande meldingen-API lopen; er is geen wijziging aan Homey-communicatie of de dashboardruntime nodig.
+
+### 12.2 Implementatiestatus en testpunten
+
+De clientimplementatie is aangepast op feature branch `feature/blockly-schedule-container`. De wijziging omvat de C-vormige Blockly-input, de nesting bij het terugladen van bestaande AND+schedule-condities en serialisatie van de container naar de bestaande AND/schedule-nodes.
+
+Nog te verifiëren in de draaiende dashboardomgeving:
+- een tijdschema met één vergelijking opslaan, pagina herladen en controleren dat de vergelijking binnen de tijdschema-container terugkomt;
+- meerdere voorwaarden binnen één tijdschema plaatsen;
+- EN en OF binnen het tijdschema nesten;
+- een tijdschema binnen een EN/OF-container plaatsen;
+- lege en ongeconfigureerde tijdschema's blijven inactief;
+- bestaande meldingen zonder tijdschema blijven ongewijzigd.
+
+De wijziging is nog niet samengevoegd in `phase_1_foundation`; eerst volgen CI- en praktijktests.
