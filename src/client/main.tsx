@@ -1241,7 +1241,6 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
-  const missingSources = selected && sourceCatalog ? findMissingNotificationSources(selected.condition, sourceCatalog) : [];
   const notificationSourceIssues = sourceCatalog ? configs.map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   const updateSource = (key: string) => {
