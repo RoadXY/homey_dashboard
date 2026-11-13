@@ -632,7 +632,7 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
+function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const changeRef = React.useRef(onChange);
@@ -641,12 +641,14 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCa
   const sourceKeyRef = React.useRef(sourceKey);
   const comparisonRef = React.useRef(comparison);
   const comparisonChangeRef = React.useRef(onComparisonChange);
+  const conditionChangeRef = React.useRef(onConditionChange);
   changeRef.current = onChange;
   sourceChangeRef.current = onSourceChange;
   catalogRef.current = sourceCatalog;
   sourceKeyRef.current = sourceKey;
   comparisonRef.current = comparison;
   comparisonChangeRef.current = onComparisonChange;
+  conditionChangeRef.current = onConditionChange;
   React.useEffect(() => {
     const Blockly = window.Blockly;
     if (!Blockly || !host.current) { setBlocklyUnavailable(true); return; }
@@ -873,6 +875,91 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCa
     };
     const rootBlock = buildCondition(condition);
     if (rootBlock) rootBlock.moveBy(30, 30);
+    let hydrating = true;
+    const sourceFromKey = (key: string) => {
+      if (key.startsWith("device:")) {
+        const [, deviceId, capabilityId] = key.split(":");
+        const capability = catalogRef.current?.devices.find(item => item.id === deviceId)?.capabilities.find(item => item.id === capabilityId);
+        return capability ? { type: "device-capability", deviceId, capabilityId, expectedType: capability.type } : null;
+      }
+      if (key.startsWith("logic:")) {
+        const variableId = key.slice(6);
+        const variable = catalogRef.current?.variables.find(item => item.id === variableId);
+        return variable ? { type: "logic-variable", variableId, expectedType: variable.type } : null;
+      }
+      return null;
+    };
+    const serializeChain = (first: any): any[] => {
+      const result: any[] = [];
+      let current = first;
+      while (current) {
+        const node = serializeBlock(current);
+        if (node) result.push(node);
+        current = current.getNextBlock?.() ?? null;
+      }
+      return result;
+    };
+    const serializeBlock = (block: any): any => {
+      if (block.type === "homey_condition_comparison") {
+        const source = sourceFromKey(block.getFieldValue("SOURCE"));
+        if (!source) throw new Error("Selecteer een geldige Homey-bron in ieder vergelijkingsblok.");
+        const operator = block.getFieldValue("OP");
+        const raw = block.getFieldValue("VALUE");
+        const numeric = source.expectedType === "number";
+        const value = numeric ? Number(raw) : raw === "true";
+        if (numeric && !Number.isFinite(value)) throw new Error("Vul een geldig getal in bij de vergelijking.");
+        return { type: "comparison", source, condition: { operator, value } };
+      }
+      if (block.type === "homey_condition_schedule") {
+        const weekdays = days.filter(([day, field]) => block.getFieldValue(field) === "TRUE").map(([day]) => day);
+        return weekdays.length
+          ? { type: "schedule", weekdays, startTime: block.getFieldValue("START"), endTime: block.getFieldValue("END"), timeZone: "Europe/Amsterdam" }
+          : { type: "schedule", configured: false, weekdays: [] };
+      }
+      if (block.type === "homey_condition_weekday") return { type: "weekday", weekdays: [Number(block.getFieldValue("DAY"))] };
+      if (block.type === "homey_condition_not") {
+        const children = serializeChain(block.getInputTargetBlock("CONDITION"));
+        if (children.length !== 1) throw new Error("NIET vereist precies één voorwaarde.");
+        return { type: "not", condition: children[0] };
+      }
+      if (block.type === "homey_condition_duration") {
+        const children = serializeChain(block.getInputTargetBlock("CONDITION"));
+        if (children.length !== 1) throw new Error("Een duurblok vereist precies één voorwaarde.");
+        const minutes = Number(block.getFieldValue("MINUTES"));
+        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) throw new Error("De duur moet tussen 1 en 1440 minuten liggen.");
+        const child = children[0];
+        const id = block.id;
+        return { type: "duration", id, durationMs: minutes * 60000, condition: child };
+      }
+      if (block.type === "homey_condition_and" || block.type === "homey_condition_or") {
+        const conditions: any[] = [];
+        for (let index = 0; block.getInput("CONDITION" + index); index += 1) {
+          const children = serializeChain(block.getInputTargetBlock("CONDITION" + index));
+          if (children.length) conditions.push(...children);
+        }
+        if (conditions.length < 2) throw new Error("EN/OF vereist minimaal twee aangesloten voorwaarden.");
+        return { operator: block.type.endsWith("_and") ? "and" : "or", conditions };
+      }
+      if (block.type === "homey_condition_unsupported") throw new Error("Deze melding bevat een nog niet ondersteunde voorwaarde. Pas die nog niet aan in Blockly.");
+      throw new Error("Onbekend Blockly-blok: " + block.type);
+    };
+    const emitCondition = () => {
+      if (hydrating) return;
+      try {
+        const roots = ws.getTopBlocks(true).filter((block: any) => block.type.startsWith("homey_condition_"));
+        if (roots.length !== 1) throw new Error("De conditie moet uit precies één hoofdblok bestaan.");
+        const nodes = serializeChain(roots[0]);
+        if (nodes.length !== 1) throw new Error("Verbind alle voorwaarden tot één conditieboom.");
+        conditionChangeRef.current(nodes[0]);
+      } catch (error) {
+        // Invalid/incomplete workspaces are deliberately not written to configuration.
+      }
+    };
+    ws.addChangeListener((event: any) => {
+      if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
+      emitCondition();
+    });
+    hydrating = false;
     return () => ws.dispose();
   }, []);
   return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
@@ -934,6 +1021,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparison(item.condition, { operator, value }) } : item));
   };
+  const updateCondition = (condition: any) => {
+    if (!selected) return;
+    setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition } : item));
+  };
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
@@ -959,7 +1050,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
