@@ -264,3 +264,12 @@ De nieuwe Vitest-tests controleren:
 - afwijzing van ontbrekende onderliggende voorwaarden en duurwaarden buiten 1–1440 minuten.
 
 Dit zijn gerichte unit-tests van de conversiehelpers die de editor gebruikt. Ze vervangen nog niet de volledige browser-/Blockly-integratietest waarbij een gebruiker blokken sleept, opslaat en de melding opnieuw opent. Die integratietest blijft een afzonderlijk acceptatiepunt.
+
+
+### 11.12 Zichtbare validatie en ontbrekende Homey-bronnen
+
+De Blockly-editor toont nu de reden wanneer een onvolledige of ongeldige werkruimte niet naar het configuratiemodel kan worden geschreven. Geldige wijzigingen wissen deze foutmelding weer. De bestaande configuratie wordt bij een ongeldige werkruimte niet overschreven.
+
+Bij het opnieuw openen wordt een vergelijking waarvan de Homey-bron niet meer in de actuele broncatalogus voorkomt als expliciet niet-ondersteund blok getoond, met de oorspronkelijke node-JSON als block-data. De editor probeert zo'n bron niet stilzwijgend naar een andere dropdownoptie om te zetten. Opslaan blijft geblokkeerd zolang dit blok aanwezig is.
+
+Dit verbetert de foutfeedback en behoudt onbekende brondata. Het is geen vervanging voor de afgesproken handmatige browserintegratietest van slepen, verbinden, opslaan en opnieuw openen.
