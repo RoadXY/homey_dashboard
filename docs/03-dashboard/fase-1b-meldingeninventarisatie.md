@@ -197,7 +197,7 @@ De Homey Pro 2023 is read-only geïnventariseerd via de actuele apparaatlijst. O
 | CO₂ woonkamer | Multisensor woonkamer | `2c7a4148-1042-4dd5-80d4-81d07bcf66ed` | `measure_co2` | Bron gevonden; grens >1200 ppm blijft leidend |
 | Vriezer keuken | Koelkast keuken temperatuur | `64fc846e-01b0-438a-9114-4498ea8005e7` | `measure_temperature` | Reeds eerder bevestigd; grens >10 °C blijft leidend |
 | Achterdeur | Achterdeur | `8bd0184e-5cd7-443f-bafc-8d509ab32e7a` | `alarm_contact` | Reeds eerder bevestigd |
-| Buitentemperatuur | Weer | `c7e68c38-d722-4bda-81b1-9b7f5f9e5c0` | `measure_temperature` | Apparaat-ID in deze live inventarisatie is leidend; eerder vastgelegde ID moet bij migratie worden gecontroleerd |
+| Buitentemperatuur | Weer | `c7e68c38-1588-4c93-9db8-e854f4d251ab` | `measure_temperature` | Apparaat-ID in deze live inventarisatie is leidend; eerder vastgelegde ID moet bij migratie worden gecontroleerd |
 
 #### Raam- en contactapparaten aangetroffen
 
@@ -216,4 +216,4 @@ De volgende Homey-apparaten met `alarm_contact` zijn in de actuele inventarisati
 | Dakraam Sem | `d1ef5cbd-ba35-48b7-8219-0112403c80bf` |
 | Raam Sem | `f5a84ac4-1819-49ad-823f-c473c03b6043` |
 
-**Controlepunt:** de eerder in deze documentatie genoemde ID voor apparaat **Weer** moet worden gecorrigeerd/vergeleken met de live Homey-inventarisatie voordat een nieuwe configuratie hierop wordt gebaseerd. De live inventarisatie retourneerde apparaat-ID `c7e68c38-1588-4c93-9db8-e854f4d251ab`; deze waarde is leidend. De ID in de tabel hierboven is daarom niet als definitief vastgelegd.
+**Controlepunt:** bij migratie van de bestaande melding **Achterdeur open** wordt de apparaat-ID voor **Weer** gecontroleerd tegen deze live inventarisatie; de actuele ID is `c7e68c38-1588-4c93-9db8-e854f4d251ab`.
