@@ -29,6 +29,7 @@ type NotificationConfig = {
   schemaVersion: 1;
   id: string;
   title: string;
+  notificationTitle?: string;
   message: string;
   severity: Severity;
   enabled: boolean;
@@ -39,6 +40,7 @@ type NotificationConfig = {
 export type DashboardNotification = {
   id: string;
   title: string;
+  notificationTitle: string;
   message: string;
   severity: Severity;
   testOnly: boolean;
@@ -140,6 +142,7 @@ export function isValidNotificationConfig(value: unknown): value is Notification
   if (config.schemaVersion !== 1 ||
       typeof config.id !== "string" || config.id.trim().length === 0 ||
       typeof config.title !== "string" || config.title.trim().length === 0 ||
+      (config.notificationTitle !== undefined && typeof config.notificationTitle !== "string") ||
       typeof config.message !== "string" ||
       !["critical", "warning", "info"].includes(String(config.severity)) ||
       typeof config.enabled !== "boolean" ||
@@ -344,7 +347,7 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
   const evaluationTime = new Date();
   let nextEvaluationAt: number | undefined;
   const notifications = configs.map((config): DashboardNotification => {
-    const base = { id: config.id, title: config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
+    const base = { id: config.id, title: config.title, notificationTitle: config.notificationTitle?.trim() || config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
     const result = evaluateNode(config.condition, values, config.id, evaluationTime);
     if (result.reevaluateAt !== undefined) {
       nextEvaluationAt = nextEvaluationAt === undefined ? result.reevaluateAt : Math.min(nextEvaluationAt, result.reevaluateAt);
