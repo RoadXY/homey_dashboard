@@ -301,3 +301,7 @@ De browseradresbalk wordt met `history.replaceState` bijgewerkt; de pagina blijf
 
 ### i18n-opruiming
 De ongebruikte sleutels `settings.dashboard`, `settings.devices`, `settings.homey` en `settings.weatherTab` zijn uit zowel de Nederlandse als Engelse vertaling verwijderd. Er zijn nieuwe gelokaliseerde labels en beschrijvingen voor de Weer-placeholder toegevoegd. `settings.system` blijft behouden omdat deze nog in de statusweergave op Algemeen wordt gebruikt.
+
+
+## Herstel inklapbaar instellingenmenu (13 november 2026)
+Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div` was en dat de bestaande `sidebarCollapsed`-state niet aan de hoofdcontainer was gekoppeld. Daardoor leek de merknaam klikbaar via de cursorstijl, maar kon de klik de layout niet wijzigen; op touchapparaten kon de tekst worden geselecteerd. Dit is hersteld door de merknaam een echte knop te maken, de state aan de shell-class te koppelen en de sidebar via `aria-controls` te koppelen. Tekstselectie en de standaard touch-highlight zijn uitgeschakeld. De actie werkt op schermen waarop de navigatie links staat (vanaf 701 px); bij de horizontale mobiele navigatie is deze knop bewust niet actief.
