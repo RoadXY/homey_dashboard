@@ -20,6 +20,7 @@ type NotificationsResponse = { retrievedAt: string; notifications: DashboardNoti
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
+type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
@@ -69,7 +70,8 @@ function App() {
   const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
   const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
-  const [actionError, setActionError] = React.useState("");
+  const [transientNotifications, setTransientNotifications] = React.useState<TransientNotification[]>([]);
+  const notificationSequenceRef = React.useRef(0);
   const [executingAction, setExecutingAction] = React.useState("");
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(() => window.location.pathname.startsWith("/settings"));
@@ -191,19 +193,30 @@ function App() {
     try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { /* Keep the last known Homey state when a poll temporarily fails. */ }
   };
   React.useEffect(() => {
-    if (!actionError || notificationTimeout === "never") return;
-    const timeout = window.setTimeout(() => setActionError(""), Number(notificationTimeout) * 1000);
-    return () => window.clearTimeout(timeout);
-  }, [actionError, notificationTimeout]);
+    if (notificationTimeout === "never") return;
+    const timeoutMs = Number(notificationTimeout) * 1000;
+    const timers = transientNotifications
+      .filter(notification => notification.status === "active")
+      .map(notification => window.setTimeout(() => {
+        setTransientNotifications(current => current.map(item => item.id === notification.id && item.status === "active" ? { ...item, status: "expired" } : item));
+      }, Math.max(0, timeoutMs - (Date.now() - notification.createdAt))));
+    return () => timers.forEach(timer => window.clearTimeout(timer));
+  }, [transientNotifications, notificationTimeout]);
+  const dismissTransientNotification = (id: string) => {
+    setTransientNotifications(current => current.map(item => item.id === id && item.status === "active" ? { ...item, status: "dismissed" } : item));
+  };
   const executeAction = async (id: string) => {
     if (executingAction) return;
-    setExecutingAction(id); setActionError("");
+    setExecutingAction(id);
     try {
       const response = await fetch("/api/homey/quick-actions/" + encodeURIComponent(id) + "/execute", { method: "POST" });
       const result = await response.json() as { error?: string };
       if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));
       await refreshQuickActionStatuses();
-    } catch (error) { setActionError(error instanceof Error ? error.message : t("actions.executeError")); }
+    } catch (error) {
+      const notification: TransientNotification = { id: `action-error-${Date.now()}-${++notificationSequenceRef.current}`, message: error instanceof Error ? error.message : t("actions.executeError"), source: "quick-action", status: "active", createdAt: Date.now() };
+      setTransientNotifications(current => [...current, notification].slice(-50));
+    }
     finally { setExecutingAction(""); }
   };
   React.useEffect(() => {
@@ -363,7 +376,14 @@ function App() {
             );
           })}
         </div>
-        {actionError && <div className="action-error" role="alert">{actionError}</div>}
+        {transientNotifications.some(notification => notification.status === "active") && <div className="action-error-list">
+          {transientNotifications.filter(notification => notification.status === "active").map(notification => (
+            <div className="action-error" role="alert" key={notification.id}>
+              <span>{notification.message}</span>
+              <button type="button" className="action-error-dismiss" aria-label={t("notifications.dismiss")} title={t("notifications.dismiss")} onClick={() => dismissTransientNotification(notification.id)}>×</button>
+            </div>
+          ))}
+        </div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
           <div className="notifications-heading"><h1>{t("notifications.heading")}</h1>{(notifications.some((item) => item.state === "active") || notifications.some((item) => item.state === "unknown") || Boolean(loadError)) && <span className={"notification-status-indicator" + (notifications.some((item) => item.state === "unknown") || Boolean(loadError) ? " is-unknown" : "")} role="img" aria-label={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")} title={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")}>!</span>}</div>
           <div className="notifications-content">
