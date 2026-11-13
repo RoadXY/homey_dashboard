@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "co2-woonkamer-test",
   "title": "CO₂ woonkamer",
   "message": "Dit is een testmelding vanuit Homey Logic.",
