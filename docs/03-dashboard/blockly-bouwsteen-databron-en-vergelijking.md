@@ -152,3 +152,9 @@ De instellingenpagina voor meldingen laadt nu naast de bestaande meldingsconfigu
 - beschikbaarheidsinformatie in de apparaatopties.
 
 De catalogusfout is bewust onafhankelijk van het laden van meldingsconfiguraties: als Homey tijdelijk niet bereikbaar is, blijven bestaande meldingen en de editorpagina beschikbaar. De bronkeuze is in deze tussenstap nog niet gekoppeld aan de opgeslagen condition-JSON; de UI meldt dit expliciet. De volgende stap is de bronkeuze als Blockly-bouwsteen modelleren en de bestaande JSON-configuraties round-trip veilig houden.
+
+### 11.1 Bronkeuze schrijft nu naar het bestaande condition-model
+
+De bronkeuze op de meldingeninstellingenpagina is aangesloten op het opgeslagen condition-model. Bij een melding met een vergelijkingsnode wordt de geselecteerde apparaat-capability of Logic-variabele als bron op de eerste vergelijkingsnode toegepast. De rest van de condition-boom blijft behouden. De selectie gebruikt uitsluitend stabiele Homey-ID's; namen en eenheden dienen alleen voor de presentatie.
+
+Als een numerieke bron wordt gekozen, blijven de bestaande vergelijkingsoperatoren en numerieke waarde behouden. Als een booleaanse bron een numerieke operator zou erven, wordt die vergelijking omgezet naar `equals false`, zodat geen ongeldige combinatie in het JSON-model wordt opgeslagen. Meldingconfiguraties zonder vergelijkingsnode houden de bronkeuze uitgeschakeld. Dit is een tussenstap richting het uiteindelijke Blockly-bronblok; de huidige bronkeuze is nog een instellingenveld en nog geen Blockly-bouwsteen.
