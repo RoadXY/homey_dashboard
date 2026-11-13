@@ -1060,7 +1060,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     ]).then(([result, catalog]) => {
       if (!active) return;
       setConfigs(result.notifications); setSaved(result.notifications);
-      const first = result.notifications.find(item => findScheduleNode(item.condition));
+      const first = result.notifications[0];
       setSelectedId(first?.id ?? "");
       setSourceCatalog(catalog);
     }).catch(error => {
@@ -1070,8 +1070,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
-  const scheduled = configs.filter(item => findScheduleNode(item.condition));
-  const selected = scheduled.find(item => item.id === selectedId) ?? scheduled[0];
+  const selected = configs.find(item => item.id === selectedId) ?? configs[0];
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
@@ -1110,18 +1109,18 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   };
   return <div className="quick-settings-page notification-settings-page">
     <div className="notification-rule-selector">
-      <label htmlFor="notification-rule-select">{translate(locale, "notifications.schemas")}</label>
-      <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !scheduled.length} onChange={event => setSelectedId(event.target.value)}>
-        {scheduled.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
+      <label htmlFor="notification-rule-select">Meldingen</label>
+      <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !configs.length} onChange={event => setSelectedId(event.target.value)}>
+        {configs.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
       </select>
-      {!busy && !scheduled.length && <p>{translate(locale, "notifications.noSchedules")}</p>}
+      {!busy && !configs.length && <p>Er zijn nog geen meldingen beschikbaar.</p>}
     </div>
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
-        </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
+        </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
     </div>
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
