@@ -1248,7 +1248,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   }, []);
   return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
 }
-function NotificationSettingsPage({ locale }: { locale: string }) {
+function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; onDirtyChange: (dirty: boolean) => void }) {
   const t = (key: string) => translate(locale, key);
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
   const [sourceCatalog, setSourceCatalog] = React.useState<NotificationSourceCatalog | null>(null);
@@ -1296,6 +1296,21 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   // (including the enabled toggle) become effective after the user presses Save.
   const notificationSourceIssues = sourceCatalog ? saved.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
+  React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
+  const confirmDiscardDraft = () => {
+    if (!dirty) return true;
+    return window.confirm("Je hebt niet-opgeslagen wijzigingen in deze melding. Als je doorgaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+  };
+  const switchNotification = (id: string) => {
+    if (id === selectedId) { setNotificationPickerOpen(false); return; }
+    if (!confirmDiscardDraft()) return;
+    if (dirty) setConfigs(saved);
+    setSelectedId(id);
+    setNotificationPickerOpen(false);
+    setNotificationSearch("");
+    setMessage("");
+    setIsError(false);
+  };
   const updateSource = (key: string) => {
     if (!selected || !key) return;
     const deviceMatch = key.startsWith("device:") ? key.slice(7).split(":") : null;
@@ -1365,7 +1380,9 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       enabled: true,
       condition: initialCondition
     };
-    setConfigs(current => [...current, next]);
+    if (!confirmDiscardDraft()) return;
+    if (dirty) setConfigs(saved);
+    setConfigs(current => [...current.filter(item => saved.some(existing => existing.id === item.id)), next]);
     setSelectedId(id);
     setMessage("");
     setIsError(false);
@@ -1398,7 +1415,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
           <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
             {configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())).map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
-                onClick={() => { setSelectedId(item.id); setNotificationPickerOpen(false); setNotificationSearch(""); }}>{item.title}</button>
+                onClick={() => switchNotification(item.id)}>{item.title}</button>
             )}
             {!configs.some(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase())) && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
           </div>
@@ -1627,7 +1644,18 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
 function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () => void; initialPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather"; onNavigate: (path: string) => void }) {
   const [page, setPage] = React.useState<"general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather">(initialPage);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+  const [notificationDirty, setNotificationDirty] = React.useState(false);
   React.useEffect(() => setPage(initialPage), [initialPage]);
+  const confirmLeaveNotifications = () => {
+    if (page !== "notifications" || !notificationDirty) return true;
+    return window.confirm("Je hebt niet-opgeslagen wijzigingen in je meldingen. Als je doorgaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+  };
+  const navigateSettings = (nextPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather", path: string) => {
+    if (nextPage === page || !confirmLeaveNotifications()) return;
+    setPage(nextPage);
+    onNavigate(path);
+  };
+  const leaveSettings = () => { if (confirmLeaveNotifications()) onBack(); };
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -1741,7 +1769,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
         const pages = ["general","quick-actions","notifications","measurement-tiles","weather"] as const;
         const icons = ["mdi-cog-outline","mdi-flash-outline","mdi-bell-outline","mdi-thermometer","mdi-weather-partly-cloudy"];
-        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>{setPage(pages[index]);onNavigate(routes[index]);}} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
+        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>navigateSettings(pages[index],routes[index])} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
       })}
       <div className="sidebar-product"><i className="mdi mdi-information-outline" aria-hidden="true" /><span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
@@ -1781,7 +1809,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} /> : page === "weather" ? <WeatherSettingsPlaceholder t={t} /> : null}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPlaceholder t={t} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
