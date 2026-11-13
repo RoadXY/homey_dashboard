@@ -107,8 +107,8 @@ function collectSources(config: NotificationConfig): Source[] {
   if (isConditionNode(config.condition)) {
     const collect = (node: ConditionNode): Source[] => {
       if ("conditions" in node) return node.conditions.flatMap(collect);
-      if (node.type === "duration") return collect(node.condition);
-      if (node.type === "schedule") return [];
+      if ("type" in node && node.type === "duration") return collect(node.condition);
+      if ("type" in node && node.type === "schedule") return [];
       return [node.source];
     };
     return collect(config.condition);
@@ -166,14 +166,14 @@ function evaluateNode(
   notificationId: string,
   now: Date,
 ): Evaluation {
-  if (node.type === "schedule") {
+  if ("type" in node && node.type === "schedule") {
     try {
       return { state: isScheduleActive(node, now) ? "active" : "inactive" };
     } catch {
       return { state: "unknown", reason: "schedule_invalid" };
     }
   }
-  if (node.type === "duration") {
+  if ("type" in node && node.type === "duration") {
     const child = evaluateNode(node.condition, values, notificationId, now);
     return evaluateDurationGate(
       `${notificationId}:${node.id}`,
