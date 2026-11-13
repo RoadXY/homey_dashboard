@@ -59,6 +59,10 @@ Voorbeeld:
 
 Tijdens de wachttijd is de duurvoorwaarde `inactive`; zodra de volledige duur is verstreken wordt deze `active`. Een onderliggende `inactive`- of `unknown`-uitkomst reset de timer. De duurstatus wordt momenteel in servergeheugen bijgehouden en begint na een containerherstart opnieuw. Persistente timers en herstel na herstart zijn nog niet geïmplementeerd.
 
+## CI-correctie – 13 november 2026
+
+De eerste integratiecommit faalde in de TypeScript-build doordat TypeScript de nieuwe condition-node union niet voldoende kon vernauwen. Dit is opgelost in commit `abcba40705c6362c4f6cabb81652b3b544ef5434` door expliciete discriminant-controles toe te passen. De GitHub Actions-run voor die correctie is volledig geslaagd (build inclusief TypeScript-compilatie).
+
 ## Tests toegevoegd
 
 - Tijdschema: start-/eindtijdgrenzen, zondagplanning, nachtoverschrijding en ongeldige invoer.
