@@ -120,3 +120,7 @@ In de rechterbovenhoek van de kopregel **Meldingen** staat een ronde uitroepteke
 - **Niet zichtbaar:** alle meldingsvoorwaarden zijn betrouwbaar geëvalueerd en er zijn geen actieve meldingen.
 
 De indicator heeft een toegankelijke label en tooltip in Nederlands en Engels. Bij `prefers-reduced-motion` blijft het symbool zichtbaar maar knippert het niet.
+
+
+## Instellingen – omschrijving meldingenpagina (13 november 2026)
+De pagina Instellingen → Meldingen toont bovenaan dezelfde links uitgelijnde korte toelichting als de overige instellingenpagina's. De tekst gebruikt de bestaande i18n-sleutel `notifications.subtitle` (NL: 'Beheer de voorwaarden achter dashboardmeldingen met Blockly.'). Er wordt geen dubbele paginatitel toegevoegd, omdat de selectiekaart en editor hun eigen koppen hebben.
