@@ -198,7 +198,7 @@ app.get<{ Params: { file: string } }>("/api/locales/:file", async (request, repl
 
 app.get("/api/settings/language", async () => {
   const settings = await readDashboardSettings();
-  return { language: settings.language };
+  return { language: settings.language, notificationTimeout: settings.notificationTimeout };
 });
 
 app.get("/api/settings/general", async (request, reply) => {
