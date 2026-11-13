@@ -369,3 +369,7 @@ Elke melding kan afzonderlijk aan/uit worden gezet via een schakelaar in de edit
 
 ## Meldingen – in-/uitschakelen pas actief na Opslaan (13 november 2026)
 De schakelaar wijzigt alleen de conceptconfiguratie. De zichtbare Homey-bronfouten worden berekend op basis van de laatst opgeslagen meldingsconfiguratie. Pas na een succesvolle Opslaan-actie wordt de opgeslagen toestand bijgewerkt en verdwijnen of verschijnen de bijbehorende fouten. Wisselen tussen meldingen zonder op te slaan verandert de actieve status en foutmeldingen niet; een mislukte opslag evenmin.
+
+
+## Meldingen / Blockly – Genereer melding in toolbox en dubbele root blokkeren (13 november 2026)
+Het blok `Genereer melding` is als sleepbaar blok toegevoegd aan de toolboxcategorie **Melding**. De bestaande root in het werkveld blijft automatisch aanwezig en vergrendeld; toolbox-exemplaren zijn verplaatsbaar/verwijderbaar. De workspacecontrole detecteert expliciet meer dan één rootblok, toont de foutmelding “Er mag maar één blok 'Genereer melding' in het werkveld staan.” en slaat de ongeldige structuur niet op.
