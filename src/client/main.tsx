@@ -1280,6 +1280,24 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     const id = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
       ? crypto.randomUUID()
       : "notification-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+    const firstDeviceSource = sourceCatalog?.devices
+      .map(device => ({ device, capability: device.capabilities[0] }))
+      .find(item => item.capability);
+    const initialCondition = firstDeviceSource
+      ? {
+          type: "comparison",
+          source: {
+            type: "device-capability",
+            deviceId: firstDeviceSource.device.id,
+            capabilityId: firstDeviceSource.capability.id,
+            expectedType: firstDeviceSource.capability.type
+          },
+          condition: {
+            operator: "equals",
+            value: firstDeviceSource.capability.type === "boolean" ? true : 0
+          }
+        }
+      : { type: "schedule", configured: false, weekdays: [] };
     const next: NotificationConfigEditor = {
       schemaVersion: 1,
       id,
@@ -1287,7 +1305,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       message: t("notifications.defaultMessage"),
       severity: "info",
       enabled: true,
-      condition: { type: "schedule", configured: false, weekdays: [] }
+      condition: initialCondition
     };
     setConfigs(current => [...current, next]);
     setSelectedId(id);
