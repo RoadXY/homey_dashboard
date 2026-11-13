@@ -111,3 +111,12 @@ De gebruiker kiest als definitieve basisstructuur één vaste hoofdconstructie *
 - Een Homey-apparaat- of Logic-variabeleblok bevat bron, operator en waarde als één voorwaarde. Het losse vergelijkingsblok verdwijnt uit de toolbox.
 - Bestaande conditie-JSON wordt in de vaste hoofdconstructie gehydrateerd. Eén direct onderdeel blijft ongewijzigd; meerdere directe onderdelen worden bij serialisatie een canonieke AND-node.
 - De JSON-schema's en backend-evaluator blijven ongewijzigd; er komt geen tweede evaluatie-implementatie in Blockly.
+
+
+## Dashboard – meldingenindicator (13 november 2026)
+In de rechterbovenhoek van de kopregel **Meldingen** staat een ronde uitroeptekenindicator wanneer er aandacht nodig is:
+- **Rood, knipperend:** minimaal één melding heeft status `active`.
+- **Amber, knipperend:** minimaal één melding heeft status `unknown` of de meldingen-API kon niet worden geladen. Dit duidt op een onbetrouwbare/onvolledige status en niet op een bevestigde actieve melding.
+- **Niet zichtbaar:** alle meldingsvoorwaarden zijn betrouwbaar geëvalueerd en er zijn geen actieve meldingen.
+
+De indicator heeft een toegankelijke label en tooltip in Nederlands en Engels. Bij `prefers-reduced-motion` blijft het symbool zichtbaar maar knippert het niet.
