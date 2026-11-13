@@ -194,5 +194,10 @@
   "settings.weatherSunriseSunset": "Sunrise and sunset",
   "notifications.activeIndicator": "There are active notifications",
   "notifications.unknownIndicator": "Notification status cannot be fully checked",
-  "settings.automaticHomeyLanguage": "Automatic (Homey language)"
+  "settings.automaticHomeyLanguage": "Automatic (Homey language)",
+  "notifications.create": "New notification",
+  "notifications.newTitle": "New notification",
+  "notifications.name": "Notification name",
+  "notifications.defaultMessage": "A dashboard notification is active.",
+  "notifications.emptyList": "There are no notifications yet. Create your first notification."
 }
