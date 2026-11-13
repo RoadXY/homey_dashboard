@@ -1280,9 +1280,10 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     const id = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
       ? crypto.randomUUID()
       : "notification-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
-    const firstDeviceSource = sourceCatalog?.devices
+    const deviceSources = sourceCatalog?.devices
       .map(device => ({ device, capability: device.capabilities[0] }))
-      .find(item => item.capability);
+      .filter(item => item.capability) ?? [];
+    const firstDeviceSource = deviceSources.find(item => item.device.available) ?? deviceSources[0];
     const initialCondition = firstDeviceSource
       ? {
           type: "comparison",
