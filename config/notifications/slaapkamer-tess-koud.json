@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "id": "slaapkamer-tess-koud",
   "title": "Slaapkamer Tess koud",
   "message": "De temperatuur in slaapkamer Tess is lager dan 12 °C.",
