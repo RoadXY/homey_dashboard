@@ -901,11 +901,12 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
         const sourceBlock = ws.newBlock(sourceType);
         sourceBlock.setFieldValue(sourceKey, "SOURCE");
-        block = ws.newBlock("homey_condition_comparison");
-        block.setFieldValue(node.condition?.operator ?? "equals", "OP");
-        block.setFieldValue(String(node.condition?.value ?? false), "VALUE");
-        sourceBlock.nextConnection.connect(block.previousConnection);
-        sourceBlock.initSvg(); sourceBlock.render();
+        const comparisonBlock = ws.newBlock("homey_condition_comparison");
+        comparisonBlock.setFieldValue(node.condition?.operator ?? "equals", "OP");
+        comparisonBlock.setFieldValue(String(node.condition?.value ?? false), "VALUE");
+        sourceBlock.nextConnection.connect(comparisonBlock.previousConnection);
+        comparisonBlock.initSvg(); comparisonBlock.render();
+        block = sourceBlock;
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
         days.forEach(([day, field]) => block.setFieldValue(node.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
