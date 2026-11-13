@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "lamp-bram-aan",
+  "title": "Lamp Bram staat aan",
+  "message": "De lamp van Bram staat aan tijdens het ingestelde slaapschema.",
+  "severity": "info",
+  "enabled": true,
+  "condition": {
+    "operator": "and",
+    "conditions": [
+      {
+        "type": "comparison",
+        "source": {
+          "type": "device-capability",
+          "deviceId": "489075ba-fe6d-4b15-9e33-8a7539dafbda",
+          "capabilityId": "onoff",
+          "expectedType": "boolean"
+        },
+        "condition": {
+          "operator": "equals",
+          "value": true
+        }
+      },
+      {
+        "type": "schedule",
+        "configured": false,
+        "weekdays": []
+      }
+    ]
+  }
+}
