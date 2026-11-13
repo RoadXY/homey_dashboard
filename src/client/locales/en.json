@@ -193,5 +193,6 @@
   "settings.weatherPressure": "Air pressure",
   "settings.weatherSunriseSunset": "Sunrise and sunset",
   "notifications.activeIndicator": "There are active notifications",
-  "notifications.unknownIndicator": "Notification status cannot be fully checked"
+  "notifications.unknownIndicator": "Notification status cannot be fully checked",
+  "settings.automaticHomeyLanguage": "Automatic (Homey language)"
 }
