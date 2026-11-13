@@ -562,3 +562,36 @@ body {
 .measurement-preview span { color:var(--text-muted); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
 .measurement-preview strong { color:var(--text-primary); font-size:18px; }
 @media (max-width: 720px) { .measurement-fields { grid-template-columns:1fr; } .measurement-fields label:first-child { grid-column:auto; } }
+
+
+/* Meldingen / Blockly tijdschema-editor */
+.notification-settings-page { min-height: 100%; }
+.notification-settings-layout { display: grid; grid-template-columns: minmax(250px, .8fr) minmax(520px, 1.8fr); gap: 18px; align-items: start; }
+.notification-list-card, .notification-editor-card { min-width: 0; }
+.notification-list-card h2, .notification-editor-card h2 { margin: 0 0 8px; font-size: 18px; }
+.notification-rule-row { width: 100%; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; border-radius: 12px; padding: 13px 12px; margin-top: 8px; background: rgba(255,255,255,.025); color: var(--text-primary); text-align: left; cursor: pointer; }
+.notification-rule-row:hover, .notification-rule-row.selected { border-color: rgba(145,165,190,.35); background: rgba(130,150,175,.10); }
+.notification-rule-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: rgba(130,150,175,.12); font-size: 18px; }
+.notification-rule-row > span:nth-child(2) { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.notification-rule-row strong { font-size: 13px; font-weight: 600; }
+.notification-rule-row small { color: var(--text-muted); font-size: 11px; }
+.notification-editor-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+.notification-editor-heading p { margin: 0; color: var(--text-muted); font-size: 12px; }
+.notification-severity-pill { padding: 5px 9px; border-radius: 20px; background: rgba(255,255,255,.07); color: var(--text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.schedule-blockly-shell { overflow: hidden; border: 1px solid rgba(150,165,185,.18); border-radius: 14px; background: #171b22; }
+.schedule-blockly-toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(150,165,185,.15); color: var(--text-secondary); font-size: 12px; }
+.schedule-blockly-toolbar span { display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 600; }
+.schedule-blockly-toolbar small { color: var(--text-muted); font-size: 11px; }
+.schedule-blockly-workspace { width: 100%; height: 360px; }
+.schedule-blockly-workspace .blocklyMainBackground { stroke: none; fill: #171b22; }
+.schedule-blockly-workspace .blocklyToolboxDiv { background: #202630; border-right: 1px solid rgba(150,165,185,.15); }
+.schedule-blockly-workspace .blocklyTreeLabel { color: #dce3ec; font-size: 12px; }
+.schedule-blockly-workspace .blocklyFlyoutBackground { fill: #242c37; fill-opacity: .98; }
+.schedule-blockly-workspace .blocklyText { fill: #f4f6f9; }
+.schedule-blockly-workspace .blocklyFieldRect { fill: #303a48; stroke: rgba(255,255,255,.18); }
+.schedule-blockly-workspace .blocklyEditableText > rect { fill: #303a48; }
+.schedule-blockly-workspace .blocklyScrollbarHandle { fill: #657386; }
+.notification-editor-hint { display: flex; gap: 8px; align-items: flex-start; margin: 14px 2px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.notification-editor-hint i { color: #9eb2c8; font-size: 16px; }
+@media (max-width: 1050px) { .notification-settings-layout { grid-template-columns: 1fr; } .notification-list-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; } .notification-list-card h2, .notification-list-card > p { grid-column: 1/-1; } }
+@media (max-width: 680px) { .notification-list-card { display: block; } .schedule-blockly-workspace { height: 320px; } .schedule-blockly-toolbar { align-items: flex-start; flex-direction: column; } }
