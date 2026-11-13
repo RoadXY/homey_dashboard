@@ -46,7 +46,22 @@ export function isValidScheduleCondition(schedule: ScheduleCondition): boolean {
  * start of an overnight interval (e.g. Monday 22:00–Tuesday 07:00).
  * Intl handles the selected IANA timezone, including DST transitions.
  */
-export function isScheduleActive(schedule: ScheduleCondition, now: Date): boolean {
+function createScheduleFormatter(schedule: ScheduleCondition): Intl.DateTimeFormat {
+  const timeZone = schedule.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
+}
+
+function isScheduleActiveWithFormatter(
+  schedule: ScheduleCondition,
+  now: Date,
+  formatter: Intl.DateTimeFormat,
+): boolean {
   if (!Array.isArray(schedule.weekdays) || schedule.weekdays.length === 0 ||
       schedule.weekdays.some((day) => !Number.isInteger(day) || day < 0 || day > 6)) {
     throw new Error("Een tijdschema moet minimaal één geldige weekdag bevatten.");
@@ -56,14 +71,7 @@ export function isScheduleActive(schedule: ScheduleCondition, now: Date): boolea
   const end = parseClockTime(schedule.endTime);
   if (start === end) throw new Error("Begin- en eindtijd van een tijdschema mogen niet gelijk zijn.");
 
-  const timeZone = schedule.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(now);
+  const parts = formatter.formatToParts(now);
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
   const weekday = WEEKDAY_INDEX[values.weekday];
   const minuteOfDay = Number(values.hour) * 60 + Number(values.minute);
@@ -76,6 +84,29 @@ export function isScheduleActive(schedule: ScheduleCondition, now: Date): boolea
   const previousWeekday = (weekday + 6) % 7;
   return (selected.has(weekday) && minuteOfDay >= start) ||
     (selected.has(previousWeekday) && minuteOfDay < end);
+}
+
+export function isScheduleActive(schedule: ScheduleCondition, now: Date): boolean {
+  return isScheduleActiveWithFormatter(schedule, now, createScheduleFormatter(schedule));
+}
+
+/**
+ * Finds the first real-time minute at which this schedule changes state.
+ * Scanning actual instants (rather than constructing local dates) naturally
+ * handles missing and repeated wall-clock minutes during DST transitions.
+ */
+export function nextScheduleTransition(schedule: ScheduleCondition, now: Date): number {
+  const formatter = createScheduleFormatter(schedule);
+  const currentState = isScheduleActiveWithFormatter(schedule, now, formatter);
+  const currentMinute = Math.floor(now.getTime() / 60_000) * 60_000;
+  const maxMinutes = 8 * 24 * 60;
+  for (let minute = 1; minute <= maxMinutes; minute += 1) {
+    const candidate = new Date(currentMinute + minute * 60_000);
+    if (isScheduleActiveWithFormatter(schedule, candidate, formatter) !== currentState) {
+      return candidate.getTime();
+    }
+  }
+  throw new Error("Geen volgende overgang gevonden voor het tijdschema.");
 }
 
 /**
