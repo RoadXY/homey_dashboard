@@ -758,7 +758,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         };
         search.addEventListener('input', renderOptions);
         renderOptions();
-        dropdown.showPositionedByField(this, () => content.replaceChildren());
+        dropdown.showPositionedByField(this, () => {});
         search.focus();
       }
     }
