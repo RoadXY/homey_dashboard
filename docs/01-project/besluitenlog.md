@@ -361,3 +361,7 @@ De custom doorzoekbare Homey-bronkeuzelijst synchroniseerde het vergelijkingsvel
 
 ## Meldingen / Blockly – geselecteerde bron in beeld en robuuste waardeconversie (13 november 2026)
 De bronkeuzelijst positioneert bij openen automatisch de geselecteerde Homey-bron in beeld. De vergelijkingsserialisatie normaliseert Blockly-veldwaarden eerst naar tekst, omdat Blockly afhankelijk van het veldtype string-, number- of booleanwaarden kan leveren; hiermee wordt de fout `l.trim is not a function` voorkomen.
+
+
+## Meldingen – individuele meldingen uitschakelen (13 november 2026)
+Elke melding kan afzonderlijk aan/uit worden gezet via een schakelaar in de editor. De instelling gebruikt het bestaande `enabled`-veld en wordt opgeslagen met de overige meldingsinstellingen. Uitgeschakelde meldingen worden overgeslagen door de evaluatie-engine en door de Homey-broncontrole, zodat offline/ontbrekende bronnen geen foutwaarschuwing geven zolang de melding uit staat. Bij opnieuw inschakelen wordt de melding direct weer meegenomen in de broncontrole en de eerstvolgende evaluatie; bronproblemen worden dan opnieuw zichtbaar. De voorwaarden blijven bewaard.
