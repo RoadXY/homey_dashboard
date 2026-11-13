@@ -475,3 +475,27 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - Nieuwe en bestaande configuraties zonder `icon` blijven compatibel: de server vult automatisch `thermometer` als standaardpictogram in.
 - De configuratie blijft opgeslagen in `data/measurement-tiles.json`; geen aparte i18n-vertalingen nodig voor iconnamen.
 - Nog te testen na deployment: icon selecteren, opslaan, pagina herladen en controleren op instellingenpreview en dashboard.
+
+
+## Meldingsconfiguratie – versie 2 (13 november 2026)
+
+Het canonieke meldingsmodel wordt vanaf versie 2 expliciet en uniform opgebouwd. Het JSON Schema staat in `docs/04-configuratie/schemas/notification-v2.schema.json`.
+
+- Iedere configuratie bevat `schemaVersion: 2` en één `condition`-boom. De oude top-level combinatie van `source` plus `condition` wordt niet meer gebruikt in nieuwe configuraties.
+- Een vergelijkingsblad is expliciet `type: "comparison"` en bevat `source` plus `condition`. Een bron is een Homey-apparaat-capability (apparaat-ID + capability-ID) of een Homey Logic-variabele (variabele-ID).
+- AND/OR-groepen bevatten een niet-lege lijst `conditions`; een groep mag andere groepen bevatten.
+- Duurvoorwaarden zijn `type: "duration"` met een stabiele blok-ID, `durationMs` en een onderliggende conditie.
+- Tijdschema's zijn `type: "schedule"` met weekdagen (zondag=0 t/m zaterdag=6), lokale begin-/eindtijd en optioneel een IANA-tijdzone. Bij ontbrekende tijdzone gebruikt de backend de servertijdzone; de dashboardstandaard blijft `Europe/Amsterdam`.
+- De bestaande grenzen blijven gelden: maximaal 12 niveaus en 100 conditienodes per melding; duration-ID's zijn binnen één melding uniek.
+- Vergelijkingswaarden moeten overeenkomen met het brontype. `lessThan` en `greaterThan` zijn alleen geldig voor numerieke bronnen.
+- Metadata blijft dashboard-eigendom: stabiele melding-ID, titel, bericht, severity en actief/inactief. Een optioneel pictogramveld kan worden gebruikt wanneer de editor dit aanbiedt.
+
+### Compatibiliteit en migratie
+
+Bestaande versie-1-configuraties blijven leesbaar. De backend normaliseert ze naar het interne conditiemodel; bestaande bestanden worden niet stilzwijgend herschreven. Nieuwe of opnieuw opgeslagen configuraties worden versie 2.
+
+Voor de migratie van een versie-1 Logic-bron die alleen een variabelenaam bevat, moet de backend de actuele Homey Logic-inventarisatie gebruiken om de naam naar de stabiele variabele-ID om te zetten. Als Homey offline is of de variabele niet meer bestaat, mag de configuratie niet worden gegokt of automatisch aan een andere variabele worden gekoppeld; de melding wordt als onopgelost gerapporteerd totdat de bron weer eenduidig kan worden vastgesteld.
+
+De JSON Schema-validatie wordt aangevuld met domeinvalidatie in de backend, onder andere voor unieke duration-ID's, maximumdiepte/-omvang, geldige IANA-tijdzones en typecompatibiliteit tussen bron en vergelijking. Het schema alleen is dus niet de volledige runtime-validatie.
+
+De bestaande versie-1-bestanden worden pas omgezet nadat de versie-2-normalisatie en migratietests zijn geïmplementeerd. Tot die tijd blijven ze ongewijzigd.
