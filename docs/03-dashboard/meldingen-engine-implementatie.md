@@ -196,3 +196,8 @@ Dezelfde synchronisatie wordt gebruikt wanneer de gebruiker tijdens het bewerken
 ## Meldingen individueel in- en uitschakelen (13 november 2026)
 
 Elke melding heeft een eigen `enabled`-schakelaar in de editor. De bestaande configuratie-eigenschap wordt via dezelfde Opslaan-actie bewaard. Uitgeschakelde meldingen worden door de meldingenengine niet geëvalueerd en leveren geen dashboardmelding of her-evaluatietimer op. Ook de instellingencontrole op ontbrekende/niet-beschikbare Homey-bronnen slaat uitgeschakelde meldingen over. Zodra een melding weer wordt ingeschakeld, wordt zij opnieuw meegenomen in de broncontrole en de eerstvolgende engine-evaluatie; bestaande bronproblemen verschijnen dan opnieuw. De Blockly-voorwaarde en overige instellingen blijven behouden wanneer een melding wordt uitgeschakeld.
+
+
+## Opslaan bepaalt wanneer in-/uitschakelen actief wordt (13 november 2026)
+
+De schakelaar voor een melding wijzigt eerst alleen de lokale conceptconfiguratie (`configs`). De Homey-broncontrole en de zichtbare foutmeldingen zijn bewust gebaseerd op de laatst opgeslagen configuratie (`saved`), niet op conceptwijzigingen. Pas na een succesvolle POST op Opslaan worden `configs` en `saved` gelijkgetrokken; dan verandert ook de broncontrole. Navigeren tussen meldingen zonder op te slaan laat de bestaande foutmeldingen dus ongewijzigd. Bij een mislukte save blijft de opgeslagen situatie leidend. Hierdoor wordt een melding pas daadwerkelijk uitgeschakeld of ingeschakeld nadat de gebruiker Opslaan heeft bevestigd.
