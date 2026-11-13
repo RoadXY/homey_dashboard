@@ -1064,6 +1064,26 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
       }
     };
+    if (!Blockly.Blocks.homey_condition_time_only) Blockly.Blocks.homey_condition_time_only = {
+      init() {
+        this.appendDummyInput().appendField("Tijd tussen")
+          .appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START")
+          .appendField("en")
+          .appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(265);
+        this.setTooltip("Controleert alleen de tijd en geldt iedere dag. Ondersteunt ook intervallen over middernacht.");
+      }
+    };
+    if (!Blockly.Blocks.homey_condition_weekdays) Blockly.Blocks.homey_condition_weekdays = {
+      init() {
+        this.appendDummyInput().appendField("Dagen van de week:");
+        const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+        const row = this.appendDummyInput();
+        labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
+        this.setTooltip("De voorwaarde is actief op één of meer aangevinkte weekdagen.");
+      }
+    };
     for (const type of ["and","or"]) {
       const blockType = "homey_condition_" + type;
       if (!Blockly.Blocks[blockType]) Blockly.Blocks[blockType] = {
@@ -1139,6 +1159,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           contents: [
             { kind: "block", type: "homey_condition_schedule" },
             { kind: "block", type: "homey_condition_weekday" },
+            { kind: "block", type: "homey_condition_weekdays" },
+            { kind: "block", type: "homey_condition_time_only" },
             { kind: "block", type: "homey_condition_duration" },
             { kind: "block", type: "homey_condition_duration_inactive" }
           ]
@@ -1198,11 +1220,18 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             block = candidate;
           }
         }
+      } else if (node.type === "schedule" && node.mode === "time-only") {
+        block = ws.newBlock("homey_condition_time_only");
+        block.setFieldValue(normalizeScheduleTimeInput(node.startTime ?? "07:00"), "START");
+        block.setFieldValue(normalizeScheduleTimeInput(node.endTime ?? "22:00"), "END");
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
         days.forEach(([day, field]) => block.setFieldValue(node.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
         if (node.startTime) block.setFieldValue(normalizeScheduleTimeInput(node.startTime), "START");
         if (node.endTime) block.setFieldValue(normalizeScheduleTimeInput(node.endTime), "END");
+      } else if (node.type === "weekday" && node.weekdays?.length > 1) {
+        block = ws.newBlock("homey_condition_weekdays");
+        days.forEach(([day, field]) => block.setFieldValue(node.weekdays.includes(day) ? "TRUE" : "FALSE", field));
       } else if (node.type === "weekday") {
         block = ws.newBlock("homey_condition_weekday");
         if (node.weekdays?.length === 1) block.setFieldValue(String(node.weekdays[0]), "DAY");
@@ -1285,6 +1314,19 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         return children.length ? { operator: "and", conditions: [schedule, ...children] } : schedule;
       }
       if (block.type === "homey_condition_weekday") return { type: "weekday", weekdays: [Number(block.getFieldValue("DAY"))] };
+      if (block.type === "homey_condition_weekdays") {
+        const weekdays = days.filter(([, field]) => block.getFieldValue(field) === "TRUE").map(([day]) => day);
+        if (weekdays.length === 0) throw new Error("Selecteer minimaal één weekdag.");
+        return { type: "weekday", weekdays };
+      }
+      if (block.type === "homey_condition_time_only") {
+        const startTime = normalizeScheduleTimeInput(block.getFieldValue("START"));
+        const endTime = normalizeScheduleTimeInput(block.getFieldValue("END"));
+        if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(startTime) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(endTime) || startTime === endTime) {
+          throw new Error("Vul twee verschillende geldige tijden in (UU:MM).");
+        }
+        return { type: "schedule", mode: "time-only", weekdays: [0,1,2,3,4,5,6], startTime, endTime, timeZone: "Europe/Amsterdam" };
+      }
       if (block.type === "homey_condition_not") {
         const children = serializeChain(block.getInputTargetBlock("CONDITION"));
         if (children.length !== 1) throw new Error("NIET vereist precies één voorwaarde.");
