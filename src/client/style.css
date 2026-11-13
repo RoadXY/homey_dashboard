@@ -787,3 +787,27 @@ body {
     padding:14px;
   }
 }
+
+/* Keep settings navigation labels on one line on compact desktop/tablet widths. */
+@media (min-width: 701px) and (max-width: 1050px) {
+  .settings-shell:not(.sidebar-collapsed) {
+    grid-template-columns:200px minmax(0,1fr);
+  }
+  .settings-sidebar {
+    padding:28px 12px 20px;
+  }
+  .settings-nav {
+    gap:10px;
+    padding:0 12px;
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .settings-nav > .mdi {
+    width:20px;
+    flex-basis:20px;
+    font-size:20px;
+  }
+  .settings-nav-label {
+    white-space:nowrap;
+  }
+}
