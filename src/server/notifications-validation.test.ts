@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidConditionNode, isValidNotificationConfig } from "./notifications.js";
+import { isValidConditionNode, isValidConditionNodeV2, isValidNotificationConfig, normalizeNotificationConfig } from "./notifications.js";
 
 describe("isValidConditionNode", () => {
   const leaf = {
@@ -98,5 +98,88 @@ describe("isValidNotificationConfig", () => {
       source: { type: "logic-variable", name: "temperatuur", expectedType: "number" },
       condition: { operator: "equals", value: true },
     })).toBe(false);
+  });
+});
+
+
+describe("notification schema version 2", () => {
+  const comparison = {
+    type: "comparison",
+    source: { type: "logic-variable", variableId: "logic-id-123", expectedType: "boolean" },
+    condition: { operator: "equals", value: true },
+  };
+
+  it("accepts a version 2 tree with stable Logic IDs and composable nodes", () => {
+    expect(isValidConditionNodeV2({
+      operator: "and",
+      conditions: [
+        comparison,
+        {
+          type: "duration", id: "hold-door-open", durationMs: 60_000,
+          condition: {
+            type: "schedule", weekdays: [1, 2, 3, 4, 5],
+            startTime: "07:00", endTime: "22:00", timeZone: "Europe/Amsterdam",
+          },
+        },
+      ],
+    })).toBe(true);
+  });
+
+  it("rejects legacy Logic names in version 2 and stable IDs in version 1", () => {
+    expect(isValidConditionNodeV2({
+      ...comparison,
+      source: { type: "logic-variable", name: "deur_open", expectedType: "boolean" },
+    })).toBe(false);
+    expect(isValidConditionNode({
+      ...comparison,
+      source: { type: "logic-variable", variableId: "logic-id-123", expectedType: "boolean" },
+    })).toBe(false);
+  });
+
+  it("accepts a version 2 notification config only with a condition tree", () => {
+    expect(isValidNotificationConfig({
+      schemaVersion: 2, id: "v2-rule", title: "V2 regel", message: "Test",
+      severity: "info", enabled: true, condition: comparison,
+    })).toBe(true);
+    expect(isValidNotificationConfig({
+      schemaVersion: 2, id: "v2-legacy", title: "Oud formaat", message: "Test",
+      severity: "info", enabled: true,
+      source: { type: "logic-variable", name: "deur_open", expectedType: "boolean" },
+      condition: { operator: "equals", value: true },
+    })).toBe(false);
+  });
+
+  it("normalizes legacy leaf and top-level source formats into explicit comparisons", () => {
+    const legacyTree = {
+      schemaVersion: 1 as const, id: "legacy-tree", title: "Legacy", message: "",
+      severity: "warning" as const, enabled: true,
+      condition: {
+        operator: "and" as const,
+        conditions: [{
+          source: { type: "logic-variable" as const, name: "deur_open", expectedType: "boolean" as const },
+          condition: { operator: "equals" as const, value: true },
+        }],
+      },
+    };
+    expect(normalizeNotificationConfig(legacyTree).condition).toEqual({
+      operator: "and",
+      conditions: [{
+        type: "comparison",
+        source: { type: "logic-variable", name: "deur_open", expectedType: "boolean" },
+        condition: { operator: "equals", value: true },
+      }],
+    });
+
+    const legacyLeaf = {
+      schemaVersion: 1 as const, id: "legacy-leaf", title: "Legacy leaf", message: "",
+      severity: "warning" as const, enabled: true,
+      source: { type: "logic-variable" as const, name: "deur_open", expectedType: "boolean" as const },
+      condition: { operator: "equals" as const, value: true },
+    };
+    expect(normalizeNotificationConfig(legacyLeaf).condition).toEqual({
+      type: "comparison",
+      source: legacyLeaf.source,
+      condition: legacyLeaf.condition,
+    });
   });
 });
