@@ -911,12 +911,14 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page notification-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-bell-cog-outline"/></div><div><h1>{translate(locale, "notifications.title")}</h1><p>{translate(locale, "notifications.subtitle")}</p></div></div>
+    <div className="notification-rule-selector">
+      <label htmlFor="notification-rule-select">{translate(locale, "notifications.schemas")}</label>
+      <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !scheduled.length} onChange={event => setSelectedId(event.target.value)}>
+        {scheduled.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
+      </select>
+      {!busy && !scheduled.length && <p>{translate(locale, "notifications.noSchedules")}</p>}
+    </div>
     <div className="notification-settings-layout">
-      <section className="settings-card notification-list-card"><h2>{translate(locale, "notifications.schemas")}</h2><p className="quick-card-description">{translate(locale, "notifications.schemasDescription")}</p>
-        {busy ? <p>{translate(locale, "notifications.loading")}</p> : scheduled.map(item => <button key={item.id} className={"notification-rule-row" + (item.id === selected?.id ? " selected" : "")} onClick={() => setSelectedId(item.id)}><span className="notification-rule-icon"><i className="mdi mdi-clock-time-four-outline"/></span><span><strong>{item.title}</strong><small>{findScheduleNode(item.condition)?.configured === false ? translate(locale, "notifications.notConfigured") : translate(locale, "notifications.configured")}</small></span><i className="mdi mdi-chevron-right"/></button>)}
-        {!busy && !scheduled.length && <p>{translate(locale, "notifications.noSchedules")}</p>}
-      </section>
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
