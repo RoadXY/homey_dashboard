@@ -587,17 +587,18 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
 }
 function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; onChange: (value: ScheduleEditorValue) => void; locale: string }) {
   const host = React.useRef<HTMLDivElement>(null);
+  const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const workspace = React.useRef<any>(null);
   const changeRef = React.useRef(onChange);
   changeRef.current = onChange;
   React.useEffect(() => {
     const Blockly = window.Blockly;
-    if (!Blockly || !host.current) return;
+    if (!Blockly || !host.current) { setBlocklyUnavailable(true); return; }
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
           this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
-          const days = [["Ma", "MON"], ["Di", "TUE"], ["Wo", "WED"], ["Do", "THU"], ["Vr", "FRI"], ["Za", "SAT"], ["Zo", "SUN"]];
+          const days = locale.toLowerCase().startsWith("en") ? [["Mon", "MON"], ["Tue", "TUE"], ["Wed", "WED"], ["Thu", "THU"], ["Fri", "FRI"], ["Sat", "SAT"], ["Sun", "SUN"]] : [["Ma", "MON"], ["Di", "TUE"], ["Wo", "WED"], ["Do", "THU"], ["Vr", "FRI"], ["Za", "SAT"], ["Zo", "SUN"]];
           const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
           days.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
           this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
@@ -608,12 +609,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; 
       };
     }
     const ws = Blockly.inject(host.current, {
-      toolbox: { kind: "categoryToolbox", contents: [
-        { kind: "category", name: "Logica", categorystyle: "logic_category", contents: [
-          { kind: "block", type: "logic_boolean" }, { kind: "block", type: "logic_operation" }, { kind: "block", type: "logic_negate" }
-        ] }
-      ] },
-      trashcan: true,
+      trashcan: false,
       move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
       grid: { spacing: 20, length: 3, colour: "#46505d", snap: true }
@@ -636,7 +632,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale }: { schedule: any; 
     ws.addChangeListener(emit);
     return () => { ws.dispose(); workspace.current = null; };
   }, []);
-  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div><div ref={host} className="schedule-blockly-workspace" /></div>;
+  return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
 }
 function NotificationSettingsPage({ locale }: { locale: string }) {
   const [configs, setConfigs] = React.useState<NotificationConfigEditor[]>([]);
@@ -687,7 +683,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
       </section>
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2><p>{translate(locale, "notifications.conditionDescription")}</p></div><span className="notification-severity-pill">{selected.severity}</span></div>
-          <ScheduleBlocklyEditor key={selected.id} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
+          <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
         </> : <p>{busy ? translate(locale, "notifications.loading") : translate(locale, "notifications.noSchedule")}</p>}
       </section>
