@@ -692,6 +692,35 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
         }
       };
     }
+    if (!Blockly.Blocks.homey_notification_logic_and) {
+      Blockly.Blocks.homey_notification_logic_and = {
+        init() {
+          this.appendValueInput("A").setCheck("Boolean").appendField("EN");
+          this.appendValueInput("B").setCheck("Boolean").appendField("en");
+          this.setInputsInline(true); this.setOutput(true, "Boolean"); this.setColour(120);
+          this.setTooltip("Alle aangesloten voorwaarden moeten waar zijn.");
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_notification_logic_or) {
+      Blockly.Blocks.homey_notification_logic_or = {
+        init() {
+          this.appendValueInput("A").setCheck("Boolean").appendField("OF");
+          this.appendValueInput("B").setCheck("Boolean").appendField("of");
+          this.setInputsInline(true); this.setOutput(true, "Boolean"); this.setColour(120);
+          this.setTooltip("Minimaal één aangesloten voorwaarde moet waar zijn.");
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_notification_logic_not) {
+      Blockly.Blocks.homey_notification_logic_not = {
+        init() {
+          this.appendValueInput("CONDITION").setCheck("Boolean").appendField("NIET");
+          this.setOutput(true, "Boolean"); this.setColour(120);
+          this.setTooltip("Keert de uitkomst van één aangesloten voorwaarde om.");
+        }
+      };
+    }
     const ws = Blockly.inject(host.current, {
       trashcan: false, move: { scrollbars: true, drag: true, wheel: true },
       zoom: { controls: true, wheel: true, startScale: 0.9, maxScale: 1.4, minScale: 0.55 },
@@ -709,6 +738,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
     const comparisonBlock = ws.newBlock("homey_notification_comparison");
     comparisonBlock.setFieldValue(comparison?.condition?.operator ?? "equals", "OP");
     comparisonBlock.setFieldValue(String(comparison?.condition?.value ?? false), "VALUE");
+    comparisonBlock.setOutput(true, "Boolean");
     comparisonBlock.initSvg(); comparisonBlock.render(); comparisonBlock.moveBy(360, 0);
     comparisonBlock.setOnChange((event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
@@ -728,6 +758,12 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
       }
     };
     ws.addChangeListener(emit);
+    const andBlock = ws.newBlock("homey_notification_logic_and");
+    andBlock.initSvg(); andBlock.render(); andBlock.moveBy(760, 0);
+    const orBlock = ws.newBlock("homey_notification_logic_or");
+    orBlock.initSvg(); orBlock.render(); orBlock.moveBy(760, 105);
+    const notBlock = ws.newBlock("homey_notification_logic_not");
+    notBlock.initSvg(); notBlock.render(); notBlock.moveBy(760, 210);
     return () => ws.dispose();
   }, []);
   return <div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><small>{translate(locale, "notifications.blockHelp")}</small></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>;
