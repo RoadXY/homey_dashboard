@@ -329,3 +329,7 @@ Bij viewportbreedtes van 701–1050 px blijft de instellingen-zijbalk in desktop
 
 ## Mobiele instellingen-navigatie – labelbreedte hersteld (13 november 2026)
 De mobiele CSS gebruikte `.settings-nav span` om het pictogram te dimensioneren. Omdat het label ook een `span` is, kreeg de volledige menutekst onbedoeld een breedte/flex-basis van 20 px; tekst liep daardoor over de volgende menu-items heen. De selector is beperkt tot het directe pictogramelement `.settings-nav > .mdi`. Het tekstlabel krijgt expliciet zijn natuurlijke breedte, blijft op één regel en kan binnen de bestaande horizontaal scrollbare navigatie worden bekeken.
+
+
+## Dashboard – compact weerkaart en kloktypografie onder 900 px (13 november 2026)
+Onder 900 px wordt de weerkaart niet langer door de hoogte van de klokkaart uitgerekt: deze staat bovenaan naast de klok en krijgt een vaste compacte hoogte van 230 px. Onder 620 px (enkelkolomsindeling) is de weerkaart 180 px hoog. De klokkaart is een inline-size container; de tijd gebruikt `33cqi` met grenzen van 90–220 px zodat de cijfers ongeveer 90% van de beschikbare kaartbreedte benutten, en `.clock` zelf heeft 90% breedte. Dit schaalt op basis van de kaartbreedte in plaats van de viewportbreedte.
