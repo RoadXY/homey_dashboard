@@ -89,5 +89,16 @@ De eerdere mappingnotitie dat `schedule.slapen_sem` en `schedule.slapen_bram` ni
 - **Lamp Bram staat aan** blijft afhankelijk van zowel `Lamp Bram.onoff == true` als het actieve schema `slapen_bram`.
 - De twee slaapvensters worden als afzonderlijke schema-instanties opgeslagen. Een wijziging aan het schema van Sem mag dat van Bram niet wijzigen en andersom.
 - Gebruik dezelfde generieke Blockly-bouwsteen en backend-schema-evaluator als voor `boven_ramen_open`; er komt geen aparte slaap-schema-evaluator.
-- De bestaande planning van `boven_ramen_open` mag niet als standaard voor de slaapvensters worden gekopieerd. De exacte weekdagen, tijden en eventuele uitzonderingen van `slapen_sem` en `slapen_bram` moeten nog uit de oorspronkelijke Home Assistant-helperconfiguratie worden vastgesteld.
-- Totdat die exacte planningen zijn vastgesteld, worden de twee lampmeldingen nog niet als definitieve JSON-configuraties aangemaakt.
+- De bestaande planning van `boven_ramen_open` mag niet als standaard voor de slaapvensters worden gekopieerd. De gebruiker configureert de weekdagen en tijden van `slapen_sem` en `slapen_bram` later zelf in Blockly; er is geen bronplanning nodig. Nieuwe schema-instanties starten leeg/inactief om onbedoelde meldingen te voorkomen.
+- De gebruiker stelt de weekdagen en tijden van beide slaap-schema's later zelf in via Blockly. Er hoeft dus geen oorspronkelijke HA-weekplanning meer te worden opgehaald. Maak de schema-instanties wel aan, maar start ze zonder geselecteerde actieve dagen (dus standaard inactief) totdat de gebruiker ze configureert. De lampmeldingen kunnen daarna als JSON-configuraties worden aangemaakt.
+
+
+## 7. Aanvullend besluit – slaap-schema's later zelf configureren (13 november 2026)
+
+De gebruiker geeft aan de weekdagen en tijden van `slapen_sem` en `slapen_bram` later zelf in te stellen. De oorspronkelijke HA-helperinstellingen hoeven hiervoor niet meer te worden opgezocht.
+
+- Maak twee afzonderlijke, configureerbare schema-instanties via dezelfde generieke Blockly-bouwsteen en backend-evaluator.
+- Beide schema's starten zonder geselecteerde actieve dagen en zijn daardoor standaard inactief totdat de gebruiker ze instelt.
+- De gebruiker kan de weekdagen en begin-/eindtijden later onafhankelijk aanpassen.
+- Behoud de voorwaarden voor de meldingen: Lamp Sem aan én `slapen_sem` actief; Lamp Bram aan én `slapen_bram` actief.
+- Kopieer geen tijden van `boven_ramen_open` naar de slaap-schema's.
