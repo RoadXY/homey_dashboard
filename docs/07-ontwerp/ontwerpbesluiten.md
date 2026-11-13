@@ -32,3 +32,13 @@ Volgorde: Q-Music, Q-Music Foute Uur, Rolluiken openen, Verjaardagmodus, Woonkam
 
 ## Ontwerpstatus
 Zie `goedkeuringsstatus.md` voor de actuele status per scherm. Visuele besluiten worden niet afgeleid uit niet-goedgekeurde voorbeeldinhoud van mockups.
+
+
+## Meldingen – versiebeheer voorwaardenmodel (13 november 2026)
+
+- Nieuwe meldingsconfiguraties gebruiken `schemaVersion: 2` en één expliciete conditieboom.
+- Vergelijkingsbladen krijgen `type: "comparison"`; AND/OR, duration en schedule blijven composable nodes in dezelfde boom.
+- Homey-apparaatbronnen worden geïdentificeerd met device-ID + capability-ID. Logic-bronnen in v2 worden geïdentificeerd met de stabiele Logic variable-ID, niet met de veranderlijke variabelenaam.
+- Versie 1 blijft voorlopig compatibel via normalisatie naar hetzelfde interne model. Bestaande bestanden worden niet stilzwijgend herschreven. V1 Logic-bronnen worden alleen gemigreerd wanneer de naam via Homey eenduidig naar een variabele-ID kan worden vertaald.
+- Het formele structurele contract staat in `docs/04-configuratie/schemas/notification-v2.schema.json`; backendvalidatie blijft aanvullend verantwoordelijk voor domeinregels.
+- De Blockly-editor wordt gebouwd op v2 en mag geen eigen parallelle evaluatielogica introduceren.
