@@ -573,7 +573,8 @@ export async function getNotificationSourceCatalog() {
     const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
     const supported = capabilities.flatMap(capabilityId => {
       const descriptor = device.capabilitiesObj?.[capabilityId] as Record<string, any> | undefined;
-      const type = descriptor?.type;
+      if (!descriptor) return [];
+      const type = descriptor.type;
       if (type !== "number" && type !== "boolean") return [];
       return [{
         id: capabilityId,
