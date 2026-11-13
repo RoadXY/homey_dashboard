@@ -268,3 +268,11 @@ De gebruiker kiest ervoor om uitsluitend de Weather API te gebruiken voor het be
 - De legacy i18n-sleutels `weather.condition.clear` en `weather.condition.wind` zijn niet meer nodig, omdat ze geen canonieke API-condities zijn. Ze worden ook uit bestaande persistente locale-bestanden verwijderd bij de eerstvolgende containerstart; alle overige eigen vertalingen blijven behouden.
 
 Dit besluit vervangt de eerdere implementatiekeuze waarbij de Homey-capabilitymapping als fallback actief bleef.
+
+
+## 2026-11-13 – Inklapbaar instellingenmenu
+- Het Homey Dashboard-logo en de merknaam in de instellingen-topbalk fungeren als schakelaar voor het linkermenu.
+- Op desktop klapt het menu in tot een smalle rail met uitsluitend de navigatie-iconen; opnieuw klikken herstelt de volledige labels en breedte.
+- Op smalle schermen blijft de bestaande horizontale navigatie intact; de schakelaar verandert daar niets.
+- Navigatie-iconen zijn verduidelijkt. Voor Meldingen gebruiken we het bel-icoon (mdi-bell-outline), passend bij meldingen/waarschuwingen.
+- De actieve pagina blijft visueel gemarkeerd. Dit is een presentatiewijziging; routes en instellingenlogica blijven ongewijzigd.
