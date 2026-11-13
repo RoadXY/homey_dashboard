@@ -237,6 +237,8 @@ body {
 .severity-info .notification-level,
 .severity-info .notification-icon,
 .severity-info > span:last-child { color: var(--severity-info-text); }
+/* De berichtregel gebruikt bewust altijd de gele waarschuwingskleur, ongeacht het niveau. */
+.notification-card > span:last-child { color: var(--severity-warning-text); }
 
 
 
