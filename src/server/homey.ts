@@ -609,3 +609,39 @@ export async function getMeasurementTileValues(tiles: Array<{ id: string; source
   }));
   return { retrievedAt: new Date().toISOString(), values };
 }
+
+/** Read Logic variables by stable Homey IDs (used by notification schema v2). */
+export async function getHomeyLogicVariablesByIds(variableIds: string[]) {
+  if (!api || snapshot.state !== "online") {
+    await connectHomey();
+  }
+
+  if (!api || snapshot.state !== "online") {
+    throw new Error("Homey is niet verbonden.");
+  }
+
+  const variables = await api.logic.getVariables();
+  const wanted = new Set(variableIds);
+  type HomeyLogicVariable = {
+    id: string;
+    name: string;
+    type: string;
+    value: unknown;
+  };
+  const variableList = Object.values(
+    variables as Record<string, HomeyLogicVariable>
+  );
+
+  return {
+    retrievedAt: new Date().toISOString(),
+    variables: variableList
+      .filter((variable) => wanted.has(variable.id))
+      .map((variable) => ({
+        id: variable.id,
+        name: variable.name,
+        type: variable.type,
+        value: variable.value,
+      })),
+  };
+}
+
