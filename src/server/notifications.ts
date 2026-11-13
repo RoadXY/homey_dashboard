@@ -82,7 +82,6 @@ const MAX_CONDITION_NODES = 100;
 
 function isConditionNode(
   value: unknown,
-
   depth = 1,
   seenDurationIds = new Set<string>(),
   counter = { count: 0 },
