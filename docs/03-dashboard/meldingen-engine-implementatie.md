@@ -216,3 +216,8 @@ De meldingeneditor meldt zijn dirty-status aan de instellingencontainer. Bij het
 ## Browser-terugknop en onopgeslagen meldingswijzigingen (13 november 2026)
 
 Ook browsernavigatie via Back (inclusief de fysieke Backspace-/terugknop waar de browser die als geschiedenisnavigatie behandelt) wordt bewaakt. Omdat een `popstate`-navigatie niet rechtstreeks geannuleerd kan worden, wordt de huidige geschiedenispositie eerst hersteld. Daarna verschijnt dezelfde bevestiging als bij interne navigatie. Annuleren houdt de gebruiker op de huidige route met alle conceptwijzigingen intact. Bevestigen voert de oorspronkelijke terugnavigatie alsnog uit en verwerpt de niet-opgeslagen wijzigingen. De dirty-status wordt vanuit de meldingeneditor aan de router doorgegeven.
+
+
+## Instelbare timeout voor tijdelijke dashboard-foutmeldingen (13 november 2026)
+
+Onder **Instellingen → Algemeen → Meldingen** is de instelling **Timeout automatisch verbergen** toegevoegd met de keuzes nooit, 1 s, 2 s, 5 s, 10 s, 30 s, 1 min, 5 min, 15 min en 30 min. De waarde wordt persistent opgeslagen in `data/settings.json`, met `never` als terugvalwaarde voor bestaande configuratiebestanden. De backend valideert de toegestane waarden. De dashboardclient leest de instelling via het publieke taal-/voorkeuren-endpoint en past deze toe op tijdelijke foutmeldingen van Quick Actions (bijvoorbeeld een Homey/Z-Wave-apparaat dat niet reageert). Bij een nieuwe foutmelding start de timeout opnieuw; bij `never` blijft de foutmelding staan. Actieve Homey-conditiemeldingen in het meldingenpaneel worden bewust niet automatisch verborgen: die blijven zichtbaar zolang hun voorwaarde actief is. De instelling en toelichting zijn via i18n beschikbaar in Nederlands en Engels.
