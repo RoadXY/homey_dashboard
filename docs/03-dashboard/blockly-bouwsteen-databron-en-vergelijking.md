@@ -293,3 +293,10 @@ De Blockly-werkruimte had vaste hoogtes van 360 px op desktop en 320 px op mobie
 ### 11.15 Contrast van Blockly-categorieën
 
 De Blockly-toolbox gebruikte op sommige schermen de standaard lichtgrijze achtergrond, terwijl de categorie-labels licht bleven. De dark-theme styling is aangescherpt met expliciete achtergrondkleuren voor de toolbox en categorie-rijen, plus contrasterende hover- en geselecteerde toestanden. De labelkleur wordt expliciet op de toolboxcategorieën toegepast zodat deze leesbaar blijft.
+
+
+### 11.16 Overbodige vaste tijdschema-uitleg verwijderd
+
+De vaste omschrijving boven Blockly (`notifications.conditionDescription`), de toolbar-instructie (`notifications.blockHelp`) en de algemene hint onder de werkruimte (`notifications.inactiveHint`) zijn uit de meldingeneditor verwijderd. Deze teksten suggereerden dat iedere melding een tijdschema gebruikt en waren niet passend bij algemene conditiebomen. De ernstbadge blijft staan als afzonderlijke metadata.
+
+Een eventuele toekomstige uitleg van de opgebouwde flow wordt niet met vaste tekst ingevuld, maar uitsluitend gegenereerd uit het opgeslagen conditiemodel. Voorwaarden die niet volledig en aantoonbaar ondersteund worden, moeten expliciet als niet uitlegbaar worden gemarkeerd; er mag geen gegokte samenvatting worden getoond.
