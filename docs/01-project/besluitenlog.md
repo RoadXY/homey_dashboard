@@ -401,3 +401,7 @@ De kaart Meldingen moet dezelfde volledige contentbreedte gebruiken als Weer-API
 
 ## Blockly – geselecteerde Homey-bron automatisch in beeld brengen (14 november 2026)
 De bestaande scrollcode werd uitgevoerd voordat Blockly de dropdown daadwerkelijk toonde. Hierdoor bleef de zoeklijst bovenaan staan. De scroll wordt nu na het openen via requestAnimationFrame uitgevoerd en alleen de resultatencontainer wordt gescrold. Dezelfde correctie wordt toegepast na filteren; de huidige selectie komt in beeld zonder de werkruimte te verplaatsen.
+
+
+## Blockly-meldingen – twee eigen tekstregels (14 november 2026)
+De gebruiker kan in het bestaande vaste `Genereer melding`-blok nu zelf een titel en tekst invoeren. Er komen geen losse blokken bij. De interne flownaam blijft apart bestaan voor selectie in instellingen; de dashboardtitel wordt opgeslagen in `notificationTitle`, de tekst in het bestaande `message`. Bestaande meldingen blijven compatibel: hun huidige flownaam wordt als titel getoond en hun bericht blijft behouden. Op het dashboard vervallen icoon, TEST-prefix en severity-regel; er blijven exact twee regels over: titel wit, bericht in de severity-tekstkleur (geel bij waarschuwing). Beide teksten zijn gebruikersinvoer en worden niet vertaald; alleen de Blockly-veldlabels Titel/Tekst zijn i18n. De twee tekstregels zijn vergroot voor de 10,1-inch tablet.
