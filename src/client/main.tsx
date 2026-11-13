@@ -693,6 +693,35 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
         }
       };
     }
+    if (!Blockly.Blocks.homey_notification_duration_active) {
+      Blockly.Blocks.homey_notification_duration_active = {
+        init() {
+          this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField("minuten actief");
+          this.appendStatementInput("CONDITION").appendField("voorwaarde");
+          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30);
+          this.setTooltip("De ingesloten voorwaarde moet onafgebroken waar blijven gedurende het ingestelde aantal minuten.");
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_notification_duration_inactive) {
+      Blockly.Blocks.homey_notification_duration_inactive = {
+        init() {
+          this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField("minuten inactief");
+          this.appendStatementInput("CONDITION").appendField("voorwaarde");
+          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30);
+          this.setTooltip("De ingesloten voorwaarde moet onafgebroken onwaar blijven gedurende het ingestelde aantal minuten.");
+        }
+      };
+    }
+    if (!Blockly.Blocks.homey_notification_condition_statement) {
+      Blockly.Blocks.homey_notification_condition_statement = {
+        init() {
+          this.appendDummyInput().appendField("Plaats hier de voorwaarde");
+          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
+          this.setTooltip("Tijdelijke invoegpositie voor de conditie binnen een duurblok.");
+        }
+      };
+    }
     if (!Blockly.Blocks.homey_notification_logic_and) {
       Blockly.Blocks.homey_notification_logic_and = {
         init() {
@@ -762,6 +791,16 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
       }
     };
     ws.addChangeListener(emit);
+    const durationActiveBlock = ws.newBlock("homey_notification_duration_active");
+    durationActiveBlock.initSvg(); durationActiveBlock.render(); durationActiveBlock.moveBy(1120, 0);
+    const activeConditionSlot = ws.newBlock("homey_notification_condition_statement");
+    activeConditionSlot.initSvg(); activeConditionSlot.render();
+    durationActiveBlock.getInput("CONDITION")?.connection?.connect(activeConditionSlot.previousConnection);
+    const durationInactiveBlock = ws.newBlock("homey_notification_duration_inactive");
+    durationInactiveBlock.initSvg(); durationInactiveBlock.render(); durationInactiveBlock.moveBy(1120, 180);
+    const inactiveConditionSlot = ws.newBlock("homey_notification_condition_statement");
+    inactiveConditionSlot.initSvg(); inactiveConditionSlot.render();
+    durationInactiveBlock.getInput("CONDITION")?.connection?.connect(inactiveConditionSlot.previousConnection);
     const andBlock = ws.newBlock("homey_notification_logic_and");
     andBlock.initSvg(); andBlock.render(); andBlock.moveBy(760, 0);
     const orBlock = ws.newBlock("homey_notification_logic_or");
