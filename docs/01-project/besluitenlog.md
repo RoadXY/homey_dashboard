@@ -397,3 +397,7 @@ Tijdelijke foutmeldingen na Quick Actions krijgen een unieke ID en status (`acti
 
 ## Instellingen Algemeen – kaart Meldingen uitlijnen (13 november 2026)
 De kaart Meldingen moet dezelfde volledige contentbreedte gebruiken als Weer-API-tokens en Systeemstatus. De afwijkende max-width van 760 px is verwijderd; Taal en Datum en tijd blijven bovenaan in twee kolommen staan.
+
+
+## Blockly – geselecteerde Homey-bron automatisch in beeld brengen (14 november 2026)
+De bestaande scrollcode werd uitgevoerd voordat Blockly de dropdown daadwerkelijk toonde. Hierdoor bleef de zoeklijst bovenaan staan. De scroll wordt nu na het openen via requestAnimationFrame uitgevoerd en alleen de resultatencontainer wordt gescrold. Dezelfde correctie wordt toegepast na filteren; de huidige selectie komt in beeld zonder de werkruimte te verplaatsen.
