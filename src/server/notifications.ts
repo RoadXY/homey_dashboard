@@ -90,7 +90,7 @@ function isConditionNode(
       depth > MAX_CONDITION_DEPTH || ++counter.count > MAX_CONDITION_NODES) return false;
   const node = value as Record<string, unknown>;
   if (node.type === "schedule") {
-    return typeof node.startTime === "string" && typeof node.endTime === "string" &&
+    return (node.configured === undefined || node.configured === false) &&
       (node.timeZone === undefined || typeof node.timeZone === "string") &&
       isValidScheduleCondition(node as unknown as ScheduleCondition);
   }
@@ -188,6 +188,7 @@ function evaluateNode(
   now: Date,
 ): Evaluation {
   if ("type" in node && node.type === "schedule") {
+    if (node.configured === false) return { state: "inactive" };
     try {
       return {
         state: isScheduleActive(node, now) ? "active" : "inactive",
