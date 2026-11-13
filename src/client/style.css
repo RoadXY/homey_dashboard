@@ -130,9 +130,11 @@ body {
 .weather-details span { color: #8992a0; font-size: clamp(12px, .8vw, 15px); }
 .weather-details strong { color: #d9dde3; font-size: clamp(15px, 1vw, 18px); font-weight: 550; }
 .temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
-.temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; }
+.temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; container-type: inline-size; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
-.temperature-tile strong { margin: auto 0; font-size: clamp(48px,4.6vw,78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(28px, 16cqi, 78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.temperature-reading-value { min-width: 0; white-space: nowrap; }
+.temperature-reading-unit { flex: 0 0 auto; font-size: .34em; line-height: 1; font-weight: 500; letter-spacing: 0; white-space: nowrap; }
 .right-column { position: relative; }
 .actions-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: clamp(10px,1vw,16px); flex: 0 0 auto; }
 .action-card {
