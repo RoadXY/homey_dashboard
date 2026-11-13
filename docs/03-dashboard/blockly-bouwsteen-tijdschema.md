@@ -327,3 +327,24 @@ De unit-tests voor `notification-condition-blockly.ts` controleren bronconversie
 
 ### Conclusie
 De implementatie is build- en unit-test-groen en de belangrijkste onderdelen zijn aanwezig. De Blockly-editor kan op basis van de huidige controles nog niet als volledig functioneel of volledig praktijktest-bewezen worden aangemerkt. De resterende stap is een gerichte browser-/tablet-test van de volledige Blockly-round-trip en bij voorkeur automatisering daarvan.
+
+
+## 14. Blockly lokaal bundelen – ontwerpbesluit en implementatie (13 november 2026)
+
+De gebruiker kiest ervoor om Blockly als lokale, vastgepinde npm-afhankelijkheid in de dashboardclient op te nemen. Dit is de voorkeursoplossing voor de lokale Homey-dashboardinstallatie: de tablet toont alleen de dashboardwebsite en hoeft voor de Blockly-editor geen externe CDN meer te bereiken.
+
+### Besluit
+- Gebruik exact **Blockly 12.3.1**, gelijk aan de eerder gebruikte CDN-versie. Zo combineren we de leveringswijziging niet met een functionele Blockly-upgrade.
+- Installeer Blockly als productieafhankelijkheid via `package.json` en leg de versie vast in `package-lock.json`.
+- Importeer Blockly Core en de standaardblokken vanuit de npm-package. Vite neemt deze code mee in de lokale frontend-build.
+- Verwijder het externe `unpkg.com/blockly`-script uit `src/client/index.html`; de client gebruikt geen globale `window.Blockly` meer.
+- Blockly-updates gebeuren bewust via een dependency-update, gevolgd door tests/build en praktijktest. Geen runtime-versie die ongemerkt via een CDN verandert.
+
+### Verwacht effect
+- De Blockly-instellingeneditor kan laden zonder runtime-internetverbinding.
+- De Docker-image bevat de benodigde Blockly-clientbestanden in de gebouwde frontend.
+- De image/build kan tijdens dependency-installatie nog wel toegang tot de npm-registry nodig hebben, tenzij dependencies uit cache of een eigen registry komen.
+- Deze wijziging maakt alleen Blockly lokaal. Andere eventuele externe runtime-afhankelijkheden moeten afzonderlijk worden geïnventariseerd.
+
+### Validatiestatus
+De broncode en dependencyconfiguratie zijn omgezet naar de lokale package-import. De lockfile legt versie 12.3.1 vast. De definitieve bevestiging volgt uit de GitHub Actions-run (dependency-installatie, tests en build) en daarna uit een browser-/tablet-test waarbij de editor zonder internetverbinding wordt geopend.
