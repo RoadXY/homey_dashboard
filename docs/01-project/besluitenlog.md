@@ -365,3 +365,7 @@ De bronkeuzelijst positioneert bij openen automatisch de geselecteerde Homey-bro
 
 ## Meldingen – individuele meldingen uitschakelen (13 november 2026)
 Elke melding kan afzonderlijk aan/uit worden gezet via een schakelaar in de editor. De instelling gebruikt het bestaande `enabled`-veld en wordt opgeslagen met de overige meldingsinstellingen. Uitgeschakelde meldingen worden overgeslagen door de evaluatie-engine en door de Homey-broncontrole, zodat offline/ontbrekende bronnen geen foutwaarschuwing geven zolang de melding uit staat. Bij opnieuw inschakelen wordt de melding direct weer meegenomen in de broncontrole en de eerstvolgende evaluatie; bronproblemen worden dan opnieuw zichtbaar. De voorwaarden blijven bewaard.
+
+
+## Meldingen – in-/uitschakelen pas actief na Opslaan (13 november 2026)
+De schakelaar wijzigt alleen de conceptconfiguratie. De zichtbare Homey-bronfouten worden berekend op basis van de laatst opgeslagen meldingsconfiguratie. Pas na een succesvolle Opslaan-actie wordt de opgeslagen toestand bijgewerkt en verdwijnen of verschijnen de bijbehorende fouten. Wisselen tussen meldingen zonder op te slaan verandert de actieve status en foutmeldingen niet; een mislukte opslag evenmin.
