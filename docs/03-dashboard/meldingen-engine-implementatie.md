@@ -230,3 +230,8 @@ Tijdelijke foutmeldingen van dashboardacties worden bijgehouden als afzonderlijk
 
 ## Algemeen – breedte kaart Meldingen (13 november 2026)
 De kaart Meldingen met de instelling voor automatisch verbergen gebruikt de volledige beschikbare breedte van de instellingencontent, gelijk aan de kaarten Weer-API-tokens en Systeemstatus. De eerdere maximale breedte van 760 px is verwijderd. De twee bovenste kaarten Taal en Datum en tijd behouden hun bestaande tweekolomsindeling.
+
+
+## Blockly-bronkeuzelijst – scroll naar geselecteerde optie (14 november 2026)
+
+De bestaande implementatie probeerde de geselecteerde optie met `scrollIntoView({ block: "nearest" })` zichtbaar te maken tijdens `renderOptions()`. Dat gebeurde vóór `Blockly.DropDownDiv.showPositionedByField()`, dus voordat de dropdown zichtbaar was en de resultatenlijst zijn definitieve afmetingen had. De scroll kon daardoor effectief niets doen en de lijst op de eerste resultaten laten staan. De scroll is verplaatst naar een `requestAnimationFrame` ná het openen van de dropdown. Bij filterwijzigingen wordt dezelfde helper opnieuw uitgevoerd. De helper vergelijkt de zichtbare rechthoeken van het geselecteerde item en de resultatenlijst en past uitsluitend `results.scrollTop` aan. Daardoor springt de lijst naar de huidige selectie zonder de Blockly-werkruimte of pagina mee te scrollen. Als de geselecteerde optie door een zoekfilter niet in de resultaten staat, wordt niet gescrold.
