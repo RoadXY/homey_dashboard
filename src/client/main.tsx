@@ -224,7 +224,6 @@ function App() {
       if (allowNextPopstateRef.current) {
         allowNextPopstateRef.current = false;
       } else if (notificationDirtyRef.current) {
-        const targetPath = window.location.pathname;
         const currentPath = currentRouteRef.current;
         // A popstate cannot be cancelled. Restore the current history entry,
         // ask the user, then replay the Back action only after confirmation.
