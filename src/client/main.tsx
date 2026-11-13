@@ -790,20 +790,26 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       (catalog?.variables ?? []).forEach(variable => options.push([variable.name, "logic:" + variable.id]));
       return options.length ? options : [["Geen Logic-variabelen beschikbaar", ""]];
     };
-    if (!Blockly.Blocks.homey_condition_device_source) Blockly.Blocks.homey_condition_device_source = {
-      init() {
-        this.appendDummyInput().appendField("Homey-apparaat").appendField(new Blockly.FieldDropdown(() => sourceOptions("device")), "SOURCE");
-        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
-        this.setTooltip("Kies een Homey-apparaat en de capability die als bron wordt gebruikt.");
-      }
+    const comparisonOptions = (block: any): Array<[string, string]> => {
+      const source = resolveNotificationSourceFromKey(block.getFieldValue("SOURCE"), catalogRef.current);
+      return source?.expectedType === "number"
+        ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
+        : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
     };
-    if (!Blockly.Blocks.homey_condition_logic_source) Blockly.Blocks.homey_condition_logic_source = {
-      init() {
-        this.appendDummyInput().appendField("Homey Logic-variabele").appendField(new Blockly.FieldDropdown(() => sourceOptions("logic")), "SOURCE");
+    const defineSourceBlock = (type: "device" | "logic") => ({
+      init(this: any) {
+        const block = this;
+        this.appendDummyInput()
+          .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
+          .appendField(new Blockly.FieldDropdown(() => sourceOptions(type)), "SOURCE")
+          .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
+          .appendField(new Blockly.FieldTextInput(type === "device" ? "false" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
-        this.setTooltip("Kies een bestaande Homey Logic-variabele als bron.");
+        this.setTooltip("Selecteer een Homey-bron en stel direct de vergelijking in.");
       }
-    };
+    });
+    if (!Blockly.Blocks.homey_condition_device_source) Blockly.Blocks.homey_condition_device_source = defineSourceBlock("device");
+    if (!Blockly.Blocks.homey_condition_logic_source) Blockly.Blocks.homey_condition_logic_source = defineSourceBlock("logic");
     if (!Blockly.Blocks.homey_condition_comparison) Blockly.Blocks.homey_condition_comparison = {
       init() {
         this.appendDummyInput().appendField("Vergelijking").appendField(new Blockly.FieldDropdown([["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]), "OP");
@@ -832,9 +838,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (!Blockly.Blocks[blockType]) Blockly.Blocks[blockType] = {
         init() {
           this.appendDummyInput().appendField(type === "and" ? "EN" : "OF");
-          this.appendStatementInput("CONDITION0");
-          this.appendStatementInput("CONDITION1");
+          this.appendStatementInput("CONDITIONS");
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120);
+          this.setTooltip(type === "and" ? "Alle ingesloten voorwaarden moeten waar zijn." : "Minimaal één ingesloten voorwaarde moet waar zijn.");
         }
       };
     }
@@ -854,6 +860,17 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
       init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
+    if (!Blockly.Blocks.homey_notification_root) Blockly.Blocks.homey_notification_root = {
+      init() {
+        this.appendDummyInput().appendField("🔔 Genereer melding");
+        this.appendStatementInput("CONDITIONS").appendField("Voorwaarden (losse onderdelen worden gecombineerd met EN)");
+        this.appendDummyInput().appendField("Melding genereren zodra de voorwaarden waar zijn");
+        this.setColour(285);
+        this.setTooltip("De vaste hoofdconstructie van deze melding. Plaats hier voorwaarden en EN/OF-containers in.");
+        this.setMovable(false);
+        this.setDeletable(false);
+      }
+    };
     const toolbox = {
       kind: "categoryToolbox",
       contents: [
@@ -864,7 +881,6 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           contents: [
             { kind: "block", type: "homey_condition_device_source" },
             { kind: "block", type: "homey_condition_logic_source" },
-            { kind: "block", type: "homey_condition_comparison" }
           ]
         },
         {
@@ -924,14 +940,10 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           block.data = JSON.stringify(node);
         } else {
           const sourceType = node.source?.type === "device-capability" ? "homey_condition_device_source" : "homey_condition_logic_source";
-          const sourceBlock = ws.newBlock(sourceType);
-          sourceBlock.setFieldValue(sourceKey, "SOURCE");
-          const comparisonBlock = ws.newBlock("homey_condition_comparison");
-          comparisonBlock.setFieldValue(node.condition?.operator ?? "equals", "OP");
-          comparisonBlock.setFieldValue(String(node.condition?.value ?? false), "VALUE");
-          sourceBlock.nextConnection.connect(comparisonBlock.previousConnection);
-          comparisonBlock.initSvg(); comparisonBlock.render();
-          block = sourceBlock;
+          block = ws.newBlock(sourceType);
+          block.setFieldValue(sourceKey, "SOURCE");
+          block.setFieldValue(node.condition?.operator ?? "equals", "OP");
+          block.setFieldValue(String(node.condition?.value ?? false), "VALUE");
         }
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
@@ -954,46 +966,45 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         if (child) block.getInput("CONDITION")?.connection?.connect(child.previousConnection);
       } else if (node.operator === "and" || node.operator === "or") {
         block = ws.newBlock("homey_condition_" + node.operator);
-        (node.conditions ?? []).forEach((childNode: any, index: number) => {
-          const inputName = "CONDITION" + index;
-          if (index > 1) block.appendStatementInput(inputName);
+        let previous: any = null;
+        (node.conditions ?? []).forEach((childNode: any) => {
           const child = buildCondition(childNode);
-          if (child) block.getInput(inputName)?.connection?.connect(child.previousConnection);
+          if (!child) return;
+          if (!previous) block.getInput("CONDITIONS")?.connection?.connect(child.previousConnection);
+          else previous.nextConnection?.connect(child.previousConnection);
+          previous = child;
+          while (previous?.getNextBlock?.()) previous = previous.getNextBlock();
         });
       }
       if (!block) { block = ws.newBlock("homey_condition_unsupported"); block.data = JSON.stringify(node); }
       if (block) { block.initSvg(); block.render(); }
       return block;
     };
-    const rootBlock = buildCondition(condition);
-    if (rootBlock) rootBlock.moveBy(30, 30);
+    const rootBlock = ws.newBlock("homey_notification_root");
+    rootBlock.initSvg();
+    rootBlock.render();
+    const initialCondition = buildCondition(condition);
+    if (initialCondition) rootBlock.getInput("CONDITIONS")?.connection?.connect(initialCondition.previousConnection);
+    rootBlock.setMovable(false);
+    rootBlock.setDeletable(false);
     let hydrating = true;
     const sourceFromKey = (key: string) => resolveNotificationSourceFromKey(key, catalogRef.current);
     const serializeChain = (first: any): any[] => {
       const result: any[] = [];
       let current = first;
-      let pendingSource: any = null;
       while (current) {
-        if (current.type === "homey_condition_device_source" || current.type === "homey_condition_logic_source") {
-          pendingSource = sourceFromKey(current.getFieldValue("SOURCE"));
-          if (!pendingSource) throw new Error("Selecteer een geldige bron in het Homey-bronblok.");
-        } else {
-          const node = serializeBlock(current, pendingSource);
-          if (node) result.push(node);
-          pendingSource = null;
-        }
+        const node = serializeBlock(current);
+        if (node) result.push(node);
         current = current.getNextBlock?.() ?? null;
       }
-      if (pendingSource) throw new Error("Een Homey-bronblok moet direct vóór een vergelijkingsblok staan.");
       return result;
     };
-    const serializeBlock = (block: any, sourceOverride: any = null): any => {
-      if (block.type === "homey_condition_comparison") {
-        const source = sourceOverride;
-        if (!source) throw new Error("Plaats een Homey-apparaat- of Logic-bronblok vóór iedere vergelijking.");
+    const serializeBlock = (block: any): any => {
+      if (block.type === "homey_condition_device_source" || block.type === "homey_condition_logic_source") {
+        const source = sourceFromKey(block.getFieldValue("SOURCE"));
+        if (!source) throw new Error("Selecteer een geldige Homey-bron.");
         const operator = block.getFieldValue("OP");
-        const raw = block.getFieldValue("VALUE");
-        const value = comparisonValueFromBlockly(source, operator, raw);
+        const value = comparisonValueFromBlockly(source, operator, block.getFieldValue("VALUE"));
         return { type: "comparison", source, condition: { operator, value } };
       }
       if (block.type === "homey_condition_schedule") {
@@ -1015,11 +1026,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         return durationNodeFromBlockly(block.id, block.data, minutes, children[0], block.type === "homey_condition_duration_inactive");
       }
       if (block.type === "homey_condition_and" || block.type === "homey_condition_or") {
-        const conditions: any[] = [];
-        for (let index = 0; block.getInput("CONDITION" + index); index += 1) {
-          const children = serializeChain(block.getInputTargetBlock("CONDITION" + index));
-          if (children.length) conditions.push(...children);
-        }
+        const conditions = serializeChain(block.getInputTargetBlock("CONDITIONS"));
         if (conditions.length < 2) throw new Error("EN/OF vereist minimaal twee aangesloten voorwaarden.");
         return { operator: block.type.endsWith("_and") ? "and" : "or", conditions };
       }
@@ -1029,11 +1036,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     const emitCondition = () => {
       if (hydrating) return;
       try {
-        const roots = ws.getTopBlocks(true).filter((block: any) => block.type.startsWith("homey_condition_"));
-        if (roots.length !== 1) throw new Error("De conditie moet uit precies één hoofdblok bestaan.");
-        const nodes = serializeChain(roots[0]);
-        if (nodes.length !== 1) throw new Error("Verbind alle voorwaarden tot één conditieboom.");
-        conditionChangeRef.current(nodes[0]);
+        const roots = ws.getTopBlocks(true);
+        if (roots.length !== 1 || roots[0] !== rootBlock) throw new Error("Alle voorwaarden moeten binnen Genereer melding staan.");
+        const nodes = serializeChain(rootBlock.getInputTargetBlock("CONDITIONS"));
+        if (nodes.length === 0) throw new Error("Voeg minimaal één voorwaarde of container toe aan Genereer melding.");
+        conditionChangeRef.current(combineRootConditions(nodes));
         conditionErrorRef.current("");
       } catch (error) {
         conditionErrorRef.current(error instanceof Error ? error.message : "De Blockly-voorwaarde is ongeldig en is niet opgeslagen.");
