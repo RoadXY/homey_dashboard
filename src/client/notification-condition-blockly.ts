@@ -41,6 +41,13 @@ export function sourceFromKey(key: string, catalog: NotificationSourceCatalog | 
   return null;
 }
 
+/** Keep the editable Blockly value compatible with the selected source datatype. */
+export function comparisonInputValue(expectedType: "number" | "boolean", raw: string): number | boolean {
+  if (expectedType === "boolean") return raw === "true" ? true : false;
+  const value = Number(raw);
+  return raw.trim() !== "" && Number.isFinite(value) ? value : 0;
+}
+
 export function comparisonValueFromBlockly(source: NotificationSource, operator: string, raw: string): number | boolean {
   const numericOperators: ComparisonOperator[] = ["equals", "notEquals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"];
   const booleanOperators: ComparisonOperator[] = ["equals", "notEquals"];
