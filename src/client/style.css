@@ -18,6 +18,7 @@
   --action-tile-border: rgba(255,255,255,.075);
   --action-tile-text: #d8dce2;
   --action-icon-color: #c0c7d1;
+  --sidebar-toggle-color: var(--action-icon-color);
   --action-active-background: linear-gradient(145deg, #0875b8 0%, #07558c 48%, #06385f 100%);
   --action-active-border: #079bea;
   --action-active-text: #f5fbff;
@@ -254,8 +255,14 @@ body {
 .topbar-date { font-size:15px; color:#d1d9e4; margin-right:16px; }
 .topbar-time { font-size:21px; letter-spacing:.02em; margin-right:48px; }
 .settings-top-label { padding:10px 17px; border-radius:9px; background:#123b67; color:#37b8ff; font-weight:650; }
-.settings-sidebar { grid-column:1; grid-row:2; display:flex; flex-direction:column; padding:38px 18px 24px; border-right:1px solid rgba(155,182,212,.25); background:rgba(10,22,38,.72); }
+.settings-sidebar { position:relative; grid-column:1; grid-row:2; display:flex; flex-direction:column; padding:38px 18px 24px; border-right:1px solid rgba(155,182,212,.25); background:rgba(10,22,38,.72); }
 .settings-sidebar h2 { margin:0 0 20px 20px; font-size:21px; }
+.sidebar-collapse-toggle { position:absolute; z-index:2; top:34px; right:-15px; width:30px; height:30px; display:grid; place-items:center; padding:0; border:0; border-radius:8px; background:var(--dashboard-background); color:var(--sidebar-toggle-color); cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.sidebar-collapse-toggle .mdi { font-size:20px; line-height:1; }
+.sidebar-collapse-toggle:hover { color:var(--text-primary); background:var(--nav-button-background); }
+.sidebar-collapse-toggle:focus-visible { outline:2px solid var(--nav-button-active-border); outline-offset:2px; }
+.settings-shell.sidebar-collapsed .sidebar-collapse-toggle { right:-15px; }
+
 .settings-nav { min-height:50px; display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:14px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .settings-nav > .mdi { width:22px; flex:0 0 22px; font-size:23px; line-height:1; text-align:center; }
 .settings-nav-label { min-width:0; }
@@ -325,7 +332,7 @@ body {
 .leave-modal h2 { margin:0 0 10px; }.leave-modal p { color:#c2cfdd; }
 .leave-modal>div { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
 @media(max-width:1050px) { .settings-shell { grid-template-columns:220px minmax(0,1fr); }.settings-content { padding:20px 18px; }.settings-top-cards { grid-template-columns:1fr; }.settings-card { padding:15px 18px; }.settings-topbar { gap:14px; padding:0 16px; }.topbar-time { margin-right:10px; } }
-@media(max-width:700px) { .settings-shell { height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:58px auto auto; overflow:visible; }.settings-topbar { grid-column:1; }.settings-sidebar { grid-column:1; grid-row:2; padding:12px; flex-direction:row; flex-wrap:wrap; border-right:0; border-bottom:1px solid rgba(155,182,212,.25); }.settings-sidebar h2,.sidebar-product { display:none; }.settings-nav { flex:1; min-width:100px; padding:0 8px; gap:7px; font-size:14px; }.settings-content { grid-column:1; grid-row:3; overflow:visible; }.topbar-date { display:none; }.settings-top-label { display:none; }.status-row { grid-template-columns:30px 1fr auto; }.status-detail { grid-column:2/-1; padding-bottom:8px; }.settings-bottom { flex-wrap:wrap; }.save-message { flex-basis:100%; } }
+@media(max-width:700px) { .sidebar-collapse-toggle { display:none; }.settings-shell { height:auto; min-height:100vh; grid-template-columns:1fr; grid-template-rows:58px auto auto; overflow:visible; }.settings-topbar { grid-column:1; }.settings-sidebar { grid-column:1; grid-row:2; padding:12px; flex-direction:row; flex-wrap:wrap; border-right:0; border-bottom:1px solid rgba(155,182,212,.25); }.settings-sidebar h2,.sidebar-product { display:none; }.settings-nav { flex:1; min-width:100px; padding:0 8px; gap:7px; font-size:14px; }.settings-content { grid-column:1; grid-row:3; overflow:visible; }.topbar-date { display:none; }.settings-top-label { display:none; }.status-row { grid-template-columns:30px 1fr auto; }.status-detail { grid-column:2/-1; padding-bottom:8px; }.settings-bottom { flex-wrap:wrap; }.save-message { flex-basis:100%; } }
 
 .weather-token-card > p { color: var(--muted, #94a3b8); margin: 8px 0 16px; }
 .token-create-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
