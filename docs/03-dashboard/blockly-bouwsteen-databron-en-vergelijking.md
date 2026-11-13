@@ -127,3 +127,17 @@ De backend biedt nu een afzonderlijke broncatalogus voor de meldingeneditor via 
 - Tekst- en enum-capabilities/variabelen worden bewust nog niet aangeboden, omdat het huidige canonieke notification-v1-bronmodel alleen `boolean` en `number` ondersteunt.
 - De bestaande meetwaardetegelcatalogus blijft ongewijzigd en numeriek; deze uitbreiding beïnvloedt de instellingen voor meetwaardetegels niet.
 - Deze stap levert alleen de broncatalogus. De Blockly-blokken en JSON-roundtrip volgen in de volgende implementatiestappen.
+
+### 10.1 Praktijktest op de Ubuntu-server – 13 november 2026
+
+Na het uitrollen van de versie met de broncatalogus heeft de gebruiker de endpoint getest vanuit een ingelogde dashboardinstellingen-sessie via de browserconsole. De response was succesvol:
+
+- HTTP-status: `200`.
+- `devices`: 127 apparaten.
+- `variables`: 23 Logic-variabelen.
+- `zones`: 22 ruimtes.
+- `retrievedAt`: timestamp aanwezig.
+
+Hiermee is bevestigd dat de beveiligde instellingenroute op de draaiende Docker-installatie bereikbaar is en dat de backend de Homey-inventarisatie succesvol kan ophalen. De aantallen zijn een momentopname van deze test en kunnen veranderen wanneer de Homey-inventaris wijzigt.
+
+De test bevestigt nog niet dat bronselectie al in Blockly beschikbaar is; dat blijft onderdeel van de volgende frontend-implementatiestap.
