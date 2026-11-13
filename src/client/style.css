@@ -664,3 +664,33 @@ body {
   font-size: 13px;
   line-height: 1.45;
 }
+
+
+/* Blockly's current category toolbox uses category/contents classes rather than the legacy tree rows. */
+.schedule-blockly-workspace .blocklyToolboxDiv,
+.schedule-blockly-workspace .blocklyToolboxContents {
+  background: #202630 !important;
+  background-color: #202630 !important;
+}
+.schedule-blockly-workspace .blocklyToolboxCategory {
+  background: transparent !important;
+  color: #dce3ec !important;
+}
+.schedule-blockly-workspace .blocklyToolboxCategoryLabel,
+.schedule-blockly-workspace .blocklyToolboxCategory .blocklyToolboxCategoryLabel,
+.schedule-blockly-workspace .blocklyToolboxCategory .blocklyTreeLabel {
+  color: #dce3ec !important;
+  fill: #dce3ec !important;
+}
+.schedule-blockly-workspace .blocklyToolboxCategory:hover {
+  background: #303a48 !important;
+}
+.schedule-blockly-workspace .blocklyToolboxCategory[aria-selected="true"],
+.schedule-blockly-workspace .blocklyToolboxCategory.blocklyToolboxSelected {
+  background: #34465b !important;
+}
+.schedule-blockly-workspace .blocklyToolboxCategory[aria-selected="true"] .blocklyToolboxCategoryLabel,
+.schedule-blockly-workspace .blocklyToolboxCategory.blocklyToolboxSelected .blocklyToolboxCategoryLabel {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
