@@ -520,3 +520,5 @@ De vaste menuvolgorde is **Algemeen**, **Snelle acties**, **Meldingen**, **Tempe
 De Weer-pagina is voorlopig een placeholder. De beoogde afzonderlijke opties zijn buitentemperatuur, gevoelstemperatuur, weericoon/-omschrijving, wind, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang.
 
 Oude bookmarks worden naar de nieuwe canonieke routes omgezet: dashboard en de oude quick-actions route naar Snelle acties; de oude dashboard/measurement-tiles route naar Temperatuurtegels; de oude Apparaten-, Homey- en Systeemroutes naar Algemeen. De redirects wijzigen geen opgeslagen instellingen.
+
+De backend serveert voor onbekende niet-API-paden de frontend `index.html` (SPA-fallback). Daardoor kunnen de canonieke instellingen-URL's rechtstreeks in de adresbalk worden geopend of na een browser-refresh opnieuw worden geladen; de client bepaalt vervolgens de juiste instellingenpagina en controleert de bestaande instellingen-sessie.
