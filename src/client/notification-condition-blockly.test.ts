@@ -96,3 +96,20 @@ describe("Blockly duration conversion", () => {
     expect(() => durationNodeFromBlockly("id", null, 5, null, false)).toThrow();
   });
 });
+
+describe("fixed notification root semantics", () => {
+  it("keeps one root condition unchanged for existing notification compatibility", () => {
+    const condition = { type: "comparison", source: { type: "logic-variable", variableId: "logic-co2" }, condition: { operator: "greaterThan", value: 1000 } };
+    expect(combineRootConditions([condition])).toBe(condition);
+  });
+
+  it("combines multiple root-level containers with implicit AND", () => {
+    const andGroup = { operator: "and", conditions: [{ type: "weekday", weekdays: [1] }, { type: "weekday", weekdays: [2] }] };
+    const orGroup = { operator: "or", conditions: [{ type: "weekday", weekdays: [3] }, { type: "weekday", weekdays: [4] }] };
+    expect(combineRootConditions([andGroup, orGroup])).toEqual({ operator: "and", conditions: [andGroup, orGroup] });
+  });
+
+  it("rejects an empty notification root", () => {
+    expect(() => combineRootConditions([])).toThrow();
+  });
+});
