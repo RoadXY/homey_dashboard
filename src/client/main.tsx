@@ -773,7 +773,6 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCa
         }
       };
     }
-    const statementTypes = ["homey_condition_comparison", "homey_condition_schedule", "homey_condition_weekday", "homey_condition_and", "homey_condition_or", "homey_condition_not", "homey_condition_duration"];
     if (!Blockly.Blocks.homey_condition_comparison) Blockly.Blocks.homey_condition_comparison = {
       init() {
         this.appendDummyInput().appendField("Als").appendField(new Blockly.FieldDropdown(() => {
@@ -818,6 +817,13 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCa
     if (!Blockly.Blocks.homey_condition_not) Blockly.Blocks.homey_condition_not = {
       init() { this.appendDummyInput().appendField("NIET"); this.appendStatementInput("CONDITION"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120); }
     };
+    if (!Blockly.Blocks.homey_condition_unsupported) Blockly.Blocks.homey_condition_unsupported = {
+      init() {
+        this.appendDummyInput().appendField("Niet-ondersteunde voorwaarde");
+        this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(0);
+        this.setTooltip("Dit conditietype wordt nog niet visueel bewerkt. De oorspronkelijke JSON blijft ongewijzigd zolang je niet opslaat vanuit een volledige editor.");
+      }
+    };
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
       init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
@@ -861,6 +867,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, locale, sourceCa
           if (child) block.getInput(inputName)?.connection?.connect(child.previousConnection);
         });
       }
+      if (!block) { block = ws.newBlock("homey_condition_unsupported"); block.data = JSON.stringify(node); }
       if (block) { block.initSvg(); block.render(); }
       return block;
     };
