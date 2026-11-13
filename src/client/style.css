@@ -205,8 +205,9 @@ body {
   border: 1px solid var(--severity-info-border); border-radius: 13px;
   background: var(--severity-info-background); color: var(--severity-info-text);
 }
-.notification-card strong { color: var(--notification-title-color); font-size: clamp(19px,1.5vw,25px); font-weight: 550; }
-.notification-card > span:last-child { color: var(--severity-info-text); font-size: clamp(14px,1.05vw,18px); line-height: 1.45; }
+/* Dashboardmeldingen bestaan uit precies twee goed leesbare, door de gebruiker ingestelde tekstregels. */
+.notification-card strong { color: var(--notification-title-color); font-size: clamp(23px,1.8vw,31px); font-weight: 650; line-height: 1.2; }
+.notification-card > span:last-child { color: var(--severity-info-text); font-size: clamp(18px,1.3vw,23px); line-height: 1.35; }
 .notification-heading { display: flex; align-items: center; gap: 9px; min-height: 22px; }
 .notification-icon { display: inline-grid; place-items: center; width: 22px; height: 22px; font-size: var(--notification-icon-size); line-height: 1; font-weight: 800; }
 .notification-level { color: var(--notification-label-color); font-size: 11px; font-weight: 750; letter-spacing: .14em; }
