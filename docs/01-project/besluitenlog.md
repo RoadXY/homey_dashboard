@@ -305,3 +305,9 @@ De ongebruikte sleutels `settings.dashboard`, `settings.devices`, `settings.home
 
 ## Herstel inklapbaar instellingenmenu (13 november 2026)
 Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div` was en dat de bestaande `sidebarCollapsed`-state niet aan de hoofdcontainer was gekoppeld. Daardoor leek de merknaam klikbaar via de cursorstijl, maar kon de klik de layout niet wijzigen; op touchapparaten kon de tekst worden geselecteerd. Dit is hersteld door de merknaam een echte knop te maken, de state aan de shell-class te koppelen en de sidebar via `aria-controls` te koppelen. Tekstselectie en de standaard touch-highlight zijn uitgeschakeld. De actie werkt op schermen waarop de navigatie links staat (vanaf 701 px); bij de horizontale mobiele navigatie is deze knop bewust niet actief.
+
+
+## Instellingenpagina's: titeluitlijning en responsive werkruimte (13 november 2026)
+- Op de functionele instellingenpagina's is de dubbele paginakop (decoratief icoon + grote titel) verwijderd; de toelichtende regel blijft staan en lijnt links uit met de kaart eronder. Dit is centraal via `.quick-settings-page` gestyled en geldt voor Snelle acties, Temperatuurtegels en de Weer-placeholder.
+- De instellingencontent is een CSS-container geworden. De twee-koloms werkruimtes schakelen op basis van de werkelijk beschikbare contentbreedte (dus ná aftrek van het linkermenu) over naar één kolom. Daardoor kunnen de lijst-/bewerkkaart en Voorbeeld-kaart niet meer naast of over elkaar heen worden gedrukt wanneer het venster smaller wordt.
+- In de smalle layout krijgen de kaarten een automatische hoogte en staat de Voorbeeld-kaart onder de lijst/editor; geen vaste minimale hoogte die onnodige overlap of lege ruimte veroorzaakt.
