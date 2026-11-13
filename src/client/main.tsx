@@ -707,7 +707,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
               {(sourceCatalog?.devices ?? []).flatMap(device => device.capabilities.map(capability => ({ key: "device:" + device.id + ":" + capability.id, label: device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : "") + (device.available ? "" : " · niet beschikbaar"), type: capability.type }))).map(source => <option key={source.key} value={source.key}>{source.label}</option>)}
               {(sourceCatalog?.variables ?? []).map(variable => <option key={"logic:" + variable.id} value={"logic:" + variable.id}>Logic · {variable.name} ({variable.type === "boolean" ? "ja/nee" : "getal"})</option>)}
             </select>
-            <small>{sourceCatalogError || (sourceCatalog ? (sourceCatalog.devices.length + " apparaten en " + sourceCatalog.variables.length + " Logic-variabelen beschikbaar") : "Broncatalogus laden…")}</small>
+            <small>{sourceCatalogError || (sourceCatalog ? (sourceCatalog.devices.length + " apparaten en " + sourceCatalog.variables.length + " Logic-variabelen beschikbaar") : "Broncatalogus laden…")}</small><small>De bronselectie is nu een eerste cataloguscontrole; koppeling aan de opgeslagen Blockly-voorwaarde volgt in de volgende bouwstap.</small>
           </div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} schedule={selectedSchedule} onChange={updateSchedule} locale={locale}/>
           <p className="notification-editor-hint"><i className="mdi mdi-information-outline"/> {translate(locale, "notifications.inactiveHint")}</p>
