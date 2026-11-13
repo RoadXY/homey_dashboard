@@ -1,14 +1,14 @@
 # Blockly-bouwsteen – tijdschema's per dashboardmelding
 
 **Status:** functioneel ontwerp, nog niet geïmplementeerd  
-**Scope:** migratie van `schedule.boven_ramen_open` uit de oorspronkelijke Home Assistant-configuratie  
+**Scope:** generieke Blockly-bouwsteen voor `schedule.boven_ramen_open`, `schedule.slapen_sem` en `schedule.slapen_bram` uit de oorspronkelijke Home Assistant-configuratie  
 **Doel:** de oorspronkelijke planning per dashboardmelding afzonderlijk vastleggen, zodat elke melding later onafhankelijk in Blockly kan worden aangepast of geïmporteerd. De evaluatielogica mag technisch wel gedeeld zijn.
 
 ## 1. Functionele bedoeling
 
-Het bovenramenschema is door de gebruiker aangewezen voor migratie. Het moet kunnen bepalen wanneer regels voor bovenramen relevant zijn. Het schema zelf is een tijdvenster/kalenderregel; het mag niet worden verward met Homey-Flow-timeoutvariabelen zoals `regen_ramenOpenTimout` of `regen_deurOpenTimeout`.
+De gebruiker heeft drie Home Assistant-schema's voor migratie aangewezen: `boven_ramen_open`, `slapen_sem` en `slapen_bram`. Ze bepalen wanneer respectievelijk raamwaarschuwingen en lampmeldingen relevant zijn. Elk schema is een eigen tijdvenster/kalenderregel; schema's mogen niet worden verward met Homey-Flow-timeoutvariabelen zoals `regen_ramenOpenTimout` of `regen_deurOpenTimeout`.
 
-De weekplanning is door de gebruiker bevestigd via de Helper-instellingen: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00. Deze waarden vormen de initiële configuratie van elk van de vier onafhankelijke schema-instanties.
+Voor `boven_ramen_open` is de weekplanning bevestigd via de Helper-instellingen: maandag t/m zaterdag 07:00–20:00 en zondag 08:00–20:00. Deze planning wordt als initiële configuratie voor de vier afzonderlijke raamregel-instanties gebruikt. De exacte weekplanningen van `slapen_sem` en `slapen_bram` moeten nog uit hun eigen HA-helperinstellingen worden vastgesteld; neem de tijden van het bovenramenschema niet over.
 
 ## 2. Voorgestelde Blockly-blokvorm
 
@@ -51,14 +51,16 @@ Uitgang:
 - Het schema blijft na containerherstart behouden.
 - Het schema werkt correct over middernacht en bij zomer-/wintertijd.
 - Elk van de vier raamregels heeft een eigen schema-instantie met eigen instellingen.
-- Een wijziging aan één melding wijzigt de andere drie schema's niet.
+- `slapen_sem` en `slapen_bram` zijn elk een eigen schema-instantie voor de bijbehorende lampmelding.
+- Een wijziging aan één melding wijzigt geen andere schema-instantie.
 - Er worden geen Homey-apparaten of Flows aangestuurd.
 
 ## 6. Nog te bevestigen
 
-1. De exacte weekdagen en begin-/eindtijden uit de oorspronkelijke HA-configuratie.
-2. Of de oorspronkelijke schedule-definitie datumgrenzen, uitzonderingsdagen of een andere nuance bevat.
-3. De vier schema-instanties worden afzonderlijk aan de vier raamregels gekoppeld; de Blockly-bouwsteen zelf blijft generiek inzetbaar.
+1. De exacte weekdagen en begin-/eindtijden van `slapen_sem` en `slapen_bram` uit de oorspronkelijke HA-helperinstellingen.
+2. Of deze twee slaap-schema's datumgrenzen, uitzonderingsdagen of andere nuances bevatten.
+3. Of `boven_ramen_open` datumgrenzen, uitzonderingsdagen of een andere nuance bevat naast de bevestigde weekplanning.
+4. De vier raamregels krijgen elk een eigen instantie van `boven_ramen_open`; de lampregels krijgen elk hun eigen slaap-schema-instantie. De Blockly-bouwsteen blijft generiek inzetbaar.
 
 ## 7. Relatie met temperatuurregels
 
@@ -106,7 +108,7 @@ Dit is de concrete planning die we voor de migratie aanhouden. De screenshot too
 
 ### 8.2 Gevolgen voor de Blockly-bouwsteen
 
-De initiële configuratie wordt vier keer afzonderlijk aangemaakt, één keer per raamregel:
+De initiële configuratie voor de raamregels wordt vier keer afzonderlijk aangemaakt, één keer per raamregel:
 - Naam: **Boven ramen open**
 - Maandag t/m zaterdag: **07:00–20:00**
 - Zondag: **08:00–20:00**
@@ -115,3 +117,14 @@ De initiële configuratie wordt vier keer afzonderlijk aangemaakt, één keer pe
 De evaluator moet de tijdzone van de dashboardconfiguratie gebruiken en correct omgaan met zomer-/wintertijd. De vier raamregels krijgen elk hun eigen boolean-schema-voorwaarde. Alle vier starten met dezelfde overgenomen weekplanning, maar zijn daarna onafhankelijk aanpasbaar. Het schema stuurt geen Homey-apparaten of Flows aan.
 
 De eerder voorgestelde Blockly-bouwsteen blijft aanpasbaar: de gebruiker moet later de tijden en dagen kunnen wijzigen zonder code aan te passen.
+
+
+## 9. Slaap-schema's voor lampmeldingen – gebruikersbesluit (13 november 2026)
+
+De gebruiker bevestigt dat de twee oorspronkelijke slaap-schema's eveneens moeten worden gemigreerd en via Blockly kunnen worden nagemaakt/aangepast.
+
+- `Lamp Sem staat aan` blijft alleen actief wanneer de lamp aan staat **en** `slapen_sem` actief is.
+- `Lamp Bram staat aan` blijft alleen actief wanneer de lamp aan staat **en** `slapen_bram` actief is.
+- `slapen_sem` en `slapen_bram` zijn afzonderlijke schema-instanties met eigen dagen/tijden; wijzigingen aan het ene schema beïnvloeden het andere niet.
+- Beide gebruiken dezelfde generieke `Tijdschema actief?`-Blockly-bouwsteen en backend-evaluator als `boven_ramen_open`.
+- De exacte planningen van beide slaap-schema's zijn nog niet vastgelegd in de geraadpleegde documentatie. Ze moeten uit de oorspronkelijke HA-helperinstellingen worden overgenomen. Er worden geen tijden geraden of gekopieerd van het bovenramenschema.
