@@ -128,3 +128,7 @@ De pagina Instellingen → Meldingen toont bovenaan dezelfde links uitgelijnde k
 
 ## Meldingsindicator – rustiger knipperen (13 november 2026)
 Op verzoek is de knippercyclus van de meldingsindicator vertraagd van 1,15 naar 2,4 seconden. De bestaande animatievorm, kleuren en `prefers-reduced-motion`-ondersteuning blijven ongewijzigd.
+
+
+## Meldingsindicator – 20% langzamer knipperen (13 november 2026)
+Op verzoek is de knippercyclus nogmaals met 20% verlengd: van 2,4 naar 2,88 seconden. Kleuren, animatievorm en ondersteuning voor `prefers-reduced-motion` blijven ongewijzigd.
