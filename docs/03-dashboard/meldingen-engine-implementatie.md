@@ -83,3 +83,17 @@ GitHub Actions voert na iedere commit de bestaande build- en testworkflow uit. E
 ## Belangrijke grens
 
 De nieuwe backendbouwstenen zijn nu aangesloten op het bestaande meldingsendpoint, maar er is nog geen volledige meldingeneditor. De bestaande severity, kaartstijl, sortering en het verdwijnen van meldingen bij een inactieve voorwaarde blijven ongewijzigd.
+
+
+## Validatie-aanscherping – 13 november 2026
+
+Na de eerste integratie is de backendvalidatie aangescherpt voordat de Blockly-editor wordt gebouwd:
+
+- De tijdnotatiecontrole voor schema's is gecorrigeerd naar strikte 24-uursnotatie `HH:mm`; geldige waarden zoals `07:00` worden nu geaccepteerd.
+- Tijdzones worden bij configuratievalidatie gecontroleerd door de runtime. Onbekende IANA-tijdzones worden afgewezen in plaats van pas tijdens evaluatie een ongeldige meldingstoestand te veroorzaken.
+- Condition-bomen zijn begrensd op maximaal 12 niveaus en 100 nodes om onbedoeld extreem diepe/grote configuraties te blokkeren.
+- Duurblokken binnen één melding moeten unieke, niet-lege IDs hebben.
+- De volledige meldingsconfiguratie wordt nu als onbekende invoer gevalideerd, inclusief verplichte tekstvelden, severity, enabled en optionele testOnly. Zowel legacy-configuraties als het nieuwe boommodel blijven ondersteund.
+- Hiervoor zijn gerichte tests toegevoegd voor geldige schema's, ongeldige tijden/tijdzones, dubbele duur-IDs, maximale diepte en legacy-/boomconfiguraties.
+
+De code staat in commits `5a6f3a3`, `0d6b8be` en `24fabc3`. De workflow voor de tijdschemafix is geslaagd; de workflow voor de volledige validatie- en testwijziging is op het moment van deze documentatie-update nog bezig. De Blockly-editor start pas nadat deze validatiechecks groen zijn.
