@@ -329,7 +329,7 @@ function App() {
         </div>
         {actionError && <div className="action-error" role="alert">{actionError}</div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
-          <div className="notifications-heading"><h1>{t("notifications.heading")}</h1></div>
+          <div className="notifications-heading"><h1>{t("notifications.heading")}</h1>{(notifications.some((item) => item.state === "active") || notifications.some((item) => item.state === "unknown") || Boolean(loadError)) && <span className={"notification-status-indicator" + (notifications.some((item) => item.state === "unknown") || Boolean(loadError) ? " is-unknown" : "")} role="img" aria-label={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")} title={notifications.some((item) => item.state === "active") ? t("notifications.activeIndicator") : t("notifications.unknownIndicator")}>!</span>}</div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
