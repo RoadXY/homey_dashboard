@@ -865,3 +865,6 @@ body {
 .notification-source-dropdown-option:hover, .notification-source-dropdown-option.selected { background: #2c4b6b; }
 .notification-source-dropdown-empty { padding: 14px 12px; color: #aabbd0; font-size: 13px; }
 .notification-source-dropdown-footer { padding: 6px 12px; border-top: 1px solid rgba(170,190,215,.15); color: #9bb8d6; font-size: 11px; }
+
+.measurement-editor-card { margin-top: 12px; }
+.measurement-editor-card .measurement-inline-editor { border-top:0; padding-top:0; }
