@@ -496,3 +496,10 @@ Het enige officiële meldingsmodel is schemaVersion 1. Het JSON Schema staat in 
 De eerdere v1-vorm (legacy top-level `source` + vergelijking en bladeren zonder `type: "comparison"`) vervalt volledig. Ook de tussentijdse naam schemaVersion 2 vervalt: de structuur die eerder als v2 was vastgelegd, wordt hernummerd naar schemaVersion 1. Dit project bevindt zich nog in de ontwikkelfase; er hoeft niets te worden bewaard of gemigreerd.
 
 De backend accepteert uitsluitend het canonieke schema hierboven. Er is geen normalisatielaag, geen naamgebaseerde Logic-lookup en geen ondersteuning voor schemaVersion 2. De zes bestaande ontwikkelconfiguraties gebruiken voortaan allemaal schemaVersion 1 in de canonieke vorm. Blockly wordt rechtstreeks op dit contract gebouwd en deelt dezelfde validatie- en evaluatielogica met de backend.
+
+
+## Meldingen – Blockly-editor en opslag (13 november 2026)
+
+De instellingenpagina **Instellingen → Meldingen** bevat de eerste Blockly-editor voor tijdschema-voorwaarden. De editor werkt rechtstreeks op het canonieke notification-v1 JSON-model. De server valideert alle configuraties en slaat gebruikerswijzigingen op in `DATA_DIR/notifications.json`; dit bestand hoort bij het persistente Docker-volume en wordt niet in Git opgeslagen.
+
+De API-routes `GET /api/settings/notifications` en `POST /api/settings/notifications` vereisen een geldige instellingen-PIN-sessie. De opgeslagen configuratie wordt door de meldingenengine als override op de standaardconfiguratie uit `config/notifications` toegepast. Zie [Blockly-tijdschema's](../03-dashboard/blockly-bouwsteen-tijdschema.md) voor de functionele en technische details.
