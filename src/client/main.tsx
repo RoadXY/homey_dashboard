@@ -1753,7 +1753,11 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate }: { onBack: () =
       setSettings(result); setSaved(result); setMessage(translate(locale, "settings.saved"));
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
-  const leave = () => { if (dirty) setShowLeave(true); else onBack(); };
+  const leave = () => {
+    if (!confirmLeaveNotifications()) return;
+    if (dirty) setShowLeave(true);
+    else onBack();
+  };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale.toLowerCase().startsWith("nl") ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
