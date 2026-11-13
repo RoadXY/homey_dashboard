@@ -906,8 +906,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const operator = block.getFieldValue("OP");
         const raw = block.getFieldValue("VALUE");
         const numeric = source.expectedType === "number";
-        const value = numeric ? Number(raw) : raw === "true";
-        if (numeric && !Number.isFinite(value)) throw new Error("Vul een geldig getal in bij de vergelijking.");
+        const value: number | boolean = numeric ? Number(raw) : raw === "true";
+        if (numeric && !Number.isFinite(Number(value))) throw new Error("Vul een geldig getal in bij de vergelijking.");
         return { type: "comparison", source, condition: { operator, value } };
       }
       if (block.type === "homey_condition_schedule") {
