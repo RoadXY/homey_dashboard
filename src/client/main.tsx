@@ -688,7 +688,7 @@ function ScheduleBlocklyEditor({ schedule, onChange, locale, sourceCatalog, sour
               : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
           }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
           this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
-          this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
+          this.setOutput(true, "Boolean"); this.setColour(165);
         }
       };
     }
