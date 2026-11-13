@@ -874,7 +874,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_notification_root) Blockly.Blocks.homey_notification_root = {
       init() {
         this.appendDummyInput().appendField("🔔 Genereer melding");
-        this.appendStatementInput("CONDITIONS").appendField("Voorwaarden:");
+        this.appendStatementInput("CONDITIONS");
         this.setColour(285);
         this.setTooltip("De vaste hoofdconstructie van deze melding. Plaats hier voorwaarden en EN/OF-containers in.");
         this.setMovable(false);
