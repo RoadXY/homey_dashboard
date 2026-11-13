@@ -349,3 +349,7 @@ De optie voor automatische dashboardtaal gebruikt voortaan de normale i18n-verta
 
 ## Meetwaardetegels – gestapelde layout gecorrigeerd (13 november 2026)
 Bij de smalle/tablet-layout erfden de meetwaardetegels de algemene Quick Actions-gridplaatsing (preview op rij 3) en vaste minimale kaartafmetingen. Een specifieke breakpointoverride voor maximaal 1100 px zet de lijst en preview in normale documentvolgorde met automatische hoogtes; de preview blijft twee kolommen breed. De losse editor volgt daarna onder beide kaarten. Op brede schermen blijft de bestaande gelijke kaarthoogte naast elkaar behouden.
+
+
+## Meldingen / Blockly – datatype van meetwaarden corrigeren (13 november 2026)
+De Homey-broncatalogus gebruikte uitsluitend het metadata-veld `descriptor.type` om te bepalen of een apparaat-capability numeriek of boolean was. Bij een meetwaarde met een fysieke eenheid, zoals temperatuur in °C, kan die metadata inconsistent zijn. Capabilities met een niet-lege fysieke eenheid worden voortaan als numeriek aangeboden aan Blockly. Daardoor krijgen deze bronnen een numerieke waarde-invoer en alle zes numerieke operatoren; boolean-bronnen zonder eenheid behouden true/false. Logic-variabelen blijven hun expliciete Homey-type gebruiken.
