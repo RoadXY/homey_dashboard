@@ -8,7 +8,7 @@ import * as BlocklyEn from "blockly/msg/en";
 import "@mdi/font/css/materialdesignicons.css";
 import mdiMeta from "@mdi/svg/meta.json";
 import { availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
-import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
+import { combineRootConditions, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, normalizeScheduleTimeInput, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
 type HomeyDevice = { id: string; name?: string; zone?: string; available?: boolean; readings?: Reading[] };
@@ -932,7 +932,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
         const row = this.appendDummyInput().appendField("Dagen:");
         labels.forEach(([label,key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
-        this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00"), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00"), "END");
+        this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
         this.appendStatementInput("CONDITIONS").appendField("Alleen wanneer:");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(265);
         this.setTooltip("De voorwaarden binnen dit tijdschema gelden alleen op de geselecteerde dagen en tijden.");
@@ -1071,8 +1071,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       } else if (node.type === "schedule") {
         block = ws.newBlock("homey_condition_schedule");
         days.forEach(([day, field]) => block.setFieldValue(node.weekdays?.includes(day) ? "TRUE" : "FALSE", field));
-        if (node.startTime) block.setFieldValue(node.startTime, "START");
-        if (node.endTime) block.setFieldValue(node.endTime, "END");
+        if (node.startTime) block.setFieldValue(normalizeScheduleTimeInput(node.startTime), "START");
+        if (node.endTime) block.setFieldValue(normalizeScheduleTimeInput(node.endTime), "END");
       } else if (node.type === "weekday") {
         block = ws.newBlock("homey_condition_weekday");
         if (node.weekdays?.length === 1) block.setFieldValue(String(node.weekdays[0]), "DAY");
@@ -1149,7 +1149,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (block.type === "homey_condition_schedule") {
         const weekdays = days.filter(([day, field]) => block.getFieldValue(field) === "TRUE").map(([day]) => day);
         const schedule = weekdays.length
-          ? { type: "schedule", weekdays, startTime: block.getFieldValue("START"), endTime: block.getFieldValue("END"), timeZone: "Europe/Amsterdam" }
+          ? { type: "schedule", weekdays, startTime: normalizeScheduleTimeInput(block.getFieldValue("START")), endTime: normalizeScheduleTimeInput(block.getFieldValue("END")), timeZone: "Europe/Amsterdam" }
           : { type: "schedule", configured: false, weekdays: [] };
         const children = serializeChain(block.getInputTargetBlock("CONDITIONS"));
         return children.length ? { operator: "and", conditions: [schedule, ...children] } : schedule;
