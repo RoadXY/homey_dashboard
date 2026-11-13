@@ -399,3 +399,8 @@ In de kop van de meldingseditor staat de volgorde nu als **Huidig niveau → gek
 ## 12. Automatische voorloopnul bij Blockly-tijden (13 november 2026)
 
 De tijdvelden van de Blockly-bouwsteen vullen voortaan automatisch een voorloopnul aan bij uren met één cijfer. Bijvoorbeeld: invoer `7:00` wordt `07:00`. Dit gebeurt direct in de invoervelden en nogmaals bij het laden/serialiseren van de configuratie, zodat de opgeslagen tijd altijd het canonieke `UU:MM`-formaat gebruikt. Onvolledige of ongeldige invoer wordt niet stilzwijgend aangepast; de bestaande validatie blijft daarvoor verantwoordelijk.
+
+
+## Globaal overzicht van meldingen met Homey-bronproblemen (13 november 2026)
+
+De meldingenpagina controleert niet alleen de geselecteerde melding, maar alle opgeslagen en momenteel bewerkte meldingen zodra de Homey-broncatalogus is geladen. Boven de Blockly-editor verschijnt voor iedere melding met een ontbrekend apparaat, ontbrekende meetmogelijkheid, niet-beschikbaar apparaat of ontbrekende Logic-variabele een eigen gele waarschuwing. De naam van de melding en de concrete bronproblemen worden getoond. Deze waarschuwingen blijven zichtbaar bij het wisselen van de geselecteerde melding en verdwijnen wanneer de broncatalogus na een herlaadactie geen probleem meer rapporteert. De waarschuwing staat buiten de Blockly-kaart, maar binnen de meldingenpagina.
