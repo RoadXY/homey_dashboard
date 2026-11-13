@@ -1114,6 +1114,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
         {configs.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
       </select>
       {!busy && !configs.length && <p>Er zijn nog geen meldingen beschikbaar.</p>}
+      {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
     </div>
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
