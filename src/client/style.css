@@ -911,6 +911,7 @@ body {
 .notification-rule-trigger:disabled { opacity:.55; cursor:not-allowed; }
 .notification-rule-trigger-name { min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .notification-disabled-badge { display:inline-flex; flex:0 0 auto; align-items:center; padding:4px 8px; border:1px solid var(--severity-critical-border); border-radius:6px; background:var(--severity-critical-background); color:var(--severity-critical-text); font-size:11px; font-weight:650; line-height:1.2; white-space:nowrap; }
+.notification-warning-badge { display:inline-flex; flex:0 0 auto; align-items:center; padding:4px 8px; border:1px solid var(--severity-warning-border); border-radius:6px; background:var(--severity-warning-background); color:var(--severity-warning-text); font-size:11px; font-weight:650; line-height:1.2; white-space:nowrap; }
 .notification-rule-option { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .notification-rule-option-name { min-width:0; flex:1; overflow-wrap:anywhere; }
 .notification-rule-menu { position:absolute; z-index:30; top:calc(100% + 2px); left:0; right:0; overflow:hidden; border:1px solid #53677d; border-radius:0 0 9px 9px; background:#112237; box-shadow:0 14px 30px rgba(0,0,0,.42); }
