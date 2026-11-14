@@ -206,5 +206,7 @@
   "notifications.emptyList": "There are no notifications yet. Create your first notification.",
   "notifications.dismiss": "Dismiss notification",
   "notifications.blockNotificationTitle": "Title:",
-  "notifications.blockNotificationMessage": "Message:"
+  "notifications.blockNotificationMessage": "Message:",
+  "notifications.delete": "Delete",
+  "notifications.deleteConfirm": "Are you sure you want to delete the notification '{name}'? The deletion becomes permanent after you click Save."
 }
