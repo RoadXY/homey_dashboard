@@ -1559,14 +1559,14 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
       <div className="notification-rule-picker">
         <button type="button" className="notification-rule-trigger" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
-          <span>{selected?.title ?? "Selecteer een melding"}</span><span aria-hidden="true">▾</span>
+          <span className="notification-rule-trigger-name">{selected?.title ?? "Selecteer een melding"}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}<span aria-hidden="true">▾</span>
         </button>
         {notificationPickerOpen && <div className="notification-rule-menu">
           <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder="Zoek een melding..." aria-label="Zoek een melding"/></div>
           <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
             {matchingNotifications.map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
-                onClick={() => switchNotification(item.id)}>{item.title}</button>
+                onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}</button>
             )}
             {matchingNotifications.length === 0 && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
           </div>
