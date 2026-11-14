@@ -360,7 +360,6 @@ function App() {
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              <div className="eyebrow">{t("weatherSettings.dashboardEyebrow")}</div>
               {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
               <div className="weather-description">{formatWeatherCondition(weatherCondition, t)}</div>
             </div>
@@ -2137,7 +2136,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
 function formatWeatherCondition(condition: WeatherConditionResponse | null, t: (key: string) => string): string {
   if (!condition) return t("weather.condition.unknown");
   const supplied = condition.conditionText?.trim();
-  const normalized = supplied?.toLocaleLowerCase().replace(/[\\s-]+/g, "_");
+  const normalized = supplied?.toLocaleLowerCase().trim().replace(/[\s-]+/g, "_");
   // Canonical identifiers such as "Partly_cloudy" are translated category
   // keys, not custom descriptions supplied by the weather integration.
   if (supplied && normalized !== condition.category) return supplied;

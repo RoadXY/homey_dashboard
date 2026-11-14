@@ -49,3 +49,11 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - Searchable dropdown menus now open below their trigger instead of above it, using the shared quick-flow menu positioning.
 - Search inputs use the intended dark picker styling, with a larger 42px input, 16px text and a taller padded search header. The weather source search explicitly uses the shared search input class.
 - Weather icon preview cells have more vertical room, a constrained icon canvas and clipped overflow so SVG details remain inside each preview tile.
+
+
+## Weather card and icon selector polish (14 November 2026)
+
+- The standard animated icon pack retains its yellow sun, pale clouds, blue precipitation and other condition-specific colours; sun rotation/breathing and cloud/precipitation motion make the animation more apparent.
+- Weather pack choices and preview tiles use the same theme-aware card surface tokens as the rest of the dashboard, rather than the separate quick-action tile surface.
+- The canonical English condition label is normalized for whitespace and hyphens before comparison with the API category. Thus `Sunny` is treated as the `sunny` category and translated through the active locale, while genuinely custom descriptions remain verbatim.
+- Removed the weather card eyebrow above the outdoor temperature and increased the temperature type size.
