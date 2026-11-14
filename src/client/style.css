@@ -637,7 +637,7 @@ body {
 .notification-enabled-toggle.is-enabled { border-color: rgba(72,187,132,.38); color: #8bd6ae; }
 .notification-enabled-toggle.is-enabled .notification-toggle-indicator { background: #45bd83; box-shadow: 0 0 0 3px rgba(69,189,131,.14); }
 .notification-enabled-toggle.is-disabled { border-color: rgba(150,165,185,.24); color: var(--text-muted); }
-@media (max-width: 760px) { .notification-editor-heading { flex-direction: column; } .notification-heading-controls { justify-content: flex-start; } }
+@media (max-width: 760px) { .notification-editor-heading { flex-direction: column; } .notification-title-wrap, .notification-heading-controls { flex: 0 1 auto; width: 100%; } .notification-heading-controls { justify-content: flex-start; } .notification-severity-control { justify-content: flex-start; } }
 .notification-severity-pill { padding: 5px 9px; border-radius: 20px; background: rgba(255,255,255,.07); color: var(--text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .notification-severity-control { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 14px; }
 .notification-severity-control label { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
