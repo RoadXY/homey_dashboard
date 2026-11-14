@@ -51,8 +51,8 @@ export function resolveLocale(language: string, homeyLanguage?: string | null): 
       : languageRegistry.fallback;
   }
   const detected = homeyLanguage?.toLowerCase();
-  const match = detected && availableLanguages.find((entry) =>
+  const match = detected ? availableLanguages.find((entry) =>
     entry.homeyCodes.some((code) => code.toLowerCase() === detected || detected.startsWith(code.toLowerCase() + "-")),
-  );
+  ) : undefined;
   return match?.id ?? languageRegistry.fallback;
 }
