@@ -379,5 +379,6 @@
   "duration.invalidNode": "Invalid duration condition.",
   "duration.invalidMinutes": "The duration must be between 1 and 1440 minutes.",
   "duration.requiresCondition": "A duration block requires exactly one condition.",
-  "notification.requiresCondition": "Generate notification requires at least one condition."
+  "notification.requiresCondition": "Generate notification requires at least one condition.",
+  "sourceKey.unknownHomeySourceType": "Unknown Homey source type."
 }
