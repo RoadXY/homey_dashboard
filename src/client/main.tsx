@@ -1362,7 +1362,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         conditionChangeRef.current(combineRootConditions(nodes));
         conditionErrorRef.current("");
       } catch (error) {
-        conditionErrorRef.current(error instanceof Error ? error.message : translate(locale, "blockly.invalidCondition"));
+        conditionErrorRef.current(error instanceof Error ? translate(locale, error.message) : translate(locale, "blockly.invalidCondition"));
         // Invalid/incomplete workspaces are deliberately not written to configuration.
       }
     };
