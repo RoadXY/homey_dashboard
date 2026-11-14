@@ -1431,6 +1431,9 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   // Source-health warnings reflect persisted configuration only. Draft edits
   // (including the enabled toggle) become effective after the user presses Save.
   const notificationSourceIssues = sourceCatalog ? saved.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
+  const notificationWarningIds = new Set(notificationSourceIssues.length > 0
+    ? saved.filter(item => item.enabled && findMissingNotificationSources(item.condition, sourceCatalog!).length > 0).map(item => item.id)
+    : []);
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const confirmDiscardDraft = () => {
@@ -1560,14 +1563,14 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
       <div className="notification-rule-picker">
         <button type="button" className="notification-rule-trigger" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
-          <span className="notification-rule-trigger-name">{selected?.title ?? "Selecteer een melding"}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}<span aria-hidden="true">▾</span>
+          <span className="notification-rule-trigger-name">{selected?.title ?? "Selecteer een melding"}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
         {notificationPickerOpen && <div className="notification-rule-menu">
           <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder="Zoek een melding..." aria-label="Zoek een melding"/></div>
           <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
             {matchingNotifications.map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
-                onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}</button>
+                onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{item.enabled && notificationWarningIds.has(item.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}</button>
             )}
             {matchingNotifications.length === 0 && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
           </div>
