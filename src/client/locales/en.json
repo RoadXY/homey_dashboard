@@ -16,7 +16,7 @@
   "notifications.noneTitle": "No active notifications",
   "notifications.noneMessage": "All dashboard notifications are currently inactive.",
   "notifications.critical": "CRITICAL",
-  "notifications.warning": "WARNING",
+  "notifications.warning": "Warning",
   "notifications.info": "INFO",
   "notifications.test": "TEST · ",
   "settings.lockedTitle": "Settings protected",
