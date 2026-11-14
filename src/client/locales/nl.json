@@ -380,5 +380,6 @@
   "duration.invalidMinutes": "De duur moet tussen 1 en 1440 minuten liggen.",
   "duration.requiresCondition": "Een duurblok vereist precies één voorwaarde.",
   "notification.requiresCondition": "Genereer melding vereist minimaal één voorwaarde.",
-  "sourceKey.unknownHomeySourceType": "Onbekend Homey-brontype."
+  "sourceKey.unknownHomeySourceType": "Onbekend Homey-brontype.",
+  "quickActions.statusError": "Status ophalen mislukt"
 }
