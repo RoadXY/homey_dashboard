@@ -361,5 +361,12 @@
   "notifications.selectNotification": "Select a notification",
   "notifications.sourceCatalogError": "Could not load the source catalogue.",
   "notifications.unnamed": "Untitled notification",
-  "notifications.checkSourcesHint": "Check the specified source in Homey or adjust the relevant condition in this notification."
+  "notifications.checkSourcesHint": "Check the specified source in Homey or adjust the relevant condition in this notification.",
+  "dashboard.homeyDataUnavailable": "Homey data is temporarily unavailable",
+  "blockly.equals": "is equal to",
+  "blockly.notEquals": "is not equal to",
+  "blockly.lessThan": "is less than",
+  "blockly.lessThanOrEqual": "is less than or equal to",
+  "blockly.greaterThan": "is greater than",
+  "blockly.greaterThanOrEqual": "is greater than or equal to"
 }
