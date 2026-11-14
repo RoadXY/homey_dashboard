@@ -310,7 +310,9 @@ function App() {
     };
   }, [settingsOpen, settingsUnlocked, refresh]);
   React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
-  const timeText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
+  const clockParts = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).formatToParts(now);
+  const timeText = clockParts.filter(part => part.type !== "dayPeriod").map(part => part.value).join("").trim();
+  const dayPeriod = clockParts.find(part => part.type === "dayPeriod")?.value ?? "";
   const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
   const beginSettingsHold = (event: React.PointerEvent<HTMLElement>) => {
     // Only start the hidden settings gesture for a primary pointer/left click.
@@ -348,7 +350,7 @@ function App() {
       <section className="left-column" aria-label={t("dashboard.aria")}>
         <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title={t("dashboard.holdSettings")}>
           <div className="clock-content">
-            <div className="clock">{timeText}</div>
+            <div className="clock"><span className="clock-time">{timeText}</span>{dayPeriod && <small className="clock-period">{dayPeriod}</small>}</div>
             <div className="date">{dateText}</div>
           </div>
           {(loadError || (homey !== null && !homeyOnline)) && (
@@ -363,7 +365,7 @@ function App() {
               {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
               <div className="weather-description">{formatWeatherCondition(weatherCondition, t)}</div>
             </div>
-            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={formatWeatherCondition(weatherCondition, t)} pack={weatherValues?.settings.iconPack ?? "animated"} />
+            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={formatWeatherCondition(weatherCondition, t)} pack={weatherValues?.settings.iconPack ?? "animated"} animate={weatherValues?.settings.animateIcons ?? true} />
           </div>
           <div className="weather-details">
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
@@ -2003,10 +2005,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
 
 type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
 type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
-type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" };
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat"; animateIcons: boolean };
 type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
 const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
-const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated" };
+const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated", animateIcons:true };
 
 function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: () => void }) {
   const [settings,setSettings] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
@@ -2106,6 +2108,10 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
         <section className="settings-card weather-packs-card">
           <h2><i className="mdi mdi-image-multiple-outline" aria-hidden="true"/>{t("weatherSettings.iconHeading")}</h2>
           <p className="quick-card-description">{t("weatherSettings.iconDescription")}</p>
+          <div className="weather-motion-setting">
+            <div className="weather-motion-copy"><strong>{t("weatherSettings.motionHeading")}</strong><small>{t("weatherSettings.motionDescription")}</small></div>
+            <button type="button" role="switch" aria-checked={settings.animateIcons} className={"weather-motion-toggle"+(settings.animateIcons?" active":"")} onClick={()=>setSettings(current=>({...current,animateIcons:!current.animateIcons}))} aria-label={t("weatherSettings.motionHeading")}><span/></button>
+          </div>
           <div className="weather-pack-options" role="radiogroup" aria-label={t("weatherSettings.iconHeading")}>
             {packs.map(pack=><label key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")}>
               <input type="radio" name="weather-icon-pack" value={pack.id} checked={settings.iconPack===pack.id} onChange={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}/>
@@ -2116,7 +2122,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",rain:"Rain",thunderstorm:"Thunderstorm",snow:"Snow",fog:"Fog",windy:"Wind"} as Record<string,string>)[category])} pack={settings.iconPack}/></div>)}
+              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",rain:"Rain",thunderstorm:"Thunderstorm",snow:"Snow",fog:"Fog",windy:"Wind"} as Record<string,string>)[category])} pack={settings.iconPack} animate={settings.animateIcons}/></div>)}
             </div>
           </div>
         </section>
@@ -2149,11 +2155,11 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
   return formatted + (units ? " " + units : "");
 }
 
-function WeatherIcon({ category, label, pack = "animated" }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"] }) {
+function WeatherIcon({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
   const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
-  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
+  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"+(animate?" is-animated":" is-static")} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
-    <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={label}>
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate?" is-animated":" is-static"}`} role="img" aria-label={label}>
       {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
@@ -2165,7 +2171,7 @@ function WeatherIcon({ category, label, pack = "animated" }: { category: Weather
         <path d="m30 39-5 12 M49 39l-5 12 M68 39l-5 12" />
       </svg>}
       {category === "thunderstorm" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="m52 38-12 15h10l-5 10 17-19H52l7-6" />
+        <path className="weather-lightning weather-lightning-a" d="m42 35-11 14h9l-5 13 17-19h-10l7-8" /><path className="weather-lightning weather-lightning-b" d="m66 39-9 11h8l-4 11 14-16h-8l6-6" />
       </svg>}
       {(["snow", "snow_showers", "sleet", "hail"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M29 42v13m-5-9 10 5m0-10-10 10 M49 42v13m-5-9 10 5m0-10-10 10 M69 42v13m-5-9 10 5m0-10-10 10" />

@@ -57,3 +57,12 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - Weather pack choices and preview tiles use the same theme-aware card surface tokens as the rest of the dashboard, rather than the separate quick-action tile surface.
 - The canonical English condition label is normalized for whitespace and hyphens before comparison with the API category. Thus `Sunny` is treated as the `sunny` category and translated through the active locale, while genuinely custom descriptions remain verbatim.
 - Removed the weather card eyebrow above the outdoor temperature and increased the temperature type size.
+
+
+## Weather motion controls and clock formatting (14 November 2026)
+
+- Weather settings persist a global `animateIcons` boolean (default: true) alongside the selected icon pack. The switch controls both the dashboard icon and the settings preview.
+- Each icon pack owns its motion style: standard SVG weather symbols use their own sun/cloud/precipitation animations and independent two-bolt thunder flashes; the 3D, outline and flat packs use distinct pack-specific motion. Static mode disables all of these animations.
+- Thunderstorm in the standard pack uses two separate lightning paths with independently timed on/off flashes; they no longer translate side-to-side.
+- Clock formatting uses locale-aware date-time parts. In 12-hour locales the AM/PM marker is rendered as a smaller suffix after the enlarged time; 24-hour locales do not show a marker.
+- The clock time type size has been increased while keeping the period marker visually subordinate.

@@ -13,6 +13,7 @@ export type WeatherSettingId =
 export type WeatherSettings = {
   sources: Record<WeatherSettingId, WeatherSource>;
   iconPack: "animated" | "color3d" | "outline" | "flat";
+  animateIcons: boolean;
 };
 
 export const WEATHER_SETTING_IDS: WeatherSettingId[] = [
@@ -21,7 +22,7 @@ export const WEATHER_SETTING_IDS: WeatherSettingId[] = [
 ];
 
 const emptySources = Object.fromEntries(WEATHER_SETTING_IDS.map(id => [id, null])) as WeatherSettings["sources"];
-const defaults: WeatherSettings = { sources: emptySources, iconPack: "animated" };
+const defaults: WeatherSettings = { sources: emptySources, iconPack: "animated", animateIcons: true };
 const file = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "weather-settings.json");
 
 function normalizeSource(value: unknown): WeatherSource {
@@ -46,7 +47,7 @@ export function normalizeWeatherSettings(value: unknown): WeatherSettings {
   const allowedPacks: WeatherSettings["iconPack"][] = ["animated", "color3d", "outline", "flat"];
   const iconPack = allowedPacks.includes(input.iconPack as WeatherSettings["iconPack"])
     ? input.iconPack as WeatherSettings["iconPack"] : "animated";
-  return { sources, iconPack };
+  return { sources, iconPack, animateIcons: input.animateIcons !== false };
 }
 
 export async function readWeatherSettings(): Promise<WeatherSettings> {

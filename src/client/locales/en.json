@@ -434,5 +434,7 @@
   "weatherSettings.previewThunderstorm": "Thunderstorm",
   "weatherSettings.previewSnow": "Snow",
   "weatherSettings.previewFog": "Fog",
-  "weatherSettings.previewWind": "Wind"
+  "weatherSettings.previewWind": "Wind",
+  "weatherSettings.motionHeading": "Animated icons",
+  "weatherSettings.motionDescription": "Turn animations on or off for all icon packs."
 }

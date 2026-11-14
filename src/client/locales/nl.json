@@ -434,5 +434,7 @@
   "weatherSettings.previewThunderstorm": "Onweer",
   "weatherSettings.previewSnow": "Sneeuw",
   "weatherSettings.previewFog": "Mist",
-  "weatherSettings.previewWind": "Wind"
+  "weatherSettings.previewWind": "Wind",
+  "weatherSettings.motionHeading": "Bewegende iconen",
+  "weatherSettings.motionDescription": "Schakel animaties voor alle icon packs in of uit."
 }
