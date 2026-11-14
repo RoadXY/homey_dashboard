@@ -46,8 +46,8 @@ describe("Notifications API storage", () => {
   });
 
   it("hides expired records and treats their IDs as not deletable", async () => {
-    const created = await api.createApiNotification({ title: "Temporary", message: "Expires", severity: "info", expiresAt: new Date(Date.now() + 5).toISOString() });
-    await new Promise(resolve => setTimeout(resolve, 15));
+    const created = await api.createApiNotification({ title: "Temporary", message: "Expires", severity: "info", expiresAt: new Date(Date.now() + 100).toISOString() });
+    await new Promise(resolve => setTimeout(resolve, 150));
     expect(await api.getActiveApiNotifications()).toEqual([]);
     expect(await api.patchApiNotification(created.id, { title: "Late" })).toBeNull();
     expect(await api.deleteApiNotification(created.id)).toBe(false);

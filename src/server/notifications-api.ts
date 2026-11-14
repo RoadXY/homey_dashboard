@@ -85,7 +85,7 @@ function scheduleExpiry(): void {
   expiryTimer = undefined;
   if (!expiryCallback) return;
   void readStored().then(items => {
-    const next = items.map(item => item.expiresAt ? Date.parse(item.expiresAt) : Infinity).filter(Number.isFinite).reduce((a,b)=>Math.min(a,b), Infinity);
+    const next = items.map(item => item.expiresAt ? Date.parse(item.expiresAt) : Infinity).filter(value => Number.isFinite(value) && value > Date.now()).reduce((a,b)=>Math.min(a,b), Infinity);
     if (!Number.isFinite(next)) return;
     expiryTimer = setTimeout(() => {
       expiryCallback?.();
