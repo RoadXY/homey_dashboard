@@ -105,3 +105,9 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - The weather settings preview and dashboard both render through the same WeatherIcon component. The preview previously showed partly_cloudy, while the live dashboard can receive mostly_sunny (for example, “Overwegend zonnig”). That live category was missing from the preview sample and did not share the partly-cloudy cloud placement rule.
 - The preview now uses mostly_sunny as its representative partly-sunny sample, matching the common live condition, and the mostly_sunny cloud is positioned consistently with the partly-cloudy icon.
 - Preview icon containers now use the same width-to-height proportion as the dashboard icon container, reducing visual differences caused by the preview's narrower aspect ratio.
+
+
+## Weather icon preview sizing on portrait screens (14 November 2026)
+
+- At viewport widths up to 900px, the weather icon preview changes from four columns to two. This gives each preview tile substantially more width for the artwork.
+- Preview tiles gain additional height and the icon viewport and alternate-pack glyph size increase accordingly. The desktop four-column preview remains unchanged.
