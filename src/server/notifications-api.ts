@@ -149,8 +149,10 @@ export async function patchApiNotification(id: string, patch: Record<string, unk
 }
 export async function deleteApiNotification(id: string): Promise<boolean> {
   const deleted = await mutate(items => {
-    const next = items.filter(item => item.id !== id);
-    return { items: next.length === items.length ? items : next, result: next.length !== items.length };
+    const now = Date.now();
+    const next = items.filter(item => item.id !== id || (item.expiresAt && Date.parse(item.expiresAt) <= now));
+    const deleted = items.some(item => item.id === id && (!item.expiresAt || Date.parse(item.expiresAt) > now));
+    return { items: next.length === items.length ? items : next, result: deleted };
   });
   scheduleExpiry();
   return deleted;

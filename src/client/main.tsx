@@ -21,7 +21,7 @@ type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
-type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
+type TransientNotification = { id: string; message: string; source: "system"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; notificationTitle?: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
@@ -172,6 +172,7 @@ function App() {
     stream.addEventListener("homey-connected", scheduleRefresh);
     stream.addEventListener("homey-disconnected", scheduleRefresh);
     stream.addEventListener("settings-updated", scheduleRefresh);
+    stream.addEventListener("notifications-updated", scheduleRefresh);
 
     return () => {
       window.clearInterval(clock);
@@ -183,6 +184,7 @@ function App() {
       stream.removeEventListener("homey-connected", scheduleRefresh);
       stream.removeEventListener("homey-disconnected", scheduleRefresh);
       stream.removeEventListener("settings-updated", scheduleRefresh);
+      stream.removeEventListener("notifications-updated", scheduleRefresh);
       stream.close();
     };
   }, [refresh]);
@@ -217,7 +219,7 @@ function App() {
       if (!response.ok) throw new Error(result.error ?? t("actions.executeError"));
       await refreshQuickActionStatuses();
     } catch (error) {
-      const notification: TransientNotification = { id: `action-error-${Date.now()}-${++notificationSequenceRef.current}`, message: error instanceof Error ? error.message : t("actions.executeError"), source: "quick-action", status: "active", createdAt: Date.now() };
+      const notification: TransientNotification = { id: `action-error-${Date.now()}-${++notificationSequenceRef.current}`, message: error instanceof Error ? error.message : t("actions.executeError"), source: "system", status: "active", createdAt: Date.now() };
       setTransientNotifications(current => [...current, notification].slice(-50));
     }
     finally { setExecutingAction(""); }

@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotificationConfigsForSettings } from "./notifications.js";
-import { createApiNotification, deleteApiNotification, getNextApiNotificationExpiry, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, type ApiNotificationInput } from "./notifications-api.js";
+import { createApiNotification, deleteApiNotification, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, type ApiNotificationInput } from "./notifications-api.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
