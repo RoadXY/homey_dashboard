@@ -75,6 +75,14 @@ describe("canonical notification schema v1", () => {
     })).toBe(false);
   });
 
+  it("accepts text comparisons only with string values and equality operators", () => {
+    const stringSource = { type: "device-capability", deviceId: "dryer-id", capabilityId: "localthings_machine_state", expectedType: "string" };
+    expect(isValidConditionNode({ type: "comparison", source: stringSource, condition: { operator: "equals", value: "Ready" } })).toBe(true);
+    expect(isValidConditionNode({ type: "comparison", source: stringSource, condition: { operator: "notEquals", value: "Running" } })).toBe(true);
+    expect(isValidConditionNode({ type: "comparison", source: stringSource, condition: { operator: "equals", value: true } })).toBe(false);
+    expect(isValidConditionNode({ type: "comparison", source: stringSource, condition: { operator: "greaterThan", value: "Ready" } })).toBe(false);
+  });
+
   it("accepts NOT and weekday nodes and rejects malformed versions", () => {
     expect(isValidConditionNode({ type: "not", condition: comparison })).toBe(true);
     expect(isValidConditionNode({ type: "not", condition: { type: "not", condition: comparison } })).toBe(true);
