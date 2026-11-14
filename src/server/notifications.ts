@@ -152,6 +152,7 @@ export function isValidNotificationConfig(value: unknown): value is Notification
 }
 
 const notificationOverridePath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.json");
+const notificationDeletedPath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.deleted.json");
 
 export function parseNotificationConfigJson(contents: string): unknown {
   const normalized = contents.endsWith("\\n") ? contents.slice(0, -2) : contents;
@@ -169,18 +170,26 @@ async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
 }
 
 export async function getNotificationConfigsForSettings(): Promise<NotificationConfig[]> {
+  const defaults = await loadDefaultConfigs();
+  let deletedIds: string[] = [];
+  try {
+    const deleted = parseNotificationConfigJson(await readFile(notificationDeletedPath, "utf8"));
+    if (!Array.isArray(deleted) || !deleted.every((id) => typeof id === "string")) throw new Error("De lijst met verwijderde standaardmeldingen is ongeldig.");
+    deletedIds = deleted as string[];
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+  const merged = new Map(defaults.filter((config) => !deletedIds.includes(config.id)).map((config) => [config.id, config]));
   try {
     const saved = parseNotificationConfigJson(await readFile(notificationOverridePath, "utf8"));
     if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
-    const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
-    for (const config of saved) merged.set(config.id, config);
-    const configs = [...merged.values()];
-    if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
-    return configs;
+    for (const config of saved as NotificationConfig[]) merged.set(config.id, config);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    return loadDefaultConfigs();
   }
+  const configs = [...merged.values()];
+  if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+  return configs;
 }
 
 export async function saveNotificationConfigsForSettings(value: unknown): Promise<NotificationConfig[]> {
@@ -189,11 +198,17 @@ export async function saveNotificationConfigsForSettings(value: unknown): Promis
   }
   const configs = value as NotificationConfig[];
   if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+  const defaults = await loadDefaultConfigs();
+  const savedIds = new Set(configs.map((item) => item.id));
+  const deletedIds = defaults.filter((config) => !savedIds.has(config.id)).map((config) => config.id);
   const directory = join(process.env.DATA_DIR ?? join(process.cwd(), "data"));
   await mkdir(directory, { recursive: true });
-  const temporaryPath = join(directory, `notifications.${randomUUID()}.tmp`);
-  await writeFile(temporaryPath, JSON.stringify(configs, null, 2) + "\n", { encoding: "utf8", mode: 0o600 });
-  await rename(temporaryPath, notificationOverridePath);
+  const configTemporaryPath = join(directory, `notifications.${randomUUID()}.tmp`);
+  const deletedTemporaryPath = join(directory, `notifications-deleted.${randomUUID()}.tmp`);
+  await writeFile(configTemporaryPath, JSON.stringify(configs, null, 2) + "\n", { encoding: "utf8", mode: 0o600 });
+  await writeFile(deletedTemporaryPath, JSON.stringify(deletedIds, null, 2) + "\n", { encoding: "utf8", mode: 0o600 });
+  await rename(deletedTemporaryPath, notificationDeletedPath);
+  await rename(configTemporaryPath, notificationOverridePath);
   return configs;
 }
 
