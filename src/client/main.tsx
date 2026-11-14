@@ -2010,7 +2010,8 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
   const [busy,setBusy] = React.useState(true);
   const [saving,setSaving] = React.useState(false);
   const [message,setMessage] = React.useState("");
-  const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);\n  const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
+  const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);
+  const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
   const [search,setSearch] = React.useState("");
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
   React.useEffect(() => {
@@ -2045,9 +2046,10 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
     finally { setSaving(false); }
   };
   const query = search.trim().toLocaleLowerCase(locale);
+  const expectedTypes = id === "sunrise" || id === "sunset" || id === "windDirection" ? ["number","string"] : ["number"];
   const matchingDevices = catalog.devices.flatMap(device => device.capabilities.map(capability => ({device,capability})))
-    .filter(({device,capability}) => !query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query));
-  const matchingVariables = catalog.variables.filter(variable => !query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query));
+    .filter(({device,capability}) => expectedTypes.includes(capability.type) && (!query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query)));
+  const matchingVariables = catalog.variables.filter(variable => expectedTypes.includes(variable.type) && (!query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query)));
   const packs = [
     {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription"),glyphs:["☀️","🌤️","☁️","🌧️","⛈️","❄️","🌫️","💨"]},
     {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription"),glyphs:["🌞","🌥️","🌧️","⛈️","🌨️","🌙","🌈","🌪️"]},
