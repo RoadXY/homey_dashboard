@@ -435,3 +435,7 @@ De badge **Uitgeschakeld** in iedere regel van de open meldingenkeuzelijst staat
 ## Meldingseditor – kopregel schaalt zonder overlap (14 november 2026)
 
 De kopregel van de meldingseditor mag nu zelf naar meerdere regels omslaan wanneer de beschikbare kaartbreedte onvoldoende is. De titel krijgt een flexibele basisbreedte van 260 px en de bedieningsgroep (Verwijderen, in-/uitschakelen en meldingsniveau) een basisbreedte van 480 px. Als beide niet naast elkaar passen, verhuist de bedieningsgroep naar een volgende regel in plaats van over de titel heen te vallen. Op voldoende brede schermen blijven titel en bediening naast elkaar staan. Dit is gebaseerd op de beschikbare breedte van de kaart en niet uitsluitend op de viewport-breakpoint.
+
+## Meldingseditor – compacte kopregel op smalle schermen (14 november 2026)
+
+Bij een viewport van maximaal 760 px schakelt de kopregel van de meldingseditor naar een verticale indeling. De flex-basis van de titelgroep en bedieningsgroep wordt op mobiel teruggezet naar `auto` en beide krijgen 100% breedte. Zonder deze reset interpreteerde de kolom-flexindeling de desktop-basisbreedtes (260 px en 480 px) als minimale hoogtes, waardoor grote lege verticale ruimtes ontstonden tussen de titel, actieknoppen en meldingsniveau. De bedieningsgroep en het meldingsniveau worden links uitgelijnd en kunnen compact omwikkelen. De desktopindeling blijft ongewijzigd.
