@@ -386,7 +386,7 @@
   "weatherSettings.sourcesHeading": "Weather settings",
   "weatherSettings.sourcesDescription": "Choose a Homey device, capability or Logic variable for each item. Disable items you do not want to show on the dashboard.",
   "weatherSettings.field.outdoorTemperature": "Outdoor temperature",
-  "weatherSettings.field.feelsLike": "Feels-like temperature",
+  "weatherSettings.field.feelsLike": "Feels like",
   "weatherSettings.field.humidity": "Humidity",
   "weatherSettings.field.pressure": "Air pressure",
   "weatherSettings.field.windSpeed": "Wind speed",

@@ -66,3 +66,11 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - Thunderstorm in the standard pack uses two separate lightning paths with independently timed on/off flashes; they no longer translate side-to-side.
 - Clock formatting uses locale-aware date-time parts. In 12-hour locales the AM/PM marker is rendered as a smaller suffix after the enlarged time; 24-hour locales do not show a marker.
 - The clock time type size has been increased while keeping the period marker visually subordinate.
+
+
+## Weather typography and selector consistency (14 November 2026)
+
+- The English dashboard label for feels-like temperature is shortened to “Feels like”.
+- Measurement tile values use a larger responsive type scale, while weather-detail labels and values are also enlarged for readability.
+- Weather icon-pack radio rows and the animation switch now use the same blue-gradient surface, border, radius and shadow treatment as the notification settings selector/card.
+- Standard thunderstorm flashes are quicker and grouped more closely, with a longer final illuminated interval followed by a deliberately longer dark pause. The two bolts remain independently timed.
