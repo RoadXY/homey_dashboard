@@ -425,5 +425,6 @@
   "weatherSettings.loadError": "Could not load weather settings.",
   "weatherSettings.sourcesError": "Could not load Homey sources.",
   "weatherSettings.saveError": "Could not save weather settings.",
-  "weatherSettings.saved": "Weather settings saved."
+  "weatherSettings.saved": "Weather settings saved.",
+  "weatherSettings.dashboardEyebrow": "OUTSIDE · WEATHER"
 }
