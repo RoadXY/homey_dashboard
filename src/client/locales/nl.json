@@ -258,7 +258,7 @@
   "blockly.invalidCondition": "De Blockly-voorwaarde is ongeldig en is niet opgeslagen.",
   "blockly.sourceCatalogError": "Broncatalogus kon niet worden geladen.",
   "blockly.unnamedNotification": "Naamloze melding",
-  "blockly.discardChanges": "Je hebt niet-opgeslagen wijzigingen in deze melding. Als je doorgaat, gaan deze wijzigingen verloren. Wil je doorgaan?",
+  "blockly.discardChanges": "Wijzigingen verwerpen?",
   "blockly.homeyDeviceNotFound": "Homey-apparaat niet gevonden (ID: {id}).",
   "blockly.capabilityMissing": "Meetmogelijkheid '{capability}' ontbreekt op apparaat '{device}'.",
   "blockly.deviceUnavailable": "Apparaat '{device}' is momenteel niet beschikbaar.",
@@ -369,5 +369,8 @@
   "blockly.lessThan": "is kleiner dan",
   "blockly.lessThanOrEqual": "is kleiner of gelijk aan",
   "blockly.greaterThan": "is groter dan",
-  "blockly.greaterThanOrEqual": "is groter of gelijk aan"
+  "blockly.greaterThanOrEqual": "is groter of gelijk aan",
+  "blockly.result": "resultaat",
+  "blockly.results": "resultaten",
+  "blockly.containers": "Containers"
 }
