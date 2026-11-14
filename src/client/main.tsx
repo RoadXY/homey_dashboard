@@ -1099,6 +1099,8 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [sourceCatalogError, setSourceCatalogError] = React.useState("");
   const [saved, setSaved] = React.useState<NotificationConfigEditor[]>([]);
   const [selectedId, setSelectedId] = React.useState("");
+  const [notificationPickerOpen, setNotificationPickerOpen] = React.useState(false);
+  const [notificationSearch, setNotificationSearch] = React.useState("");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
@@ -1132,6 +1134,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     return () => { active = false; };
   }, []);
   const selected = configs.find(item => item.id === selectedId) ?? configs[0];
+  const matchingNotifications = configs.filter(item => item.title.toLocaleLowerCase().includes(notificationSearch.trim().toLocaleLowerCase()));
   const selectedSchedule = selected ? findScheduleNode(selected.condition) : null;
   const selectedComparison = selected ? findComparisonNode(selected.condition) : null;
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
@@ -1194,9 +1197,24 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   return <div className="quick-settings-page notification-settings-page">
     <div className="notification-rule-selector">
       <label htmlFor="notification-rule-select">Meldingen</label>
-      <select id="notification-rule-select" value={selected?.id ?? ""} disabled={busy || !configs.length} onChange={event => setSelectedId(event.target.value)}>
-        {configs.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}
-      </select>
+      <div className="notification-picker">
+        <button type="button" id="notification-rule-select" className="notification-picker-trigger" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length} onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
+          <span className="notification-picker-name">{selected?.title ?? translate(locale, "notifications.noRules")}</span>
+          {selected && !selected.enabled && <span className="notification-disabled-badge">{translate(locale, "notifications.disabled")}</span>}
+          <span className="notification-picker-chevron" aria-hidden="true">▾</span>
+        </button>
+        {notificationPickerOpen && <div className="notification-picker-menu" role="listbox" aria-label={translate(locale, "notifications.selectorLabel")}>
+          <div className="notification-picker-search-wrap"><span aria-hidden="true">⌕</span><input autoFocus type="search" value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={translate(locale, "notifications.searchPlaceholder")} aria-label={translate(locale, "notifications.searchPlaceholder")} /></div>
+          <div className="notification-picker-results">
+            {matchingNotifications.map(item => <button type="button" role="option" aria-selected={item.id === selected?.id} className={"notification-picker-option" + (item.id === selected?.id ? " selected" : "")} key={item.id} onClick={() => { setSelectedId(item.id); setNotificationPickerOpen(false); setNotificationSearch(""); }}>
+              <span className="notification-picker-option-name">{item.title}</span>
+              {!item.enabled && <span className="notification-disabled-badge">{translate(locale, "notifications.disabled")}</span>}
+            </button>)}
+            {matchingNotifications.length === 0 && <div className="notification-picker-empty">{translate(locale, "notifications.noSearchResults")}</div>}
+          </div>
+          <div className="notification-picker-footer">{matchingNotifications.length} {translate(locale, "notifications.resultCount")}</div>
+        </div>}
+      </div>
       {!busy && !configs.length && <p>Er zijn nog geen meldingen beschikbaar.</p>}
       {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
     </div>
