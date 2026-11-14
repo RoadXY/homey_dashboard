@@ -98,3 +98,10 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - The sunny icon is centered in its symbol area and rotates around its own center. The mostly-sunny icon keeps the sun behind the cloud but also rotates the sun around its own center, without orbiting around a larger circle.
 - The dashboard uses the shorter Dutch feels-like label “Gevoel”; the English dashboard label remains “Feels like”. The longer feels-like label remains available in the weather settings page.
 - Weather detail labels and readings (feels-like, precipitation, sunrise and sunset, plus any other configured details) have a larger responsive type scale.
+
+
+## Preview/dashboard icon consistency (14 November 2026)
+
+- The weather settings preview and dashboard both render through the same WeatherIcon component. The preview previously showed partly_cloudy, while the live dashboard can receive mostly_sunny (for example, “Overwegend zonnig”). That live category was missing from the preview sample and did not share the partly-cloudy cloud placement rule.
+- The preview now uses mostly_sunny as its representative partly-sunny sample, matching the common live condition, and the mostly_sunny cloud is positioned consistently with the partly-cloudy icon.
+- Preview icon containers now use the same width-to-height proportion as the dashboard icon container, reducing visual differences caused by the preview's narrower aspect ratio.

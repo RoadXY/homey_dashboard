@@ -2072,7 +2072,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
     {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription")},
     {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription")}
   ] as const;
-  const previewCategories: WeatherCategory[] = ["sunny","partly_cloudy","cloudy","rain","thunderstorm","snow","fog","windy"];
+  const previewCategories: WeatherCategory[] = ["sunny","mostly_sunny","cloudy","rain","thunderstorm","snow","fog","windy"];
 
   return <div className="quick-settings-page weather-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/></div><div><h1>{t("settings.weatherPlaceholderTitle")}</h1><p>{t("weatherSettings.intro")}</p></div></div>
@@ -2135,7 +2135,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",rain:"Rain",thunderstorm:"Thunderstorm",snow:"Snow",fog:"Fog",windy:"Wind"} as Record<string,string>)[category])} pack={settings.iconPack} animate={settings.animateIcons}/></div>)}
+              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",cloudy:"Cloudy",rain:"Rain",thunderstorm:"Thunderstorm",snow:"Snow",fog:"Fog",windy:"Wind"} as Record<string,string>)[category])} pack={settings.iconPack} animate={settings.animateIcons}/></div>)}
             </div>
           </div>
         </section>
