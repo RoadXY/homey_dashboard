@@ -268,3 +268,14 @@ Bij het wijzigen van de titel of tekst in het vaste blok **Genereer melding** we
 De listener controleert nu het juiste eventtype en verwerkt uitsluitend wijzigingen aan de twee tekstvelden van het vaste hoofdblok. Daardoor worden `notificationTitle` en `message` direct in de conceptconfiguratie bijgewerkt, wordt de pagina als gewijzigd gemarkeerd en wordt **Opslaan** actief. Na opslaan gebruikt het dashboard de door de gebruiker ingevoerde meldingstitel in plaats van terug te vallen op de interne regelnaam (bijvoorbeeld 'Nieuwe melding').
 
 De interne regelnaam (`title`, zichtbaar in de instellingenlijst) blijft bewust gescheiden van de titel op de dashboardkaart (`notificationTitle`). Dit maakt het mogelijk om een korte, herkenbare regelnaam te gebruiken en tegelijk een eigen meldingstitel te tonen. De tekstvelden zijn vrije gebruikersinhoud en worden niet via i18n vertaald.
+
+
+## Meldingen verwijderen – 14 november 2026
+
+In de kop van de geselecteerde meldingsregel staat nu links naast **Melding ingeschakeld** een rode knop **Verwijderen**. De knop gebruikt de semantische severity-kleurvariabelen (`--severity-critical-background`, `--severity-critical-border`, `--severity-critical-text` en `--severity-critical-accent`) in plaats van vaste kleurwaarden. Toekomstige thema's kunnen deze tokens centraal aanpassen.
+
+Verwijderen vraagt eerst om bevestiging met de naam van de geselecteerde melding. De bevestiging vermeldt dat de verwijdering pas definitief wordt na **Opslaan**. De actie wijzigt dus alleen de conceptconfiguratie; annuleren of weg navigeren met de bestaande wijzigingenwaarschuwing houdt het bestaande gedrag intact. Na verwijderen wordt de eerstvolgende melding geselecteerd. Ook het verwijderen van de laatste melding is toegestaan; daarna kan de gebruiker via **Nieuwe melding** opnieuw beginnen.
+
+Standaardmeldingen worden vanuit configuratiebestanden samengevoegd met gebruikersinstellingen. Alleen de melding uit de conceptlijst verwijderen zou daarom onvoldoende zijn: bij herladen zou zo'n standaardmelding opnieuw verschijnen. Daarom worden verwijderde standaard-ID's apart bijgehouden in `notifications.deleted.json`. De normale override blijft een lijst met meldingsconfiguraties; bestaande installaties blijven compatibel. De backend filtert tombstones uit de standaardlijst voordat gebruikersoverschrijvingen worden samengevoegd. De opslag accepteert ook een lege lijst, zodat alle meldingen verwijderd kunnen worden.
+
+De Nederlandse en Engelse bevestigingsteksten en knoptekst zijn via i18n toegevoegd. De merge-logica heeft regressietests voor verwijderde standaardmeldingen en bewaarde overrides.
