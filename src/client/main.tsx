@@ -455,7 +455,6 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
-  const [deleting, setDeleting] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
   const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
@@ -511,25 +510,6 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
     const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
     return [device?.name, capability?.title].filter(Boolean).join(" · ") || "Apparaatbron";
-  };
-  const removeSelected = async () => {
-    if (!selected || deleting || saving || !window.confirm("Weet je zeker dat je deze melding wilt verwijderen?")) return;
-    const removedId = selected.id;
-    const selectedIndex = configs.findIndex(item => item.id === removedId);
-    setDeleting(true); setMessage(""); setIsError(false);
-    try {
-      const response = await fetch("/api/settings/notifications/" + encodeURIComponent(removedId), { method: "DELETE" });
-      const result = await response.json() as { notifications?: NotificationConfigEditor[]; error?: string };
-      if (!response.ok || !result.notifications) throw new Error(result.error ?? "Melding verwijderen mislukt.");
-      const remaining = configs.filter(item => item.id !== removedId);
-      setConfigs(remaining);
-      setSaved(result.notifications);
-      setSelectedId(remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.id ?? "");
-      setMessage("Melding verwijderd.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Melding verwijderen mislukt.");
-      setIsError(true);
-    } finally { setDeleting(false); }
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
@@ -1121,6 +1101,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const [selectedId, setSelectedId] = React.useState("");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
   React.useEffect(() => {
@@ -1180,6 +1161,25 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
   const updateSchedule = (value: ScheduleEditorValue) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceScheduleNode(item.condition, value) } : item));
+  };
+  const removeSelected = async () => {
+    if (!selected || deleting || saving || !window.confirm("Weet je zeker dat je deze melding wilt verwijderen?")) return;
+    const removedId = selected.id;
+    const selectedIndex = configs.findIndex(item => item.id === removedId);
+    setDeleting(true); setMessage(""); setIsError(false);
+    try {
+      const response = await fetch("/api/settings/notifications/" + encodeURIComponent(removedId), { method: "DELETE" });
+      const result = await response.json() as { notifications?: NotificationConfigEditor[]; error?: string };
+      if (!response.ok || !result.notifications) throw new Error(result.error ?? "Melding verwijderen mislukt.");
+      const remaining = configs.filter(item => item.id !== removedId);
+      setConfigs(remaining);
+      setSaved(result.notifications);
+      setSelectedId(remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.id ?? "");
+      setMessage("Melding verwijderd.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Melding verwijderen mislukt.");
+      setIsError(true);
+    } finally { setDeleting(false); }
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
