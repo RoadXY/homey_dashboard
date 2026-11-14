@@ -272,3 +272,7 @@ Dit besluit vervangt de eerdere implementatiekeuze waarbij de Homey-capabilityma
 ## UI- en opslagbesluit – meldingen direct verwijderen (14 november 2026)
 
 Een melding verwijderen is een zelfstandige, direct persistente actie en maakt geen onderdeel uit van de algemene Opslaan-knop. De gebruiker bevestigt eerst expliciet de verwijdering. Na bevestiging verwijdert de backend de melding meteen. Verwijderde standaardmeldingen worden via een aparte tombstone-lijst vastgelegd, zodat ze na Docker-herstart of image-update niet terugkomen. De knop gebruikt semantische thematokens voor kritisch rood.
+
+## UI-besluit – badge voor uitgeschakelde meldingen (14 november 2026)
+
+In de meldingenkiezer krijgt iedere melding met `enabled: false` een rode badge met de vertaalde tekst **Uitgeschakeld**. De status wordt uit de bestaande configuratie gelezen. De badge gebruikt de semantische severity-tokens voor kritisch rood in plaats van vaste kleurwaarden, zodat toekomstige thema's de weergave kunnen aanpassen.
