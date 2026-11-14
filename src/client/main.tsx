@@ -36,7 +36,7 @@ function formatMeasurementParts(reading: MeasurementTileValue | undefined, local
   // Keep readings compact and consistent across dashboard and settings preview.
   const magnitude = Math.abs(reading.value);
   const decimals = magnitude >= 1000 ? 0 : Math.max(0, Math.min(3, reading.decimals ?? 1));
-  const formatter = new Intl.NumberFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : "en-US", {
+  const formatter = new Intl.NumberFormat(locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   });
@@ -55,7 +55,7 @@ function capability(device: HomeyDevice | undefined, id: string): unknown {
   return device?.readings?.find((reading) => reading.capabilityId === id)?.value;
 }
 function temperature(value: unknown, locale: string = "nl"): string {
-  return typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(1).replace(".", locale.toLowerCase().startsWith("nl") ? "," : ".")}°` : "—";
+  return typeof value === "number" && Number.isFinite(value) ? `${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)}°` : "—";
 }
 function App() {
   const [now, setNow] = React.useState(() => new Date());
@@ -103,10 +103,10 @@ function App() {
           scheduleNotificationRefreshRef.current(nextData);
         })
         .catch(() => {
-          setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+          setNotifications([{ id: "notifications-load-error", title: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), message: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
         });
     }, delay);
-  }, []);
+  }, [dashboardLanguage, homeyLanguage]);
   scheduleNotificationRefreshRef.current = scheduleNotificationRefresh;
   const refresh = React.useCallback(async () => {
     void fetch("/api/notifications")
@@ -131,7 +131,7 @@ function App() {
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
         fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
       ]);
-      if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error(t("dashboard.homeyDataUnavailable"));
+      if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error(translate(resolveLocale(dashboardLanguage, homeyLanguage), "dashboard.homeyDataUnavailable"));
       const [statusData, readingsData, logicData] = await Promise.all([
         statusResponse.json() as Promise<HomeyStatus>, readingsResponse.json() as Promise<DeviceReadings>,
         logicResponse.json() as Promise<LogicResponse>,
@@ -153,7 +153,7 @@ function App() {
       }
       setLoadError("");
     } catch (error) { setLoadError(error instanceof Error ? error.message : "settings.loadDataError"); }
-  }, [scheduleNotificationRefresh]);
+  }, [scheduleNotificationRefresh, dashboardLanguage, homeyLanguage]);
   React.useEffect(() => {
     const clock = window.setInterval(() => setNow(new Date()), 1000);
     let refreshTimer = 0;
