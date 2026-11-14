@@ -508,9 +508,9 @@ body {
 .quick-flow-trigger-name { padding:2px 0; }
 .quick-flow-option-name { display:block; }
 .quick-flow-chevron { margin-left:auto; color:#c6d7e9; }
-.quick-flow-menu { position:absolute; z-index:20; left:0; right:0; bottom:calc(100% + 5px); max-height:min(68vh,560px); display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(151,178,209,.55); border-radius:10px; background:#10243a; box-shadow:0 16px 38px rgba(0,0,0,.58); }
-.quick-flow-search-wrap { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:8px; padding:8px 10px; border-bottom:1px solid rgba(151,178,209,.28); background:#172f49; color:#b9cce0; }
-.quick-flow-search { flex:1; width:100%; min-width:0; height:38px; margin:0; padding:0 8px; border:0!important; outline:none; background:transparent!important; color:#f0f5fb; font:inherit; }
+.quick-flow-menu { position:absolute; z-index:20; left:0; right:0; top:calc(100% + 5px); bottom:auto; max-height:min(68vh,560px); display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(151,178,209,.55); border-radius:10px; background:#10243a; box-shadow:0 16px 38px rgba(0,0,0,.58); }
+.quick-flow-search-wrap { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:10px; min-height:60px; padding:9px 14px; border-bottom:1px solid rgba(151,178,209,.28); background:#172f49; color:#b9cce0; }
+.quick-flow-search { flex:1; width:100%; min-width:0; height:42px; min-height:42px; margin:0; padding:0 10px; border:0!important; border-radius:7px; outline:none; background:transparent!important; color:#f0f5fb; font:inherit; font-size:16px; box-shadow:none!important; }
 .quick-flow-search::placeholder { color:#9db2c9; }
 .quick-flow-results { overflow-y:auto; overscroll-behavior:contain; }
 .quick-flow-option { display:flex; align-items:center; gap:13px; width:calc(100% - 12px); min-height:62px; height:auto; margin:6px 6px; padding:12px 14px; border:1px solid transparent; border-radius:10px; background:transparent; color:#edf3fb; font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
@@ -1002,8 +1002,8 @@ body {
 .weather-pack-preview-panel { margin-top:13px; padding:12px; border:1px solid var(--surface-card-border); border-radius:10px; background:var(--action-tile-background); }
 .weather-pack-preview-panel > strong { display:block; margin-bottom:10px; color:var(--text-secondary); font-size:12px; font-weight:600; }
 .weather-pack-preview-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
-.weather-pack-preview-item { min-width:0; min-height:76px; display:grid; place-items:center; border:1px solid var(--surface-card-border); border-radius:9px; background:color-mix(in srgb,var(--surface-card-background) 70%,transparent); }
-.weather-pack-preview-item .weather-symbol { width:min(100%,104px); height:76px; min-height:0; display:block; flex:0 0 auto; margin:0 auto; font-size:42px; }
+.weather-pack-preview-item { min-width:0; min-height:88px; display:grid; place-items:center; overflow:hidden; border:1px solid var(--surface-card-border); border-radius:9px; background:color-mix(in srgb,var(--surface-card-background) 70%,transparent); }
+.weather-pack-preview-item .weather-symbol { width:min(100%,92px); height:68px; min-height:0; display:block; flex:0 0 auto; margin:0 auto; font-size:40px; }
 .weather-pack-preview-item .weather-pack-symbol { font-size:42px; }
 
 /* The standard animated weather set uses familiar weather colours. */

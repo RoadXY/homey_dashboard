@@ -42,3 +42,10 @@ GitHub Actions run 774 completed successfully: TypeScript checks, automated test
 OpenAPI lint, frontend/backend build and production Docker image build all passed.
 The Dutch and English locale files parse successfully and contain matching keys.
 
+
+
+## Search dropdown and weather icon preview refinements (14 November 2026)
+
+- Searchable dropdown menus now open below their trigger instead of above it, using the shared quick-flow menu positioning.
+- Search inputs use the intended dark picker styling, with a larger 42px input, 16px text and a taller padded search header. The weather source search explicitly uses the shared search input class.
+- Weather icon preview cells have more vertical room, a constrained icon canvas and clipped overflow so SVG details remain inside each preview tile.
