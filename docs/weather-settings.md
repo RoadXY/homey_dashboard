@@ -41,3 +41,16 @@ to `public/api-docs/openapi.yaml` for Swagger UI.
 GitHub Actions run 774 completed successfully: TypeScript checks, automated tests,
 OpenAPI lint, frontend/backend build and production Docker image build all passed.
 The Dutch and English locale files parse successfully and contain matching keys.
+
+
+## Animated line icon pack
+
+The weather icon selector uses accessible radio choices with a localized name
+and short description. Selecting a pack updates a shared preview showing sunny,
+partly cloudy, cloudy, rain, thunderstorm, snow, fog and wind conditions.
+
+The additional `animated-line` pack uses custom inline SVG line artwork. Its
+stroke follows the active theme accent token (`--nav-button-hover-border`),
+rather than a hard-coded colour. Weather-specific motion is subtle and is
+disabled when the visitor enables reduced motion in their operating system.
+The same renderer is used in the dashboard weather display and settings preview.
