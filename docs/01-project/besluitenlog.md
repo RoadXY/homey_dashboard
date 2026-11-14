@@ -427,3 +427,7 @@ In de doorzoekbare meldingenkiezer wordt bij iedere melding met `enabled: false`
 ## Git-werkwijze – vaste ontwikkelbranch (14 november 2026)
 
 `phase_1_foundation` is de enige actieve ontwikkel- en documentatiebranch. Nieuwe functionaliteit, bugfixes, tests en documentatie worden rechtstreeks op deze branch gecommit. De oudere branch `feature/blockly-schedule-container` is niet integraal samengevoegd: `phase_1_foundation` bevatte al nieuwere versies van meerdere onderdelen en GitHub meldde mergeconflicten. De ontbrekende statusbadge voor uitgeschakelde meldingen is daarom afzonderlijk en aangepast aan de actuele implementatie overgezet. De conflicterende PR #2 is gesloten; de featurebranch blijft als historische referentie bestaan.
+
+## Uitgeschakeld-badge uitlijnen in meldingenkiezer (14 november 2026)
+
+De badge **Uitgeschakeld** in iedere regel van de open meldingenkeuzelijst staat aan de rechterkant van de volledige regel, onafhankelijk van de lengte van de meldingsnaam. De optieknop gebruikt hiervoor een flexrij met een flexibel naamveld en de badge als vast element. De badge in de gesloten keuzeknop blijft eveneens rechts van de geselecteerde meldingsnaam staan.
