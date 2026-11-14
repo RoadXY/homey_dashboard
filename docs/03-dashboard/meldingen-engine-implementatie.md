@@ -171,3 +171,19 @@ De serializer schrijft nu een normale newline. De reader herkent daarnaast uitsl
 Bij de geselecteerde melding toont de editor nu het label **Huidig niveau** met een keuzelijst voor de drie ondersteunde niveaus: `critical`, `warning` en `info`. De zichtbare namen komen uit de Nederlandse en Engelse i18n-bestanden. De selectie wijzigt het `severity`-veld van de geselecteerde configuratie en wordt met dezelfde Opslaan-actie als de overige meldingseigenschappen opgeslagen.
 
 De badge naast de keuzelijst toont direct de geselecteerde waarde en gebruikt de bestaande afgesproken severity-kleuren en CSS-tokens: kritisch rood, waarschuwing amber/geel en informatie neutraal. De keuze blijft onderdeel van het canonieke meldingsconfiguratiebestand; er is geen aparte opslagroute.
+
+## Meldingen direct verwijderen vanuit Instellingen – 14 november 2026
+
+Een melding kan vanuit **Instellingen → Meldingen** direct worden verwijderd met de rode knop **Verwijderen** naast de niveau-instelling.
+
+- De gebruiker krijgt eerst een bevestiging: “Weet je zeker dat je deze melding wilt verwijderen?”
+- Annuleren laat de configuratie ongewijzigd.
+- Bevestigen voert direct een beveiligde HTTP DELETE uit. Er is geen aanvullende klik op **Opslaan** nodig.
+- Na een succesvolle serveractie wordt de melding uit de keuzelijst verwijderd en wordt de eerstvolgende melding geselecteerd.
+- De server bewaart verwijderde standaardmeldings-ID's als tombstones in `DATA_DIR/notifications-deleted.json`. Daardoor worden verwijderde standaardmeldingen niet opnieuw toegevoegd bij het samenvoegen van repositorydefaults na een herstart of image-update.
+- De bestaande `notifications.json` blijft het overridebestand voor bewerkte meldingen; de verwijderregistratie staat bewust apart.
+- De DELETE-route vereist dezelfde geldige instellingen-PIN-sessie als de overige instellingenroutes.
+- De verwijderknop gebruikt de bestaande semantische severity-kleurentokens voor kritisch rood, zodat toekomstige thema's de kleur kunnen overschrijven.
+- Niet-gerelateerde, nog niet opgeslagen wijzigingen in andere meldingen blijven als lokale wijzigingen behouden; verwijderen slaat die wijzigingen niet stilzwijgend mee op.
+
+De directe verwijderactie is hiermee bewust gescheiden van de algemene **Opslaan**-actie voor Blockly- en niveauwijzigingen.
