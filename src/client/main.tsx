@@ -18,7 +18,8 @@ type HomeyStatus = { state: string; checkedAt: string | null; error: string | nu
 type DashboardNotification = { id: string; title: string; notificationTitle: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
-type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };\ntype DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
+type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
+type DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
 type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
@@ -66,7 +67,8 @@ function App() {
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
-  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);\n  const [weatherValues, setWeatherValues] = React.useState<DashboardWeatherValues | null>(null);
+  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [weatherValues, setWeatherValues] = React.useState<DashboardWeatherValues | null>(null);
   const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
   const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
@@ -2115,9 +2117,15 @@ function WeatherSettingsPage({ locale, t }: { locale: string; t: (key: string) =
   </div>;
 }
 
-function WeatherIcon({ category }: { category: WeatherCategory }) {
+function formatWeatherValue(value: string | number | boolean | null, units: string, locale: string): string {
+  if (value === null || value === undefined) return "—";
+  const formatted = typeof value === "number" ? new Intl.NumberFormat(locale,{maximumFractionDigits:1}).format(value) : String(value);
+  return formatted + (units ? " " + units : "");
+}
+
+function WeatherIcon({ category, pack = "animated" }: { category: WeatherCategory; pack?: WeatherSettingsModel["iconPack"] }) {
   return (
-    <div className={`weather-symbol weather-${category}`} role="img" aria-label={category.replaceAll("_", " ")}>
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={category.replaceAll("_", " ")}>
       {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
