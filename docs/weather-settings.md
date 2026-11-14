@@ -35,3 +35,9 @@ themes can override colours and surfaces without changing the component.
 
 The API documentation is maintained in `docs/api/openapi.yaml` and mirrored
 to `public/api-docs/openapi.yaml` for Swagger UI.
+
+## Verification
+
+GitHub Actions run 774 completed successfully: TypeScript checks, automated tests,
+OpenAPI lint, frontend/backend build and production Docker image build all passed.
+The Dutch and English locale files parse successfully and contain matching keys.
