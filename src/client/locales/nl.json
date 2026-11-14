@@ -7,6 +7,7 @@
   "weather.wind": "Wind",
   "actions.aria": "Snelle acties",
   "notifications.aria": "Meldingen",
+  "notifications.disabled": "Uitgeschakeld",
   "notifications.loadErrorTitle": "Meldingen niet beschikbaar",
   "notifications.loadErrorMessage": "De meldingsconfiguratie kon niet worden ingelezen.",
   "notifications.unknownTitle": "Bron niet beschikbaar",
