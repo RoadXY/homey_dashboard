@@ -431,3 +431,7 @@ In de doorzoekbare meldingenkiezer wordt bij iedere melding met `enabled: false`
 ## Uitgeschakeld-badge uitlijnen in meldingenkiezer (14 november 2026)
 
 De badge **Uitgeschakeld** in iedere regel van de open meldingenkeuzelijst staat aan de rechterkant van de volledige regel, onafhankelijk van de lengte van de meldingsnaam. De optieknop gebruikt hiervoor een flexrij met een flexibel naamveld en de badge als vast element. De badge in de gesloten keuzeknop blijft eveneens rechts van de geselecteerde meldingsnaam staan.
+
+## Meldingseditor – kopregel schaalt zonder overlap (14 november 2026)
+
+De kopregel van de meldingseditor mag nu zelf naar meerdere regels omslaan wanneer de beschikbare kaartbreedte onvoldoende is. De titel krijgt een flexibele basisbreedte van 260 px en de bedieningsgroep (Verwijderen, in-/uitschakelen en meldingsniveau) een basisbreedte van 480 px. Als beide niet naast elkaar passen, verhuist de bedieningsgroep naar een volgende regel in plaats van over de titel heen te vallen. Op voldoende brede schermen blijven titel en bediening naast elkaar staan. Dit is gebaseerd op de beschikbare breedte van de kaart en niet uitsluitend op de viewport-breakpoint.
