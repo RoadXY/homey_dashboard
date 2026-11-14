@@ -1579,7 +1579,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
             )}
             {matchingNotifications.length === 0 && <div className="notification-rule-empty">{t("notifications.noneFound")}</div>}
           </div>
-          <div className="notification-rule-footer">{matchingNotifications.length} resultaten</div>
+          <div className="notification-rule-footer">{matchingNotifications.length} {t("notifications.results")}</div>
         </div>}
       </div>
       <button type="button" className="notification-create-button" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
