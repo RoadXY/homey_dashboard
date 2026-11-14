@@ -21,7 +21,7 @@ export type ComparisonOperator =
 export function sourceKeyFromNode(source: any): string {
   if (source?.type === "device-capability") return "device:" + source.deviceId + ":" + source.capabilityId;
   if (source?.type === "logic-variable") return "logic:" + source.variableId;
-  throw new Error("Onbekend Homey-brontype.");
+  throw new Error("sourceKey.unknownHomeySourceType");
 }
 
 export function sourceFromKey(key: string, catalog: NotificationSourceCatalog | null): NotificationSource | null {
@@ -55,22 +55,22 @@ export function comparisonValueFromBlockly(source: NotificationSource, operator:
   const booleanOperators: ComparisonOperator[] = ["equals", "notEquals"];
   const stringOperators: ComparisonOperator[] = ["equals", "notEquals"];
   if (!(source.expectedType === "number" ? numericOperators : source.expectedType === "string" ? stringOperators : booleanOperators).includes(operator as ComparisonOperator)) {
-    throw new Error("De gekozen vergelijkingsoperator past niet bij het datatype van de bron.");
+    throw new Error("comparison.operatorMismatch");
   }
   const text = String(raw ?? "");
   if (source.expectedType === "string") return text;
   if (source.expectedType === "number") {
     const value = Number(text);
-    if (!Number.isFinite(value) || text.trim() === "") throw new Error("Vul een geldig getal in bij de vergelijking.");
+    if (!Number.isFinite(value) || text.trim() === "") throw new Error("comparison.invalidNumber");
     return value;
   }
-  if (text !== "true" && text !== "false") throw new Error("Een booleaanse vergelijking vereist true of false.");
+  if (text !== "true" && text !== "false") throw new Error("comparison.booleanRequired");
   return text === "true";
 }
 
 export function durationNodeToBlockly(node: any): { blockType: string; minutes: number; child: any; id?: string } {
   if (!node || node.type !== "duration" || !Number.isFinite(node.durationMs) || node.durationMs <= 0) {
-    throw new Error("Ongeldige duration-node.");
+    throw new Error("duration.invalidNode");
   }
   const inactive = node.condition?.type === "not";
   return {
@@ -83,9 +83,9 @@ export function durationNodeToBlockly(node: any): { blockType: string; minutes: 
 
 export function durationNodeFromBlockly(blockId: string, storedId: unknown, minutes: number, child: any, inactive: boolean): any {
   if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) {
-    throw new Error("De duur moet tussen 1 en 1440 minuten liggen.");
+    throw new Error("duration.invalidMinutes");
   }
-  if (!child) throw new Error("Een duurblok vereist precies één voorwaarde.");
+  if (!child) throw new Error("duration.requiresCondition");
   return {
     type: "duration",
     id: typeof storedId === "string" && storedId ? storedId : blockId,
@@ -100,7 +100,7 @@ export function durationNodeFromBlockly(blockId: string, storedId: unknown, minu
  */
 export function combineRootConditions(conditions: any[]): any {
   if (!Array.isArray(conditions) || conditions.length === 0) {
-    throw new Error("Genereer melding vereist minimaal één voorwaarde.");
+    throw new Error("notification.requiresCondition");
   }
   if (conditions.length === 1) return conditions[0];
   return { operator: "and", conditions };
