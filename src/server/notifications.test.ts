@@ -78,7 +78,7 @@ describe("mergeNotificationConfigs", () => {
     message: "",
     severity: "info" as const,
     enabled: true,
-    condition: { type: "schedule" as const, configured: false, weekdays: [] },
+    condition: { type: "schedule", configured: false, weekdays: [] } as const,
   });
 
   it("keeps deleted default notifications out of the settings list", () => {
