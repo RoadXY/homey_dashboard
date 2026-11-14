@@ -361,7 +361,7 @@ function App() {
               {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
               <div className="weather-description">{weatherCondition?.conditionText || (weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown"))}</div>
             </div>
-            <WeatherIcon category={weatherCondition?.category ?? "unknown"} pack={weatherValues?.settings.iconPack ?? "animated"} />
+            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={weatherCondition?.category && weatherCondition.category !== "unknown" ? t("weather.condition."+weatherCondition.category) : t("weather.condition.unknown")} pack={weatherValues?.settings.iconPack ?? "animated"} />
           </div>
           <div className="weather-details">
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
@@ -2075,7 +2075,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
                 <button type="button" className="quick-flow-trigger weather-source-trigger" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
                   onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
                   <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
-                  <span className="quick-flow-trigger-name">{sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
+                  <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
                 </button>
                 {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
                   <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
@@ -2125,11 +2125,11 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
   return formatted + (units ? " " + units : "");
 }
 
-function WeatherIcon({ category, pack = "animated" }: { category: WeatherCategory; pack?: WeatherSettingsModel["iconPack"] }) {
+function WeatherIcon({ category, label, pack = "animated" }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"] }) {
   const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
-  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={category.replaceAll("_"," ")}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
+  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
-    <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={category.replaceAll("_", " ")}>
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={label}>
       {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
