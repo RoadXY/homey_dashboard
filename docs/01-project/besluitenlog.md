@@ -422,3 +422,8 @@ De categorie Tijd krijgt twee aanvullende blokken: **Tijd tussen** (dagelijks ti
 ## Instellingen Meldingen – statusbadge uitgeschakelde meldingen (14 november 2026)
 
 In de doorzoekbare meldingenkiezer wordt bij iedere melding met `enabled: false` een rode badge **Uitgeschakeld** getoond. De badge is ook zichtbaar naast de geselecteerde melding wanneer de keuzelijst gesloten is. De status wordt uitsluitend uit de bestaande configuratie gelezen; er komt geen afzonderlijke opslagstatus bij. De Nederlandse en Engelse teksten gebruiken i18n. Achtergrond, rand en tekst gebruiken de semantische `--severity-critical-*` CSS-tokens zodat toekomstige thema's de badgekleur kunnen aanpassen.
+
+
+## Git-werkwijze – vaste ontwikkelbranch (14 november 2026)
+
+`phase_1_foundation` is de enige actieve ontwikkel- en documentatiebranch. Nieuwe functionaliteit, bugfixes, tests en documentatie worden rechtstreeks op deze branch gecommit. De oudere branch `feature/blockly-schedule-container` is niet integraal samengevoegd: `phase_1_foundation` bevatte al nieuwere versies van meerdere onderdelen en GitHub meldde mergeconflicten. De ontbrekende statusbadge voor uitgeschakelde meldingen is daarom afzonderlijk en aangepast aan de actuele implementatie overgezet. De conflicterende PR #2 is gesloten; de featurebranch blijft als historische referentie bestaan.
