@@ -584,6 +584,9 @@ body {
 .notification-severity-pill { padding: 5px 9px; border-radius: 20px; background: rgba(255,255,255,.07); color: var(--text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .notification-severity-control { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
 .notification-severity-control label { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+.notification-delete-button { min-height:32px; padding:5px 10px; border:1px solid var(--severity-critical-border); border-radius:8px; background:var(--severity-critical-background); color:var(--severity-critical-text); font:inherit; font-size:12px; font-weight:600; cursor:pointer; transition:filter .15s ease, opacity .15s ease; }
+.notification-delete-button:hover:not(:disabled) { filter:brightness(1.16); }
+.notification-delete-button:disabled { opacity:.45; cursor:default; }
 .notification-severity-control select { min-width: 128px; min-height: 32px; padding: 5px 9px; border: 1px solid rgba(150,165,185,.28); border-radius: 8px; background: #202630; color: var(--text-primary); font: inherit; font-size: 12px; }
 .notification-severity-control .notification-severity-pill { border: 1px solid transparent; }
 .notification-severity-control .severity-critical { background: var(--severity-critical-background); border-color: var(--severity-critical-border); color: var(--severity-critical-text); }
