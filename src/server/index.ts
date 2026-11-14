@@ -413,6 +413,9 @@ app.get("/api/events", async (_request, reply) => {
   const onSettingsUpdated = (payload: unknown) => {
     if (!reply.raw.destroyed) reply.raw.write(`event: settings-updated\ndata: ${JSON.stringify(payload)}\n\n`);
   };
+  const onNotificationsUpdated = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: notifications-updated\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
   const heartbeat = setInterval(() => {
     if (!reply.raw.destroyed) reply.raw.write(`: keepalive ${Date.now()}\n\n`);
   }, 20_000);
