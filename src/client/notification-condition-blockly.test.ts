@@ -12,11 +12,12 @@ import {
 
 const catalog = {
   devices: [
-    { id: "device-123", capabilities: [{ id: "measure_temperature", type: "number" as const }, { id: "alarm_contact", type: "boolean" as const }] },
+    { id: "device-123", capabilities: [{ id: "measure_temperature", type: "number" as const }, { id: "alarm_contact", type: "boolean" as const }, { id: "machine_state", type: "string" as const }] },
   ],
   variables: [
     { id: "logic-co2", type: "number" as const },
     { id: "logic-window", type: "boolean" as const },
+    { id: "logic-status", type: "string" as const },
   ],
 };
 
@@ -38,6 +39,11 @@ describe("Blockly Homey source conversion", () => {
     expect(sourceKeyFromNode(source)).toBe("logic:logic-window");
   });
 
+  it("resolves textual capabilities and Logic variables as string sources", () => {
+    expect(sourceFromKey("device:device-123:machine_state", catalog)).toEqual({ type: "device-capability", deviceId: "device-123", capabilityId: "machine_state", expectedType: "string" });
+    expect(sourceFromKey("logic:logic-status", catalog)).toEqual({ type: "logic-variable", variableId: "logic-status", expectedType: "string" });
+  });
+
   it("rejects missing and malformed source keys instead of guessing", () => {
     expect(sourceFromKey("device:missing:measure_temperature", catalog)).toBeNull();
     expect(sourceFromKey("device:device-123", catalog)).toBeNull();
@@ -51,17 +57,23 @@ describe("Blockly Homey source conversion", () => {
     expect(comparisonInputValue("number", "24.5")).toBe(24.5);
     expect(comparisonInputValue("number", "true")).toBe(0);
     expect(comparisonInputValue("number", "")).toBe(0);
+    expect(comparisonInputValue("string", "Ready")).toBe("Ready");
+    expect(comparisonInputValue("string", "  Ready  ")).toBe("  Ready  ");
   });
 
   it("parses numeric and boolean comparison values according to the source datatype", () => {
     const numeric = sourceFromKey("logic:logic-co2", catalog)!;
     const boolean = sourceFromKey("logic:logic-window", catalog)!;
+    const string = sourceFromKey("logic:logic-status", catalog)!;
     expect(comparisonValueFromBlockly(numeric, "greaterThanOrEqual", "1000")).toBe(1000);
     expect(comparisonValueFromBlockly(boolean, "notEquals", "false")).toBe(false);
+    expect(comparisonValueFromBlockly(string, "equals", "Ready")).toBe("Ready");
+    expect(comparisonValueFromBlockly(string, "notEquals", "Running")).toBe("Running");
     expect(() => comparisonValueFromBlockly(numeric, "lessThan", "not-a-number")).toThrow();
     expect(() => comparisonValueFromBlockly(numeric, "equals", " ")).toThrow();
     expect(() => comparisonValueFromBlockly(boolean, "greaterThan", "true")).toThrow();
     expect(() => comparisonValueFromBlockly(boolean, "equals", "yes")).toThrow();
+    expect(() => comparisonValueFromBlockly(string, "greaterThan", "Ready")).toThrow();
   });
 });
 
