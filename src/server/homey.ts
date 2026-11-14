@@ -675,3 +675,72 @@ export async function getHomeyLogicVariablesByIds(variableIds: string[]) {
   };
 }
 
+
+
+/** Source catalog for weather settings; includes numeric and text capabilities. */
+export async function getWeatherSourceCatalog() {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const [devices, zones, variables] = await Promise.all([
+    api.devices.getDevices(), api.zones.getZones(), api.logic.getVariables(),
+  ]);
+  const zoneList = Object.values(zones as Record<string, any>).map((zone: any) => ({
+    id: String(zone.id), name: String(zone.name ?? "Ruimte"),
+    parent: typeof zone.parent === "string" ? zone.parent : null,
+  }));
+  const deviceList = Object.values(devices as Record<string, any>).flatMap((device: any) => {
+    const capabilities = Array.isArray(device.capabilities) ? device.capabilities as string[] : [];
+    const supported = capabilities.flatMap(capabilityId => {
+      const descriptor = device.capabilitiesObj?.[capabilityId] as Record<string, any> | undefined;
+      if (!descriptor || !["number", "string", "boolean"].includes(descriptor.type)) return [];
+      return [{
+        id: capabilityId,
+        title: typeof descriptor.title === "string" ? descriptor.title : capabilityId,
+        type: descriptor.type as "number" | "string" | "boolean",
+        units: typeof descriptor.units === "string" ? descriptor.units : "",
+      }];
+    });
+    if (!supported.length) return [];
+    return [{
+      id: String(device.id), name: String(device.name ?? "Onbekend apparaat"),
+      zone: typeof device.zone === "string" ? device.zone : null,
+      available: device.available !== false, capabilities: supported,
+    }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  const logicList = Object.values(variables as Record<string, any>).flatMap((variable: any) => {
+    if (!["number", "string", "boolean"].includes(variable.type)) return [];
+    return [{ id: String(variable.id), name: String(variable.name ?? "Logic-variabele"), type: variable.type }];
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  return { retrievedAt: new Date().toISOString(), zones: zoneList, devices: deviceList, variables: logicList };
+}
+
+/** Read the currently configured weather sources without making external API calls. */
+export async function getWeatherSourceValues(settings: { sources: Record<string, ({ type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null)> }) {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  const [devices, variables] = await Promise.all([api.devices.getDevices(), api.logic.getVariables()]);
+  const deviceMap = devices as Record<string, any>;
+  const variableMap = variables as Record<string, any>;
+  const entries = await Promise.all(Object.entries(settings.sources).map(async ([id, source]) => {
+    if (!source) return [id, { value: null, units: "", available: false }] as const;
+    if (source.type === "logic") {
+      const variable = variableMap[source.variableId];
+      const value = variable?.value;
+      const available = variable && (["string", "number", "boolean"].includes(typeof value));
+      return [id, { value: available ? value : null, units: "", available: Boolean(available) }] as const;
+    }
+    const device = deviceMap[source.deviceId];
+    const descriptor = device?.capabilitiesObj?.[source.capabilityId] as Record<string, any> | undefined;
+    if (!device || device.available === false || !Array.isArray(device.capabilities) || !device.capabilities.includes(source.capabilityId) || !descriptor) {
+      return [id, { value: null, units: "", available: false }] as const;
+    }
+    try {
+      const value = await api!.devices.getCapabilityValue({ deviceId: source.deviceId, capabilityId: source.capabilityId });
+      const available = value !== null && value !== undefined && ["string", "number", "boolean"].includes(typeof value);
+      return [id, { value: available ? value : null, units: typeof descriptor.units === "string" ? descriptor.units : "", available: Boolean(available) }] as const;
+    } catch {
+      return [id, { value: null, units: typeof descriptor.units === "string" ? descriptor.units : "", available: false }] as const;
+    }
+  }));
+  return { retrievedAt: new Date().toISOString(), values: Object.fromEntries(entries) };
+}
