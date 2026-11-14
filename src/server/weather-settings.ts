@@ -12,7 +12,7 @@ export type WeatherSettingId =
 
 export type WeatherSettings = {
   sources: Record<WeatherSettingId, WeatherSource>;
-  iconPack: "animated" | "color3d" | "outline" | "flat";
+  iconPack: "animated" | "color3d" | "outline" | "flat" | "animated-line";
 };
 
 export const WEATHER_SETTING_IDS: WeatherSettingId[] = [
@@ -43,7 +43,7 @@ export function normalizeWeatherSettings(value: unknown): WeatherSettings {
   const incomingSources = input.sources && typeof input.sources === "object" && !Array.isArray(input.sources)
     ? input.sources as Record<string, unknown> : {};
   const sources = Object.fromEntries(WEATHER_SETTING_IDS.map(id => [id, normalizeSource(incomingSources[id])])) as WeatherSettings["sources"];
-  const allowedPacks: WeatherSettings["iconPack"][] = ["animated", "color3d", "outline", "flat"];
+  const allowedPacks: WeatherSettings["iconPack"][] = ["animated", "color3d", "outline", "flat", "animated-line"];
   const iconPack = allowedPacks.includes(input.iconPack as WeatherSettings["iconPack"])
     ? input.iconPack as WeatherSettings["iconPack"] : "animated";
   return { sources, iconPack };

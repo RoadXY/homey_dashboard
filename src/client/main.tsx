@@ -2001,7 +2001,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
 
 type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
 type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
-type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" };
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" | "animated-line" };
 type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
 const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
 const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated" };
@@ -2050,11 +2050,14 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
   };
   const query = search.trim().toLocaleLowerCase(locale);
   const packs = [
-    {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription"),glyphs:["☀️","🌤️","☁️","🌧️","⛈️","❄️","🌫️","💨"]},
-    {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription"),glyphs:["🌞","🌥️","🌧️","⛈️","🌨️","🌙","🌈","🌪️"]},
-    {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription"),glyphs:["☼","☁","☂","ϟ","❄","☾","≋","↝"]},
-    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription"),glyphs:["🌤","☁","🌦","🌩","❄","🌙","🌫","🌬"]}
-  ];
+    {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription")},
+    {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription")},
+    {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription")},
+    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription")},
+    {id:"animated-line",title:t("weatherSettings.packAnimatedLine"),description:t("weatherSettings.packAnimatedLineDescription")}
+  ] as const;
+  const previewCategories: WeatherCategory[] = ["sunny","partly_cloudy","cloudy","rain","thunderstorm","snow","fog","windy"];
+
   return <div className="quick-settings-page weather-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/></div><div><h1>{t("settings.weatherPlaceholderTitle")}</h1><p>{t("weatherSettings.intro")}</p></div></div>
     <div className="weather-settings-layout">
@@ -2102,12 +2105,19 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
         <section className="settings-card weather-packs-card">
           <h2><i className="mdi mdi-image-multiple-outline" aria-hidden="true"/>{t("weatherSettings.iconHeading")}</h2>
           <p className="quick-card-description">{t("weatherSettings.iconDescription")}</p>
-          <div className="weather-pack-grid">
-            {packs.map(pack=><button type="button" key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")} aria-pressed={settings.iconPack===pack.id} onClick={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}>
-              <span className="weather-pack-radio" aria-hidden="true"/><span className={"weather-pack-glyphs pack-"+pack.id}>{pack.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</span><strong>{pack.title}</strong><small>{pack.description}</small>
-            </button>)}
+          <div className="weather-pack-options" role="radiogroup" aria-label={t("weatherSettings.iconHeading")}>
+            {packs.map(pack=><label key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")}>
+              <input type="radio" name="weather-icon-pack" value={pack.id} checked={settings.iconPack===pack.id} onChange={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}/>
+              <span className="weather-pack-radio" aria-hidden="true"/>
+              <span className="weather-pack-copy"><strong>{pack.title}</strong><small>{pack.description}</small></span>
+            </label>)}
           </div>
-          <div className={"weather-pack-preview pack-"+settings.iconPack}><span>{t("weatherSettings.preview")}</span>{packs.find(pack=>pack.id===settings.iconPack)?.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</div>
+          <div className="weather-pack-preview-panel">
+            <strong>{t("weatherSettings.preview")}</strong>
+            <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
+              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={category.replaceAll("_"," ")} pack={settings.iconPack}/></div>)}
+            </div>
+          </div>
         </section>
         <section className="settings-card weather-api-card">
           <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
@@ -2130,6 +2140,24 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
 
 function WeatherIcon({ category, label, pack = "animated" }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"] }) {
   const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
+  if (pack === "animated-line") {
+    const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
+    const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet","fog"].includes(category);
+    const hasRain = ["drizzle","rain","heavy_rain","showers","sleet","hail"].includes(category);
+    const hasSnow = ["snow","snow_showers"].includes(category);
+    return <div className={"weather-symbol weather-pack-animated-line weather-line-"+category} role="img" aria-label={label}>
+      <svg className="weather-line-svg" viewBox="0 0 96 72" aria-hidden="true">
+        {hasSun && <g className="weather-line-sun"><circle cx="37" cy="25" r="10"/><path d="M37 3v8 M37 39v8 M15 25h8 M51 25h8 M21.4 9.4l5.7 5.7 M47 35l5.7 5.7 M52.6 9.4l-5.7 5.7 M27 35l-5.7 5.7"/></g>}
+        {hasCloud && <path className="weather-line-cloud" d="M23 48h48a13 13 0 0 0 0-26 19 19 0 0 0-36-3A15 15 0 0 0 23 48Z"/>}
+        {hasRain && <path className="weather-line-rain" d="m31 53-4 9 M48 53l-4 9 M65 53l-4 9"/>}
+        {category === "thunderstorm" && <path className="weather-line-lightning" d="m53 49-10 12h8l-4 9 16-17H54l6-4"/>}
+        {hasSnow && <g className="weather-line-snow"><path d="M31 53v13m-5-9 10 5m0-10-10 10 M48 53v13m-5-9 10 5m0-10-10 10 M65 53v13m-5-9 10 5m0-10-10 10"/></g>}
+        {category === "fog" && <path className="weather-line-fog" d="M15 53h66 M23 62h50"/>}
+        {category === "windy" && <g className="weather-line-wind"><path d="M12 27h57c12 0 12-15 2-15-5 0-7 3-7 6 M7 43h73c13 0 13 16 2 16-5 0-7-3-7-6"/></g>}
+        {category === "unknown" && <text x="48" y="48" textAnchor="middle" className="weather-line-unknown">?</text>}
+      </svg>
+    </div>;
+  }
   if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
     <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={label}>

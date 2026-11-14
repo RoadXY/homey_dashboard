@@ -426,5 +426,7 @@
   "weatherSettings.sourcesError": "Homey-bronnen konden niet worden geladen.",
   "weatherSettings.saveError": "Weerinstellingen opslaan mislukt.",
   "weatherSettings.saved": "Weerinstellingen opgeslagen.",
-  "weatherSettings.dashboardEyebrow": "BUITEN · WEER"
+  "weatherSettings.dashboardEyebrow": "BUITEN · WEER",
+  "weatherSettings.packAnimatedLine": "Lijnanimaties (thema)",
+  "weatherSettings.packAnimatedLineDescription": "Minimalistische lijniconen met subtiele animaties in de accentkleur van je thema."
 }
