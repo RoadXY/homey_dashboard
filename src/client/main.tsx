@@ -1822,8 +1822,16 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   React.useEffect(() => { onDirtyChange(notificationDirty || weatherDirty); }, [notificationDirty, weatherDirty, onDirtyChange]);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const confirmLeaveCurrentPage = () => {
-    if (page === "notifications" && notificationDirty) return window.confirm(t("notifications.discardChanges"));
-    if (page === "weather" && weatherDirty) return window.confirm(t("notifications.discardChanges"));
+    if (page === "notifications" && notificationDirty) {
+      const confirmed = window.confirm(t("notifications.discardChanges"));
+      if (confirmed) setNotificationDirty(false);
+      return confirmed;
+    }
+    if (page === "weather" && weatherDirty) {
+      const confirmed = window.confirm(t("notifications.discardChanges"));
+      if (confirmed) setWeatherDirty(false);
+      return confirmed;
+    }
     return true;
   };
   const navigateSettings = (nextPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather", path: string) => {
