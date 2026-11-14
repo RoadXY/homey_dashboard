@@ -181,19 +181,20 @@ async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
 }
 
 export async function getNotificationConfigsForSettings(): Promise<NotificationConfig[]> {
+  let saved: unknown[] = [];
   try {
-    const saved = parseNotificationConfigJson(await readFile(notificationOverridePath, "utf8"));
-    if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
-    const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
-    for (const config of saved) merged.set(config.id, config);
-    const deletedIds = await readDeletedNotificationIds();
-    const configs = [...merged.values()].filter((config) => !deletedIds.has(config.id));
-    if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
-    return configs;
+    const parsed = parseNotificationConfigJson(await readFile(notificationOverridePath, "utf8"));
+    if (!Array.isArray(parsed) || !parsed.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
+    saved = parsed;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    return loadDefaultConfigs();
   }
+  const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
+  for (const config of saved as NotificationConfig[]) merged.set(config.id, config);
+  const deletedIds = await readDeletedNotificationIds();
+  const configs = [...merged.values()].filter((config) => !deletedIds.has(config.id));
+  if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
+  return configs;
 }
 
 export async function deleteNotificationConfigForSettings(id: string): Promise<NotificationConfig[]> {
