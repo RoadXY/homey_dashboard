@@ -24,7 +24,7 @@ type TransientNotification = { id: string; message: string; source: "quick-actio
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; notificationTitle?: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
-type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" }[] };
+type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean" | "string"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" | "string" }[] };
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
 type MeasurementTile = { id: string; name: string; source: MeasurementTileSource };
@@ -672,10 +672,10 @@ function replaceFirstComparisonSource(node: any, source: any): any {
     const comparison = node.condition;
     const validForSource = source.expectedType === "number"
       ? typeof comparison?.value === "number"
-      : ["equals", "notEquals"].includes(comparison?.operator) && typeof comparison?.value === "boolean";
+      : ["equals", "notEquals"].includes(comparison?.operator) && typeof comparison?.value === source.expectedType;
     const fallback = source.expectedType === "number"
       ? { operator: "equals", value: 0 }
-      : { operator: "equals", value: false };
+      : source.expectedType === "string" ? { operator: "equals", value: "" } : { operator: "equals", value: false };
     return { ...node, source, condition: validForSource ? comparison : fallback };
   }
   if (Array.isArray(node.conditions)) {
@@ -732,7 +732,7 @@ function findMissingNotificationSources(condition: any, catalog: NotificationSou
   visit(condition);
   return [...missing];
 }
-function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, notificationTitle, notificationMessage, onContentChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; notificationTitle: string; notificationMessage: string; onContentChange: (value: { notificationTitle: string; message: string }) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number) => void }) {
+function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChange, notificationTitle, notificationMessage, onContentChange, locale, sourceCatalog, sourceKey, onSourceChange, comparison, onComparisonChange }: { condition: any; schedule: any; onChange: (value: ScheduleEditorValue) => void; onConditionChange: (value: any) => void; notificationTitle: string; notificationMessage: string; onContentChange: (value: { notificationTitle: string; message: string }) => void; locale: string; sourceCatalog: NotificationSourceCatalog | null; sourceKey: string; onSourceChange: (key: string) => void; comparison: any; onComparisonChange: (operator: string, value: boolean | number | string) => void }) {
   const host = React.useRef<HTMLDivElement>(null);
   const [blocklyUnavailable, setBlocklyUnavailable] = React.useState(false);
   const [conditionError, setConditionError] = React.useState("");
@@ -899,7 +899,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             return numeric
               ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
               : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
-          }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
+          }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "string" ? current.condition.value : typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
           this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
           this.setOutput(true, "Boolean"); this.setColour(165);
         }
@@ -946,9 +946,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             comparisonChangeRef.current(value, numeric ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "boolean" ? current.condition.value : false));
             return value;
           }), "OP").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false), (value: string) => {
-            const numeric = comparisonRef.current?.source?.expectedType === "number";
-            const parsed = numeric ? Number(value) : value.toLowerCase() === "true";
-            if (!numeric || Number.isFinite(parsed as number)) comparisonChangeRef.current(comparisonRef.current?.condition?.operator ?? "equals", parsed as boolean | number);
+            const expectedType = comparisonRef.current?.source?.expectedType ?? "boolean";
+            const parsed = expectedType === "number" ? Number(value) : expectedType === "boolean" ? value.toLowerCase() === "true" : value;
+            if (expectedType !== "number" || Number.isFinite(parsed as number)) comparisonChangeRef.current(comparisonRef.current?.condition?.operator ?? "equals", parsed as boolean | number | string);
             return value;
           }), "VALUE");
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
@@ -1002,8 +1002,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
         : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
     };
-    const makeComparisonValueField = (expectedType: "number" | "boolean", rawValue: string) => {
+    const makeComparisonValueField = (expectedType: "number" | "boolean" | "string", rawValue: string) => {
       const normalized = comparisonInputValue(expectedType, rawValue);
+      if (expectedType === "string") return new Blockly.FieldTextInput(String(normalized));
       if (expectedType === "boolean") {
         const field = new Blockly.FieldDropdown([["false", "false"], ["true", "true"]]);
         field.setValue(String(normalized));
@@ -1011,7 +1012,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       }
       return new Blockly.FieldNumber(Number(normalized));
     };
-    const replaceComparisonValueField = (block: any, expectedType: "number" | "boolean", rawValue: string) => {
+    const replaceComparisonValueField = (block: any, expectedType: "number" | "boolean" | "string", rawValue: string) => {
       const input = block.getInput("SOURCE_FIELDS");
       if (!input) return;
       input.removeField("VALUE");
@@ -1456,7 +1457,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     if (!source) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparisonSource(item.condition, source) } : item));
   };
-  const updateComparison = (operator: string, value: boolean | number) => {
+  const updateComparison = (operator: string, value: boolean | number | string) => {
     if (!selected) return;
     setConfigs(current => current.map(item => item.id === selected.id ? { ...item, condition: replaceFirstComparison(item.condition, { operator, value }) } : item));
   };
