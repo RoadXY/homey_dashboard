@@ -51,7 +51,7 @@ Onderstaande lijst is een functionele catalogus, geen claim dat deze endpoints a
 
 Externe clients krijgen niet automatisch algemene toegang tot alle Homey-apparaten, Logic-variabelen, Flows of dashboardconfiguratie. Elke API-operatie wordt bewust ontworpen en aan een permissie gekoppeld.
 
-## Dashboardmeldingen via externe API – functionele richting (13 november 2026)
+## Dashboardmeldingen via externe API – eerdere functionele richting (13 november 2026)
 
 Naast meldingen die Homey Dashboard zelf op basis van Homey-data en Blockly-voorwaarden evalueert, moet een geautoriseerde externe client later via de externe API een dashboardmelding kunnen **publiceren en beëindigen/verwijderen**. Bijwerken van een bestaande gepubliceerde melding wordt als gewenste lifecycle-operatie meegenomen.
 
@@ -62,9 +62,9 @@ Naast meldingen die Homey Dashboard zelf op basis van Homey-data en Blockly-voor
 - De drie dashboardniveaus blijven **kritiek**, **waarschuwing** en **info**, met de bestaande niveaugebonden styling en sortering uit `docs/03-dashboard/README.md`. Het API-contract moet deze niveaus op dezelfde manier kunnen aanduiden; de exacte veldnamen en payload worden later vastgelegd.
 - De externe meldingslifecycle staat los van de Blockly-voorwaardenengine voor dynamische meldingsregels. De twee soorten meldingen komen samen in de dashboardpresentatielaag, die de afgesproken vormgeving en ordening toepast.
 
-Nog te ontwerpen in fase 4: endpointpaden en HTTP-methoden, request-/response-schema's, verplichte velden, optionele vervaltijd, gedrag bij dubbele IDs, clientscopes, audit/logging, foutcodes en eventuele persistentie/retentie. Deze details worden niet vooruitlopend vastgezet.
+De openstaande contractdetails uit deze eerdere notitie zijn inmiddels vastgesteld in [Meldingen-API – definitief ontwerp](meldingen-api.md). Dat document vervangt de voorlopige punten hieronder waar ze afwijken.
 
-## Versies en compatibiliteit
+## Definitieve uitwerking meldingen-API (14 november 2026)\n\nDe endpointset, tokenregels, levensduur, opslaggrens, foutcodes, realtime-uitvoer en testcriteria zijn vastgesteld in [Meldingen-API – definitief ontwerp](meldingen-api.md). De endpoints zijn nog niet geïmplementeerd en worden pas aan OpenAPI toegevoegd wanneer de backendroutes bestaan.\n\n## Versies en compatibiliteit
 
 - Externe HTTP-routes gebruiken een expliciete versieprefix, bij voorkeur `/api/v1`.
 - Niet-brekende uitbreidingen mogen binnen dezelfde major-versie worden toegevoegd.

@@ -466,3 +466,22 @@ Nieuwe tekstvergelijkingen tonen standaard **tekst** (Engels: **text**) in het i
 - Tekstselectie en de mobiele tekst-callout zijn op de klokkaart uitgeschakeld, zodat een lange aanraking niet per ongeluk de tijd of datum selecteert.
 - Het gebaar start alleen voor de primaire aanwijzer (en bij muis alleen de linkermuisknop); pointer-cancel breekt de timer af.
 - De bestaande drempel van 850 ms en de PIN-beveiliging blijven ongewijzigd.
+
+
+## Definitief gebruikersbesluit – externe meldingen-API (14 november 2026)
+
+De gebruiker heeft de vier ontwerpkeuzes voor de externe meldingen-API bevestigd:
+
+1. **Bearer-tokens:** alle bestaande en nieuwe geldige Bearer-tokens mogen de meldingen-API gebruiken. Er komen in deze eerste versie geen afzonderlijke scopes.
+2. **Levensduur:** een melding mag optioneel een vervaltijd (`expiresAt`) krijgen. Zonder vervaltijd blijft de melding bestaan totdat de externe client deze verwijdert. Een verlopen melding wordt niet meer getoond of teruggegeven.
+3. **Herkomst:** de herkomst wordt intern gebruikt om API-meldingen te scheiden van Blockly-/standaardmeldingen, maar is niet zichtbaar op het dashboard en wordt niet als publiek responseveld meegestuurd.
+4. **DELETE van niet-API-meldingen:** HTTP 403 Forbidden.
+
+Aanvullende architectuurafspraken:
+- De API gebruikt `GET /api/v1/notifications`, `POST /api/v1/notifications`, `PATCH /api/v1/notifications/{id}` en `DELETE /api/v1/notifications/{id}`.
+- API-meldingen worden opgeslagen in `DATA_DIR/api-notifications.json`, los van `data/notifications.json` en de standaardconfiguratie.
+- De dashboardpresentatie voegt actieve API-meldingen samen met bestaande meldingen; de bestaande Blockly-evaluatie en instellingen blijven ongewijzigd.
+- Alle routes gebruiken de bestaande centrale Bearer-tokenvalidatie. Tokenintrekking geldt direct ook voor deze API.
+- Wijzigingen en het bereiken van een vervaltijd leiden tot een SSE-refresh via `notifications-updated`, zonder meldingsinhoud of geheimen in het event.
+
+Het volledige contract, gegevensmodel, validatie, foutcodes en testplan zijn vastgelegd in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). Dit is een ontwerpbesluit; de endpoints zijn nog niet geïmplementeerd. De OpenAPI-specificatie wordt pas aangepast zodra de implementatie bestaat.

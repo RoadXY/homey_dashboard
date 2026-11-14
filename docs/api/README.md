@@ -29,3 +29,17 @@ The initial `WEATHER_API_TOKEN` environment variable remains temporarily accepte
 ## Local Swagger UI
 
 The Docker application also serves Swagger UI at `/api-docs/` from the same origin as the dashboard. Use this local page for live API testing against the Ubuntu-hosted container. Its OpenAPI copy is packaged from `public/api-docs/openapi.yaml`; keep it synchronized with the canonical `docs/api/openapi.yaml`.
+
+
+## External notifications API (planned)
+
+The approved design for external dashboard notifications is documented in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). Planned routes are:
+
+- `GET /api/v1/notifications`
+- `POST /api/v1/notifications`
+- `PATCH /api/v1/notifications/{id}`
+- `DELETE /api/v1/notifications/{id}`
+
+All routes reuse the existing Bearer-token validation. API notifications use a separate persistent store and are combined with existing dashboard notifications only for presentation. Optional expiry is supported. The origin is not exposed to the dashboard. Attempts to mutate a non-API notification return HTTP 403.
+
+**These endpoints are designed but not implemented.** They are intentionally not listed in `openapi.yaml` until matching backend routes and tests exist.
