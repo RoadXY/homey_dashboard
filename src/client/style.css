@@ -907,7 +907,10 @@ body {
 .notification-rule-picker { position:relative; min-width:0; }
 .notification-rule-trigger { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-width:0; min-height:44px; padding:8px 13px; border:1px solid rgba(151,178,209,.32); border-radius:9px; background:#101d2d; color:var(--text-primary); font:inherit; font-size:16px; text-align:left; cursor:pointer; }
 .notification-rule-trigger:disabled { opacity:.55; cursor:not-allowed; }
-.notification-rule-trigger > span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.notification-rule-trigger-name { min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.notification-disabled-badge { display:inline-flex; flex:0 0 auto; align-items:center; padding:4px 8px; border:1px solid var(--severity-critical-border); border-radius:6px; background:var(--severity-critical-background); color:var(--severity-critical-text); font-size:11px; font-weight:650; line-height:1.2; white-space:nowrap; }
+.notification-rule-option { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.notification-rule-option-name { min-width:0; flex:1; overflow-wrap:anywhere; }
 .notification-rule-menu { position:absolute; z-index:30; top:calc(100% + 2px); left:0; right:0; overflow:hidden; border:1px solid #53677d; border-radius:0 0 9px 9px; background:#112237; box-shadow:0 14px 30px rgba(0,0,0,.42); }
 .notification-rule-search { display:flex; align-items:center; gap:9px; min-height:46px; padding:8px 12px; border-bottom:1px solid rgba(170,190,215,.18); background:#1a3047; color:#9bb8d6; }
 .notification-rule-search > span { font-size:19px; line-height:1; }
