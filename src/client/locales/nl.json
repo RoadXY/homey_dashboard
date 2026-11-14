@@ -362,5 +362,12 @@
   "notifications.selectNotification": "Selecteer een melding",
   "notifications.sourceCatalogError": "Broncatalogus kon niet worden geladen.",
   "notifications.unnamed": "Naamloze melding",
-  "notifications.checkSourcesHint": "Controleer de genoemde bron in Homey of pas de betreffende voorwaarde in deze melding aan."
+  "notifications.checkSourcesHint": "Controleer de genoemde bron in Homey of pas de betreffende voorwaarde in deze melding aan.",
+  "dashboard.homeyDataUnavailable": "Homey-gegevens tijdelijk niet beschikbaar",
+  "blockly.equals": "is gelijk aan",
+  "blockly.notEquals": "is niet gelijk aan",
+  "blockly.lessThan": "is kleiner dan",
+  "blockly.lessThanOrEqual": "is kleiner of gelijk aan",
+  "blockly.greaterThan": "is groter dan",
+  "blockly.greaterThanOrEqual": "is groter of gelijk aan"
 }
