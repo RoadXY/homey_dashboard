@@ -5,12 +5,12 @@ import { getHomeyDeviceCapabilityValues, getHomeyLogicVariablesByIds } from "./h
 import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, nextScheduleTransition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
-type ExpectedType = "boolean" | "number";
+type ExpectedType = "boolean" | "number" | "string";
 type LogicSource = { type: "logic-variable"; variableId: string; expectedType: ExpectedType };
 type DeviceSource = { type: "device-capability"; deviceId: string; capabilityId: string; expectedType: ExpectedType };
 type Source = LogicSource | DeviceSource;
 type Comparison =
-  | { operator: "equals" | "notEquals"; value: boolean | number }
+  | { operator: "equals" | "notEquals"; value: boolean | number | string }
   | { operator: "lessThan" | "lessThanOrEqual" | "greaterThan" | "greaterThanOrEqual"; value: number };
 type ConditionGroup = {
   operator: "and" | "or";
@@ -54,7 +54,7 @@ type SourceKey = string;
 function isSource(value: unknown): value is Source {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const source = value as Record<string, unknown>;
-  if (!["boolean", "number"].includes(String(source.expectedType))) return false;
+  if (!["boolean", "number", "string"].includes(String(source.expectedType))) return false;
   if (source.type === "logic-variable") {
     return typeof source.variableId === "string" && source.variableId.trim().length > 0 && source.name === undefined;
   }
@@ -69,7 +69,7 @@ function isComparison(value: unknown): value is Comparison {
   if (!value || typeof value !== "object") return false;
   const comparison = value as Record<string, unknown>;
   if (comparison.operator === "equals" || comparison.operator === "notEquals") {
-    return typeof comparison.value === "boolean" || (typeof comparison.value === "number" && Number.isFinite(comparison.value));
+    return typeof comparison.value === "boolean" || typeof comparison.value === "string" || (typeof comparison.value === "number" && Number.isFinite(comparison.value));
   }
   return ["lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual"].includes(String(comparison.operator)) &&
     typeof comparison.value === "number" && Number.isFinite(comparison.value);
