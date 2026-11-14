@@ -16,7 +16,7 @@
   "notifications.noneTitle": "Geen actieve meldingen",
   "notifications.noneMessage": "Alle dashboardmeldingen zijn momenteel inactief.",
   "notifications.critical": "KRITIEK",
-  "notifications.warning": "WAARSCHUWING",
+  "notifications.warning": "Waarschuwing",
   "notifications.info": "INFO",
   "notifications.test": "TEST · ",
   "settings.lockedTitle": "Instellingen beveiligd",
