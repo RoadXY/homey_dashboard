@@ -2198,7 +2198,7 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
         <path d="M21 31h54 M10 41h76 M16 51h64 M27 61h42" />
       </svg>}
       {category === "windy" && <svg className="weather-wind-lines" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M10 23h57c12 0 12-15 2-15-5 0-7 3-7 6 M5 39h73c13 0 13 16 2 16-5 0-7-3-7-6" />
+        <path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M10 23h57c12 0 12-15 2-15-5 0-7 3-7 6" /><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M5 39h73c13 0 13 16 2 16-5 0-7-3-7-6" />
       </svg>}
       {category === "unknown" && <span className="weather-unknown-mark">?</span>}
     </div>

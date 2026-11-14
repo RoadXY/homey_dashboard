@@ -117,3 +117,10 @@ The Dutch and English locale files parse successfully and contain matching keys.
 
 - On screens up to 900px wide, each of the two preview rows has taller tiles (156px minimum height, with a 140px icon viewport) to give the weather artwork more vertical breathing room.
 - The two-column preview layout is retained; desktop preview sizing remains unchanged.
+
+
+## Animated windy icon (14 November 2026)
+
+- The standard animated weather icon pack now animates the two curved wind trails independently instead of translating the complete wind symbol.
+- Each trail uses a short moving stroke highlight that travels along the curved line; the second trail is phase-shifted so the two streams flow in sequence. The underlying wind paths remain in place, preserving the original icon silhouette.
+- The animation is applied only to the animated icon pack and respects the global animated-icons switch and reduced-motion preference. Other icon packs and static mode are unchanged.
