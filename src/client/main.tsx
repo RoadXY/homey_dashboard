@@ -148,6 +148,7 @@ function App() {
         if (typeof preference.language === "string") setDashboardLanguage(preference.language);
         if (preference.notificationTimeout && ["never", "1", "2", "5", "10", "30", "60", "300", "900", "1800"].includes(preference.notificationTimeout)) setNotificationTimeout(preference.notificationTimeout);
       }
+      if (weatherValuesResponse?.ok) setWeatherValues(await weatherValuesResponse.json() as DashboardWeatherValues);
       if (weatherResponse?.ok) {
         setWeatherCondition(await weatherResponse.json() as WeatherConditionResponse);
       } else {
@@ -2126,6 +2127,8 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
 }
 
 function WeatherIcon({ category, pack = "animated" }: { category: WeatherCategory; pack?: WeatherSettingsModel["iconPack"] }) {
+  const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
+  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={category.replaceAll("_"," ")}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
     <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={category.replaceAll("_", " ")}>
       {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
