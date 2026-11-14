@@ -205,6 +205,62 @@ paths:
                 type: object
                 properties:
                   language: {type: string}
+  /api/settings/weather:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSettings
+      summary: Get weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Weather display configuration
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WeatherSettings'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveWeatherSettings
+      summary: Save weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WeatherSettings'}
+      responses:
+        '200': {description: Weather settings saved}
+        '400': {description: Invalid weather settings}
+        '401': {description: Settings session missing or expired}
+  /api/settings/weather-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSourceCatalog
+      summary: List selectable Homey device capabilities and Logic variables for weather fields
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Searchable source catalog including numeric and text sources
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '401': {description: Settings session missing or expired}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/weather-values:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardWeatherValues
+      summary: Get values for configured weather fields and selected icon pack
+      responses:
+        '200':
+          description: Current values for enabled weather fields
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey values could not be retrieved}
   /api/settings/weather-tokens:
     get:
       tags: [Settings (internal)]
@@ -724,6 +780,41 @@ components:
     WeatherCondition:
       type: string
       enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
+    WeatherSettings:
+      type: object
+      required: [sources, iconPack]
+      properties:
+        sources:
+          type: object
+          required: [outdoorTemperature, feelsLike, humidity, pressure, windSpeed, windDirection, precipitation, sunrise, sunset]
+          properties:
+            outdoorTemperature: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            feelsLike: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            humidity: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            pressure: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windSpeed: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windDirection: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            precipitation: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunrise: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunset: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+        iconPack:
+          type: string
+          enum: [animated, color3d, outline, flat]
+    WeatherDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    WeatherLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
     WeatherTokenInfo:
       type: object
       required: [id, name, createdAt, lastFour]
