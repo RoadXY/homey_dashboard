@@ -368,5 +368,9 @@
   "blockly.lessThan": "is less than",
   "blockly.lessThanOrEqual": "is less than or equal to",
   "blockly.greaterThan": "is greater than",
-  "blockly.greaterThanOrEqual": "is greater than or equal to"
+  "blockly.greaterThanOrEqual": "is greater than or equal to",
+  "blockly.discardChanges": "Discard changes?",
+  "blockly.result": "result",
+  "blockly.results": "results",
+  "blockly.containers": "Containers"
 }
