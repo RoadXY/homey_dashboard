@@ -82,3 +82,10 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - The weather settings page reports its draft/saved difference to the shared settings navigation guard.
 - Switching to another settings page or leaving settings while weather edits are unsaved prompts for confirmation, using the existing notification discard confirmation text. Browser Back is guarded by the same popstate mechanism already used for notification drafts.
 - Saving weather settings updates the saved snapshot and clears the dirty state; cancelling navigation leaves the draft intact.
+
+
+## Hail icon for the standard pack (14 November 2026)
+
+- The standard animated weather pack now draws hail as three separate rounded ice pellets with short motion trails, rather than reusing the snowflake symbol.
+- Each pellet falls on its own staggered loop in the icy blue precipitation colour. The shared animation switch still disables all motion when static icons are selected.
+- Snow, snow showers and sleet retain their existing snowflake artwork and animation.

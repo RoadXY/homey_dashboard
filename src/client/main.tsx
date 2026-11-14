@@ -2184,8 +2184,13 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
       {category === "thunderstorm" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
         <path className="weather-lightning weather-lightning-a" d="m42 35-11 14h9l-5 13 17-19h-10l7-8" /><path className="weather-lightning weather-lightning-b" d="m66 39-9 11h8l-4 11 14-16h-8l6-6" />
       </svg>}
-      {(["snow", "snow_showers", "sleet", "hail"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
+      {(["snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M29 42v13m-5-9 10 5m0-10-10 10 M49 42v13m-5-9 10 5m0-10-10 10 M69 42v13m-5-9 10 5m0-10-10 10" />
+      </svg>}
+      {category === "hail" && <svg className="weather-precipitation weather-hailstones" viewBox="0 0 96 64" aria-hidden="true">
+        <g className="weather-hailstone weather-hailstone-a"><path d="M29 39v5" /><circle cx="29" cy="50" r="4.2" /></g>
+        <g className="weather-hailstone weather-hailstone-b"><path d="M49 37v6" /><circle cx="49" cy="49" r="4.2" /></g>
+        <g className="weather-hailstone weather-hailstone-c"><path d="M69 40v5" /><circle cx="69" cy="51" r="4.2" /></g>
       </svg>}
       {category === "fog" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M17 48h62 M25 56h48" />
