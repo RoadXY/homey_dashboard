@@ -206,5 +206,7 @@
   "notifications.emptyList": "Er zijn nog geen meldingen. Maak je eerste melding aan.",
   "notifications.dismiss": "Melding sluiten",
   "notifications.blockNotificationTitle": "Titel:",
-  "notifications.blockNotificationMessage": "Tekst:"
+  "notifications.blockNotificationMessage": "Tekst:",
+  "notifications.delete": "Verwijderen",
+  "notifications.deleteConfirm": "Weet je zeker dat je de melding '{name}' wilt verwijderen? De verwijdering wordt definitief nadat je op Opslaan klikt."
 }
