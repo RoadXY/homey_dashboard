@@ -761,14 +761,14 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   React.useEffect(() => {
     const Blockly: any = BlocklyLibrary;
     // Blockly core imports do not automatically populate its message table. Context-menu labels require these translations.
-    Blockly.setLocale(locale.toLowerCase().startsWith(translate(locale, "blockly.andLower")) ? BlocklyEn : BlocklyNl);
+    Blockly.setLocale(locale.toLowerCase().startsWith("en") ? BlocklyEn : BlocklyNl);
     if (!host.current) { setBlocklyUnavailable(true); return; }
     const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
           this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
-          const labels = locale.toLowerCase().startsWith(translate(locale, "blockly.andLower")) ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+          const labels = locale.toLowerCase().startsWith("en") ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [[translate(locale, "blockly.shortMonday"),"MON"],[translate(locale, "blockly.shortTuesday"),"TUE"],[translate(locale, "blockly.shortWednesday"),"WED"],[translate(locale, "blockly.shortThursday"),"THU"],[translate(locale, "blockly.shortFriday"),"FRI"],[translate(locale, "blockly.shortSaturday"),"SAT"],[translate(locale, "blockly.shortSunday"),"SUN"]];
           const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
           labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
           this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
@@ -791,7 +791,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const search = document.createElement('input');
         search.type = 'search';
         search.autocomplete = 'off';
-        search.placeholder = 'Zoek apparaat, meetmogelijkheid of Logic-variabele…';
+        search.placeholder = translate(locale, "blockly.searchSourcePlaceholder");
         search.setAttribute('aria-label', translate(locale, "blockly.searchSourceLabel"));
         searchWrap.append(icon, search);
         const results = document.createElement('div');
@@ -897,8 +897,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           this.appendDummyInput().appendField(new Blockly.FieldDropdown(() => {
             const numeric = comparisonRef.current?.source?.expectedType === "number";
             return numeric
-              ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
-              : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
+              ? [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"],[translate(locale, "blockly.lessThan"),"lessThan"],[translate(locale, "blockly.lessThanOrEqual"),"lessThanOrEqual"],[translate(locale, "blockly.greaterThan"),"greaterThan"],[translate(locale, "blockly.greaterThanOrEqual"),"greaterThanOrEqual"]]
+              : [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"]];
           }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "string" ? current.condition.value : typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
           this.appendDummyInput().appendField(translate(locale, "blockly.value")).appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
           this.setOutput(true, "Boolean"); this.setColour(165);
@@ -938,8 +938,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           this.appendDummyInput().appendField(new Blockly.FieldDropdown(() => {
             const numeric = comparisonRef.current?.source?.expectedType === "number";
             return numeric
-              ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
-              : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
+              ? [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"],[translate(locale, "blockly.lessThan"),"lessThan"],[translate(locale, "blockly.lessThanOrEqual"),"lessThanOrEqual"],[translate(locale, "blockly.greaterThan"),"greaterThan"],[translate(locale, "blockly.greaterThanOrEqual"),"greaterThanOrEqual"]]
+              : [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"]];
           }, (value: string) => {
             const current = comparisonRef.current;
             const numeric = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) || current?.source?.expectedType === "number";
@@ -999,8 +999,8 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     const comparisonOptions = (block: any): Array<[string, string]> => {
       const source = resolveNotificationSourceFromKey(block.getFieldValue("SOURCE"), catalogRef.current);
       return source?.expectedType === "number"
-        ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
-        : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
+        ? [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"],[translate(locale, "blockly.lessThan"),"lessThan"],[translate(locale, "blockly.lessThanOrEqual"),"lessThanOrEqual"],[translate(locale, "blockly.greaterThan"),"greaterThan"],[translate(locale, "blockly.greaterThanOrEqual"),"greaterThanOrEqual"]]
+        : [[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"]];
     };
     const makeComparisonValueField = (expectedType: "number" | "boolean" | "string", rawValue: string) => {
       const normalized = comparisonInputValue(expectedType, rawValue);
@@ -1047,7 +1047,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_logic_source) Blockly.Blocks.homey_condition_logic_source = defineSourceBlock("logic");
     if (!Blockly.Blocks.homey_condition_comparison) Blockly.Blocks.homey_condition_comparison = {
       init() {
-        this.appendDummyInput().appendField(translate(locale, "blockly.comparison")).appendField(new Blockly.FieldDropdown([["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]), "OP");
+        this.appendDummyInput().appendField(translate(locale, "blockly.comparison")).appendField(new Blockly.FieldDropdown([[translate(locale, "blockly.equals"),"equals"],[translate(locale, "blockly.notEquals"),"notEquals"],[translate(locale, "blockly.lessThan"),"lessThan"],[translate(locale, "blockly.lessThanOrEqual"),"lessThanOrEqual"],[translate(locale, "blockly.greaterThan"),"greaterThan"],[translate(locale, "blockly.greaterThanOrEqual"),"greaterThanOrEqual"]]), "OP");
         this.appendDummyInput().appendField(translate(locale, "blockly.value")).appendField(new Blockly.FieldTextInput("false"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
       }
@@ -1055,7 +1055,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_schedule) Blockly.Blocks.homey_condition_schedule = {
       init() {
         this.appendDummyInput().appendField(translate(locale, "blockly.scheduleActive"));
-        const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+        const labels = [[translate(locale, "blockly.shortMonday"),"MON"],[translate(locale, "blockly.shortTuesday"),"TUE"],[translate(locale, "blockly.shortWednesday"),"WED"],[translate(locale, "blockly.shortThursday"),"THU"],[translate(locale, "blockly.shortFriday"),"FRI"],[translate(locale, "blockly.shortSaturday"),"SAT"],[translate(locale, "blockly.shortSunday"),"SUN"]];
         const row = this.appendDummyInput().appendField(translate(locale, "blockly.days"));
         labels.forEach(([label,key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
         this.appendDummyInput().appendField(translate(locale, "blockly.from")).appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START").appendField(translate(locale, "blockly.until")).appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
@@ -1066,7 +1066,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     };
     if (!Blockly.Blocks.homey_condition_weekday) Blockly.Blocks.homey_condition_weekday = {
       init() {
-        this.appendDummyInput().appendField(translate(locale, "blockly.weekday")).appendField(new Blockly.FieldDropdown([["maandag","1"],["dinsdag","2"],["woensdag","3"],["donderdag","4"],["vrijdag","5"],["zaterdag","6"],["zondag","0"]]), "DAY");
+        this.appendDummyInput().appendField(translate(locale, "blockly.weekday")).appendField(new Blockly.FieldDropdown([[translate(locale, "blockly.weekdayMonday"),"1"],[translate(locale, "blockly.weekdayTuesday"),"2"],[translate(locale, "blockly.weekdayWednesday"),"3"],[translate(locale, "blockly.weekdayThursday"),"4"],[translate(locale, "blockly.weekdayFriday"),"5"],[translate(locale, "blockly.weekdaySaturday"),"6"],[translate(locale, "blockly.weekdaySunday"),"0"]]), "DAY");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
       }
     };
@@ -1083,7 +1083,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_condition_weekdays) Blockly.Blocks.homey_condition_weekdays = {
       init() {
         this.appendDummyInput().appendField(translate(locale, "blockly.weekdays"));
-        const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+        const labels = [[translate(locale, "blockly.shortMonday"),"MON"],[translate(locale, "blockly.shortTuesday"),"TUE"],[translate(locale, "blockly.shortWednesday"),"WED"],[translate(locale, "blockly.shortThursday"),"THU"],[translate(locale, "blockly.shortFriday"),"FRI"],[translate(locale, "blockly.shortSaturday"),"SAT"],[translate(locale, "blockly.shortSunday"),"SUN"]];
         const row = this.appendDummyInput();
         labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
@@ -1141,7 +1141,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       contents: [
         {
           kind: "category",
-          name: "Voorwaarden",
+          name: translate(locale, "blockly.toolboxConditions"),
           categorystyle: "logic_category",
           contents: [
             { kind: "block", type: "homey_condition_device_source" },
@@ -1584,7 +1584,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
       </div>
       <button type="button" className="notification-create-button" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
       {!busy && !configs.length && <p>{t("notifications.emptyList")}</p>}
-      {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
+      {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">{t("notifications.sourceLoadError").replace("{error}", sourceCatalogError)}</p>}
     </div>
     {notificationSourceIssues.length > 0 && <section className="notification-source-issues" aria-label={t("notifications.sourceIssuesLabel")}>
       <h2>{t("notifications.checkSources")}</h2>
