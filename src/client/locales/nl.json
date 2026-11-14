@@ -425,5 +425,6 @@
   "weatherSettings.loadError": "Weerinstellingen konden niet worden geladen.",
   "weatherSettings.sourcesError": "Homey-bronnen konden niet worden geladen.",
   "weatherSettings.saveError": "Weerinstellingen opslaan mislukt.",
-  "weatherSettings.saved": "Weerinstellingen opgeslagen."
+  "weatherSettings.saved": "Weerinstellingen opgeslagen.",
+  "weatherSettings.dashboardEyebrow": "BUITEN · WEER"
 }
