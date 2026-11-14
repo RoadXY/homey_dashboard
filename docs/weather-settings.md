@@ -74,3 +74,11 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - Measurement tile values use a larger responsive type scale, while weather-detail labels and values are also enlarged for readability.
 - Weather icon-pack radio rows and the animation switch now use the same blue-gradient surface, border, radius and shadow treatment as the notification settings selector/card.
 - Standard thunderstorm flashes are quicker and grouped more closely, with a longer final illuminated interval followed by a deliberately longer dark pause. The two bolts remain independently timed.
+
+
+## Offline weather sources and unsaved-change protection (14 November 2026)
+
+- When a weather field has a configured source but its current reading is unavailable (for example, its Homey device is offline), the dashboard keeps the field visible and shows an em dash instead of hiding the field. Unconfigured fields remain hidden.
+- The weather settings page reports its draft/saved difference to the shared settings navigation guard.
+- Switching to another settings page or leaving settings while weather edits are unsaved prompts for confirmation, using the existing notification discard confirmation text. Browser Back is guarded by the same popstate mechanism already used for notification drafts.
+- Saving weather settings updates the saved snapshot and clears the dirty state; cancelling navigation leaves the draft intact.

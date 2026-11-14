@@ -1073,3 +1073,5 @@ body {
 .weather-details div { min-width:0; }
 @media(max-width:1050px) { .weather-settings-layout { grid-template-columns:1fr; } }
 @media(max-width:700px) { .weather-source-row { grid-template-columns:minmax(110px,.8fr) 36px minmax(150px,1.2fr); gap:7px; } .weather-pack-preview-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; } .weather-pack-preview-item { min-height:62px; } .weather-pack-preview-item .weather-symbol { min-height:58px; } .weather-details { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+.weather-details .is-unavailable strong, .weather-temp.is-unavailable { color:var(--text-muted); opacity:.72; }

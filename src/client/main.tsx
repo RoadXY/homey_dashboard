@@ -362,7 +362,7 @@ function App() {
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
+              {weatherValues?.settings.sources.outdoorTemperature && <div className={"weather-temp"+(weatherValues.values.outdoorTemperature?.available?"":" is-unavailable")}>{weatherValues.values.outdoorTemperature?.available ? formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale) : "—"}</div>}
               <div className="weather-description">{formatWeatherCondition(weatherCondition, t)}</div>
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={formatWeatherCondition(weatherCondition, t)} pack={weatherValues?.settings.iconPack ?? "animated"} animate={weatherValues?.settings.animateIcons ?? true} />
@@ -370,8 +370,8 @@ function App() {
           <div className="weather-details">
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
               const reading = weatherValues?.values[id];
-              if (!reading?.available) return null;
-              return <div key={id}><span>{t("weatherSettings.field."+id)}</span><strong>{formatWeatherValue(reading.value,reading.units,locale)}</strong></div>;
+              if (!weatherValues?.settings.sources[id]) return null;
+              return <div key={id} className={reading?.available ? "" : "is-unavailable"}><span>{t("weatherSettings.field."+id)}</span><strong>{reading?.available ? formatWeatherValue(reading.value,reading.units,locale) : "—"}</strong></div>;
             })}
           </div>
         </article>
@@ -1818,18 +1818,20 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const [page, setPage] = React.useState<"general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather">(initialPage);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [notificationDirty, setNotificationDirty] = React.useState(false);
-  React.useEffect(() => { onDirtyChange(notificationDirty); }, [notificationDirty, onDirtyChange]);
+  const [weatherDirty, setWeatherDirty] = React.useState(false);
+  React.useEffect(() => { onDirtyChange(notificationDirty || weatherDirty); }, [notificationDirty, weatherDirty, onDirtyChange]);
   React.useEffect(() => setPage(initialPage), [initialPage]);
-  const confirmLeaveNotifications = () => {
-    if (page !== "notifications" || !notificationDirty) return true;
-    return window.confirm(t("notifications.discardChanges"));
+  const confirmLeaveCurrentPage = () => {
+    if (page === "notifications" && notificationDirty) return window.confirm(t("notifications.discardChanges"));
+    if (page === "weather" && weatherDirty) return window.confirm(t("notifications.discardChanges"));
+    return true;
   };
   const navigateSettings = (nextPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather", path: string) => {
-    if (nextPage === page || !confirmLeaveNotifications()) return;
+    if (nextPage === page || !confirmLeaveCurrentPage()) return;
     setPage(nextPage);
     onNavigate(path);
   };
-  const leaveSettings = () => { if (confirmLeaveNotifications()) onBack(); };
+  const leaveSettings = () => { if (confirmLeaveCurrentPage()) onBack(); };
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
@@ -1996,7 +1998,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
@@ -2010,7 +2012,7 @@ type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string 
 const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
 const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated", animateIcons:true };
 
-function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: () => void }) {
+function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale: string; t: (key: string) => string; onNavigate: () => void; onDirtyChange: (dirty: boolean) => void }) {
   const [settings,setSettings] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
   const [saved,setSaved] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
   const [catalog,setCatalog] = React.useState<WeatherSourceCatalog>({devices:[],variables:[]});
@@ -2021,6 +2023,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
   const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
   const [search,setSearch] = React.useState("");
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   React.useEffect(() => {
     let active = true;
     Promise.all([
