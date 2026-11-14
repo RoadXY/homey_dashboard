@@ -7,6 +7,7 @@
   "weather.wind": "Wind",
   "actions.aria": "Quick actions",
   "notifications.aria": "Notifications",
+  "notifications.disabled": "Disabled",
   "notifications.loadErrorTitle": "Notifications unavailable",
   "notifications.loadErrorMessage": "The notification configuration could not be loaded.",
   "notifications.unknownTitle": "Source unavailable",
