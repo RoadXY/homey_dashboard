@@ -740,7 +740,7 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/ApiNotification'}
-        '400': {description: Invalid body, text, severity or expiry}
+        '400': {description: 'Invalid body, text, severity or expiry'}
         '401': {description: Missing or invalid Bearer token}
         '500': {description: Notification could not be saved}
   /api/v1/notifications/{id}:
