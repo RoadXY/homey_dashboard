@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { combineConditionResults, parseNotificationConfigJson } from "./notifications.js";
+import { combineConditionResults, mergeNotificationConfigs, parseNotificationConfigJson } from "./notifications.js";
 
 describe("combineConditionResults", () => {
   it("requires every child to be active for AND", () => {
@@ -66,5 +66,29 @@ describe("parseNotificationConfigJson", () => {
 
   it("still rejects unrelated trailing data", () => {
     expect(() => parseNotificationConfigJson('[{"id":"test"}] garbage')).toThrow();
+  });
+});
+
+describe("mergeNotificationConfigs", () => {
+  const config = (id: string, title: string) => ({
+    schemaVersion: 1 as const,
+    id,
+    title,
+    notificationTitle: title,
+    message: "",
+    severity: "info" as const,
+    enabled: true,
+    condition: { type: "schedule" as const, configured: false, weekdays: [] },
+  });
+
+  it("keeps deleted default notifications out of the settings list", () => {
+    const defaults = [config("default-a", "A"), config("default-b", "B")];
+    expect(mergeNotificationConfigs(defaults, [], ["default-a"]).map((item) => item.id)).toEqual(["default-b"]);
+  });
+
+  it("allows saved notification overrides while preserving non-deleted defaults", () => {
+    const defaults = [config("default-a", "Old title"), config("default-b", "B")];
+    const saved = [config("default-a", "Updated title"), config("custom", "Custom")];
+    expect(mergeNotificationConfigs(defaults, saved, []).map((item) => item.title)).toEqual(["Updated title", "B", "Custom"]);
   });
 });
