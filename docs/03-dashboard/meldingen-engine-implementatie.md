@@ -187,3 +187,16 @@ Een melding kan vanuit **Instellingen → Meldingen** direct worden verwijderd m
 - Niet-gerelateerde, nog niet opgeslagen wijzigingen in andere meldingen blijven als lokale wijzigingen behouden; verwijderen slaat die wijzigingen niet stilzwijgend mee op.
 
 De directe verwijderactie is hiermee bewust gescheiden van de algemene **Opslaan**-actie voor Blockly- en niveauwijzigingen.
+
+## Statuslabel voor uitgeschakelde meldingen in de keuzelijst – 14 november 2026
+
+De meldingenkiezer in Instellingen is uitgebreid met een doorzoekbare lijst. Voor iedere melding waarvan `enabled` op `false` staat, wordt direct naast de naam een badge **Uitgeschakeld** getoond.
+
+- De badge wordt alleen getoond voor uitgeschakelde meldingen; ingeschakelde meldingen krijgen geen extra label.
+- De status komt uit het bestaande `enabled`-veld van de configuratie. Er wordt geen aparte status of opslagwaarde geïntroduceerd.
+- De tekst is opgenomen in de Nederlandse en Engelse i18n-bestanden.
+- De badge gebruikt de semantische `--severity-critical-*` CSS-tokens voor rode achtergrond, rand en tekst. Een toekomstig thema kan deze tokens overschrijven; de component bevat geen hardcoded rood.
+- De keuzelijst behoudt zoeken, selectie en toetsenbord-/screenreadersemantiek via listbox- en option-rollen.
+- De geselecteerde melding toont dezelfde badge in de gesloten keuzeknop wanneer die melding uitgeschakeld is.
+
+De wijziging raakt de meldingsconfiguratie en de werking van Opslaan/verwijderen niet.
