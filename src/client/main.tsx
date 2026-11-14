@@ -438,7 +438,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
 }
 
 const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday", notificationTimeout: "never" };
-function homeyLanguageName(language: string, locale: string): string { const names: Record<string, [string, string]> = { nl: ["Nederlands", "Dutch"], en: ["Engels", "English"], de: ["Duits", "German"], fr: ["Frans", "French"], it: ["Italiaans", "Italian"], sv: ["Zweeds", "Swedish"], no: ["Noors", "Norwegian"], es: ["Spaans", "Spanish"], da: ["Deens", "Danish"], ru: ["Russisch", "Russian"], pl: ["Pools", "Polish"], ko: ["Koreaans", "Korean"], ar: ["Arabisch", "Arabic"] }; return names[language.toLowerCase().split("-")[0]]?.[locale.toLowerCase().startsWith("nl") ? 0 : 1] ?? language.toUpperCase(); }
+function homeyLanguageName(language: string, locale: string): string { try { return new Intl.DisplayNames([locale], { type: "language" }).of(language.toLowerCase().split("-")[0]) ?? language.toUpperCase(); } catch { return language.toUpperCase(); } }
 
 const quickActionDefaults: QuickAction[] = [
   { id: "qmusic", name: "", icon: "music-note", type: "flow", flowId: "", flowType: "standard", deviceId: "", capabilityId: "", value: null, booleanMode: "off" },
