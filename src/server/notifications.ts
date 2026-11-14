@@ -148,7 +148,22 @@ export function isValidNotificationConfig(value: unknown): value is Notification
   return isConditionNode(config.condition);
 }
 
-const notificationOverridePath = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "notifications.json");
+const notificationDataDirectory = process.env.DATA_DIR ?? join(process.cwd(), "data");
+const notificationOverridePath = join(notificationDataDirectory, "notifications.json");
+const deletedNotificationIdsPath = join(notificationDataDirectory, "notifications-deleted.json");
+
+async function readDeletedNotificationIds(): Promise<Set<string>> {
+  try {
+    const parsed = JSON.parse(await readFile(deletedNotificationIdsPath, "utf8")) as unknown;
+    if (!Array.isArray(parsed) || !parsed.every((id) => typeof id === "string" && id.trim().length > 0)) {
+      throw new Error("De lijst met verwijderde meldingen is ongeldig.");
+    }
+    return new Set(parsed);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return new Set();
+    throw error;
+  }
+}
 
 export function parseNotificationConfigJson(contents: string): unknown {
   const normalized = contents.endsWith("\\n") ? contents.slice(0, -2) : contents;
@@ -171,13 +186,27 @@ export async function getNotificationConfigsForSettings(): Promise<NotificationC
     if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
     const merged = new Map((await loadDefaultConfigs()).map((config) => [config.id, config]));
     for (const config of saved) merged.set(config.id, config);
-    const configs = [...merged.values()];
+    const deletedIds = await readDeletedNotificationIds();
+    const configs = [...merged.values()].filter((config) => !deletedIds.has(config.id));
     if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
     return configs;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     return loadDefaultConfigs();
   }
+}
+
+export async function deleteNotificationConfigForSettings(id: string): Promise<NotificationConfig[]> {
+  if (typeof id !== "string" || !id.trim()) throw new Error("Ongeldige melding-ID.");
+  const configs = await getNotificationConfigsForSettings();
+  if (!configs.some((config) => config.id === id)) throw new Error("Deze melding bestaat niet (meer).");
+  const deletedIds = await readDeletedNotificationIds();
+  deletedIds.add(id);
+  await mkdir(notificationDataDirectory, { recursive: true });
+  const temporaryPath = join(notificationDataDirectory, `notifications-deleted.${randomUUID()}.tmp`);
+  await writeFile(temporaryPath, JSON.stringify([...deletedIds].sort(), null, 2) + "\n", { encoding: "utf8", mode: 0o600 });
+  await rename(temporaryPath, deletedNotificationIdsPath);
+  return getNotificationConfigsForSettings();
 }
 
 export async function saveNotificationConfigsForSettings(value: unknown): Promise<NotificationConfig[]> {
