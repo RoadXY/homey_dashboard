@@ -372,5 +372,12 @@
   "blockly.greaterThanOrEqual": "is groter of gelijk aan",
   "blockly.result": "resultaat",
   "blockly.results": "resultaten",
-  "blockly.containers": "Containers"
+  "blockly.containers": "Containers",
+  "comparison.operatorMismatch": "De gekozen vergelijkingsoperator past niet bij het datatype van de bron.",
+  "comparison.invalidNumber": "Vul een geldig getal in bij de vergelijking.",
+  "comparison.booleanRequired": "Een booleaanse vergelijking vereist true of false.",
+  "duration.invalidNode": "Ongeldige duurvoorwaarde.",
+  "duration.invalidMinutes": "De duur moet tussen 1 en 1440 minuten liggen.",
+  "duration.requiresCondition": "Een duurblok vereist precies één voorwaarde.",
+  "notification.requiresCondition": "Genereer melding vereist minimaal één voorwaarde."
 }
