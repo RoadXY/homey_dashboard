@@ -436,5 +436,6 @@
   "weatherSettings.previewFog": "Mist",
   "weatherSettings.previewWind": "Wind",
   "weatherSettings.motionHeading": "Bewegende iconen",
-  "weatherSettings.motionDescription": "Schakel animaties voor alle icon packs in of uit."
+  "weatherSettings.motionDescription": "Schakel animaties voor alle icon packs in of uit.",
+  "weatherSettings.field.feelsLikeDashboard": "Gevoel"
 }

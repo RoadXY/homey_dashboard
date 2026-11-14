@@ -371,7 +371,7 @@ function App() {
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
               const reading = weatherValues?.values[id];
               if (!weatherValues?.settings.sources[id]) return null;
-              return <div key={id} className={reading?.available ? "" : "is-unavailable"}><span>{t("weatherSettings.field."+id)}</span><strong>{reading?.available ? formatWeatherValue(reading.value,reading.units,locale) : "—"}</strong></div>;
+              return <div key={id} className={reading?.available ? "" : "is-unavailable"}><span>{t(id === "feelsLike" ? "weatherSettings.field.feelsLikeDashboard" : "weatherSettings.field."+id)}</span><strong>{reading?.available ? formatWeatherValue(reading.value,reading.units,locale) : "—"}</strong></div>;
             })}
           </div>
         </article>
@@ -2175,7 +2175,7 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
       </svg>}
-      {(["mostly_sunny", "partly_cloudy", "cloudy", "overcast", "drizzle", "rain", "heavy_rain", "showers", "thunderstorm", "hail", "snow", "snow_showers", "sleet", "fog", "windy"].includes(category)) && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
+      {(["mostly_sunny", "partly_cloudy", "cloudy", "overcast", "drizzle", "rain", "heavy_rain", "showers", "thunderstorm", "hail", "snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
         <path d="M22 49h51a15 15 0 0 0 0-30 22 22 0 0 0-42-3A17 17 0 0 0 22 49Z" />
       </svg>}
       {(["drizzle", "rain", "heavy_rain", "showers"].includes(category)) && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
@@ -2192,11 +2192,11 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
         <g className="weather-hailstone weather-hailstone-b"><path d="M49 37v6" /><circle cx="49" cy="49" r="4.2" /></g>
         <g className="weather-hailstone weather-hailstone-c"><path d="M69 40v5" /><circle cx="69" cy="51" r="4.2" /></g>
       </svg>}
-      {category === "fog" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M17 48h62 M25 56h48" />
+      {category === "fog" && <svg className="weather-precipitation weather-fog-lines" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="M21 31h54 M10 41h76 M16 51h64 M27 61h42" />
       </svg>}
-      {category === "windy" && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M12 24h57c12 0 12-15 2-15-5 0-7 3-7 6 M5 37h73c13 0 13 16 2 16-5 0-7-3-7-6" />
+      {category === "windy" && <svg className="weather-wind-lines" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="M10 23h57c12 0 12-15 2-15-5 0-7 3-7 6 M5 39h73c13 0 13 16 2 16-5 0-7-3-7-6" />
       </svg>}
       {category === "unknown" && <span className="weather-unknown-mark">?</span>}
     </div>

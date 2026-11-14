@@ -89,3 +89,12 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - The standard animated weather pack now draws hail as three separate rounded ice pellets with short motion trails, rather than reusing the snowflake symbol.
 - Each pellet falls on its own staggered loop in the icy blue precipitation colour. The shared animation switch still disables all motion when static icons are selected.
 - Snow, snow showers and sleet retain their existing snowflake artwork and animation.
+
+
+## Weather icon refinements and dashboard labels (14 November 2026)
+
+- The standard fog icon no longer shows a cloud: it consists of four horizontally centered lines of different lengths.
+- The standard windy icon no longer shows a cloud: it uses only the two curved wind trails.
+- The sunny icon is centered in its symbol area and rotates around its own center. The mostly-sunny icon keeps the sun behind the cloud but also rotates the sun around its own center, without orbiting around a larger circle.
+- The dashboard uses the shorter Dutch feels-like label “Gevoel”; the English dashboard label remains “Feels like”. The longer feels-like label remains available in the weather settings page.
+- Weather detail labels and readings (feels-like, precipitation, sunrise and sunset, plus any other configured details) have a larger responsive type scale.

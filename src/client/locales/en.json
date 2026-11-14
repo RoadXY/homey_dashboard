@@ -436,5 +436,6 @@
   "weatherSettings.previewFog": "Fog",
   "weatherSettings.previewWind": "Wind",
   "weatherSettings.motionHeading": "Animated icons",
-  "weatherSettings.motionDescription": "Turn animations on or off for all icon packs."
+  "weatherSettings.motionDescription": "Turn animations on or off for all icon packs.",
+  "weatherSettings.field.feelsLikeDashboard": "Feels like"
 }
