@@ -580,7 +580,7 @@ export async function getNotificationSourceCatalog() {
       // a capability with a unit must be compared as a number.
       const declaredType = descriptor.type;
       const type = units.trim() ? "number" : declaredType;
-      if (type !== "number" && type !== "boolean") return [];
+      if (type !== "number" && type !== "boolean" && type !== "string") return [];
       return [{
         id: capabilityId,
         title: typeof descriptor.title === "string" ? descriptor.title : capabilityId,
@@ -597,9 +597,10 @@ export async function getNotificationSourceCatalog() {
   }).sort((a, b) => a.name.localeCompare(b.name));
 
   const logicList = Object.values(variables as Record<string, any>).flatMap((variable: any) => {
-    if (variable.type !== "number" && variable.type !== "boolean") return [];
+    if (variable.type !== "number" && variable.type !== "boolean" && variable.type !== "string") return [];
     if (variable.type === "number" && (typeof variable.value !== "number" || !Number.isFinite(variable.value))) return [];
     if (variable.type === "boolean" && typeof variable.value !== "boolean") return [];
+    if (variable.type === "string" && typeof variable.value !== "string") return [];
     return [{ id: String(variable.id), name: String(variable.name ?? "Logic-variabele"), type: variable.type }];
   }).sort((a, b) => a.name.localeCompare(b.name));
 
