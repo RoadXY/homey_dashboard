@@ -1983,30 +1983,132 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPlaceholder t={t} /> : null}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
 
 
-function WeatherSettingsPlaceholder({ t }: { t: (key: string) => string }) {
-  return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">☁</div><div><h1>{t("settings.weather")}</h1><p>{t("settings.weatherPlaceholderDescription")}</p></div></div>
-    <section className="settings-card system-card weather-placeholder-card">
-      <h2><span className="mdi mdi-weather-partly-cloudy" aria-hidden="true" />{t("settings.weatherPlaceholderTitle")}</h2>
-      <p>{t("settings.weatherPlaceholderBody")}</p>
-      <ul>
-        <li>{t("settings.weatherOutdoorTemperature")}</li>
-        <li>{t("settings.weatherFeelsLike")}</li>
-        <li>{t("settings.weatherCondition")}</li>
-        <li>{t("settings.weatherWind")}</li>
-        <li>{t("settings.weatherHumidity")}</li>
-        <li>{t("settings.weatherRain")}</li>
-        <li>{t("settings.weatherPressure")}</li>
-        <li>{t("settings.weatherSunriseSunset")}</li>
-      </ul>
-    </section>
+type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
+type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" };
+type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
+const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
+const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated" };
+const weatherPackIds = ["animated","color3d","outline","flat"] as const;
+
+function WeatherSettingsPage({ locale, t }: { locale: string; t: (key: string) => string }) {
+  const [settings,setSettings] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
+  const [saved,setSaved] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
+  const [catalog,setCatalog] = React.useState<WeatherSourceCatalog>({devices:[],variables:[]});
+  const [busy,setBusy] = React.useState(true);
+  const [saving,setSaving] = React.useState(false);
+  const [message,setMessage] = React.useState("");
+  const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);
+  const [search,setSearch] = React.useState("");
+  const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  React.useEffect(() => {
+    let active = true;
+    Promise.all([
+      fetch("/api/settings/weather").then(async r => { if(!r.ok) throw new Error(t("weatherSettings.loadError")); return await r.json() as WeatherSettingsModel; }),
+      fetch("/api/settings/weather-sources").then(async r => { if(!r.ok) throw new Error(t("weatherSettings.sourcesError")); return await r.json() as WeatherSourceCatalog; })
+    ]).then(([config,options]) => { if(active) { setSettings(config); setSaved(config); setCatalog(options); } })
+      .catch(error => { if(active) setMessage(error instanceof Error ? error.message : t("weatherSettings.loadError")); })
+      .finally(() => { if(active) setBusy(false); });
+    return () => { active = false; };
+  }, []);
+  const sourceLabel = (source: WeatherSource) => {
+    if(!source) return t("weatherSettings.selectSource");
+    if(source.type === "logic") {
+      const variable = catalog.variables.find(item => item.id === source.variableId);
+      return variable ? t("weatherSettings.logicPrefix") + " · " + variable.name : t("weatherSettings.unknownSource");
+    }
+    const device = catalog.devices.find(item => item.id === source.deviceId);
+    const capability = device?.capabilities.find(item => item.id === source.capabilityId);
+    return device && capability ? device.name + " · " + capability.title + (capability.units ? " ("+capability.units+")" : "") : t("weatherSettings.unknownSource");
+  };
+  const updateSource = (id: WeatherSettingId, source: WeatherSource) => setSettings(current => ({...current,sources:{...current.sources,[id]:source}}));
+  const save = async () => {
+    setSaving(true); setMessage("");
+    try {
+      const response = await fetch("/api/settings/weather",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
+      const result = await response.json() as WeatherSettingsModel & {error?:string};
+      if(!response.ok) throw new Error(result.error ?? t("weatherSettings.saveError"));
+      setSettings(result); setSaved(result); setMessage(t("weatherSettings.saved"));
+    } catch(error) { setMessage(error instanceof Error ? error.message : t("weatherSettings.saveError")); }
+    finally { setSaving(false); }
+  };
+  const query = search.trim().toLocaleLowerCase(locale);
+  const matchingDevices = catalog.devices.flatMap(device => device.capabilities.map(capability => ({device,capability})))
+    .filter(({device,capability}) => !query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query));
+  const matchingVariables = catalog.variables.filter(variable => !query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query));
+  const packs = [
+    {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription"),glyphs:["☀️","🌤️","☁️","🌧️","⛈️","❄️","🌫️","💨"]},
+    {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription"),glyphs:["🌞","🌥️","🌧️","⛈️","🌨️","🌙","🌈","🌪️"]},
+    {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription"),glyphs:["☼","☁","☂","ϟ","❄","☾","≋","↝"]},
+    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription"),glyphs:["🌤","☁","🌦","🌩","❄","🌙","🌫","🌬"]}
+  ];
+  return <div className="quick-settings-page weather-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/></div><div><h1>{t("settings.weatherPlaceholderTitle")}</h1><p>{t("weatherSettings.intro")}</p></div></div>
+    <div className="weather-settings-layout">
+      <section className="settings-card weather-sources-card">
+        <h2><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/>{t("weatherSettings.sourcesHeading")}</h2>
+        <p className="quick-card-description">{t("weatherSettings.sourcesDescription")}</p>
+        <div className="weather-source-list">
+          {weatherSettingIds.map(id => {
+            const enabled = Boolean(settings.sources[id]);
+            const isOpen = searchId === id;
+            return <div className={"weather-source-row"+(!enabled?" is-disabled":"")} key={id}>
+              <div className="weather-source-label"><i className={"mdi "+({outdoorTemperature:"mdi-thermometer",feelsLike:"mdi-thermometer-lines",humidity:"mdi-water-percent",pressure:"mdi-gauge",windSpeed:"mdi-weather-windy",windDirection:"mdi-compass-outline",precipitation:"mdi-weather-rainy",sunrise:"mdi-weather-sunset-up",sunset:"mdi-weather-sunset-down"} as Record<WeatherSettingId,string>)[id]} aria-hidden="true"/><span>{t("weatherSettings.field."+id)}</span></div>
+              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField",{field:t("weatherSettings.field."+id)} as never)} onClick={() => { if(enabled) updateSource(id,null); else { setSearchId(id); setSearch(""); } }}>
+                <span/>
+              </button>
+              <div className="weather-source-picker">
+                <button type="button" className="quick-flow-trigger weather-source-trigger" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
+                  onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
+                  <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
+                  <span className="quick-flow-trigger-name">{sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
+                </button>
+                {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
+                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
+                  <div className="quick-flow-results">
+                    <div className="weather-source-group-label">{t("weatherSettings.devices")}</div>
+                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
+                    {matchingDevices.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noDeviceSources")}</div>}
+                    <div className="weather-source-group-label">{t("weatherSettings.logicVariables")}</div>
+                    {matchingVariables.map(variable=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="logic"&&settings.sources[id]?.variableId===variable.id} className="quick-flow-option" key={variable.id} onClick={()=>{updateSource(id,{type:"logic",variableId:variable.id});setSearchId(null);setSearch("");}}><span className="mdi mdi-variable" aria-hidden="true"/><span className="quick-flow-option-name">{variable.name}</span><small>{variable.type}</small></button>)}
+                    {matchingVariables.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noLogicSources")}</div>}
+                  </div>
+                </div>}
+              </div>
+              {!enabled&&<span className="weather-source-disabled-label">{t("weatherSettings.disabled")}</span>}
+            </div>;
+          })}
+        </div>
+        <div className="quick-info">ⓘ <span>{t("weatherSettings.sourceTip")}</span></div>
+      </section>
+      <div className="weather-settings-side">
+        <section className="settings-card weather-packs-card">
+          <h2><i className="mdi mdi-image-multiple-outline" aria-hidden="true"/>{t("weatherSettings.iconHeading")}</h2>
+          <p className="quick-card-description">{t("weatherSettings.iconDescription")}</p>
+          <div className="weather-pack-grid">
+            {packs.map(pack=><button type="button" key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")} aria-pressed={settings.iconPack===pack.id} onClick={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}>
+              <span className="weather-pack-radio" aria-hidden="true"/><span className={"weather-pack-glyphs pack-"+pack.id}>{pack.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</span><strong>{pack.title}</strong><small>{pack.description}</small>
+            </button>)}
+          </div>
+          <div className={"weather-pack-preview pack-"+settings.iconPack}><span>{t("weatherSettings.preview")}</span>{packs.find(pack=>pack.id===settings.iconPack)?.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</div>
+        </section>
+        <section className="settings-card weather-api-card">
+          <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
+          <p>{t("weatherSettings.apiDescription")}</p>
+          <p className="weather-api-tip"><strong>{t("weatherSettings.apiTipTitle")}</strong> {t("weatherSettings.apiTip")}</p>
+          <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link" onClick={()=>window.dispatchEvent(new CustomEvent("homey-dashboard-navigate-settings",{detail:"general"}))}>{t("settings.general")}</button>.</p>
+          <a className="secondary-button weather-doc-link" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
+        </section>
+      </div>
+    </div>
+    <div className="settings-bottom"><span className={"save-message"+(message.includes("Error")?" error":"")} role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty||saving||busy} onClick={()=>void save()}>{saving?t("settings.saving"):t("settings.save")}</button></div>
   </div>;
 }
 
