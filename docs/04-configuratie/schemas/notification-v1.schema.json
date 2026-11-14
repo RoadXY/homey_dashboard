@@ -78,7 +78,8 @@
             "expectedType": {
               "enum": [
                 "boolean",
-                "number"
+                "number",
+                "string"
               ]
             }
           }
@@ -102,7 +103,8 @@
             "expectedType": {
               "enum": [
                 "boolean",
-                "number"
+                "number",
+                "string"
               ]
             }
           }
@@ -130,7 +132,8 @@
         "value": {
           "type": [
             "boolean",
-            "number"
+            "number",
+            "string"
           ]
         }
       },
