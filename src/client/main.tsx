@@ -761,14 +761,14 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   React.useEffect(() => {
     const Blockly: any = BlocklyLibrary;
     // Blockly core imports do not automatically populate its message table. Context-menu labels require these translations.
-    Blockly.setLocale(locale.toLowerCase().startsWith("en") ? BlocklyEn : BlocklyNl);
+    Blockly.setLocale(locale.toLowerCase().startsWith("nl") ? BlocklyNl : BlocklyEn);
     if (!host.current) { setBlocklyUnavailable(true); return; }
     const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
           this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
-          const labels = locale.toLowerCase().startsWith("en") ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [[translate(locale, "blockly.shortMonday"),"MON"],[translate(locale, "blockly.shortTuesday"),"TUE"],[translate(locale, "blockly.shortWednesday"),"WED"],[translate(locale, "blockly.shortThursday"),"THU"],[translate(locale, "blockly.shortFriday"),"FRI"],[translate(locale, "blockly.shortSaturday"),"SAT"],[translate(locale, "blockly.shortSunday"),"SUN"]];
+          const labels = [[translate(locale, "blockly.shortMonday"),"MON"],[translate(locale, "blockly.shortTuesday"),"TUE"],[translate(locale, "blockly.shortWednesday"),"WED"],[translate(locale, "blockly.shortThursday"),"THU"],[translate(locale, "blockly.shortFriday"),"FRI"],[translate(locale, "blockly.shortSaturday"),"SAT"],[translate(locale, "blockly.shortSunday"),"SUN"]];
           const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
           labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
           this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
@@ -846,7 +846,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             empty.textContent = translate(locale, "blockly.noHomeySources");
             results.appendChild(empty);
           }
-          footer.textContent = options.length + (options.length === 1 ? ' resultaat' : ' resultaten');
+          footer.textContent = options.length + " " + translate(locale, options.length === 1 ? "blockly.result" : "blockly.results");
         };
         const scrollSelectedOptionIntoView = () => {
           window.requestAnimationFrame(() => {
@@ -1150,7 +1150,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         },
         {
           kind: "category",
-          name: "Containers",
+          name: translate(locale, "blockly.containers"),
           categorystyle: "logic_category",
           contents: [
             { kind: "block", type: "homey_condition_and" },
@@ -1780,7 +1780,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
                   key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
                   <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
                   <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
-                  {!device.available && <span className="quick-flow-type">Offline</span>}
+                  {!device.available && <span className="quick-flow-type">{t("homey.offline")}</span>}
                 </button>)}
                 {matchingDevices.length === 0 && <div className="quick-flow-empty">{t("quickActions.noDevices")}</div>}
               </div>
