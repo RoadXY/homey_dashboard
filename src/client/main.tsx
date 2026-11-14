@@ -1026,7 +1026,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
           .appendField(new SearchableSourceDropdown(() => sourceOptions(type)), "SOURCE")
           .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
-          .appendField(makeComparisonValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : "0"), "VALUE");
+          .appendField(makeComparisonValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : initialSource?.expectedType === "string" ? "" : "0"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(285);
         this.setOnChange((event: any) => {
           if (event.type !== Blockly.Events.BLOCK_FIELD_CHANGED || event.blockId !== block.id || event.name !== "SOURCE") return;
@@ -1035,7 +1035,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           if (!comparisonOptions(block).some(([, operator]) => operator === block.getFieldValue("OP"))) block.setFieldValue("equals", "OP");
           replaceComparisonValueField(block, source.expectedType, String(block.getFieldValue("VALUE") ?? ""));
         });
-        this.setTooltip("Selecteer een Homey-bron. Boolean-bronnen gebruiken true/false; numerieke bronnen gebruiken een numeriek invoerveld.");
+        this.setTooltip("Selecteer een Homey-bron. Numerieke bronnen gebruiken getalvergelijking, boolean-bronnen true/false en tekstbronnen een tekstvergelijking.");
       }
     });
     if (!Blockly.Blocks.homey_condition_device_source) Blockly.Blocks.homey_condition_device_source = defineSourceBlock("device");
