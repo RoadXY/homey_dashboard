@@ -169,6 +169,12 @@ async function loadDefaultConfigs(): Promise<NotificationConfig[]> {
   }));
 }
 
+export function mergeNotificationConfigs(defaults: NotificationConfig[], saved: NotificationConfig[], deletedIds: string[]): NotificationConfig[] {
+  const merged = new Map(defaults.filter((config) => !deletedIds.includes(config.id)).map((config) => [config.id, config]));
+  for (const config of saved) merged.set(config.id, config);
+  return [...merged.values()];
+}
+
 export async function getNotificationConfigsForSettings(): Promise<NotificationConfig[]> {
   const defaults = await loadDefaultConfigs();
   let deletedIds: string[] = [];
@@ -179,15 +185,15 @@ export async function getNotificationConfigsForSettings(): Promise<NotificationC
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
-  const merged = new Map(defaults.filter((config) => !deletedIds.includes(config.id)).map((config) => [config.id, config]));
+  let savedConfigs: NotificationConfig[] = [];
   try {
     const saved = parseNotificationConfigJson(await readFile(notificationOverridePath, "utf8"));
     if (!Array.isArray(saved) || !saved.every(isValidNotificationConfig)) throw new Error("Opgeslagen meldingsconfiguratie is ongeldig.");
-    for (const config of saved as NotificationConfig[]) merged.set(config.id, config);
+    savedConfigs = saved as NotificationConfig[];
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
-  const configs = [...merged.values()];
+  const configs = mergeNotificationConfigs(defaults, savedConfigs, deletedIds);
   if (new Set(configs.map((item) => item.id)).size !== configs.length) throw new Error("Dubbele dashboardmelding-ID gevonden.");
   return configs;
 }
