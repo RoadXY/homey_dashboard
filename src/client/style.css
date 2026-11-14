@@ -1003,32 +1003,26 @@ body {
 .weather-pack-preview-panel > strong { display:block; margin-bottom:10px; color:var(--text-secondary); font-size:12px; font-weight:600; }
 .weather-pack-preview-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
 .weather-pack-preview-item { min-width:0; min-height:76px; display:grid; place-items:center; border:1px solid var(--surface-card-border); border-radius:9px; background:color-mix(in srgb,var(--surface-card-background) 70%,transparent); }
-.weather-pack-preview-item .weather-symbol { width:100%; height:100%; min-height:70px; display:grid; place-items:center; font-size:42px; }
-.weather-pack-preview-item .weather-line-svg { width:64px; height:58px; }
+.weather-pack-preview-item .weather-symbol { width:min(100%,104px); height:76px; min-height:0; display:block; flex:0 0 auto; margin:0 auto; font-size:42px; }
 .weather-pack-preview-item .weather-pack-symbol { font-size:42px; }
+
+/* The standard animated weather set uses familiar weather colours. */
+.weather-pack-animated .weather-sun { color:#f4c64e; stroke:currentColor; }
+.weather-pack-animated .weather-sun circle { fill:currentColor; fill-opacity:.18; }
+.weather-pack-animated .weather-cloud { color:#e5ebf3; stroke:currentColor; }
+.weather-pack-animated.weather-rain .weather-precipitation,
+.weather-pack-animated.weather-drizzle .weather-precipitation,
+.weather-pack-animated.weather-showers .weather-precipitation { color:#69b9ed; stroke:currentColor; }
+.weather-pack-animated.weather-thunderstorm .weather-precipitation { color:#f4c64e; stroke:currentColor; }
+.weather-pack-animated.weather-snow .weather-precipitation,
+.weather-pack-animated.weather-snow_showers .weather-precipitation,
+.weather-pack-animated.weather-sleet .weather-precipitation { color:#9bdcf5; stroke:currentColor; }
+.weather-pack-animated.weather-fog .weather-precipitation { color:#aab6c5; stroke:currentColor; }
+.weather-pack-animated.weather-windy .weather-cloud { color:#9bcde5; stroke:currentColor; }
+
 .weather-pack-color3d { filter:drop-shadow(0 3px 5px rgba(0,0,0,.28)); }
 .weather-pack-outline { filter:grayscale(1); -webkit-text-stroke:1px currentColor; }
 .weather-pack-flat { filter:saturate(1.2); }
-.weather-pack-animated-line .weather-line-svg { width:100%; max-width:96px; height:auto; overflow:visible; }
-.weather-pack-animated-line .weather-line-svg circle,.weather-pack-animated-line .weather-line-svg path { fill:none; stroke:var(--nav-button-hover-border); stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round; }
-.weather-pack-animated-line .weather-line-svg text { fill:var(--nav-button-hover-border); font:600 36px sans-serif; }
-.weather-line-sun { transform-box:fill-box; transform-origin:center; animation:weather-line-sun-rotate 28s linear infinite; }
-.weather-line-cloud { animation:weather-line-cloud-drift 5s ease-in-out infinite; }
-.weather-line-rain { stroke-dasharray:8 7; animation:weather-line-rain-fall .9s linear infinite; }
-.weather-line-lightning { animation:weather-line-flash 2.8s ease-in-out infinite; }
-.weather-line-snow { animation:weather-line-snow-drift 4s ease-in-out infinite; }
-.weather-line-fog { stroke-dasharray:12 7; animation:weather-line-fog-drift 3s linear infinite; }
-.weather-line-wind { stroke-dasharray:18 5; animation:weather-line-wind-flow 2.8s linear infinite; }
-@keyframes weather-line-sun-rotate { to { transform:rotate(360deg); } }
-@keyframes weather-line-cloud-drift { 0%,100% { transform:translateX(0); } 50% { transform:translateX(2px); } }
-@keyframes weather-line-rain-fall { to { stroke-dashoffset:-15; } }
-@keyframes weather-line-flash { 0%,86%,90%,100% { opacity:1; } 88% { opacity:.25; } }
-@keyframes weather-line-snow-drift { 0%,100% { transform:translateY(0); } 50% { transform:translateY(2px); } }
-@keyframes weather-line-fog-drift { to { stroke-dashoffset:-38; } }
-@keyframes weather-line-wind-flow { to { stroke-dashoffset:-46; } }
-@media(prefers-reduced-motion:reduce) {
-  .weather-pack-animated-line * { animation:none!important; }
-}
 .weather-api-card p { color:var(--text-secondary); line-height:1.5; }
 .weather-api-tip { padding:12px 14px; border-radius:10px; background:var(--nav-button-background); border:1px solid var(--nav-button-border); color:var(--text-primary)!important; }
 .weather-api-link { margin-bottom:10px; }

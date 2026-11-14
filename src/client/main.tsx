@@ -362,9 +362,9 @@ function App() {
             <div>
               <div className="eyebrow">{t("weatherSettings.dashboardEyebrow")}</div>
               {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
-              <div className="weather-description">{weatherCondition?.conditionText || (weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown"))}</div>
+              <div className="weather-description">{formatWeatherCondition(weatherCondition, t)}</div>
             </div>
-            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={weatherCondition?.category && weatherCondition.category !== "unknown" ? t("weather.condition."+weatherCondition.category) : t("weather.condition.unknown")} pack={weatherValues?.settings.iconPack ?? "animated"} />
+            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={formatWeatherCondition(weatherCondition, t)} pack={weatherValues?.settings.iconPack ?? "animated"} />
           </div>
           <div className="weather-details">
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
@@ -2004,7 +2004,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
 
 type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
 type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
-type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" | "animated-line" };
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" };
 type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
 const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
 const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated" };
@@ -2056,8 +2056,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
     {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription")},
     {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription")},
     {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription")},
-    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription")},
-    {id:"animated-line",title:t("weatherSettings.packAnimatedLine"),description:t("weatherSettings.packAnimatedLineDescription")}
+    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription")}
   ] as const;
   const previewCategories: WeatherCategory[] = ["sunny","partly_cloudy","cloudy","rain","thunderstorm","snow","fog","windy"];
 
@@ -2135,6 +2134,16 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
   </div>;
 }
 
+function formatWeatherCondition(condition: WeatherConditionResponse | null, t: (key: string) => string): string {
+  if (!condition) return t("weather.condition.unknown");
+  const supplied = condition.conditionText?.trim();
+  const normalized = supplied?.toLocaleLowerCase().replace(/[\\s-]+/g, "_");
+  // Canonical identifiers such as "Partly_cloudy" are translated category
+  // keys, not custom descriptions supplied by the weather integration.
+  if (supplied && normalized !== condition.category) return supplied;
+  return t("weather.condition." + condition.category);
+}
+
 function formatWeatherValue(value: string | number | boolean | null, units: string, locale: string): string {
   if (value === null || value === undefined) return "—";
   const formatted = typeof value === "number" ? new Intl.NumberFormat(locale,{maximumFractionDigits:1}).format(value) : String(value);
@@ -2143,24 +2152,6 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
 
 function WeatherIcon({ category, label, pack = "animated" }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"] }) {
   const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
-  if (pack === "animated-line") {
-    const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
-    const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet","fog"].includes(category);
-    const hasRain = ["drizzle","rain","heavy_rain","showers","sleet","hail"].includes(category);
-    const hasSnow = ["snow","snow_showers"].includes(category);
-    return <div className={"weather-symbol weather-pack-animated-line weather-line-"+category} role="img" aria-label={label}>
-      <svg className="weather-line-svg" viewBox="0 0 96 72" aria-hidden="true">
-        {hasSun && <g className="weather-line-sun"><circle cx="37" cy="25" r="10"/><path d="M37 3v8 M37 39v8 M15 25h8 M51 25h8 M21.4 9.4l5.7 5.7 M47 35l5.7 5.7 M52.6 9.4l-5.7 5.7 M27 35l-5.7 5.7"/></g>}
-        {hasCloud && <path className="weather-line-cloud" d="M23 48h48a13 13 0 0 0 0-26 19 19 0 0 0-36-3A15 15 0 0 0 23 48Z"/>}
-        {hasRain && <path className="weather-line-rain" d="m31 53-4 9 M48 53l-4 9 M65 53l-4 9"/>}
-        {category === "thunderstorm" && <path className="weather-line-lightning" d="m53 49-10 12h8l-4 9 16-17H54l6-4"/>}
-        {hasSnow && <g className="weather-line-snow"><path d="M31 53v13m-5-9 10 5m0-10-10 10 M48 53v13m-5-9 10 5m0-10-10 10 M65 53v13m-5-9 10 5m0-10-10 10"/></g>}
-        {category === "fog" && <path className="weather-line-fog" d="M15 53h66 M23 62h50"/>}
-        {category === "windy" && <g className="weather-line-wind"><path d="M12 27h57c12 0 12-15 2-15-5 0-7 3-7 6 M7 43h73c13 0 13 16 2 16-5 0-7-3-7-6"/></g>}
-        {category === "unknown" && <text x="48" y="48" textAnchor="middle" className="weather-line-unknown">?</text>}
-      </svg>
-    </div>;
-  }
   if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
     <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={label}>

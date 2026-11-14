@@ -427,8 +427,6 @@
   "weatherSettings.saveError": "Could not save weather settings.",
   "weatherSettings.saved": "Weather settings saved.",
   "weatherSettings.dashboardEyebrow": "OUTSIDE · WEATHER",
-  "weatherSettings.packAnimatedLine": "Animated lines (themed)",
-  "weatherSettings.packAnimatedLineDescription": "Minimalist line icons with subtle animations in your theme’s accent colour.",
   "weatherSettings.previewSunny": "Sunny",
   "weatherSettings.previewPartlyCloudy": "Partly cloudy",
   "weatherSettings.previewCloudy": "Cloudy",

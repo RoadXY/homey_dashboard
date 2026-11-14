@@ -16,11 +16,11 @@ through the existing authenticated integration endpoint
 `POST /api/v1/weather/conditions`. The supplied canonical condition selects
 the icon. The icon pack is saved independently from dashboard theme settings.
 
-Four icon pack choices are currently exposed: the existing animated SVG style,
-a colourful emoji-based style, an outline-symbol style and a flat colourful
-style. These alternate packs are an initial implementation and can later be
-replaced by dedicated authored icon assets without changing the settings
-contract.
+Four icon pack choices are exposed: the standard animated SVG style with
+familiar weather colours, a colourful emoji-based style, an outline-symbol
+style and a flat colourful style. The experimental animated-line variant was
+removed from the selector; legacy saved values are normalized to the standard
+animated pack.
 
 Settings are stored persistently in `/app/data/weather-settings.json`.
 The server endpoints are:
@@ -42,15 +42,3 @@ GitHub Actions run 774 completed successfully: TypeScript checks, automated test
 OpenAPI lint, frontend/backend build and production Docker image build all passed.
 The Dutch and English locale files parse successfully and contain matching keys.
 
-
-## Animated line icon pack
-
-The weather icon selector uses accessible radio choices with a localized name
-and short description. Selecting a pack updates a shared preview showing sunny,
-partly cloudy, cloudy, rain, thunderstorm, snow, fog and wind conditions.
-
-The additional `animated-line` pack uses custom inline SVG line artwork. Its
-stroke follows the active theme accent token (`--nav-button-hover-border`),
-rather than a hard-coded colour. Weather-specific motion is subtle and is
-disabled when the visitor enables reduced motion in their operating system.
-The same renderer is used in the dashboard weather display and settings preview.

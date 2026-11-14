@@ -427,8 +427,6 @@
   "weatherSettings.saveError": "Weerinstellingen opslaan mislukt.",
   "weatherSettings.saved": "Weerinstellingen opgeslagen.",
   "weatherSettings.dashboardEyebrow": "BUITEN · WEER",
-  "weatherSettings.packAnimatedLine": "Lijnanimaties (thema)",
-  "weatherSettings.packAnimatedLineDescription": "Minimalistische lijniconen met subtiele animaties in de accentkleur van je thema.",
   "weatherSettings.previewSunny": "Zonnig",
   "weatherSettings.previewPartlyCloudy": "Halfbewolkt",
   "weatherSettings.previewCloudy": "Bewolkt",
