@@ -448,3 +448,8 @@ Besloten om tekstuele Homey-capabilities en tekstuele Logic-variabelen als verge
 ## Samsung wasdroger – melding na afloop (14 november 2026)
 
 In Homey is de boolean Logic-variabele `Samsung wasdroger klaar` aangemaakt met beginwaarde `false`. De Advanced Flow `Samsung wasdroger – klaar melden` gebruikt de Samsung-trigger `A cycle finished` om de variabele op `true` te zetten en de Countdown-app-zandloper `Wasdroger melding` 30 minuten te starten. Wanneer de zandloper leeg is, wordt de variabele weer `false`. Bij `A cycle started` wordt de variabele direct `false` gezet en de eventuele lopende zandloper gestopt. De flow is aangemaakt en ingeschakeld; werking moet nog bij de eerstvolgende droogcyclus worden gevalideerd.
+
+
+## Waarschuwingsbadge in de meldingenkeuzelijst – 14 november 2026
+
+In de meldingenkeuzelijst krijgt een ingeschakelde melding een gele badge **Waarschuwing** wanneer één of meer Homey-bronnen uit de opgeslagen conditie ontbreken of niet beschikbaar zijn in de broncatalogus. Dezelfde badge staat ook naast de naam van de geselecteerde melding. De badge wordt gebaseerd op de opgeslagen configuratie en broncatalogus, niet op niet-opgeslagen Blockly-wijzigingen. Uitgeschakelde meldingen behouden uitsluitend hun bestaande badge **Uitgeschakeld**; waarschuwingen worden daarvoor niet getoond. De Nederlandse en Engelse labels zijn via i18n toegevoegd. De badge gebruikt de bestaande `--severity-warning-*` CSS-tokens, zodat de kleur per thema kan worden aangepast.
