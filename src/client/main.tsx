@@ -18,7 +18,7 @@ type HomeyStatus = { state: string; checkedAt: string | null; error: string | nu
 type DashboardNotification = { id: string; title: string; notificationTitle: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
-type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
+type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };\ntype DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
 type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
@@ -66,7 +66,7 @@ function App() {
   const [readings, setReadings] = React.useState<DeviceReadings | null>(null);
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
-  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);\n  const [weatherValues, setWeatherValues] = React.useState<DashboardWeatherValues | null>(null);
   const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
   const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
@@ -127,9 +127,9 @@ function App() {
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
     void fetch("/api/dashboard/measurement-tiles").then(r => r.ok ? r.json() as Promise<MeasurementTileResponse> : Promise.reject()).then(setMeasurementTileData).catch(() => undefined);
     try {
-      const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
+      const [statusResponse, readingsResponse, logicResponse, weatherResponse, weatherValuesResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
-        fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
+        fetch("/api/weather").catch(() => null), fetch("/api/dashboard/weather-values").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
       ]);
       if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error(translate(resolveLocale(dashboardLanguage, homeyLanguage), "dashboard.homeyDataUnavailable"));
       const [statusData, readingsData, logicData] = await Promise.all([
@@ -354,15 +354,18 @@ function App() {
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              <div className="eyebrow">OUTSIDE · WEATHER</div>
-              <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
-              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown")}</div>
+              <div className="eyebrow">{t("weatherSettings.dashboardEyebrow")}</div>
+              {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
+              <div className="weather-description">{weatherCondition?.conditionText || (weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown"))}</div>
             </div>
-            <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
+            <WeatherIcon category={weatherCondition?.category ?? "unknown"} pack={weatherValues?.settings.iconPack ?? "animated"} />
           </div>
           <div className="weather-details">
-            <div><span>{t("weather.feelsLike")}</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"), locale)}</strong></div>
-            <div><span>{t("weather.wind")}</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
+            {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
+              const reading = weatherValues?.values[id];
+              if (!reading?.available) return null;
+              return <div key={id}><span>{t("weatherSettings.field."+id)}</span><strong>{formatWeatherValue(reading.value,reading.units,locale)}</strong></div>;
+            })}
           </div>
         </article>
         <section className="temperature-grid" aria-label="Temperature sensors">
