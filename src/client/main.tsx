@@ -312,9 +312,12 @@ function App() {
   React.useEffect(() => { document.documentElement.lang = locale; }, [locale]);
   const timeText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Amsterdam" }).format(now);
   const dateText = new Intl.DateTimeFormat(locale.toLowerCase().startsWith("nl") ? "nl-NL" : locale, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Amsterdam" }).format(now);
-  const beginSettingsHold = () => {
+  const beginSettingsHold = (event: React.PointerEvent<HTMLElement>) => {
+    // Only start the hidden settings gesture for a primary pointer/left click.
+    if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
+    event.preventDefault();
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
-    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); currentRouteRef.current = "/settings/general"; setSettingsPath("/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); }, 850);
+    holdTimer.current = window.setTimeout(() => { window.history.pushState({}, "", "/settings/general"); currentRouteRef.current = "/settings/general"; setSettingsPath("/settings/general"); setSettingsOpen(true); setSettingsUnlocked(false); setPin(""); setPinError(""); holdTimer.current = null; }, 850);
   };
   const cancelSettingsHold = () => {
     if (holdTimer.current !== null) window.clearTimeout(holdTimer.current);
@@ -343,7 +346,7 @@ function App() {
   return (
     <main className="dashboard">
       <section className="left-column" aria-label={t("dashboard.aria")}>
-        <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title={t("dashboard.holdSettings")}>
+        <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title={t("dashboard.holdSettings")}>
           <div className="clock-content">
             <div className="clock">{timeText}</div>
             <div className="date">{dateText}</div>

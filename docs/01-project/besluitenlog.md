@@ -458,3 +458,11 @@ In de meldingenkeuzelijst krijgt een ingeschakelde melding een gele badge **Waar
 ## Standaardwaarde voor tekstvergelijkingen in Blockly – 14 november 2026
 
 Nieuwe tekstvergelijkingen tonen standaard **tekst** (Engels: **text**) in het invoerveld in plaats van de booleanwaarde `true`. Dit geldt zowel bij het aanmaken van een blok met een tekstbron als bij het omschakelen van een bestaande boolean- of numerieke bron naar een tekstbron. Bestaande tekstwaarden blijven behouden wanneer tussen tekstbronnen wordt gewisseld. De standaardtekst is via i18n vertaald.
+
+
+## UX-verbetering – lang indrukken op de klok (14 november 2026)
+
+- De volledige klokkaart blijft het aanraakgebied voor het openen van Instellingen via lang indrukken.
+- Tekstselectie en de mobiele tekst-callout zijn op de klokkaart uitgeschakeld, zodat een lange aanraking niet per ongeluk de tijd of datum selecteert.
+- Het gebaar start alleen voor de primaire aanwijzer (en bij muis alleen de linkermuisknop); pointer-cancel breekt de timer af.
+- De bestaande drempel van 850 ms en de PIN-beveiliging blijven ongewijzigd.
