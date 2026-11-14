@@ -455,6 +455,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
   const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
@@ -510,6 +511,25 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
     const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
     return [device?.name, capability?.title].filter(Boolean).join(" · ") || "Apparaatbron";
+  };
+  const removeSelected = async () => {
+    if (!selected || deleting || saving || !window.confirm("Weet je zeker dat je deze melding wilt verwijderen?")) return;
+    const removedId = selected.id;
+    const selectedIndex = configs.findIndex(item => item.id === removedId);
+    setDeleting(true); setMessage(""); setIsError(false);
+    try {
+      const response = await fetch("/api/settings/notifications/" + encodeURIComponent(removedId), { method: "DELETE" });
+      const result = await response.json() as { notifications?: NotificationConfigEditor[]; error?: string };
+      if (!response.ok || !result.notifications) throw new Error(result.error ?? "Melding verwijderen mislukt.");
+      const remaining = configs.filter(item => item.id !== removedId);
+      setConfigs(remaining);
+      setSaved(result.notifications);
+      setSelectedId(remaining[Math.min(Math.max(selectedIndex, 0), remaining.length - 1)]?.id ?? "");
+      setMessage("Melding verwijderd.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Melding verwijderen mislukt.");
+      setIsError(true);
+    } finally { setDeleting(false); }
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
@@ -1182,7 +1202,7 @@ function NotificationSettingsPage({ locale }: { locale: string }) {
     </div>
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2></div><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span></div></div>
+        {selected ? <><div className="notification-editor-heading"><div><h2>{selected.title}</h2></div><div className="notification-severity-control"><button type="button" className="notification-delete-button" disabled={busy || saving || deleting} onClick={() => void removeSelected()}>{deleting ? "Verwijderen…" : "🗑 Verwijderen"}</button><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span></div></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
       </section>
