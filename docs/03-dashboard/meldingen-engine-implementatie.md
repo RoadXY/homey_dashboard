@@ -284,3 +284,8 @@ De Nederlandse en Engelse bevestigingsteksten en knoptekst zijn via i18n toegevo
 ## Statusbadge in de meldingenkiezer – 14 november 2026
 
 De doorzoekbare keuzelijst toont naast iedere uitgeschakelde melding (`enabled: false`) de badge **Uitgeschakeld**. Dezelfde badge staat bij de geselecteerde melding in de gesloten keuzeknop. De tekst is vertaald via `notifications.disabled` in de Nederlandse en Engelse locale. De styling gebruikt de semantische `--severity-critical-background`, `--severity-critical-border` en `--severity-critical-text` tokens; er zijn geen vaste roodwaarden toegevoegd. Ingeschakelde meldingen krijgen geen badge.
+
+
+## Blockly – tekstuele Homey-capabilities vergelijken (14 november 2026)
+
+De meldingeneditor ondersteunt naast numerieke en boolean Homey-bronnen nu ook tekstuele Homey-capabilities en tekstuele Logic-variabelen. De broncatalogus neemt alleen bronnen op waarvan Homey het datatype als `string` rapporteert. Tekstbronnen gebruiken uitsluitend `is gelijk aan` en `is niet gelijk aan`; de ingevoerde tekst wordt exact (case-sensitive) vergeleken met de actuele Homey-waarde. Numerieke bronnen behouden de zes numerieke operatoren en boolean-bronnen behouden de twee gelijkheidsoperatoren. De bestaande `comparison`-node en schema-versie 1 blijven behouden; alleen het toegestane datatype van `expectedType` en de vergelijkingswaarde is uitgebreid. Ontbrekende of afwijkend getypeerde waarden blijven `unknown` en veroorzaken geen foutieve actieve melding.
