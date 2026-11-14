@@ -207,20 +207,30 @@ body {
   .dashboard { height: auto; min-height: 100vh; overflow: visible; grid-template-columns: minmax(0,1fr); }
   .left-column { display: grid; grid-template-columns: 1.15fr .85fr; }
   .clock-card { min-height: 230px; }
-  /* Tablet portrait: keep the clock and weather cards equal in height. */
+  /* Tablet portrait: compact first row; make measurement and quick-action rows equal. */
   @media (min-width: 621px) {
     .left-column > .clock-card,
     .left-column > .weather-card {
-      height: calc(2 * clamp(132px,16vh,176px) + clamp(10px,1vw,16px));
+      height: calc(1.5 * clamp(132px,16vh,176px) + clamp(10px,1vw,16px));
       min-height: 0;
       flex: 0 0 auto;
       align-self: stretch;
     }
   }
   .weather-card { align-self: start; width: 100%; height: 230px; min-height: 0; }
-  .temperature-grid { grid-column: 1/-1; min-height: 260px; grid-template-columns: repeat(4,minmax(0,1fr)); grid-template-rows: 1fr; }
-  /* Tablet portrait: equalize all quick-action rows to the tallest (middle) row. */
-  .actions-grid { grid-auto-rows: 1fr; align-items: stretch; }
+  .temperature-grid {
+    grid-column: 1/-1;
+    height: clamp(132px,16vh,176px);
+    min-height: 0;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-template-rows: 1fr;
+  }
+  /* Both quick-action rows use exactly the measurement-row height. */
+  .actions-grid {
+    grid-auto-rows: clamp(132px,16vh,176px);
+    align-items: stretch;
+  }
   .actions-grid .action-card { height: 100%; min-height: 0; }
   .right-column { min-height: 560px; }
   .notifications-panel { min-height: 420px; }
