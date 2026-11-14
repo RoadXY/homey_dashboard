@@ -190,7 +190,7 @@ function App() {
   const wind = capability(weather, "measure_wind_combined") ?? capability(weather, "measure_wind_direction_string");
   const homeyOnline = homey?.state === "online";
   const refreshQuickActionStatuses = async () => {
-    try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error("Status ophalen mislukt"); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { /* Keep the last known Homey state when a poll temporarily fails. */ }
+    try { const response = await fetch("/api/dashboard/quick-action-status"); if (!response.ok) throw new Error(t("quickActions.statusError")); const data = await response.json() as { statuses: Record<string, boolean | null> }; setQuickActionStatuses(data.statuses); } catch { /* Keep the last known Homey state when a poll temporarily fails. */ }
   };
   React.useEffect(() => {
     if (notificationTimeout === "never") return;
@@ -1350,7 +1350,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         return { operator: block.type.endsWith("_and") ? "and" : "or", conditions };
       }
       if (block.type === "homey_condition_unsupported") throw new Error(translate(locale, "blockly.unsupportedCondition"));
-      throw new Error("Onbekend Blockly-blok: " + block.type);
+      throw new Error(translate(locale, "blockly.unknownBlock").replace("{type}", block.type));
     };
     const emitCondition = () => {
       if (hydrating) return;
