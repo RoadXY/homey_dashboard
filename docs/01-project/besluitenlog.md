@@ -268,3 +268,7 @@ De gebruiker kiest ervoor om uitsluitend de Weather API te gebruiken voor het be
 - De legacy i18n-sleutels `weather.condition.clear` en `weather.condition.wind` zijn niet meer nodig, omdat ze geen canonieke API-condities zijn. Ze worden ook uit bestaande persistente locale-bestanden verwijderd bij de eerstvolgende containerstart; alle overige eigen vertalingen blijven behouden.
 
 Dit besluit vervangt de eerdere implementatiekeuze waarbij de Homey-capabilitymapping als fallback actief bleef.
+
+## UI- en opslagbesluit – meldingen direct verwijderen (14 november 2026)
+
+Een melding verwijderen is een zelfstandige, direct persistente actie en maakt geen onderdeel uit van de algemene Opslaan-knop. De gebruiker bevestigt eerst expliciet de verwijdering. Na bevestiging verwijdert de backend de melding meteen. Verwijderde standaardmeldingen worden via een aparte tombstone-lijst vastgelegd, zodat ze na Docker-herstart of image-update niet terugkomen. De knop gebruikt semantische thematokens voor kritisch rood.
