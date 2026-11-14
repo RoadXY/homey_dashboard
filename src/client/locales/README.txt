@@ -89,6 +89,24 @@ can therefore be added through JSON without code changes, while Blockly's
 built-in context menus remain in English until a matching Blockly language
 pack is integrated.
 
+RECENT I18N CLEANUP
+-------------------
+
+The dashboard UI now routes the previously hard-coded Dutch labels and
+validation messages in the measurement-tile settings, quick-action pickers,
+notification settings, and custom Blockly blocks through the central
+translation function. Matching Dutch and English entries are maintained in
+nl.json and en.json. Blockly condition validation errors use translation keys
+as well.
+
+The Dutch and English dictionaries currently contain 383 matching keys.
+Number formatting uses the active locale, and detected Homey language names
+are formatted with Intl.DisplayNames.
+
+Verification note: the JSON files and key parity were checked after this
+change. A full npm typecheck, test run, and Docker build still need to be run
+in the project build environment.
+
 IMPORTANT
 ---------
 
