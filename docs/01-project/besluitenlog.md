@@ -439,3 +439,12 @@ De kopregel van de meldingseditor mag nu zelf naar meerdere regels omslaan wanne
 ## Meldingseditor – compacte kopregel op smalle schermen (14 november 2026)
 
 Bij een viewport van maximaal 760 px schakelt de kopregel van de meldingseditor naar een verticale indeling. De flex-basis van de titelgroep en bedieningsgroep wordt op mobiel teruggezet naar `auto` en beide krijgen 100% breedte. Zonder deze reset interpreteerde de kolom-flexindeling de desktop-basisbreedtes (260 px en 480 px) als minimale hoogtes, waardoor grote lege verticale ruimtes ontstonden tussen de titel, actieknoppen en meldingsniveau. De bedieningsgroep en het meldingsniveau worden links uitgelijnd en kunnen compact omwikkelen. De desktopindeling blijft ongewijzigd.
+
+
+## Blockly – tekstuele Homey-bronnen (14 november 2026)
+
+Besloten om tekstuele Homey-capabilities en tekstuele Logic-variabelen als vergelijkingsbron toe te staan in de bestaande meldingen-Blockly. De gebruiker kan tekst vergelijken op exacte gelijkheid of ongelijkheid; lexicografische groter/kleiner-operatoren worden bewust niet aangeboden. De bestaande `comparison`-datastructuur en schema-versie 1 blijven compatibel. Numerieke en boolean vergelijkingen behouden hun bestaande gedrag.
+
+## Samsung wasdroger – melding na afloop (14 november 2026)
+
+In Homey is de boolean Logic-variabele `Samsung wasdroger klaar` aangemaakt met beginwaarde `false`. De Advanced Flow `Samsung wasdroger – klaar melden` gebruikt de Samsung-trigger `A cycle finished` om de variabele op `true` te zetten en de Countdown-app-zandloper `Wasdroger melding` 30 minuten te starten. Wanneer de zandloper leeg is, wordt de variabele weer `false`. Bij `A cycle started` wordt de variabele direct `false` gezet en de eventuele lopende zandloper gestopt. De flow is aangemaakt en ingeschakeld; werking moet nog bij de eerstvolgende droogcyclus worden gevalideerd.
