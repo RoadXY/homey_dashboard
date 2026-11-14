@@ -372,5 +372,12 @@
   "blockly.discardChanges": "Discard changes?",
   "blockly.result": "result",
   "blockly.results": "results",
-  "blockly.containers": "Containers"
+  "blockly.containers": "Containers",
+  "comparison.operatorMismatch": "The selected comparison operator is not compatible with the source data type.",
+  "comparison.invalidNumber": "Enter a valid number for the comparison.",
+  "comparison.booleanRequired": "A boolean comparison requires true or false.",
+  "duration.invalidNode": "Invalid duration condition.",
+  "duration.invalidMinutes": "The duration must be between 1 and 1440 minutes.",
+  "duration.requiresCondition": "A duration block requires exactly one condition.",
+  "notification.requiresCondition": "Generate notification requires at least one condition."
 }
