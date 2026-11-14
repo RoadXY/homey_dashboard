@@ -279,3 +279,8 @@ Verwijderen vraagt eerst om bevestiging met de naam van de geselecteerde melding
 Standaardmeldingen worden vanuit configuratiebestanden samengevoegd met gebruikersinstellingen. Alleen de melding uit de conceptlijst verwijderen zou daarom onvoldoende zijn: bij herladen zou zo'n standaardmelding opnieuw verschijnen. Daarom worden verwijderde standaard-ID's apart bijgehouden in `notifications.deleted.json`. De normale override blijft een lijst met meldingsconfiguraties; bestaande installaties blijven compatibel. De backend filtert tombstones uit de standaardlijst voordat gebruikersoverschrijvingen worden samengevoegd. De opslag accepteert ook een lege lijst, zodat alle meldingen verwijderd kunnen worden.
 
 De Nederlandse en Engelse bevestigingsteksten en knoptekst zijn via i18n toegevoegd. De merge-logica heeft regressietests voor verwijderde standaardmeldingen en bewaarde overrides.
+
+
+## Statusbadge in de meldingenkiezer – 14 november 2026
+
+De doorzoekbare keuzelijst toont naast iedere uitgeschakelde melding (`enabled: false`) de badge **Uitgeschakeld**. Dezelfde badge staat bij de geselecteerde melding in de gesloten keuzeknop. De tekst is vertaald via `notifications.disabled` in de Nederlandse en Engelse locale. De styling gebruikt de semantische `--severity-critical-background`, `--severity-critical-border` en `--severity-critical-text` tokens; er zijn geen vaste roodwaarden toegevoegd. Ingeschakelde meldingen krijgen geen badge.
