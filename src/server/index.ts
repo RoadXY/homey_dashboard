@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotificationConfigsForSettings } from "./notifications.js";
-import { createApiNotification, deleteApiNotification, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, type ApiNotificationInput } from "./notifications-api.js";
+import { createApiNotification, deleteApiNotification, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, ApiNotificationValidationError, type ApiNotificationInput } from "./notifications-api.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
@@ -515,7 +515,9 @@ app.post("/api/v1/notifications", async (request, reply) => {
     broadcastNotificationsUpdated();
     return reply.code(201).send(created);
   } catch (error) {
-    return reply.code(400).send({ error: error instanceof Error ? error.message : "Invalid notification." });
+    if (error instanceof ApiNotificationValidationError) return reply.code(400).send({ error: error.message });
+    app.log.error(error);
+    return reply.code(500).send({ error: "Notification could not be saved." });
   }
 });
 
@@ -533,7 +535,9 @@ app.patch<{ Params: { id: string } }>("/api/v1/notifications/:id", async (reques
     if (configs.some((config) => config.id === request.params.id)) return reply.code(403).send({ error: "This notification is not managed by the Notifications API." });
     return reply.code(404).send({ error: "Notification not found." });
   } catch (error) {
-    return reply.code(400).send({ error: error instanceof Error ? error.message : "Invalid notification patch." });
+    if (error instanceof ApiNotificationValidationError) return reply.code(400).send({ error: error.message });
+    app.log.error(error);
+    return reply.code(500).send({ error: "Notification could not be saved." });
   }
 });
 

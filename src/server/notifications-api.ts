@@ -3,6 +3,9 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 export type ApiNotificationSeverity = "critical" | "warning" | "info";
+export class ApiNotificationValidationError extends Error {
+  constructor(message: string) { super(message); this.name = "ApiNotificationValidationError"; }
+}
 type StoredApiNotification = {
   id: string;
   source: "api";
@@ -31,15 +34,15 @@ function isSeverity(value: unknown): value is ApiNotificationSeverity {
 }
 function parseExpiry(value: unknown, now = Date.now()): string | undefined {
   if (value === undefined) return undefined;
-  if (typeof value !== "string" || !/(?:Z|[+-]\d{2}:\d{2})$/i.test(value)) throw new Error("expiresAt must be an ISO 8601 timestamp with a timezone.");
+  if (typeof value !== "string" || !/(?:Z|[+-]\d{2}:\d{2})$/i.test(value)) throw new ApiNotificationValidationError("expiresAt must be an ISO 8601 timestamp with a timezone.");
   const time = Date.parse(value);
-  if (!Number.isFinite(time) || time <= now) throw new Error("expiresAt must be a valid timestamp in the future.");
+  if (!Number.isFinite(time) || time <= now) throw new ApiNotificationValidationError("expiresAt must be a valid timestamp in the future.");
   return new Date(time).toISOString();
 }
 function validateText(value: unknown, field: "title" | "message", max: number): string {
-  if (typeof value !== "string") throw new Error(field + " must be a string.");
+  if (typeof value !== "string") throw new ApiNotificationValidationError(field + " must be a string.");
   const clean = value.trim();
-  if (!clean || clean.length > max) throw new Error(field + " must contain 1 to " + max + " characters.");
+  if (!clean || clean.length > max) throw new ApiNotificationValidationError(field + " must contain 1 to " + max + " characters.");
   return clean;
 }
 function toPublic(item: StoredApiNotification): PublicApiNotification {
@@ -113,7 +116,7 @@ export async function getNextApiNotificationExpiry(): Promise<number | undefined
 export async function createApiNotification(input: ApiNotificationInput): Promise<PublicApiNotification> {
   const title = validateText(input.title, "title", 120);
   const message = validateText(input.message, "message", 2000);
-  if (!isSeverity(input.severity)) throw new Error("severity must be critical, warning or info.");
+  if (!isSeverity(input.severity)) throw new ApiNotificationValidationError("severity must be critical, warning or info.");
   const expiresAt = parseExpiry(input.expiresAt);
   const now = new Date().toISOString();
   const item: StoredApiNotification = {
@@ -133,7 +136,7 @@ export async function patchApiNotification(id: string, patch: Record<string, unk
     if ("title" in patch) next.title = validateText(patch.title, "title", 120);
     if ("message" in patch) next.message = validateText(patch.message, "message", 2000);
     if ("severity" in patch) {
-      if (!isSeverity(patch.severity)) throw new Error("severity must be critical, warning or info.");
+      if (!isSeverity(patch.severity)) throw new ApiNotificationValidationError("severity must be critical, warning or info.");
       next.severity = patch.severity;
     }
     if ("expiresAt" in patch) {
