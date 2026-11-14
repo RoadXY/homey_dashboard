@@ -9,7 +9,8 @@ import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
 import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.js";
-import { getMeasurementSourceCatalog, getNotificationSourceCatalog, getMeasurementTileValues } from "./homey.js";
+import { readWeatherSettings, saveWeatherSettings } from "./weather-settings.js";
+import { getMeasurementSourceCatalog, getNotificationSourceCatalog, getMeasurementTileValues, getWeatherSourceCatalog, getWeatherSourceValues } from "./homey.js";
 import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
@@ -27,7 +28,7 @@ const SETTINGS_SESSION_COOKIE = "homey_settings";
 const SETTINGS_SESSION_IDLE_MS = 30 * 60 * 1000;
 let settingsSessionSecret: Buffer;
 const settingsRealtime = new EventEmitter();
-function broadcastSettingsUpdated(section: "general" | "quick-actions" | "notifications"): void {
+function broadcastSettingsUpdated(section: "general" | "quick-actions" | "notifications" | "weather"): void {
   settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
 }
 function settingsCookieValue(expiresAt: number): string {
@@ -310,6 +311,35 @@ app.get("/api/settings/measurement-sources", async (request, reply) => {
 app.get("/api/dashboard/measurement-tiles", async (_request, reply) => {
   try { return { tiles: await readMeasurementTiles(), ...(await getMeasurementTileValues(await readMeasurementTiles())) }; }
   catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardetegels konden niet worden bijgewerkt." }); }
+});
+
+app.get("/api/settings/weather", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return await readWeatherSettings();
+});
+app.post("/api/settings/weather", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const body = request.body as { sources?: unknown; iconPack?: unknown } | undefined;
+    const settings = await saveWeatherSettings(body);
+    broadcastSettingsUpdated("weather");
+    return settings;
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Weerinstellingen opslaan mislukt." });
+  }
+});
+app.get("/api/settings/weather-sources", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try { return await getWeatherSourceCatalog(); }
+  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Weerbronnen konden niet worden geladen." }); }
+});
+app.get("/api/dashboard/weather-values", async (_request, reply) => {
+  try {
+    const settings = await readWeatherSettings();
+    return { settings, ...(await getWeatherSourceValues(settings)) };
+  } catch (error) {
+    return reply.code(503).send({ error: error instanceof Error ? error.message : "Weerwaarden konden niet worden geladen." });
+  }
 });
 
 app.get("/api/settings/weather-tokens", async (request, reply) => {

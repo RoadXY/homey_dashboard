@@ -2,7 +2,7 @@ name: Validate dashboard build
 
 on:
   push:
-    branches: [phase_1_foundation]
+    branches: [phase_1_foundation, feature/weather-settings]
   pull_request:
     branches: [phase_1_foundation]
   workflow_dispatch:
@@ -23,9 +23,13 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Run TypeScript checks
+        run: npm run typecheck
       - name: Run automated tests
         run: npm test
       - name: Validate OpenAPI specification
         run: npx --yes @redocly/cli lint docs/api/openapi.yaml
       - name: Build frontend and backend
         run: npm run build
+      - name: Build production Docker image
+        run: docker build --target runtime -t homey-dashboard:ci .

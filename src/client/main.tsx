@@ -19,6 +19,7 @@ type DashboardNotification = { id: string; title: string; notificationTitle: str
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
 type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
+type DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
 type TransientNotification = { id: string; message: string; source: "quick-action"; status: "active" | "dismissed" | "expired"; createdAt: number };
 type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
@@ -67,6 +68,7 @@ function App() {
   const [logic, setLogic] = React.useState<LogicResponse | null>(null);
   const [notifications, setNotifications] = React.useState<DashboardNotification[]>([]);
   const [weatherCondition, setWeatherCondition] = React.useState<WeatherConditionResponse | null>(null);
+  const [weatherValues, setWeatherValues] = React.useState<DashboardWeatherValues | null>(null);
   const [quickActions, setQuickActions] = React.useState<QuickAction[]>([]);
   const [measurementTileData, setMeasurementTileData] = React.useState<MeasurementTileResponse | null>(null);
   const [quickActionStatuses, setQuickActionStatuses] = React.useState<Record<string, boolean | null>>({});
@@ -103,7 +105,7 @@ function App() {
           scheduleNotificationRefreshRef.current(nextData);
         })
         .catch(() => {
-          setNotifications([{ id: "notifications-load-error", title: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), message: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+          setNotifications([{ id: "notifications-load-error", title: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), notificationTitle: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), message: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
         });
     }, delay);
   }, [dashboardLanguage, homeyLanguage]);
@@ -121,15 +123,15 @@ function App() {
       .catch(() => {
         if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
         notificationRefreshTimer.current = null;
-        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), notificationTitle: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
       });
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
     void fetch("/api/dashboard/measurement-tiles").then(r => r.ok ? r.json() as Promise<MeasurementTileResponse> : Promise.reject()).then(setMeasurementTileData).catch(() => undefined);
     try {
-      const [statusResponse, readingsResponse, logicResponse, weatherResponse, languageResponse, systemResponse] = await Promise.all([
+      const [statusResponse, readingsResponse, logicResponse, weatherResponse, weatherValuesResponse, languageResponse, systemResponse] = await Promise.all([
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
-        fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
+        fetch("/api/weather").catch(() => null), fetch("/api/dashboard/weather-values").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
       ]);
       if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error(translate(resolveLocale(dashboardLanguage, homeyLanguage), "dashboard.homeyDataUnavailable"));
       const [statusData, readingsData, logicData] = await Promise.all([
@@ -146,6 +148,7 @@ function App() {
         if (typeof preference.language === "string") setDashboardLanguage(preference.language);
         if (preference.notificationTimeout && ["never", "1", "2", "5", "10", "30", "60", "300", "900", "1800"].includes(preference.notificationTimeout)) setNotificationTimeout(preference.notificationTimeout);
       }
+      if (weatherValuesResponse?.ok) setWeatherValues(await weatherValuesResponse.json() as DashboardWeatherValues);
       if (weatherResponse?.ok) {
         setWeatherCondition(await weatherResponse.json() as WeatherConditionResponse);
       } else {
@@ -354,15 +357,18 @@ function App() {
         <article className="card weather-card">
           <div className="weather-main">
             <div>
-              <div className="eyebrow">OUTSIDE · WEATHER</div>
-              <div className="weather-temp">{temperature(capability(weather, "measure_temperature"), locale)}</div>
-              <div className="weather-description">{weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown")}</div>
+              <div className="eyebrow">{t("weatherSettings.dashboardEyebrow")}</div>
+              {weatherValues?.values.outdoorTemperature?.available && <div className="weather-temp">{formatWeatherValue(weatherValues.values.outdoorTemperature.value, weatherValues.values.outdoorTemperature.units, locale)}</div>}
+              <div className="weather-description">{weatherCondition?.conditionText || (weatherCondition && weatherCondition.category !== "unknown" ? t(`weather.condition.${weatherCondition.category}`) : t("weather.condition.unknown"))}</div>
             </div>
-            <WeatherIcon category={weatherCondition?.category ?? "unknown"} />
+            <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={weatherCondition?.category && weatherCondition.category !== "unknown" ? t("weather.condition."+weatherCondition.category) : t("weather.condition.unknown")} pack={weatherValues?.settings.iconPack ?? "animated"} />
           </div>
           <div className="weather-details">
-            <div><span>{t("weather.feelsLike")}</span><strong>{temperature(capability(weather, "measure_temperature_feelslike"), locale)}</strong></div>
-            <div><span>{t("weather.wind")}</span><strong>{typeof wind === "string" || typeof wind === "number" ? String(wind) : "—"}</strong></div>
+            {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
+              const reading = weatherValues?.values[id];
+              if (!reading?.available) return null;
+              return <div key={id}><span>{t("weatherSettings.field."+id)}</span><strong>{formatWeatherValue(reading.value,reading.units,locale)}</strong></div>;
+            })}
           </div>
         </article>
         <section className="temperature-grid" aria-label="Temperature sensors">
@@ -560,13 +566,14 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     return () => { active = false; window.clearInterval(timer); };
   }, []);
   React.useEffect(() => {
-    if (!selected?.source) return;
-    if (selected.source.type === "logic") {
+    const source = selected?.source;
+    if (!source) return;
+    if (source.type === "logic") {
       setSourceType("logic");
     } else {
       setSourceType("device");
-      setDeviceId(selected.source.deviceId);
-      const sourceDevice = catalog.devices.find(device => device.id === selected.source?.deviceId);
+      setDeviceId(source.deviceId);
+      const sourceDevice = catalog.devices.find(device => device.id === source.deviceId);
       setZoneId(sourceDevice?.zone ?? "");
     }
   }, [selected?.id, selected?.source, catalog.devices]);
@@ -580,10 +587,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const devices = catalog.devices.filter(device => device.zone === zoneId);
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const sourceDescription = (tile: MeasurementTile) => {
-    if (!tile.source) return t("measurement.noSource");
-    if (tile.source.type === "logic") return catalog.variables.find(variable => variable.id === tile.source?.variableId)?.name ?? t("measurement.logicVariable");
-    const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
-    const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
+    const source = tile.source;
+    if (!source) return t("measurement.noSource");
+    if (source.type === "logic") return catalog.variables.find(variable => variable.id === source.variableId)?.name ?? t("measurement.logicVariable");
+    const device = catalog.devices.find(item => item.id === source.deviceId);
+    const capability = device?.capabilities.find(item => item.id === source.capabilityId);
     return [device?.name, capability?.title].filter(Boolean).join(" · ") || t("measurement.deviceSource");
   };
   const save = async () => {
@@ -777,6 +785,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       };
     }
     class SearchableSourceDropdown extends Blockly.FieldDropdown {
+      constructor(options: () => Array<[string, string]>, validator?: (value: string) => string | null) { super(options, validator); }
       showEditor_() {
         const dropdown = Blockly.DropDownDiv;
         const content = dropdown.getContentDiv();
@@ -1948,8 +1957,8 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
           <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">{t("settings.shortDate")} ({datePreview})</option><option value="iso">{t("settings.isoDate")} ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
-          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
-          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value as GeneralSettings["timeFormat"])}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value as GeneralSettings["firstDayOfWeek"])}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
       <section className="settings-card notification-timeout-card">
@@ -1983,36 +1992,147 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPlaceholder t={t} /> : null}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
 
 
-function WeatherSettingsPlaceholder({ t }: { t: (key: string) => string }) {
-  return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">☁</div><div><h1>{t("settings.weather")}</h1><p>{t("settings.weatherPlaceholderDescription")}</p></div></div>
-    <section className="settings-card system-card weather-placeholder-card">
-      <h2><span className="mdi mdi-weather-partly-cloudy" aria-hidden="true" />{t("settings.weatherPlaceholderTitle")}</h2>
-      <p>{t("settings.weatherPlaceholderBody")}</p>
-      <ul>
-        <li>{t("settings.weatherOutdoorTemperature")}</li>
-        <li>{t("settings.weatherFeelsLike")}</li>
-        <li>{t("settings.weatherCondition")}</li>
-        <li>{t("settings.weatherWind")}</li>
-        <li>{t("settings.weatherHumidity")}</li>
-        <li>{t("settings.weatherRain")}</li>
-        <li>{t("settings.weatherPressure")}</li>
-        <li>{t("settings.weatherSunriseSunset")}</li>
-      </ul>
-    </section>
+type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
+type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat" };
+type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
+const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
+const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated" };
+
+function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: () => void }) {
+  const [settings,setSettings] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
+  const [saved,setSaved] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
+  const [catalog,setCatalog] = React.useState<WeatherSourceCatalog>({devices:[],variables:[]});
+  const [busy,setBusy] = React.useState(true);
+  const [saving,setSaving] = React.useState(false);
+  const [message,setMessage] = React.useState("");
+  const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);
+  const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
+  const [search,setSearch] = React.useState("");
+  const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  React.useEffect(() => {
+    let active = true;
+    Promise.all([
+      fetch("/api/settings/weather").then(async r => { if(!r.ok) throw new Error(t("weatherSettings.loadError")); return await r.json() as WeatherSettingsModel; }),
+      fetch("/api/settings/weather-sources").then(async r => { if(!r.ok) throw new Error(t("weatherSettings.sourcesError")); return await r.json() as WeatherSourceCatalog; })
+    ]).then(([config,options]) => { if(active) { setSettings(config); setSaved(config); setCatalog(options); } })
+      .catch(error => { if(active) setMessage(error instanceof Error ? error.message : t("weatherSettings.loadError")); })
+      .finally(() => { if(active) setBusy(false); });
+    return () => { active = false; };
+  }, []);
+  const sourceLabel = (source: WeatherSource) => {
+    if(!source) return t("weatherSettings.selectSource");
+    if(source.type === "logic") {
+      const variable = catalog.variables.find(item => item.id === source.variableId);
+      return variable ? t("weatherSettings.logicPrefix") + " · " + variable.name : t("weatherSettings.unknownSource");
+    }
+    const device = catalog.devices.find(item => item.id === source.deviceId);
+    const capability = device?.capabilities.find(item => item.id === source.capabilityId);
+    return device && capability ? device.name + " · " + capability.title + (capability.units ? " ("+capability.units+")" : "") : t("weatherSettings.unknownSource");
+  };
+  const updateSource = (id: WeatherSettingId, source: WeatherSource) => setSettings(current => ({...current,sources:{...current.sources,[id]:source}}));
+  const save = async () => {
+    setSaving(true); setMessage("");
+    try {
+      const response = await fetch("/api/settings/weather",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
+      const result = await response.json() as WeatherSettingsModel & {error?:string};
+      if(!response.ok) throw new Error(result.error ?? t("weatherSettings.saveError"));
+      setSettings(result); setSaved(result); setMessage(t("weatherSettings.saved"));
+    } catch(error) { setMessage(error instanceof Error ? error.message : t("weatherSettings.saveError")); }
+    finally { setSaving(false); }
+  };
+  const query = search.trim().toLocaleLowerCase(locale);
+  const packs = [
+    {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription"),glyphs:["☀️","🌤️","☁️","🌧️","⛈️","❄️","🌫️","💨"]},
+    {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription"),glyphs:["🌞","🌥️","🌧️","⛈️","🌨️","🌙","🌈","🌪️"]},
+    {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription"),glyphs:["☼","☁","☂","ϟ","❄","☾","≋","↝"]},
+    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription"),glyphs:["🌤","☁","🌦","🌩","❄","🌙","🌫","🌬"]}
+  ];
+  return <div className="quick-settings-page weather-settings-page">
+    <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/></div><div><h1>{t("settings.weatherPlaceholderTitle")}</h1><p>{t("weatherSettings.intro")}</p></div></div>
+    <div className="weather-settings-layout">
+      <section className="settings-card weather-sources-card">
+        <h2><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/>{t("weatherSettings.sourcesHeading")}</h2>
+        <p className="quick-card-description">{t("weatherSettings.sourcesDescription")}</p>
+        <div className="weather-source-list">
+          {weatherSettingIds.map(id => {
+            const enabled = Boolean(settings.sources[id]) || pendingEnabledId === id;
+            const isOpen = searchId === id;
+            const expectedTypes = id === "sunrise" || id === "sunset" || id === "windDirection" ? ["number","string"] : ["number"];
+            const matchingDevices = catalog.devices.flatMap(device => device.capabilities.map(capability => ({device,capability})))
+              .filter(({device,capability}) => expectedTypes.includes(capability.type) && (!query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query)));
+            const matchingVariables = catalog.variables.filter(variable => expectedTypes.includes(variable.type) && (!query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query)));
+            return <div className={"weather-source-row"+(!enabled?" is-disabled":"")} key={id}>
+              <div className="weather-source-label"><i className={"mdi "+({outdoorTemperature:"mdi-thermometer",feelsLike:"mdi-thermometer-lines",humidity:"mdi-water-percent",pressure:"mdi-gauge",windSpeed:"mdi-weather-windy",windDirection:"mdi-compass-outline",precipitation:"mdi-weather-rainy",sunrise:"mdi-weather-sunset-up",sunset:"mdi-weather-sunset-down"} as Record<WeatherSettingId,string>)[id]} aria-hidden="true"/><span>{t("weatherSettings.field."+id)}</span></div>
+              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
+                <span/>
+              </button>
+              <div className="weather-source-picker">
+                <button type="button" className="quick-flow-trigger weather-source-trigger" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
+                  onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
+                  <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
+                  <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
+                </button>
+                {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
+                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
+                  <div className="quick-flow-results">
+                    <div className="weather-source-group-label">{t("weatherSettings.devices")}</div>
+                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
+                    {matchingDevices.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noDeviceSources")}</div>}
+                    <div className="weather-source-group-label">{t("weatherSettings.logicVariables")}</div>
+                    {matchingVariables.map(variable=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="logic"&&settings.sources[id]?.variableId===variable.id} className="quick-flow-option" key={variable.id} onClick={()=>{updateSource(id,{type:"logic",variableId:variable.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-variable" aria-hidden="true"/><span className="quick-flow-option-name">{variable.name}</span><small>{variable.type}</small></button>)}
+                    {matchingVariables.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noLogicSources")}</div>}
+                  </div>
+                </div>}
+              </div>
+              {!enabled&&<span className="weather-source-disabled-label">{t("weatherSettings.disabled")}</span>}
+            </div>;
+          })}
+        </div>
+        <div className="quick-info">ⓘ <span>{t("weatherSettings.sourceTip")}</span></div>
+      </section>
+      <div className="weather-settings-side">
+        <section className="settings-card weather-packs-card">
+          <h2><i className="mdi mdi-image-multiple-outline" aria-hidden="true"/>{t("weatherSettings.iconHeading")}</h2>
+          <p className="quick-card-description">{t("weatherSettings.iconDescription")}</p>
+          <div className="weather-pack-grid">
+            {packs.map(pack=><button type="button" key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")} aria-pressed={settings.iconPack===pack.id} onClick={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}>
+              <span className="weather-pack-radio" aria-hidden="true"/><span className={"weather-pack-glyphs pack-"+pack.id}>{pack.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</span><strong>{pack.title}</strong><small>{pack.description}</small>
+            </button>)}
+          </div>
+          <div className={"weather-pack-preview pack-"+settings.iconPack}><span>{t("weatherSettings.preview")}</span>{packs.find(pack=>pack.id===settings.iconPack)?.glyphs.map((glyph,index)=><span key={index}>{glyph}</span>)}</div>
+        </section>
+        <section className="settings-card weather-api-card">
+          <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
+          <p>{t("weatherSettings.apiDescription")}</p>
+          <p className="weather-api-tip"><strong>{t("weatherSettings.apiTipTitle")}</strong> {t("weatherSettings.apiTip")}</p>
+          <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link" onClick={onNavigate}>{t("settings.general")}</button>.</p>
+          <a className="secondary-button weather-doc-link" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
+        </section>
+      </div>
+    </div>
+    <div className="settings-bottom"><span className={"save-message"+(message.includes("Error")?" error":"")} role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty||saving||busy} onClick={()=>void save()}>{saving?t("settings.saving"):t("settings.save")}</button></div>
   </div>;
 }
 
-function WeatherIcon({ category }: { category: WeatherCategory }) {
+function formatWeatherValue(value: string | number | boolean | null, units: string, locale: string): string {
+  if (value === null || value === undefined) return "—";
+  const formatted = typeof value === "number" ? new Intl.NumberFormat(locale,{maximumFractionDigits:1}).format(value) : String(value);
+  return formatted + (units ? " " + units : "");
+}
+
+function WeatherIcon({ category, label, pack = "animated" }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"] }) {
+  const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
+  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
   return (
-    <div className={`weather-symbol weather-${category}`} role="img" aria-label={category.replaceAll("_", " ")}>
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}`} role="img" aria-label={label}>
       {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />

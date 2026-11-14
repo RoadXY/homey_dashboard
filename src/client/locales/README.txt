@@ -118,3 +118,16 @@ IMPORTANT
   filenames; never store secrets or private data in translation files.
 - Default locale files are copied only when a file does not yet exist. Your
   custom translations are therefore preserved on every restart.
+
+
+WEATHER SETTINGS
+----------------
+
+The Weather settings page uses the same translation dictionaries. Its labels,
+source-picker text, icon-pack names/descriptions, API explanation, helper tips,
+and status messages must be added to BOTH nl.json and en.json. Do not add
+visible translated strings directly to the React component.
+
+Weather settings are stored separately from locale files in the persistent
+application data volume. The selectable Homey source names and capability
+titles are runtime data supplied by Homey and are not translation keys.

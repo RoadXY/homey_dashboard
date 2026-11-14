@@ -149,9 +149,48 @@ paths:
                 type: object
                 properties:
                   unlocked: {type: boolean}
-                  sessionToken: {type: string}
         '401': {description: Invalid PIN}
         '503': {description: SETTINGS_PIN is not configured}
+  /api/settings/session:
+    get:
+      tags: [Settings (internal)]
+      operationId: getSettingsSession
+      summary: Check whether the browser has a valid settings session
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Settings session is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated: {type: boolean, const: true}
+                  idleTimeoutSeconds: {type: integer, const: 1800}
+        '401': {description: Settings session missing or expired}
+  /api/settings/session/refresh:
+    post:
+      tags: [Settings (internal)]
+      operationId: refreshSettingsSession
+      summary: Extend the sliding settings session after user activity
+      security:
+        - SettingsCookie: []
+      parameters:
+        - name: x-settings-activity
+          in: header
+          required: true
+          schema: {type: string, const: "1"}
+      responses:
+        '200': {description: Settings session extended}
+        '401': {description: Settings session missing or expired}
+  /api/settings/logout:
+    post:
+      tags: [Settings (internal)]
+      operationId: logoutSettings
+      summary: Clear the settings session cookie
+      responses:
+        '200': {description: Settings session cookie cleared}
   /api/settings/language:
     get:
       tags: [Settings (internal)]
@@ -166,13 +205,69 @@ paths:
                 type: object
                 properties:
                   language: {type: string}
+  /api/settings/weather:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSettings
+      summary: Get weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Weather display configuration
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WeatherSettings'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveWeatherSettings
+      summary: Save weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WeatherSettings'}
+      responses:
+        '200': {description: Weather settings saved}
+        '400': {description: Invalid weather settings}
+        '401': {description: Settings session missing or expired}
+  /api/settings/weather-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSourceCatalog
+      summary: List selectable Homey device capabilities and Logic variables for weather fields
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Searchable source catalog including numeric and text sources
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '401': {description: Settings session missing or expired}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/weather-values:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardWeatherValues
+      summary: Get values for configured weather fields and selected icon pack
+      responses:
+        '200':
+          description: Current values for enabled weather fields
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey values could not be retrieved}
   /api/settings/weather-tokens:
     get:
       tags: [Settings (internal)]
       operationId: listWeatherApiTokens
       summary: List managed weather API tokens without revealing their secrets
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: Token metadata
@@ -189,8 +284,8 @@ paths:
       tags: [Settings (internal)]
       operationId: createWeatherApiToken
       summary: Create a named weather API Bearer token; the secret is returned once
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -218,8 +313,9 @@ paths:
       tags: [Settings (internal)]
       operationId: revokeWeatherApiToken
       summary: Revoke a managed weather API token
+      security:
+        - SettingsCookie: []
       parameters:
-        - $ref: '#/components/parameters/SettingsSession'
         - name: id
           in: path
           required: true
@@ -233,8 +329,8 @@ paths:
       tags: [Settings (internal)]
       operationId: getGeneralSettings
       summary: Get general settings
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: General settings
@@ -246,8 +342,8 @@ paths:
       tags: [Settings (internal)]
       operationId: saveGeneralSettings
       summary: Save general settings
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -363,14 +459,25 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/dashboard/quick-action-status:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardQuickActionStatuses
+      summary: Get current Homey boolean states for configured device Quick Actions
+      responses:
+        '200':
+          description: Current status keyed by Quick Action ID; unknown and unavailable states are null
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey status could not be retrieved}
   /api/settings/dashboard-actions:
     get:
       tags: [Settings (internal)]
       operationId: getQuickActionSettings
       summary: Get Quick Action configuration
-      security: []
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200': {description: Saved configuration}
         '401': {description: Settings session required}
@@ -378,8 +485,8 @@ paths:
       tags: [Settings (internal)]
       operationId: saveQuickActionSettings
       summary: Save all eight Quick Actions
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       requestBody:
         required: true
         content:
@@ -394,8 +501,8 @@ paths:
       tags: [Settings (internal)]
       operationId: getQuickActionCatalog
       summary: Get selectable Homey Flows, devices and writable capabilities
-      parameters:
-        - $ref: '#/components/parameters/SettingsSession'
+      security:
+        - SettingsCookie: []
       responses:
         '200':
           description: Homey selection catalog. Individual manager failures are returned as warnings; successfully loaded sources remain available.
@@ -429,6 +536,88 @@ paths:
         '404': {description: Quick Action not found}
         '409': {description: Quick Action is not configured}
         '502': {description: Homey rejected the action}
+  /api/settings/measurement-tiles:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementTileSettings
+      summary: Get the four configured dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Four saved measurement tile definitions
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles]
+                properties:
+                  tiles:
+                    type: array
+                    minItems: 4
+                    maxItems: 4
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+        '401': {description: Settings session required}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveMeasurementTileSettings
+      summary: Save the four dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tiles]
+              properties:
+                tiles:
+                  type: array
+                  minItems: 4
+                  maxItems: 4
+                  items: {$ref: '#/components/schemas/MeasurementTile'}
+      responses:
+        '200': {description: Measurement tile configuration saved}
+        '400': {description: Invalid tile configuration}
+        '401': {description: Settings session required}
+  /api/settings/measurement-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementSourceCatalog
+      summary: List numeric Homey device capabilities and numeric Logic variables
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Selectable measurement sources grouped by Homey zones and devices
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MeasurementSourceCatalog'}
+        '401': {description: Settings session required}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/measurement-tiles:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardMeasurementTiles
+      summary: Get saved measurement tile labels and current values
+      responses:
+        '200':
+          description: Four configured measurement tiles with their current values
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles, retrievedAt, values]
+                properties:
+                  tiles:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+                  retrievedAt: {type: string, format: date-time}
+                  values:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTileValue'}
+        '503': {description: Homey values could not be retrieved}
   /api/v1/weather/conditions:
     get:
       tags: [Integrations]
@@ -496,22 +685,136 @@ paths:
         '500': {description: Condition could not be persisted}
 components:
   securitySchemes:
+    SettingsCookie:
+      type: apiKey
+      in: cookie
+      name: homey_settings
+      description: HttpOnly SameSite=Strict cookie with a sliding 30-minute inactivity expiry.
     WeatherBearer:
       type: http
       scheme: bearer
       bearerFormat: opaque token
       description: Create and revoke named tokens in PIN-protected Settings. Only token hashes are stored; the secret is shown once. WEATHER_API_TOKEN remains a temporary migration fallback.
-  parameters:
-    SettingsSession:
-      name: x-settings-session
-      in: header
-      required: true
-      schema: {type: string}
-      description: Short-lived session token returned by POST /api/settings/unlock.
   schemas:
+    MeasurementTile:
+      type: object
+      additionalProperties: false
+      required: [id, name, source]
+      properties:
+        id:
+          type: string
+          enum: [measurement-1, measurement-2, measurement-3, measurement-4]
+        name: {type: string, minLength: 1, maxLength: 32}
+        source:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/MeasurementDeviceSource'
+            - $ref: '#/components/schemas/MeasurementLogicSource'
+    MeasurementDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    MeasurementLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
+    MeasurementSourceCatalog:
+      type: object
+      required: [retrievedAt, zones, devices, variables]
+      properties:
+        retrievedAt: {type: string, format: date-time}
+        zones:
+          type: array
+          items:
+            type: object
+            required: [id, name, parent]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              parent: {type: [string, 'null']}
+        devices:
+          type: array
+          items:
+            type: object
+            required: [id, name, zone, available, capabilities]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              zone: {type: [string, 'null']}
+              available: {type: boolean}
+              capabilities:
+                type: array
+                items:
+                  type: object
+                  required: [id, title, units, decimals]
+                  properties:
+                    id: {type: string}
+                    title: {type: string}
+                    units: {type: string}
+                    decimals: {type: [integer, 'null']}
+        variables:
+          type: array
+          items:
+            type: object
+            required: [id, name, type]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              type: {type: string, const: number}
+    MeasurementTileValue:
+      type: object
+      required: [id, value, units, decimals, available]
+      properties:
+        id: {type: string}
+        value: {type: [number, 'null']}
+        units: {type: string}
+        decimals: {type: [integer, 'null']}
+        available: {type: boolean}
     WeatherCondition:
       type: string
       enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
+    WeatherSettings:
+      type: object
+      required: [sources, iconPack]
+      properties:
+        sources:
+          type: object
+          required: [outdoorTemperature, feelsLike, humidity, pressure, windSpeed, windDirection, precipitation, sunrise, sunset]
+          properties:
+            outdoorTemperature: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            feelsLike: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            humidity: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            pressure: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windSpeed: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windDirection: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            precipitation: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunrise: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunset: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+        iconPack:
+          type: string
+          enum: [animated, color3d, outline, flat]
+    WeatherDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    WeatherLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
     WeatherTokenInfo:
       type: object
       required: [id, name, createdAt, lastFour]
