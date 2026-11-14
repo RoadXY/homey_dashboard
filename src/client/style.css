@@ -204,7 +204,7 @@ body {
 .panel-footer { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid rgba(255,255,255,.07); padding: 12px 2px 0; color: #87909e; font-size: 12px; }
 .panel-meta { text-align: right; }
 @media (max-width: 900px) {
-  .dashboard { height: auto; min-height: 100vh; overflow: visible; grid-template-columns: minmax(0,1fr); }
+  .dashboard { height: auto; min-height: 100vh; overflow: visible; grid-template-columns: minmax(0,1fr); align-content: start; row-gap: clamp(10px,1vw,16px); }
   .left-column { display: grid; grid-template-columns: 1.15fr .85fr; }
   .clock-card { min-height: 230px; }
   /* Tablet portrait: compact first row; make measurement and quick-action rows equal. */

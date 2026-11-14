@@ -19,3 +19,9 @@
 - In the tablet portrait layout (621–900px), the clock and weather cards are reduced from two tile-row heights to approximately one and a half tile-row heights, while remaining equal to each other.
 - The measurement row (four temperature tiles) is set to the same responsive height as each quick-action row. Both quick-action rows use that same explicit height, so rows 2, 3 and 4 match the height of the first quick-action row (row 3 in the full dashboard).
 - These dimensions are scoped to tablet portrait. Desktop and narrow phone layouts are not changed.
+
+
+## Tablet portrait: consistent gap between measurement and quick-action rows (14 November 2026)
+
+- The tablet dashboard grid now aligns its implicit rows to the start rather than stretching them to fill the viewport's minimum height. This prevents leftover viewport height from becoming a large blank band between the measurement tiles (row 2) and quick actions (row 3).
+- The vertical gap between the stacked dashboard sections is explicitly set to the same compact responsive spacing used by the tile grids (10–16px). This is scoped to the tablet breakpoint (621–900px); desktop and narrow phone layouts remain unchanged.
