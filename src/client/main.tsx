@@ -103,7 +103,7 @@ function App() {
           scheduleNotificationRefreshRef.current(nextData);
         })
         .catch(() => {
-          setNotifications([{ id: "notifications-load-error", title: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorTitle"), message: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+          setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
         });
     }, delay);
   }, []);
@@ -121,7 +121,7 @@ function App() {
       .catch(() => {
         if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
         notificationRefreshTimer.current = null;
-        setNotifications([{ id: "notifications-load-error", title: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorTitle"), message: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
       });
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
@@ -1920,7 +1920,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     else onBack();
   };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale.toLowerCase().startsWith("nl") ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
-  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === translate(locale, "blockly.andLower") ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
+  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale.toLowerCase().startsWith("en") ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
   return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
