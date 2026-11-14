@@ -103,7 +103,7 @@ function App() {
           scheduleNotificationRefreshRef.current(nextData);
         })
         .catch(() => {
-          setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+          setNotifications([{ id: "notifications-load-error", title: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorTitle"), message: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
         });
     }, delay);
   }, []);
@@ -121,7 +121,7 @@ function App() {
       .catch(() => {
         if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
         notificationRefreshTimer.current = null;
-        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+        setNotifications([{ id: "notifications-load-error", title: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorTitle"), message: translate(translate(locale, "blockly.andLower"), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
       });
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
@@ -131,7 +131,7 @@ function App() {
         fetch("/api/homey/status"), fetch("/api/homey/readings"), fetch("/api/homey/logic"),
         fetch("/api/weather").catch(() => null), fetch("/api/settings/language").catch(() => null), fetch("/api/system/status").catch(() => null),
       ]);
-      if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error("Homey-gegevens tijdelijk niet beschikbaar");
+      if (!statusResponse.ok || !readingsResponse.ok || !logicResponse.ok) throw new Error(t("dashboard.homeyDataUnavailable"));
       const [statusData, readingsData, logicData] = await Promise.all([
         statusResponse.json() as Promise<HomeyStatus>, readingsResponse.json() as Promise<DeviceReadings>,
         logicResponse.json() as Promise<LogicResponse>,
@@ -249,7 +249,7 @@ function App() {
         // A popstate cannot be cancelled. Restore the current history entry,
         // ask the user, then replay the Back action only after confirmation.
         window.history.pushState({}, "", currentPath);
-        const shouldLeave = window.confirm("Je hebt niet-opgeslagen wijzigingen in je meldingen. Als je teruggaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+        const shouldLeave = window.confirm(t("notifications.discardChanges"));
         if (!shouldLeave) return;
         notificationDirtyRef.current = false;
         allowNextPopstateRef.current = true;
@@ -542,17 +542,17 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/measurement-tiles").then(async r => { if (!r.ok) throw new Error("Meetwaardetegels konden niet worden geladen."); return r.json() as Promise<{ tiles: MeasurementTile[] }>; }),
-      fetch("/api/settings/measurement-sources").then(async r => { if (!r.ok) throw new Error("Meetwaardebronnen konden niet worden geladen."); return r.json() as Promise<MeasurementSourceCatalog>; }),
+      fetch("/api/settings/measurement-tiles").then(async r => { if (!r.ok) throw new Error(t("measurement.loadTilesError")); return r.json() as Promise<{ tiles: MeasurementTile[] }>; }),
+      fetch("/api/settings/measurement-sources").then(async r => { if (!r.ok) throw new Error(t("measurement.loadSourcesError")); return r.json() as Promise<MeasurementSourceCatalog>; }),
     ]).then(([config, sources]) => { if (!active) return; setTiles(config.tiles); setSaved(config.tiles); setCatalog(sources); })
-      .catch(error => { if (active) { setMessage(error instanceof Error ? error.message : "Laden mislukt."); setIsError(true); } })
+      .catch(error => { if (active) { setMessage(error instanceof Error ? error.message : t("measurement.loadError")); setIsError(true); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, []);
   React.useEffect(() => {
     let active = true;
     const poll = () => fetch("/api/dashboard/measurement-tiles")
-      .then(async response => { if (!response.ok) throw new Error("Meetwaarden tijdelijk niet beschikbaar."); return response.json() as Promise<MeasurementTileResponse>; })
+      .then(async response => { if (!response.ok) throw new Error(t("measurement.unavailable")); return response.json() as Promise<MeasurementTileResponse>; })
       .then(data => { if (active) setPreviewData(data); })
       .catch(() => undefined);
     void poll();
@@ -580,38 +580,38 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const devices = catalog.devices.filter(device => device.zone === zoneId);
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const sourceDescription = (tile: MeasurementTile) => {
-    if (!tile.source) return "Geen bron geselecteerd";
-    if (tile.source.type === "logic") return catalog.variables.find(variable => variable.id === tile.source?.variableId)?.name ?? "Logic-variabele";
+    if (!tile.source) return t("measurement.noSource");
+    if (tile.source.type === "logic") return catalog.variables.find(variable => variable.id === tile.source?.variableId)?.name ?? t("measurement.logicVariable");
     const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
     const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
-    return [device?.name, capability?.title].filter(Boolean).join(" · ") || "Apparaatbron";
+    return [device?.name, capability?.title].filter(Boolean).join(" · ") || t("measurement.deviceSource");
   };
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
     try {
       const response = await fetch("/api/settings/measurement-tiles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tiles }) });
       const result = await response.json() as { tiles?: MeasurementTile[]; error?: string };
-      if (!response.ok || !result.tiles) throw new Error(result.error ?? "Opslaan mislukt.");
-      setTiles(result.tiles); setSaved(result.tiles); setMessage("Meetwaardetegels opgeslagen.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Opslaan mislukt."); setIsError(true); }
+      if (!response.ok || !result.tiles) throw new Error(result.error ?? t("settings.saveError"));
+      setTiles(result.tiles); setSaved(result.tiles); setMessage(t("measurement.saved"));
+    } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); setIsError(true); }
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.temperatureTiles")}</h1><p>Configureer de vier meetwaardetegels op het dashboard.</p></div></div>
+    <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.temperatureTiles")}</h1><p>{t("measurement.configureIntro")}</p></div></div>
     <div className="quick-workspace measurement-workspace">
       <section className="settings-card quick-list-card measurement-list-card">
-        <h2><span>♙</span>Meetwaardetegels</h2>
-        <p className="quick-card-description">Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.</p>
+        <h2><span>♙</span>{t("measurement.heading")}</h2>
+        <p className="quick-card-description">{t("measurement.configureDescription")}</p>
         <div className="quick-action-list measurement-tile-list">
           {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
-        <div className="quick-info">ⓘ <span>Selecteer een tegel om de naam en Homey-meetbron aan te passen.</span></div>
+        <div className="quick-info">ⓘ <span>{t("measurement.selectHint")}</span></div>
       </section>
       <section className="settings-card quick-preview-card">
         <h2><span>◎</span>{t("settings.preview")}</h2>
-        <p className="quick-card-description">Zo worden de meetwaardetegels op het dashboard weergegeven.</p>
+        <p className="quick-card-description">{t("measurement.previewDescription")}</p>
         <div className="quick-preview-grid measurement-preview-grid">
           {tiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
@@ -626,19 +626,19 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     </div>
     {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
         <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
-        <h2>Meetwaardetegel {tiles.findIndex(tile => tile.id === selected.id) + 1} bewerken</h2>
+        <h2>{t("measurement.editTitle").replace("{number}", String(tiles.findIndex(tile => tile.id === selected.id) + 1))}</h2>
         <div className="measurement-inline-editor">
-          <label>Naam<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
-          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>Apparaat</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>Homey Logic</button></div>
+          <label>{t("measurement.name")}<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
+          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>{t("measurement.device")}</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>{t("measurement.homeyLogic")}</button></div>
           {sourceType === "device" ? <>
-            <label>Ruimte<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">Selecteer een ruimte</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
-            <label>Apparaat<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">Selecteer een apparaat</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
-            <label>Meetwaarde<select disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">Selecteer een numerieke meetwaarde</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
-          </> : <label>Numerieke Logic-variabele<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">Selecteer een Logic-variabele</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
-          <p className="measurement-source-note">Eenheid en precisie komen automatisch uit Homey-metadata wanneer beschikbaar. Logic-variabelen tonen geen eenheid.</p>
+            <label>{t("measurement.room")}<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">{t("measurement.selectRoom")}</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
+            <label>{t("measurement.device")}<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">{t("measurement.selectDevice")}</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+            <label>{t("measurement.value")}<select disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">{t("measurement.selectNumericValue")}</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
+          </> : <label>{t("measurement.numericLogicVariable")}<select value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">{t("measurement.selectLogicVariable")}</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+          <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? "Laden…" : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? "Opslaan…" : "▣  Opslaan"}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : "▣  " + t("measurement.save")}</button></div>
   </div>;
 }
 
@@ -705,7 +705,7 @@ function replaceScheduleNode(node: any, schedule: ScheduleEditorValue): any {
   if (node.condition) return { ...node, condition: replaceScheduleNode(node.condition, schedule) };
   return node;
 }
-function findMissingNotificationSources(condition: any, catalog: NotificationSourceCatalog | null): string[] {
+function findMissingNotificationSources(condition: any, catalog: NotificationSourceCatalog | null, locale: string): string[] {
   if (!catalog || !condition) return [];
   const missing = new Set<string>();
   const visit = (node: any) => {
@@ -714,16 +714,16 @@ function findMissingNotificationSources(condition: any, catalog: NotificationSou
       const source = node.source;
       if (source?.type === "device-capability") {
         const device = catalog.devices.find(item => item.id === source.deviceId);
-        if (!device) missing.add("Homey-apparaat niet gevonden (ID: " + source.deviceId + ").");
+        if (!device) missing.add(translate(locale, "measurement.deviceNotFound").replace("{id}", source.deviceId));
         else {
           const capability = device.capabilities.find(item => item.id === source.capabilityId);
-          if (!capability) missing.add("Meetmogelijkheid '" + source.capabilityId + "' ontbreekt op apparaat '" + device.name + "'.");
-          else if (!device.available) missing.add("Apparaat '" + device.name + "' is momenteel niet beschikbaar.");
+          if (!capability) missing.add(translate(locale, "measurement.capabilityMissing").replace("{capability}", source.capabilityId).replace("{device}", device.name));
+          else if (!device.available) missing.add(translate(locale, "measurement.deviceUnavailable").replace("{device}", device.name));
         }
       } else if (source?.type === "logic-variable") {
-        if (!catalog.variables.some(item => item.id === source.variableId)) missing.add("Logic-variabele niet gevonden (ID: " + source.variableId + ").");
+        if (!catalog.variables.some(item => item.id === source.variableId)) missing.add(translate(locale, "measurement.logicVariableNotFound").replace("{id}", source.variableId));
       } else {
-        missing.add("Een voorwaarde verwijst naar een onvolledig of onbekend Homey-bronrecord.");
+        missing.add(translate(locale, "measurement.incompleteSource"));
       }
     }
     if (Array.isArray(node.conditions)) node.conditions.forEach(visit);
@@ -761,14 +761,14 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
   React.useEffect(() => {
     const Blockly: any = BlocklyLibrary;
     // Blockly core imports do not automatically populate its message table. Context-menu labels require these translations.
-    Blockly.setLocale(locale.toLowerCase().startsWith("en") ? BlocklyEn : BlocklyNl);
+    Blockly.setLocale(locale.toLowerCase().startsWith(translate(locale, "blockly.andLower")) ? BlocklyEn : BlocklyNl);
     if (!host.current) { setBlocklyUnavailable(true); return; }
     const days: Array<[number, string]> = [[1,"MON"],[2,"TUE"],[3,"WED"],[4,"THU"],[5,"FRI"],[6,"SAT"],[0,"SUN"]];
     if (!Blockly.Blocks.schedule_active) {
       Blockly.Blocks.schedule_active = {
         init() {
           this.appendDummyInput().appendField(translate(locale, "notifications.blockTitle"));
-          const labels = locale.toLowerCase().startsWith("en") ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
+          const labels = locale.toLowerCase().startsWith(translate(locale, "blockly.andLower")) ? [["Mon","MON"],["Tue","TUE"],["Wed","WED"],["Thu","THU"],["Fri","FRI"],["Sat","SAT"],["Sun","SUN"]] : [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
           const row = this.appendDummyInput().appendField(translate(locale, "notifications.days"));
           labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
           this.appendDummyInput().appendField(translate(locale, "notifications.from")).appendField(new Blockly.FieldTextInput("07:00"), "START").appendField(translate(locale, "notifications.until")).appendField(new Blockly.FieldTextInput("22:00"), "END");
@@ -792,7 +792,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         search.type = 'search';
         search.autocomplete = 'off';
         search.placeholder = 'Zoek apparaat, meetmogelijkheid of Logic-variabele…';
-        search.setAttribute('aria-label', 'Zoek Homey-bron');
+        search.setAttribute('aria-label', translate(locale, "blockly.searchSourceLabel"));
         searchWrap.append(icon, search);
         const results = document.createElement('div');
         results.className = 'notification-source-dropdown-results';
@@ -843,7 +843,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           if (!options.length) {
             const empty = document.createElement('div');
             empty.className = 'notification-source-dropdown-empty';
-            empty.textContent = 'Geen Homey-bronnen gevonden.';
+            empty.textContent = translate(locale, "blockly.noHomeySources");
             results.appendChild(empty);
           }
           footer.textContent = options.length + (options.length === 1 ? ' resultaat' : ' resultaten');
@@ -878,29 +878,29 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_notification_source) {
       Blockly.Blocks.homey_notification_source = {
         init() {
-          this.appendDummyInput().appendField("Homey-bron").appendField(new SearchableSourceDropdown(() => {
+          this.appendDummyInput().appendField(translate(locale, "blockly.homeySource")).appendField(new SearchableSourceDropdown(() => {
             const catalog = catalogRef.current;
-            const options: Array<[string, string]> = [["— selecteer bron —", ""]];
+            const options: Array<[string, string]> = [[translate(locale, "blockly.selectSourceOption"), ""]];
             (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : ""), "device:" + device.id + ":" + capability.id])));
             (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
             return options;
           }, (value: string) => { if (value) sourceChangeRef.current(value); return value; }), "SOURCE");
           this.setOutput(true, "HomeySource"); this.setColour(285);
-          this.setTooltip("Selecteer een Homey-apparaat/capability of Logic-variabele.");
+          this.setTooltip(translate(locale, "blockly.selectSourceTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_comparison) {
       Blockly.Blocks.homey_notification_comparison = {
         init() {
-          this.appendValueInput("SOURCE").setCheck("HomeySource").appendField("Vergelijking");
+          this.appendValueInput("SOURCE").setCheck("HomeySource").appendField(translate(locale, "blockly.comparison"));
           this.appendDummyInput().appendField(new Blockly.FieldDropdown(() => {
             const numeric = comparisonRef.current?.source?.expectedType === "number";
             return numeric
               ? [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]
               : [["is gelijk aan","equals"],["is niet gelijk aan","notEquals"]];
           }, (value: string) => { const current = comparisonRef.current; const nextValue = ["lessThan","lessThanOrEqual","greaterThan","greaterThanOrEqual"].includes(value) ? (typeof current?.condition?.value === "number" ? current.condition.value : 0) : (typeof current?.condition?.value === "string" ? current.condition.value : typeof current?.condition?.value === "boolean" ? current.condition.value : false); comparisonChangeRef.current(value, nextValue); return value; }), "OP");
-          this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
+          this.appendDummyInput().appendField(translate(locale, "blockly.value")).appendField(new Blockly.FieldTextInput(String(comparisonRef.current?.condition?.value ?? false)), "VALUE");
           this.setOutput(true, "Boolean"); this.setColour(165);
         }
       };
@@ -908,29 +908,29 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     if (!Blockly.Blocks.homey_notification_duration_active) {
       Blockly.Blocks.homey_notification_duration_active = {
         init() {
-          this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField("minuten actief");
-          this.appendStatementInput("CONDITION").appendField("voorwaarde");
+          this.appendDummyInput().appendField(translate(locale, "blockly.for")).appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField(translate(locale, "blockly.activeMinutes"));
+          this.appendStatementInput("CONDITION").appendField(translate(locale, "blockly.condition"));
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30);
-          this.setTooltip("De ingesloten voorwaarde moet onafgebroken waar blijven gedurende het ingestelde aantal minuten.");
+          this.setTooltip(translate(locale, "blockly.activeDurationTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_duration_inactive) {
       Blockly.Blocks.homey_notification_duration_inactive = {
         init() {
-          this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField("minuten inactief");
-          this.appendStatementInput("CONDITION").appendField("voorwaarde");
+          this.appendDummyInput().appendField(translate(locale, "blockly.for")).appendField(new Blockly.FieldNumber(5, 1, 1440, 1), "MINUTES").appendField(translate(locale, "blockly.inactiveMinutes"));
+          this.appendStatementInput("CONDITION").appendField(translate(locale, "blockly.condition"));
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30);
-          this.setTooltip("De ingesloten voorwaarde moet onafgebroken onwaar blijven gedurende het ingestelde aantal minuten.");
+          this.setTooltip(translate(locale, "blockly.inactiveDurationTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_condition_statement) {
       Blockly.Blocks.homey_notification_condition_statement = {
         init() {
-          this.appendDummyInput().appendField("Als").appendField(new SearchableSourceDropdown(() => {
+          this.appendDummyInput().appendField(translate(locale, "blockly.if")).appendField(new SearchableSourceDropdown(() => {
             const catalog = catalogRef.current;
-            const options: Array<[string, string]> = [["— selecteer Homey-bron —", ""]];
+            const options: Array<[string, string]> = [[translate(locale, "blockly.selectHomeySourceOption"), ""]];
             (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title, "device:" + device.id + ":" + capability.id])));
             (catalog?.variables ?? []).forEach(variable => options.push(["Logic · " + variable.name, "logic:" + variable.id]));
             return options;
@@ -952,36 +952,36 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             return value;
           }), "VALUE");
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
-          this.setTooltip("Vergelijk een geselecteerde Homey-bron. Dit blok kan in een duurblok worden geplaatst.");
+          this.setTooltip(translate(locale, "blockly.compareSourceTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_logic_and) {
       Blockly.Blocks.homey_notification_logic_and = {
         init() {
-          this.appendValueInput("A").setCheck("Boolean").appendField("EN");
-          this.appendValueInput("B").setCheck("Boolean").appendField("en");
+          this.appendValueInput("A").setCheck("Boolean").appendField(translate(locale, "blockly.andUpper"));
+          this.appendValueInput("B").setCheck("Boolean").appendField(translate(locale, "blockly.andLower"));
           this.setInputsInline(true); this.setOutput(true, "Boolean"); this.setColour(120);
-          this.setTooltip("Alle aangesloten voorwaarden moeten waar zijn.");
+          this.setTooltip(translate(locale, "blockly.andTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_logic_or) {
       Blockly.Blocks.homey_notification_logic_or = {
         init() {
-          this.appendValueInput("A").setCheck("Boolean").appendField("OF");
-          this.appendValueInput("B").setCheck("Boolean").appendField("of");
+          this.appendValueInput("A").setCheck("Boolean").appendField(translate(locale, "blockly.orUpper"));
+          this.appendValueInput("B").setCheck("Boolean").appendField(translate(locale, "blockly.orLower"));
           this.setInputsInline(true); this.setOutput(true, "Boolean"); this.setColour(120);
-          this.setTooltip("Minimaal één aangesloten voorwaarde moet waar zijn.");
+          this.setTooltip(translate(locale, "blockly.orTooltip"));
         }
       };
     }
     if (!Blockly.Blocks.homey_notification_logic_not) {
       Blockly.Blocks.homey_notification_logic_not = {
         init() {
-          this.appendValueInput("CONDITION").setCheck("Boolean").appendField("NIET");
+          this.appendValueInput("CONDITION").setCheck("Boolean").appendField(translate(locale, "blockly.notUpper"));
           this.setOutput(true, "Boolean"); this.setColour(120);
-          this.setTooltip("Keert de uitkomst van één aangesloten voorwaarde om.");
+          this.setTooltip(translate(locale, "blockly.notTooltip"));
         }
       };
     }
@@ -990,11 +990,11 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (kind === "device") {
         const options: Array<[string,string]> = [];
         (catalog?.devices ?? []).forEach(device => device.capabilities.forEach(capability => options.push([device.name + " · " + capability.title + (capability.units ? " (" + capability.units + ")" : ""), "device:" + device.id + ":" + capability.id])));
-        return options.length ? options : [["Geen apparaatbronnen beschikbaar", ""]];
+        return options.length ? options : [[translate(locale, "blockly.noDeviceSources"), ""]];
       }
       const options: Array<[string,string]> = [];
       (catalog?.variables ?? []).forEach(variable => options.push([variable.name, "logic:" + variable.id]));
-      return options.length ? options : [["Geen Logic-variabelen beschikbaar", ""]];
+      return options.length ? options : [[translate(locale, "blockly.noLogicVariables"), ""]];
     };
     const comparisonOptions = (block: any): Array<[string, string]> => {
       const source = resolveNotificationSourceFromKey(block.getFieldValue("SOURCE"), catalogRef.current);
@@ -1023,7 +1023,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         const block = this;
         const initialSource = resolveNotificationSourceFromKey(sourceOptions(type)[0]?.[1] ?? "", catalogRef.current);
         this.appendDummyInput("SOURCE_FIELDS")
-          .appendField(type === "device" ? "Homey-apparaat" : "Homey Logic-variabele")
+          .appendField(type === "device" ? translate(locale, "blockly.homeyDevice") : translate(locale, "blockly.homeyLogicVariable"))
           .appendField(new SearchableSourceDropdown(() => sourceOptions(type)), "SOURCE")
           .appendField(new Blockly.FieldDropdown(() => comparisonOptions(block)), "OP")
           .appendField(makeComparisonValueField(initialSource?.expectedType ?? "number", initialSource?.expectedType === "boolean" ? "false" : initialSource?.expectedType === "string" ? translate(locale, "notifications.textComparisonDefault") : "0"), "VALUE");
@@ -1040,82 +1040,82 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
             : currentValue;
           replaceComparisonValueField(block, source.expectedType, nextValue);
         });
-        this.setTooltip("Selecteer een Homey-bron. Numerieke bronnen gebruiken getalvergelijking, boolean-bronnen true/false en tekstbronnen een tekstvergelijking.");
+        this.setTooltip(translate(locale, "blockly.compareSourceDescription"));
       }
     });
     if (!Blockly.Blocks.homey_condition_device_source) Blockly.Blocks.homey_condition_device_source = defineSourceBlock("device");
     if (!Blockly.Blocks.homey_condition_logic_source) Blockly.Blocks.homey_condition_logic_source = defineSourceBlock("logic");
     if (!Blockly.Blocks.homey_condition_comparison) Blockly.Blocks.homey_condition_comparison = {
       init() {
-        this.appendDummyInput().appendField("Vergelijking").appendField(new Blockly.FieldDropdown([["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]), "OP");
-        this.appendDummyInput().appendField("waarde").appendField(new Blockly.FieldTextInput("false"), "VALUE");
+        this.appendDummyInput().appendField(translate(locale, "blockly.comparison")).appendField(new Blockly.FieldDropdown([["is gelijk aan","equals"],["is niet gelijk aan","notEquals"],["is kleiner dan","lessThan"],["is kleiner of gelijk aan","lessThanOrEqual"],["is groter dan","greaterThan"],["is groter of gelijk aan","greaterThanOrEqual"]]), "OP");
+        this.appendDummyInput().appendField(translate(locale, "blockly.value")).appendField(new Blockly.FieldTextInput("false"), "VALUE");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(165);
       }
     };
     if (!Blockly.Blocks.homey_condition_schedule) Blockly.Blocks.homey_condition_schedule = {
       init() {
-        this.appendDummyInput().appendField("Tijdschema actief?");
+        this.appendDummyInput().appendField(translate(locale, "blockly.scheduleActive"));
         const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
-        const row = this.appendDummyInput().appendField("Dagen:");
+        const row = this.appendDummyInput().appendField(translate(locale, "blockly.days"));
         labels.forEach(([label,key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
-        this.appendDummyInput().appendField("Van").appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START").appendField("tot").appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
-        this.appendStatementInput("CONDITIONS").appendField("Alleen wanneer:");
+        this.appendDummyInput().appendField(translate(locale, "blockly.from")).appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START").appendField(translate(locale, "blockly.until")).appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
+        this.appendStatementInput("CONDITIONS").appendField(translate(locale, "blockly.onlyWhen"));
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(265);
-        this.setTooltip("De voorwaarden binnen dit tijdschema gelden alleen op de geselecteerde dagen en tijden.");
+        this.setTooltip(translate(locale, "blockly.scheduleTooltip"));
       }
     };
     if (!Blockly.Blocks.homey_condition_weekday) Blockly.Blocks.homey_condition_weekday = {
       init() {
-        this.appendDummyInput().appendField("Dag van de week").appendField(new Blockly.FieldDropdown([["maandag","1"],["dinsdag","2"],["woensdag","3"],["donderdag","4"],["vrijdag","5"],["zaterdag","6"],["zondag","0"]]), "DAY");
+        this.appendDummyInput().appendField(translate(locale, "blockly.weekday")).appendField(new Blockly.FieldDropdown([["maandag","1"],["dinsdag","2"],["woensdag","3"],["donderdag","4"],["vrijdag","5"],["zaterdag","6"],["zondag","0"]]), "DAY");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
       }
     };
     if (!Blockly.Blocks.homey_condition_time_only) Blockly.Blocks.homey_condition_time_only = {
       init() {
-        this.appendDummyInput().appendField("Tijd tussen")
+        this.appendDummyInput().appendField(translate(locale, "blockly.timeBetween"))
           .appendField(new Blockly.FieldTextInput("07:00", normalizeScheduleTimeInput), "START")
-          .appendField("en")
+          .appendField(translate(locale, "blockly.andLower"))
           .appendField(new Blockly.FieldTextInput("22:00", normalizeScheduleTimeInput), "END");
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(265);
-        this.setTooltip("Controleert alleen de tijd en geldt iedere dag. Ondersteunt ook intervallen over middernacht.");
+        this.setTooltip(translate(locale, "blockly.timeOnlyTooltip"));
       }
     };
     if (!Blockly.Blocks.homey_condition_weekdays) Blockly.Blocks.homey_condition_weekdays = {
       init() {
-        this.appendDummyInput().appendField("Dagen van de week:");
+        this.appendDummyInput().appendField(translate(locale, "blockly.weekdays"));
         const labels = [["Ma","MON"],["Di","TUE"],["Wo","WED"],["Do","THU"],["Vr","FRI"],["Za","SAT"],["Zo","SUN"]];
         const row = this.appendDummyInput();
         labels.forEach(([label, key]) => row.appendField(new Blockly.FieldCheckbox("FALSE"), key).appendField(label));
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(210);
-        this.setTooltip("De voorwaarde is actief op één of meer aangevinkte weekdagen.");
+        this.setTooltip(translate(locale, "blockly.weekdaysTooltip"));
       }
     };
     for (const type of ["and","or"]) {
       const blockType = "homey_condition_" + type;
       if (!Blockly.Blocks[blockType]) Blockly.Blocks[blockType] = {
         init() {
-          this.appendDummyInput().appendField(type === "and" ? "EN" : "OF");
+          this.appendDummyInput().appendField(type === "and" ? translate(locale, "blockly.andUpper") : translate(locale, "blockly.orUpper"));
           this.appendStatementInput("CONDITIONS");
           this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120);
-          this.setTooltip(type === "and" ? "Alle ingesloten voorwaarden moeten waar zijn." : "Minimaal één ingesloten voorwaarde moet waar zijn.");
+          this.setTooltip(type === "and" ? translate(locale, "blockly.allConditions") : translate(locale, "blockly.atLeastOneCondition"));
         }
       };
     }
     if (!Blockly.Blocks.homey_condition_not) Blockly.Blocks.homey_condition_not = {
-      init() { this.appendDummyInput().appendField("NIET"); this.appendStatementInput("CONDITION"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120); }
+      init() { this.appendDummyInput().appendField(translate(locale, "blockly.notUpper")); this.appendStatementInput("CONDITION"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(120); }
     };
     if (!Blockly.Blocks.homey_condition_unsupported) Blockly.Blocks.homey_condition_unsupported = {
       init() {
-        this.appendDummyInput().appendField("Niet-ondersteunde voorwaarde");
+        this.appendDummyInput().appendField(translate(locale, "blockly.unsupported"));
         this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(0);
-        this.setTooltip("Dit conditietype wordt nog niet visueel bewerkt. De oorspronkelijke JSON blijft ongewijzigd zolang je niet opslaat vanuit een volledige editor.");
+        this.setTooltip(translate(locale, "blockly.unsupportedTooltip"));
       }
     };
     if (!Blockly.Blocks.homey_condition_duration_inactive) Blockly.Blocks.homey_condition_duration_inactive = {
-      init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten inactief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
+      init() { this.appendDummyInput().appendField(translate(locale, "blockly.for")).appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField(translate(locale, "blockly.inactiveMinutes")); this.appendStatementInput("CONDITION").appendField(translate(locale, "blockly.condition")); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
     if (!Blockly.Blocks.homey_condition_duration) Blockly.Blocks.homey_condition_duration = {
-      init() { this.appendDummyInput().appendField("Gedurende").appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField("minuten actief"); this.appendStatementInput("CONDITION").appendField("voorwaarde"); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
+      init() { this.appendDummyInput().appendField(translate(locale, "blockly.for")).appendField(new Blockly.FieldNumber(5,1,1440,1),"MINUTES").appendField(translate(locale, "blockly.activeMinutes")); this.appendStatementInput("CONDITION").appendField(translate(locale, "blockly.condition")); this.setPreviousStatement(true); this.setNextStatement(true); this.setColour(30); }
     };
     // Re-register this fixed root block on editor mount so its labels follow
     // the selected UI language. User-entered title and message remain literal.
@@ -1128,7 +1128,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
           .appendField(translate(locale, "notifications.blockNotificationMessage"))
           .appendField(new Blockly.FieldTextInput(notificationMessageRef.current), "NOTIFICATION_MESSAGE");
         this.appendStatementInput("CONDITIONS");
-        this.appendDummyInput("FOOTER").appendField("🔔 Genereer melding");
+        this.appendDummyInput("FOOTER").appendField(translate(locale, "blockly.notificationRoot"));
         this.setColour(285);
         this.setTooltip(translate(locale, "notifications.blockHelp"));
         // This is the single fixed root block for the notification workspace.
@@ -1306,7 +1306,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     const serializeBlock = (block: any): any => {
       if (block.type === "homey_condition_device_source" || block.type === "homey_condition_logic_source") {
         const source = sourceFromKey(block.getFieldValue("SOURCE"));
-        if (!source) throw new Error("Selecteer een geldige Homey-bron.");
+        if (!source) throw new Error(translate(locale, "blockly.selectValidSource"));
         const operator = block.getFieldValue("OP");
         const value = comparisonValueFromBlockly(source, operator, block.getFieldValue("VALUE"));
         return { type: "comparison", source, condition: { operator, value } };
@@ -1322,47 +1322,47 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (block.type === "homey_condition_weekday") return { type: "weekday", weekdays: [Number(block.getFieldValue("DAY"))] };
       if (block.type === "homey_condition_weekdays") {
         const weekdays = days.filter(([, field]) => block.getFieldValue(field) === "TRUE").map(([day]) => day);
-        if (weekdays.length === 0) throw new Error("Selecteer minimaal één weekdag.");
+        if (weekdays.length === 0) throw new Error(translate(locale, "blockly.selectWeekday"));
         return { type: "weekday", weekdays };
       }
       if (block.type === "homey_condition_time_only") {
         const startTime = normalizeScheduleTimeInput(block.getFieldValue("START"));
         const endTime = normalizeScheduleTimeInput(block.getFieldValue("END"));
         if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(startTime) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(endTime) || startTime === endTime) {
-          throw new Error("Vul twee verschillende geldige tijden in (UU:MM).");
+          throw new Error(translate(locale, "blockly.invalidTimes"));
         }
         return { type: "schedule", mode: "time-only", weekdays: [0,1,2,3,4,5,6], startTime, endTime, timeZone: "Europe/Amsterdam" };
       }
       if (block.type === "homey_condition_not") {
         const children = serializeChain(block.getInputTargetBlock("CONDITION"));
-        if (children.length !== 1) throw new Error("NIET vereist precies één voorwaarde.");
+        if (children.length !== 1) throw new Error(translate(locale, "blockly.notExactlyOne"));
         return { type: "not", condition: children[0] };
       }
       if (block.type === "homey_condition_duration" || block.type === "homey_condition_duration_inactive") {
         const children = serializeChain(block.getInputTargetBlock("CONDITION"));
-        if (children.length !== 1) throw new Error("Een duurblok vereist precies één voorwaarde.");
+        if (children.length !== 1) throw new Error(translate(locale, "blockly.durationExactlyOne"));
         const minutes = Number(block.getFieldValue("MINUTES"));
         return durationNodeFromBlockly(block.id, block.data, minutes, children[0], block.type === "homey_condition_duration_inactive");
       }
       if (block.type === "homey_condition_and" || block.type === "homey_condition_or") {
         const conditions = serializeChain(block.getInputTargetBlock("CONDITIONS"));
-        if (conditions.length < 2) throw new Error("EN/OF vereist minimaal twee aangesloten voorwaarden.");
+        if (conditions.length < 2) throw new Error(translate(locale, "blockly.andOrAtLeastTwo"));
         return { operator: block.type.endsWith("_and") ? "and" : "or", conditions };
       }
-      if (block.type === "homey_condition_unsupported") throw new Error("Deze melding bevat een nog niet ondersteunde voorwaarde. Pas die nog niet aan in Blockly.");
+      if (block.type === "homey_condition_unsupported") throw new Error(translate(locale, "blockly.unsupportedCondition"));
       throw new Error("Onbekend Blockly-blok: " + block.type);
     };
     const emitCondition = () => {
       if (hydrating) return;
       try {
         const roots = ws.getTopBlocks(true);
-        if (roots.length !== 1 || roots[0] !== rootBlock) throw new Error("Alle voorwaarden moeten binnen Genereer melding staan.");
+        if (roots.length !== 1 || roots[0] !== rootBlock) throw new Error(translate(locale, "blockly.rootOnly"));
         const nodes = serializeChain(rootBlock.getInputTargetBlock("CONDITIONS"));
-        if (nodes.length === 0) throw new Error("Voeg minimaal één voorwaarde of container toe aan Genereer melding.");
+        if (nodes.length === 0) throw new Error(translate(locale, "blockly.addCondition"));
         conditionChangeRef.current(combineRootConditions(nodes));
         conditionErrorRef.current("");
       } catch (error) {
-        conditionErrorRef.current(error instanceof Error ? error.message : "De Blockly-voorwaarde is ongeldig en is niet opgeslagen.");
+        conditionErrorRef.current(error instanceof Error ? error.message : translate(locale, "blockly.invalidCondition"));
         // Invalid/incomplete workspaces are deliberately not written to configuration.
       }
     };
@@ -1404,10 +1404,10 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
         return response.json() as Promise<{ notifications: NotificationConfigEditor[] }>;
       }),
       fetch("/api/settings/notification-sources").then(async response => {
-        if (!response.ok) throw new Error("Broncatalogus kon niet worden geladen.");
+        if (!response.ok) throw new Error(translate(locale, "notifications.sourceCatalogError"));
         return response.json() as Promise<NotificationSourceCatalog>;
       }).catch(error => {
-        if (active) setSourceCatalogError(error instanceof Error ? error.message : "Broncatalogus kon niet worden geladen.");
+        if (active) setSourceCatalogError(error instanceof Error ? error.message : translate(locale, "notifications.sourceCatalogError"));
         return null;
       })
     ]).then(([result, catalog]) => {
@@ -1435,15 +1435,15 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   const currentSourceKey = selectedComparison?.source?.type === "device-capability" ? "device:" + selectedComparison.source.deviceId + ":" + selectedComparison.source.capabilityId : selectedComparison?.source?.type === "logic-variable" ? "logic:" + selectedComparison.source.variableId : "";
   // Source-health warnings reflect persisted configuration only. Draft edits
   // (including the enabled toggle) become effective after the user presses Save.
-  const notificationSourceIssues = sourceCatalog ? saved.filter(item => item.enabled).map(item => ({ title: item.title.trim() || "Naamloze melding", sources: findMissingNotificationSources(item.condition, sourceCatalog) })).filter(item => item.sources.length > 0) : [];
+  const notificationSourceIssues = sourceCatalog ? saved.filter(item => item.enabled).map(item => ({ title: item.title.trim() || translate(locale, "notifications.unnamed"), sources: findMissingNotificationSources(item.condition, sourceCatalog, locale) })).filter(item => item.sources.length > 0) : [];
   const notificationWarningIds = new Set(notificationSourceIssues.length > 0
-    ? saved.filter(item => item.enabled && findMissingNotificationSources(item.condition, sourceCatalog!).length > 0).map(item => item.id)
+    ? saved.filter(item => item.enabled && findMissingNotificationSources(item.condition, sourceCatalog!, locale).length > 0).map(item => item.id)
     : []);
   const dirty = JSON.stringify(configs) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const confirmDiscardDraft = () => {
     if (!dirty) return true;
-    return window.confirm("Je hebt niet-opgeslagen wijzigingen in deze melding. Als je doorgaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+    return window.confirm(t("notifications.discardSingle"));
   };
   const switchNotification = (id: string) => {
     if (id === selectedId) { setNotificationPickerOpen(false); return; }
@@ -1564,20 +1564,20 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   return <div className="quick-settings-page notification-settings-page">
     <div className="settings-title"><p>{t("notifications.subtitle")}</p></div>
     <div className="notification-rule-selector">
-      <label id="notification-rule-label">Meldingen</label>
+      <label id="notification-rule-label">{t("notifications.ruleLabel")}</label>
       <div className="notification-rule-picker">
         <button type="button" className="notification-rule-trigger" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
-          <span className="notification-rule-trigger-name">{selected?.title ?? "Selecteer een melding"}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
+          <span className="notification-rule-trigger-name">{selected?.title ?? t("notifications.selectNotification")}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
         {notificationPickerOpen && <div className="notification-rule-menu">
-          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder="Zoek een melding..." aria-label="Zoek een melding"/></div>
-          <div className="notification-rule-options" role="listbox" aria-label="Aangemaakte meldingen">
+          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
+          <div className="notification-rule-options" role="listbox" aria-label={t("notifications.createdList")}>
             {matchingNotifications.map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
                 onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{item.enabled && notificationWarningIds.has(item.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}</button>
             )}
-            {matchingNotifications.length === 0 && <div className="notification-rule-empty">Geen meldingen gevonden.</div>}
+            {matchingNotifications.length === 0 && <div className="notification-rule-empty">{t("notifications.noneFound")}</div>}
           </div>
           <div className="notification-rule-footer">{matchingNotifications.length} resultaten</div>
         </div>}
@@ -1586,19 +1586,19 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
       {!busy && !configs.length && <p>{t("notifications.emptyList")}</p>}
       {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">Homey-bronnen konden niet worden geladen: {sourceCatalogError}</p>}
     </div>
-    {notificationSourceIssues.length > 0 && <section className="notification-source-issues" aria-label="Meldingen met Homey-bronproblemen">
-      <h2>Homey-bronnen controleren</h2>
+    {notificationSourceIssues.length > 0 && <section className="notification-source-issues" aria-label={t("notifications.sourceIssuesLabel")}>
+      <h2>{t("notifications.checkSources")}</h2>
       {notificationSourceIssues.map((issue, index) => <div className="notification-source-warning" role="alert" key={index}>
         <strong>{issue.title}</strong>
         <ul>{issue.sources.map((source, sourceIndex) => <li key={sourceIndex}>{source}</li>)}</ul>
-        <span>Controleer de genoemde bron in Homey of pas de betreffende voorwaarde in deze melding aan.</span>
+        <span>{t("notifications.checkSourceHint")}</span>
       </div>)}
     </section>}
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
         {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-heading-controls"><button type="button" className="notification-delete-button" disabled={busy || saving} onClick={deleteNotification}><span className="mdi mdi-trash-can-outline" aria-hidden="true"/> {t("notifications.delete")}</button><button type="button" className={"notification-enabled-toggle" + (selected.enabled ? " is-enabled" : " is-disabled")} aria-pressed={selected.enabled} disabled={busy || saving} onClick={() => updateEnabled(!selected.enabled)}><span className="notification-toggle-indicator" aria-hidden="true"/>{selected.enabled ? "Melding ingeschakeld" : "Melding uitgeschakeld"}</button><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} notificationTitle={selected.notificationTitle ?? selected.title} notificationMessage={selected.message} onContentChange={updateNotificationContent} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison}/>
-        </> : <p>{busy ? translate(locale, "notifications.loading") : "Geen melding beschikbaar."}</p>}
+        </> : <p>{busy ? translate(locale, "notifications.loading") : t("notifications.noneAvailable")}</p>}
       </section>
     </div>
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
@@ -1714,14 +1714,14 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
         <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name || actionName(selected)} onChange={event => updateSelected({ name: event.target.value })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
         <div className="mdi-picker">
-          <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder="Zoek MDI-iconen, bijvoorbeeld muziek, licht of raam…" aria-label="Zoek MDI-iconen" /></div>
+          <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder={t("quickActions.searchIcons")} aria-label={t("quickActions.searchIconsLabel")} /></div>
           <div className="quick-icon-picker">
             {visibleIcons.map(icon =>
               <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={selected.icon === icon.name ? "active" : ""} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
             )}
-            {matchingIcons.length === 0 && <div className="mdi-no-results">Geen MDI-iconen gevonden.</div>}
+            {matchingIcons.length === 0 && <div className="mdi-no-results">{t("quickActions.noIcons")}</div>}
           </div>
-          <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · verfijn je zoekopdracht" : ""}</div>
+          <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · " + t("quickActions.refineSearch") : ""}</div>
         </div>
         <label>{t("settings.actionType")}
           <select value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
@@ -1772,7 +1772,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search" value={deviceSearch}
                   onChange={event => setDeviceSearch(event.target.value)}
-                  placeholder="Zoek apparaat op naam of zone…" aria-label="Zoek Homey-apparaat" />
+                  placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
               </div>
               <div className="quick-flow-results">
                 {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === selected.deviceId}
@@ -1782,13 +1782,13 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
                   <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
                   {!device.available && <span className="quick-flow-type">Offline</span>}
                 </button>)}
-                {matchingDevices.length === 0 && <div className="quick-flow-empty">Geen apparaten gevonden.</div>}
+                {matchingDevices.length === 0 && <div className="quick-flow-empty">{t("quickActions.noDevices")}</div>}
               </div>
-              <div className="quick-flow-footer">{matchingDevices.length} apparaten</div>
+              <div className="quick-flow-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
             </div>}
           </div>
           <label>{t("settings.deviceActionLabel")}<select value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
-          {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={selected.booleanMode} onChange={event => { const mode = event.target.value as "on" | "off" | "toggle"; updateSelected({ booleanMode: mode, value: mode === "on" ? true : mode === "off" ? false : selected.value }); }}><option value="on">{t("settings.turnOn")}</option><option value="off">{t("settings.turnOff")}</option><option value="toggle">Wisselen (Toggle)</option></select></label>}
+          {selectedCapability?.type === "boolean" && <label>{t("settings.actionValue")}<select value={selected.booleanMode} onChange={event => { const mode = event.target.value as "on" | "off" | "toggle"; updateSelected({ booleanMode: mode, value: mode === "on" ? true : mode === "off" ? false : selected.value }); }}><option value="on">{t("settings.turnOn")}</option><option value="off">{t("settings.turnOff")}</option><option value="toggle">{t("quickActions.toggle")}</option></select></label>}
           {selectedCapability?.type === "number" && <label>{t("settings.actionValue")}<div className="quick-range-row"><input type="range" min={selectedCapability.min ?? 0} max={selectedCapability.max ?? 100} step={selectedCapability.step ?? 1} value={typeof selected.value === "number" ? selected.value : selectedCapability.min ?? 0} onChange={event => updateSelected({ value: Number(event.target.value) })}/><strong>{formatValue(selected.value, selectedCapability.units)}</strong></div></label>}
           {selectedCapability?.type === "enum" && <label>{t("settings.actionValue")}<select value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}>{selectedCapability.values.map(option => <option key={option.id} value={option.id}>{option.title}</option>)}</select></label>}
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
@@ -1809,7 +1809,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const confirmLeaveNotifications = () => {
     if (page !== "notifications" || !notificationDirty) return true;
-    return window.confirm("Je hebt niet-opgeslagen wijzigingen in je meldingen. Als je doorgaat, gaan deze wijzigingen verloren. Wil je doorgaan?");
+    return window.confirm(t("notifications.discardChanges"));
   };
   const navigateSettings = (nextPage: "general" | "quick-actions" | "notifications" | "measurement-tiles" | "weather", path: string) => {
     if (nextPage === page || !confirmLeaveNotifications()) return;
@@ -1920,15 +1920,15 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     else onBack();
   };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale.toLowerCase().startsWith("nl") ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
-  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === "en" ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
+  const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale === translate(locale, "blockly.andLower") ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
   return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
     <header className="settings-topbar">
-      <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? "Menu uitklappen" : "Menu inklappen"} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
+      <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
     </header>
     <aside className="settings-sidebar" id="settings-sidebar">
-      <button type="button" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? "Menu uitklappen" : "Menu inklappen"} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
+      <button type="button" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
       <h2>{t("settings.navTitle")}</h2>
       {[t("settings.general"),t("settings.quickActions"),t("settings.notifications"),t("settings.temperatureTiles"),t("settings.weather")].map((name,index)=>{
         const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
