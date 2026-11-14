@@ -73,6 +73,15 @@ Keep keys identical in every language file. Use en.json as the reference.
 Do not translate key names. If a key is missing, the English fallback value
 is used when available.
 
+When adding or changing user-visible text in the application, never hard-code
+translated text in React components, dialogs, validation messages, Blockly
+blocks, dropdowns, tooltips, or accessibility labels. Add a stable namespaced
+key to BOTH nl.json and en.json and use the central translate()/t() function.
+Keep the placeholder names identical in every language, for example
+"Device {name} is unavailable" / "Apparaat {name} is niet beschikbaar".
+For a new locale, copy the complete key set from en.json and translate every
+value. Keep keys and interpolation placeholders unchanged.
+
 IMPORTANT
 ---------
 
