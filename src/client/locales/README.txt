@@ -82,6 +82,13 @@ Keep the placeholder names identical in every language, for example
 For a new locale, copy the complete key set from en.json and translate every
 value. Keep keys and interpolation placeholders unchanged.
 
+Blockly's custom dashboard blocks use these same locale keys. Blockly's own
+built-in editor controls currently use the Dutch language pack for Dutch and
+fall back to the English language pack for every other locale. A future locale
+can therefore be added through JSON without code changes, while Blockly's
+built-in context menus remain in English until a matching Blockly language
+pack is integrated.
+
 IMPORTANT
 ---------
 
