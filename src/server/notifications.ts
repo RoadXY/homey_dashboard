@@ -2,6 +2,7 @@ import { readFile, readdir, mkdir, writeFile, rename } from "node:fs/promises";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { getHomeyDeviceCapabilityValues, getHomeyLogicVariablesByIds } from "./homey.js";
+import { getActiveApiNotifications } from "./notifications-api.js";
 import { evaluateDurationGate, isScheduleActive, isValidScheduleCondition, nextScheduleTransition, type ConditionResult, type ScheduleCondition } from "./notification-conditions.js";
 
 type Severity = "critical" | "warning" | "info";
@@ -376,9 +377,23 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
     return { ...base, state: result.state, ...(result.reason ? { reason: result.reason } : {}) };
   });
 
+  const apiNotifications = await getActiveApiNotifications();
+  const combinedNotifications: DashboardNotification[] = [
+    ...notifications,
+    ...apiNotifications.map((item): DashboardNotification => ({
+      id: item.id,
+      title: item.title,
+      notificationTitle: item.title,
+      message: item.message,
+      severity: item.severity,
+      testOnly: false,
+      state: "active",
+    })),
+  ];
+
   return {
     retrievedAt: new Date().toISOString(),
-    notifications,
+    notifications: combinedNotifications,
     ...(nextEvaluationAt === undefined ? {} : { nextEvaluationAt }),
   };
 }

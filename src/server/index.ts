@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotificationConfigsForSettings } from "./notifications.js";
+import { createApiNotification, deleteApiNotification, getNextApiNotificationExpiry, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, type ApiNotificationInput } from "./notifications-api.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
@@ -28,6 +29,7 @@ const SETTINGS_SESSION_COOKIE = "homey_settings";
 const SETTINGS_SESSION_IDLE_MS = 30 * 60 * 1000;
 let settingsSessionSecret: Buffer;
 const settingsRealtime = new EventEmitter();
+const notificationsRealtime = new EventEmitter();
 function broadcastSettingsUpdated(section: "general" | "quick-actions" | "notifications" | "weather"): void {
   settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
 }
@@ -419,12 +421,14 @@ app.get("/api/events", async (_request, reply) => {
   homeyRealtime.on("connected", onConnected);
   homeyRealtime.on("disconnected", onDisconnected);
   settingsRealtime.on("updated", onSettingsUpdated);
+  notificationsRealtime.on("updated", onNotificationsUpdated);
   reply.raw.on("close", () => {
     clearInterval(heartbeat);
     homeyRealtime.off("update", onUpdate);
     homeyRealtime.off("connected", onConnected);
     homeyRealtime.off("disconnected", onDisconnected);
     settingsRealtime.off("updated", onSettingsUpdated);
+    notificationsRealtime.off("updated", onNotificationsUpdated);
   });
 });
 
@@ -470,6 +474,80 @@ app.get("/api/weather", async (_request, reply) => {
   } catch (error) {
     app.log.error(error);
     return reply.code(500).send({ error: "Weather condition could not be loaded." });
+  }
+});
+
+
+// External notification API. Ownership is enforced by the API's dedicated store;
+// the existing Blockly notification configuration is never mutated here.
+function broadcastNotificationsUpdated(): void {
+  notificationsRealtime.emit("updated", { updatedAt: new Date().toISOString() });
+}
+
+function validateApiNotificationBody(body: unknown, allowed: readonly string[]): Record<string, unknown> | null {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return null;
+  const value = body as Record<string, unknown>;
+  if (Object.keys(value).some((key) => !allowed.includes(key))) return null;
+  return value;
+}
+
+app.get("/api/v1/notifications", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  try {
+    return { notifications: await getPublicApiNotifications() };
+  } catch (error) {
+    app.log.error(error);
+    return reply.code(500).send({ error: "Notifications could not be loaded." });
+  }
+});
+
+app.post("/api/v1/notifications", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  const body = validateApiNotificationBody(request.body, ["title", "message", "severity", "expiresAt"]);
+  if (!body || !("title" in body) || !("message" in body) || !("severity" in body)) {
+    return reply.code(400).send({ error: "title, message and severity are required; unknown fields are not allowed." });
+  }
+  try {
+    const created = await createApiNotification(body as unknown as ApiNotificationInput);
+    broadcastNotificationsUpdated();
+    return reply.code(201).send(created);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Invalid notification." });
+  }
+});
+
+app.patch<{ Params: { id: string } }>("/api/v1/notifications/:id", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  const body = validateApiNotificationBody(request.body, ["title", "message", "severity", "expiresAt"]);
+  if (!body || Object.keys(body).length === 0) return reply.code(400).send({ error: "A non-empty valid patch body is required." });
+  try {
+    const updated = await patchApiNotification(request.params.id, body);
+    if (updated) {
+      broadcastNotificationsUpdated();
+      return updated;
+    }
+    const configs = await getNotificationConfigsForSettings();
+    if (configs.some((config) => config.id === request.params.id)) return reply.code(403).send({ error: "This notification is not managed by the Notifications API." });
+    return reply.code(404).send({ error: "Notification not found." });
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Invalid notification patch." });
+  }
+});
+
+app.delete<{ Params: { id: string } }>("/api/v1/notifications/:id", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  try {
+    const deleted = await deleteApiNotification(request.params.id);
+    if (deleted) {
+      broadcastNotificationsUpdated();
+      return reply.code(204).send();
+    }
+    const configs = await getNotificationConfigsForSettings();
+    if (configs.some((config) => config.id === request.params.id)) return reply.code(403).send({ error: "This notification is not managed by the Notifications API." });
+    return reply.code(404).send({ error: "Notification not found." });
+  } catch (error) {
+    app.log.error(error);
+    return reply.code(500).send({ error: "Notification could not be deleted." });
   }
 });
 
@@ -550,6 +628,7 @@ if (existsSync(clientPath)) {
 try {
   await initializeLocaleFiles();
   await initializeSettingsSessionSecret();
+  await initializeApiNotificationExpiryMonitor(broadcastNotificationsUpdated);
   await app.listen({ port, host });
 } catch (error) {
   app.log.error(error);

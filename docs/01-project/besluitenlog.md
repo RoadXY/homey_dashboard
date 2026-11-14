@@ -499,3 +499,8 @@ Deze broninformatie is uitsluitend intern: er verschijnt geen bronlabel of badge
 Belangrijke migratie-afspraak: bestaande meldingen worden niet blind allemaal als `blockly` geclassificeerd. Tijdens implementatie wordt de feitelijke producer/opslagroute gecontroleerd; alleen aantoonbaar uit Blockly afkomstige meldingen krijgen `blockly`, applicatiegegenereerde tijdelijke fouten krijgen `system`. Onzekere bestaande herkomst wordt niet gegokt. De externe API mag uitsluitend eigen `api`-meldingen wijzigen of verwijderen.
 
 Deze aanvulling hoort bij het goedgekeurde ontwerp in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). De API-endpoints zijn nog niet geïmplementeerd.
+
+
+## Implementatie – eerste backendfase Notifications API (14 november 2026)
+
+De eerste backendimplementatie is gestart op `phase_1_foundation`. De API krijgt een eigen opslagbestand `DATA_DIR/api-notifications.json`, met atomische bestandsvervanging en geserialiseerde schrijfbewerkingen. Interne records bevatten `source: "api"`; dit veld wordt uit alle publieke API-responses verwijderd. Actieve API-meldingen worden in de bestaande dashboardmeldingenresponse samengevoegd met de door Blockly geëvalueerde meldingen, zonder zichtbare bronvermelding. De CRUD-routes gebruiken dezelfde centrale Bearer-tokencontrole als de weer-API. Wijzigingen en expiratie sturen een apart SSE-event `notifications-updated` met uitsluitend `updatedAt`. De OpenAPI-specificatie wordt pas bijgewerkt nadat de routes en tests gevalideerd zijn.

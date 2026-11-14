@@ -62,7 +62,7 @@ Voorbeeld:
 
 De server genereert altijd de UUID en tijdstempels. De client kan geen ID, herkomst of server-tijdstempels instellen.
 
-De response bevat het opgeslagen meldingsobject. Het veld `source` wordt niet opgenomen.
+De response bevat het opgeslagen meldingsobject. Het veld `source` wordt niet opgenomen. Intern wordt `source: "api"` opgeslagen; bestaande Blockly-configuraties worden intern als `blockly` herkend en applicatiegegenereerde meldingen als `system`.
 
 ### 3.2 GET – actieve meldingen opvragen
 
@@ -169,7 +169,7 @@ Foutresponses gebruiken het bestaande eenvoudige JSON-patroon met een `error`-om
 
 ## 7. Dashboardintegratie en realtime
 
-De dashboardbackend voegt actieve API-meldingen samen met de bestaande door Blockly geëvalueerde meldingen in de presentatielaag.
+De dashboardbackend voegt actieve API-meldingen samen met de bestaande door Blockly geëvalueerde meldingen in de presentatielaag. De API-opslag schrijft records met interne herkomst `api`; de bestaande configuratie/evaluatiestroom blijft de bron voor Blockly-meldingen. De herkomst wordt niet naar de tablet of als publiek API-veld meegestuurd.
 
 - De bestaande Blockly-evaluatie en instellingenopslag blijven ongewijzigd.
 - API-meldingen worden voor de dashboardpresentatie vertaald naar hetzelfde interne weergavemodel.
