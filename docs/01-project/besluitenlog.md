@@ -417,3 +417,8 @@ De dropdown met bestaande meldingen wordt alfabetisch gesorteerd op naam, met lo
 
 ## Blockly – losse tijd- en weekdagvoorwaarden (14 november 2026)
 De categorie Tijd krijgt twee aanvullende blokken: **Tijd tussen** (dagelijks tijdvenster zonder dagselectie, inclusief over-middernacht) en **Dagen van de week** (meerdere dagen aanvinken zonder tijdselectie). De nieuwe blokken gebruiken bestaande condition-schema's zodat de runtime dezelfde tijdzone/DST- en weekdagafhandeling behoudt. De bestaande gecombineerde tijdschema- en enkele-weekdagblokken blijven compatibel. Beide nieuwe blokken zijn inzetbaar in EN/OF/NIET-containers.
+
+
+## Instellingen Meldingen – statusbadge uitgeschakelde meldingen (14 november 2026)
+
+In de doorzoekbare meldingenkiezer wordt bij iedere melding met `enabled: false` een rode badge **Uitgeschakeld** getoond. De badge is ook zichtbaar naast de geselecteerde melding wanneer de keuzelijst gesloten is. De status wordt uitsluitend uit de bestaande configuratie gelezen; er komt geen afzonderlijke opslagstatus bij. De Nederlandse en Engelse teksten gebruiken i18n. Achtergrond, rand en tekst gebruiken de semantische `--severity-critical-*` CSS-tokens zodat toekomstige thema's de badgekleur kunnen aanpassen.
