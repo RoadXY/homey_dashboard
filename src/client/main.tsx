@@ -2046,10 +2046,6 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
     finally { setSaving(false); }
   };
   const query = search.trim().toLocaleLowerCase(locale);
-  const expectedTypes = id === "sunrise" || id === "sunset" || id === "windDirection" ? ["number","string"] : ["number"];
-  const matchingDevices = catalog.devices.flatMap(device => device.capabilities.map(capability => ({device,capability})))
-    .filter(({device,capability}) => expectedTypes.includes(capability.type) && (!query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query)));
-  const matchingVariables = catalog.variables.filter(variable => expectedTypes.includes(variable.type) && (!query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query)));
   const packs = [
     {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription"),glyphs:["☀️","🌤️","☁️","🌧️","⛈️","❄️","🌫️","💨"]},
     {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription"),glyphs:["🌞","🌥️","🌧️","⛈️","🌨️","🌙","🌈","🌪️"]},
@@ -2066,6 +2062,10 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
           {weatherSettingIds.map(id => {
             const enabled = Boolean(settings.sources[id]) || pendingEnabledId === id;
             const isOpen = searchId === id;
+            const expectedTypes = id === "sunrise" || id === "sunset" || id === "windDirection" ? ["number","string"] : ["number"];
+            const matchingDevices = catalog.devices.flatMap(device => device.capabilities.map(capability => ({device,capability})))
+              .filter(({device,capability}) => expectedTypes.includes(capability.type) && (!query || (device.name+" "+(device.zone??"")+" "+capability.title+" "+capability.id+" "+capability.units).toLocaleLowerCase(locale).includes(query)));
+            const matchingVariables = catalog.variables.filter(variable => expectedTypes.includes(variable.type) && (!query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query)));
             return <div className={"weather-source-row"+(!enabled?" is-disabled":"")} key={id}>
               <div className="weather-source-label"><i className={"mdi "+({outdoorTemperature:"mdi-thermometer",feelsLike:"mdi-thermometer-lines",humidity:"mdi-water-percent",pressure:"mdi-gauge",windSpeed:"mdi-weather-windy",windDirection:"mdi-compass-outline",precipitation:"mdi-weather-rainy",sunrise:"mdi-weather-sunset-up",sunset:"mdi-weather-sunset-down"} as Record<WeatherSettingId,string>)[id]} aria-hidden="true"/><span>{t("weatherSettings.field."+id)}</span></div>
               <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
