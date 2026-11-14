@@ -485,3 +485,17 @@ Aanvullende architectuurafspraken:
 - Wijzigingen en het bereiken van een vervaltijd leiden tot een SSE-refresh via `notifications-updated`, zonder meldingsinhoud of geheimen in het event.
 
 Het volledige contract, gegevensmodel, validatie, foutcodes en testplan zijn vastgelegd in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). Dit is een ontwerpbesluit; de endpoints zijn nog niet geïmplementeerd. De OpenAPI-specificatie wordt pas aangepast zodra de implementatie bestaat.
+
+## Meldingen – interne herkomst expliciet onderscheiden (14 november 2026)
+
+De gebruiker bevestigt dat het bestaande meldingen systeem wordt aangepast zodat de herkomst van meldingen intern expliciet herkenbaar is. Het interne veld `source` kent voor de eerste implementatie drie waarden:
+
+- `blockly`: meldingen die voortkomen uit de bestaande Blockly-configuratie en -evaluatie, inclusief standaardregels die via datzelfde model lopen.
+- `api`: meldingen die door een externe client via de Notifications API worden aangemaakt en beheerd.
+- `system`: meldingen die door het dashboard zelf worden gegenereerd, zoals tijdelijke Quick Action-fouten of technische status-/laadmeldingen.
+
+Deze broninformatie is uitsluitend intern: er verschijnt geen bronlabel of badge op het dashboard en `source` wordt niet als publiek API-responseveld meegestuurd. De bestaande Blockly-meldingenstroom moet dus worden uitgebreid om de herkomst te bewaren, terwijl de API-meldingen hun eigen opslagbestand en eigendomsgrens behouden. De dashboardpresentatie voegt actieve meldingen samen zonder de bron zichtbaar te maken.
+
+Belangrijke migratie-afspraak: bestaande meldingen worden niet blind allemaal als `blockly` geclassificeerd. Tijdens implementatie wordt de feitelijke producer/opslagroute gecontroleerd; alleen aantoonbaar uit Blockly afkomstige meldingen krijgen `blockly`, applicatiegegenereerde tijdelijke fouten krijgen `system`. Onzekere bestaande herkomst wordt niet gegokt. De externe API mag uitsluitend eigen `api`-meldingen wijzigen of verwijderen.
+
+Deze aanvulling hoort bij het goedgekeurde ontwerp in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). De API-endpoints zijn nog niet geïmplementeerd.

@@ -215,3 +215,18 @@ Minimaal te automatiseren tests:
 5. OpenAPI 3.1 uitbreiden en `public/api-docs/openapi.yaml` synchroon houden.
 6. API-routecontrole, OpenAPI-lint, applicatiebuild en Docker-runtime valideren.
 
+## 4.1 Interne herkomst van meldingen
+
+Het interne meldingenmodel maakt de eigenaar/herkomst expliciet met een veld `source`. Dit veld is uitsluitend backendmetadata en wordt nooit als zichtbaar label op het dashboard getoond of als publiek veld in de API-responses opgenomen.
+
+De herkomstwaarden zijn:
+
+- `blockly`: actieve meldingen die voortkomen uit de bestaande Blockly-configuratie en -evaluatie. Ook de standaard meegeleverde meldingsregels vallen hieronder wanneer ze via ditzelfde Blockly-meldingenmodel worden geëvalueerd; hun herkomst wordt niet uitsluitend op basis van het feit dat ze standaard zijn bepaald.
+- `api`: meldingen die via de externe Notifications API zijn aangemaakt en beheerd. Deze blijven fysiek opgeslagen in `DATA_DIR/api-notifications.json`; de opslaglocatie blijft de primaire eigendomsgrens.
+- `system`: tijdelijke of structurele meldingen die door de dashboardapplicatie zelf worden gegenereerd, zoals technische verbindings- of laadfouten. Deze zijn geen Blockly-meldingen en geen API-meldingen.
+
+De bestaande meldingenstroom wordt dus aangepast om herkomst intern vast te leggen en te behouden. Bij de implementatie moet eerst worden vastgesteld welke bestaande records daadwerkelijk uit Blockly komen en welke door de dashboardapplicatie zelf ontstaan. Bestaande records mogen niet blind allemaal als `blockly` worden gemarkeerd. Waar de herkomst betrouwbaar uit de producer/opslagroute kan worden afgeleid, wordt die expliciet gezet; anders blijft de herkomst tijdens de overgang onbekend totdat de producer is vastgesteld. Er wordt geen onjuiste broninformatie gemigreerd.
+
+Voor de dashboardpresentatie worden actieve meldingen uit de verschillende bronnen samengevoegd tot één weergavelijst. De interne `source` blijft buiten het publieke weergavemodel en veroorzaakt geen extra bronbadge of tekst op de tablet. Eigenaarschap blijft wel bepalend voor acties: de externe API kan uitsluitend eigen `api`-meldingen wijzigen of verwijderen; Blockly-configuratie en systeemmeldingen blijven buiten haar beheer.
+
+De tijdelijke Quick Action-foutmeldingen moeten bij implementatie expliciet als `system` (of een nader benoemd intern subtype daarvan) worden geclassificeerd en mogen niet als Blockly-meldingen worden behandeld.
