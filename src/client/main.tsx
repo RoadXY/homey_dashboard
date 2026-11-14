@@ -1938,7 +1938,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => {
-    if (!confirmLeaveNotifications()) return;
+    if (!confirmLeaveCurrentPage()) return;
     if (dirty) setShowLeave(true);
     else onBack();
   };
