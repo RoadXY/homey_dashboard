@@ -989,7 +989,7 @@ body {
 .weather-pack-options { display:grid; grid-template-columns:minmax(0,1fr); gap:7px; }
 .weather-pack-option { min-width:0; display:grid; grid-template-columns:20px minmax(0,1fr); align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--surface-card-border); border-radius:10px; background:var(--action-tile-background); color:var(--text-primary); text-align:left; cursor:pointer; }
 .weather-pack-option.selected { border-color:var(--nav-button-hover-border); box-shadow:0 0 0 1px color-mix(in srgb,var(--nav-button-hover-border) 24%,transparent); background:color-mix(in srgb,var(--nav-button-hover-border) 7%,var(--action-tile-background)); }
-.weather-pack-option input { position:absolute; width:1px; height:1px; opacity:0; }
+.weather-pack-option input { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .weather-pack-option:focus-within { outline:2px solid var(--nav-button-hover-border); outline-offset:2px; }
 .weather-pack-radio { width:17px; height:17px; border:2px solid var(--text-muted); border-radius:50%; display:block; }
 .weather-pack-option.selected .weather-pack-radio { border-color:var(--nav-button-hover-border); background:var(--nav-button-hover-border); box-shadow:inset 0 0 0 3px var(--action-tile-background); }

@@ -2115,7 +2115,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={category.replaceAll("_"," ")} pack={settings.iconPack}/></div>)}
+              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",rain:"Rain",thunderstorm:"Thunderstorm",snow:"Snow",fog:"Fog",windy:"Wind"} as Record<string,string>)[category])} pack={settings.iconPack}/></div>)}
             </div>
           </div>
         </section>

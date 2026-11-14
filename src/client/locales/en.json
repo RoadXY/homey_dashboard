@@ -428,5 +428,13 @@
   "weatherSettings.saved": "Weather settings saved.",
   "weatherSettings.dashboardEyebrow": "OUTSIDE · WEATHER",
   "weatherSettings.packAnimatedLine": "Animated lines (themed)",
-  "weatherSettings.packAnimatedLineDescription": "Minimalist line icons with subtle animations in your theme’s accent colour."
+  "weatherSettings.packAnimatedLineDescription": "Minimalist line icons with subtle animations in your theme’s accent colour.",
+  "weatherSettings.previewSunny": "Sunny",
+  "weatherSettings.previewPartlyCloudy": "Partly cloudy",
+  "weatherSettings.previewCloudy": "Cloudy",
+  "weatherSettings.previewRain": "Rain",
+  "weatherSettings.previewThunderstorm": "Thunderstorm",
+  "weatherSettings.previewSnow": "Snow",
+  "weatherSettings.previewFog": "Fog",
+  "weatherSettings.previewWind": "Wind"
 }
