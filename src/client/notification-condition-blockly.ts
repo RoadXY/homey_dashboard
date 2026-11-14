@@ -1,14 +1,14 @@
 export type NotificationSourceCatalog = {
   devices: Array<{
     id: string;
-    capabilities: Array<{ id: string; type: "number" | "boolean" }>;
+    capabilities: Array<{ id: string; type: "number" | "boolean" | "string" }>;
   }>;
-  variables: Array<{ id: string; type: "number" | "boolean" }>;
+  variables: Array<{ id: string; type: "number" | "boolean" | "string" }>;
 };
 
 export type NotificationSource =
-  | { type: "device-capability"; deviceId: string; capabilityId: string; expectedType: "number" | "boolean" }
-  | { type: "logic-variable"; variableId: string; expectedType: "number" | "boolean" };
+  | { type: "device-capability"; deviceId: string; capabilityId: string; expectedType: "number" | "boolean" | "string" }
+  | { type: "logic-variable"; variableId: string; expectedType: "number" | "boolean" | "string" };
 
 export type ComparisonOperator =
   | "equals"
@@ -42,7 +42,7 @@ export function sourceFromKey(key: string, catalog: NotificationSourceCatalog | 
 }
 
 /** Keep the editable Blockly value compatible with the selected source datatype. */
-export function comparisonInputValue(expectedType: "number" | "boolean" | "string", raw: string | number | boolean): number | boolean | string {
+export function comparisonInputValue(expectedType: "number" | "boolean" | "string" | "string", raw: string | number | boolean): number | boolean | string {
   const text = String(raw ?? "");
   if (expectedType === "string") return text;
   if (expectedType === "boolean") return text === "true";
