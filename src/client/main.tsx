@@ -2069,7 +2069,7 @@ function WeatherSettingsPage({ locale, t, onNavigate }: { locale: string; t: (ke
             const isOpen = searchId === id;
             return <div className={"weather-source-row"+(!enabled?" is-disabled":"")} key={id}>
               <div className="weather-source-label"><i className={"mdi "+({outdoorTemperature:"mdi-thermometer",feelsLike:"mdi-thermometer-lines",humidity:"mdi-water-percent",pressure:"mdi-gauge",windSpeed:"mdi-weather-windy",windDirection:"mdi-compass-outline",precipitation:"mdi-weather-rainy",sunrise:"mdi-weather-sunset-up",sunset:"mdi-weather-sunset-down"} as Record<WeatherSettingId,string>)[id]} aria-hidden="true"/><span>{t("weatherSettings.field."+id)}</span></div>
-              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(settings.sources[id]) { updateSource(id,null); setPendingEnabledId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
+              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
                 <span/>
               </button>
               <div className="weather-source-picker">
