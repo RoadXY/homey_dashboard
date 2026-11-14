@@ -453,3 +453,8 @@ In Homey is de boolean Logic-variabele `Samsung wasdroger klaar` aangemaakt met 
 ## Waarschuwingsbadge in de meldingenkeuzelijst – 14 november 2026
 
 In de meldingenkeuzelijst krijgt een ingeschakelde melding een gele badge **Waarschuwing** wanneer één of meer Homey-bronnen uit de opgeslagen conditie ontbreken of niet beschikbaar zijn in de broncatalogus. Dezelfde badge staat ook naast de naam van de geselecteerde melding. De badge wordt gebaseerd op de opgeslagen configuratie en broncatalogus, niet op niet-opgeslagen Blockly-wijzigingen. Uitgeschakelde meldingen behouden uitsluitend hun bestaande badge **Uitgeschakeld**; waarschuwingen worden daarvoor niet getoond. De Nederlandse en Engelse labels zijn via i18n toegevoegd. De badge gebruikt de bestaande `--severity-warning-*` CSS-tokens, zodat de kleur per thema kan worden aangepast.
+
+
+## Standaardwaarde voor tekstvergelijkingen in Blockly – 14 november 2026
+
+Nieuwe tekstvergelijkingen tonen standaard **tekst** (Engels: **text**) in het invoerveld in plaats van de booleanwaarde `true`. Dit geldt zowel bij het aanmaken van een blok met een tekstbron als bij het omschakelen van een bestaande boolean- of numerieke bron naar een tekstbron. Bestaande tekstwaarden blijven behouden wanneer tussen tekstbronnen wordt gewisseld. De standaardtekst is via i18n vertaald.
