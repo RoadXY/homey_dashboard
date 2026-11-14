@@ -105,7 +105,7 @@ function App() {
           scheduleNotificationRefreshRef.current(nextData);
         })
         .catch(() => {
-          setNotifications([{ id: "notifications-load-error", title: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), message: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+          setNotifications([{ id: "notifications-load-error", title: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), notificationTitle: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorTitle"), message: translate(resolveLocale(dashboardLanguage, homeyLanguage), "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
         });
     }, delay);
   }, [dashboardLanguage, homeyLanguage]);
@@ -123,7 +123,7 @@ function App() {
       .catch(() => {
         if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
         notificationRefreshTimer.current = null;
-        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
+        setNotifications([{ id: "notifications-load-error", title: translate("en", "notifications.loadErrorTitle"), notificationTitle: translate("en", "notifications.loadErrorTitle"), message: translate("en", "notifications.loadErrorMessage"), severity: "warning", testOnly: false, state: "unknown", reason: "source_unavailable" }]);
       });
     void fetch("/api/dashboard/quick-actions").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActions((data.actions as QuickAction[]).map(action => ({ ...action, icon: normalizeQuickActionIcon(action.icon) })))).catch(() => setQuickActions([]));
     void fetch("/api/dashboard/quick-action-status").then(r => r.ok ? r.json() : Promise.reject()).then(data => setQuickActionStatuses(data.statuses as Record<string, boolean | null> )).catch(() => undefined);
@@ -566,13 +566,14 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
     return () => { active = false; window.clearInterval(timer); };
   }, []);
   React.useEffect(() => {
-    if (!selected?.source) return;
-    if (selected.source.type === "logic") {
+    const source = selected?.source;
+    if (!source) return;
+    if (source.type === "logic") {
       setSourceType("logic");
     } else {
       setSourceType("device");
-      setDeviceId(selected.source.deviceId);
-      const sourceDevice = catalog.devices.find(device => device.id === selected.source?.deviceId);
+      setDeviceId(source.deviceId);
+      const sourceDevice = catalog.devices.find(device => device.id === source.deviceId);
       setZoneId(sourceDevice?.zone ?? "");
     }
   }, [selected?.id, selected?.source, catalog.devices]);
@@ -586,10 +587,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const devices = catalog.devices.filter(device => device.zone === zoneId);
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const sourceDescription = (tile: MeasurementTile) => {
-    if (!tile.source) return t("measurement.noSource");
-    if (tile.source.type === "logic") return catalog.variables.find(variable => variable.id === tile.source?.variableId)?.name ?? t("measurement.logicVariable");
-    const device = catalog.devices.find(item => item.id === tile.source?.deviceId);
-    const capability = device?.capabilities.find(item => item.id === tile.source?.capabilityId);
+    const source = tile.source;
+    if (!source) return t("measurement.noSource");
+    if (source.type === "logic") return catalog.variables.find(variable => variable.id === source.variableId)?.name ?? t("measurement.logicVariable");
+    const device = catalog.devices.find(item => item.id === source.deviceId);
+    const capability = device?.capabilities.find(item => item.id === source.capabilityId);
     return [device?.name, capability?.title].filter(Boolean).join(" · ") || t("measurement.deviceSource");
   };
   const save = async () => {
@@ -783,6 +785,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       };
     }
     class SearchableSourceDropdown extends Blockly.FieldDropdown {
+      constructor(options: () => Array<[string, string]>, validator?: (value: string) => string | null) { super(options, validator); }
       showEditor_() {
         const dropdown = Blockly.DropDownDiv;
         const content = dropdown.getContentDiv();
@@ -1954,8 +1957,8 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
           <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">{t("settings.shortDate")} ({datePreview})</option><option value="iso">{t("settings.isoDate")} ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
-          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value)}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
-          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value)}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value as GeneralSettings["timeFormat"])}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value as GeneralSettings["firstDayOfWeek"])}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
       <section className="settings-card notification-timeout-card">
