@@ -2,7 +2,7 @@
 
 - `openapi.yaml` is the version-controlled API contract.
 - `index.html` loads Swagger UI to provide a searchable, interactive API reference.
-- `events.md` documents the Server-Sent Events stream, including the `settings-updated` notification used to refresh connected dashboard screens after settings are saved.
+- `events.md` documents the Server-Sent Events stream, including `settings-updated` and `notifications-updated` refresh events.
 - Keep `public/api-docs/openapi.yaml` synchronized with `openapi.yaml`; this is the specification served by the Docker-hosted Swagger UI.
 
 The specification covers all HTTP routes currently implemented by the Fastify backend, including routes used only by the dashboard frontend. Internal routes are tagged accordingly and are not automatically supported third-party integration contracts.
@@ -31,7 +31,7 @@ The initial `WEATHER_API_TOKEN` environment variable remains temporarily accepte
 The Docker application also serves Swagger UI at `/api-docs/` from the same origin as the dashboard. Use this local page for live API testing against the Ubuntu-hosted container. Its OpenAPI copy is packaged from `public/api-docs/openapi.yaml`; keep it synchronized with the canonical `docs/api/openapi.yaml`.
 
 
-## External notifications API (planned)
+## External notifications API
 
 The approved design for external dashboard notifications is documented in [Meldingen-API – definitief ontwerp](../02-architectuur/meldingen-api.md). Planned routes are:
 
@@ -42,4 +42,4 @@ The approved design for external dashboard notifications is documented in [Meldi
 
 All routes reuse the existing Bearer-token validation. API notifications use a separate persistent store and are combined with existing dashboard notifications only for presentation. Optional expiry is supported. The origin is not exposed to the dashboard. Attempts to mutate a non-API notification return HTTP 403.
 
-**These endpoints are designed but not implemented.** They are intentionally not listed in `openapi.yaml` until matching backend routes and tests exist.
+These endpoints are implemented in the backend. The automated tests cover the persistent storage, validation, partial updates, expiry and ownership behaviour. All valid managed Bearer tokens (and the temporary legacy `WEATHER_API_TOKEN`) are accepted. `source` is stored internally and omitted from public responses.

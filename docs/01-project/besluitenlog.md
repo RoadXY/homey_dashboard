@@ -504,3 +504,8 @@ Deze aanvulling hoort bij het goedgekeurde ontwerp in [Meldingen-API – definit
 ## Implementatie – eerste backendfase Notifications API (14 november 2026)
 
 De eerste backendimplementatie is gestart op `phase_1_foundation`. De API krijgt een eigen opslagbestand `DATA_DIR/api-notifications.json`, met atomische bestandsvervanging en geserialiseerde schrijfbewerkingen. Interne records bevatten `source: "api"`; dit veld wordt uit alle publieke API-responses verwijderd. Actieve API-meldingen worden in de bestaande dashboardmeldingenresponse samengevoegd met de door Blockly geëvalueerde meldingen, zonder zichtbare bronvermelding. De CRUD-routes gebruiken dezelfde centrale Bearer-tokencontrole als de weer-API. Wijzigingen en expiratie sturen een apart SSE-event `notifications-updated` met uitsluitend `updatedAt`. De OpenAPI-specificatie wordt pas bijgewerkt nadat de routes en tests gevalideerd zijn.
+
+
+## Notifications API – backend eerste implementatie (14 november 2026)
+
+De eerste backendimplementatie is toegevoegd: dedicated opslagmodule en JSON-bestand voor API-meldingen, CRUD-routes onder `/api/v1/notifications`, hergebruik van Bearer-tokenauthenticatie, validatie en optionele expiratie. API-meldingen worden samengevoegd met Blockly-meldingen in de bestaande dashboardresponse. De dashboardclient luistert naar `notifications-updated`; het event bevat uitsluitend `updatedAt`. De client-side Quick Action-foutmeldingen zijn intern als `system` geclassificeerd. Tests voor opslag, validatie, PATCH, expiratie en gelijktijdige schrijfacties zijn toegevoegd. OpenAPI en de Docker-served kopie worden synchroon bijgewerkt.

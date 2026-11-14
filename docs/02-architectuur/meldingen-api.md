@@ -1,6 +1,6 @@
 # Meldingen-API – definitief ontwerp
 
-**Status:** ontwerp goedgekeurd; implementatie gepland, endpoints bestaan nog niet.  
+**Status:** ontwerp goedgekeurd; eerste backendimplementatie aanwezig op `phase_1_foundation`. OpenAPI is bijgewerkt; verdere integratie- en runtimevalidatie loopt.  
 **Besluitdatum:** 14 november 2026  
 **Branch:** `phase_1_foundation`  
 **API-versie:** `v1`
@@ -181,7 +181,7 @@ Na een succesvolle POST, PATCH of DELETE verstuurt de backend via de bestaande S
 
 ## 8. Implementatiegrenzen
 
-Dit document beschrijft het goedgekeurde ontwerp, niet een reeds beschikbare API. De routes worden pas als geïmplementeerd beschouwd wanneer backend, tests, OpenAPI en de Docker-kopie van OpenAPI synchroon zijn bijgewerkt.
+De eerste backendroutes, opslagmodule, dashboardaggregatie, SSE-refresh en opslagtests zijn geïmplementeerd. De OpenAPI-specificatie en Docker-kopie worden synchroon bijgewerkt. De volledige functionaliteit geldt als gevalideerd na een geslaagde CI-run inclusief Docker-imagebuild.
 
 De bestaande `GET /api/notifications` blijft een interne dashboardroute en behoudt de bestaande Blockly-evaluatie. De nieuwe versiebeheerste routes zijn het externe contract.
 
