@@ -42,20 +42,23 @@ export function sourceFromKey(key: string, catalog: NotificationSourceCatalog | 
 }
 
 /** Keep the editable Blockly value compatible with the selected source datatype. */
-export function comparisonInputValue(expectedType: "number" | "boolean", raw: string | number | boolean): number | boolean {
+export function comparisonInputValue(expectedType: "number" | "boolean" | "string", raw: string | number | boolean): number | boolean | string {
   const text = String(raw ?? "");
+  if (expectedType === "string") return text;
   if (expectedType === "boolean") return text === "true";
   const value = Number(text);
   return text.trim() !== "" && Number.isFinite(value) ? value : 0;
 }
 
-export function comparisonValueFromBlockly(source: NotificationSource, operator: string, raw: string | number | boolean): number | boolean {
+export function comparisonValueFromBlockly(source: NotificationSource, operator: string, raw: string | number | boolean): number | boolean | string {
   const numericOperators: ComparisonOperator[] = ["equals", "notEquals", "greaterThan", "greaterThanOrEqual", "lessThan", "lessThanOrEqual"];
   const booleanOperators: ComparisonOperator[] = ["equals", "notEquals"];
-  if (!(source.expectedType === "number" ? numericOperators : booleanOperators).includes(operator as ComparisonOperator)) {
+  const stringOperators: ComparisonOperator[] = ["equals", "notEquals"];
+  if (!(source.expectedType === "number" ? numericOperators : source.expectedType === "string" ? stringOperators : booleanOperators).includes(operator as ComparisonOperator)) {
     throw new Error("De gekozen vergelijkingsoperator past niet bij het datatype van de bron.");
   }
   const text = String(raw ?? "");
+  if (source.expectedType === "string") return text;
   if (source.expectedType === "number") {
     const value = Number(text);
     if (!Number.isFinite(value) || text.trim() === "") throw new Error("Vul een geldig getal in bij de vergelijking.");
