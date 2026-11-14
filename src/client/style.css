@@ -206,9 +206,9 @@ body {
 @media (max-width: 900px) {
   /* Weather settings: give icon previews more room on portrait/tablet screens. */
   .weather-pack-preview-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
-  .weather-pack-preview-item { min-height: 124px; }
-  .weather-pack-preview-item .weather-symbol { width: min(100%,128px); height: 108px; }
-  .weather-pack-preview-item .weather-pack-symbol { font-size: 52px; }
+  .weather-pack-preview-item { min-height: 156px; }
+  .weather-pack-preview-item .weather-symbol { width: min(100%,140px); height: 140px; }
+  .weather-pack-preview-item .weather-pack-symbol { font-size: 58px; }
   .dashboard { height: auto; min-height: 100vh; overflow: visible; grid-template-columns: minmax(0,1fr); align-content: start; row-gap: clamp(10px,1vw,16px); }
   .left-column { display: grid; grid-template-columns: 1.15fr .85fr; }
   .clock-card { min-height: 230px; }

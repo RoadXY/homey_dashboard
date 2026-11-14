@@ -111,3 +111,9 @@ The Dutch and English locale files parse successfully and contain matching keys.
 
 - At viewport widths up to 900px, the weather icon preview changes from four columns to two. This gives each preview tile substantially more width for the artwork.
 - Preview tiles gain additional height and the icon viewport and alternate-pack glyph size increase accordingly. The desktop four-column preview remains unchanged.
+
+
+## Taller weather icon preview tiles (14 November 2026)
+
+- On screens up to 900px wide, each of the two preview rows has taller tiles (156px minimum height, with a 140px icon viewport) to give the weather artwork more vertical breathing room.
+- The two-column preview layout is retained; desktop preview sizing remains unchanged.
