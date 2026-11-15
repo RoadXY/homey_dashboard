@@ -392,3 +392,12 @@ Alle getoonde meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd o
 ## Blockly-meldingen – zichtbaarheidstijd
 
 The approved behavior for keeping a triggered Blockly notification visible for a fixed period is documented in the [Blockly notification visibility user guide](meldingen-zichtbaarheid-gebruikershandleiding.md). The feature is documented as approved but is not implemented yet.
+
+
+## Weerkaart: intrinsieke en responsieve hoogte (15 november 2026)
+
+De weerkaart volgt nu hetzelfde uitgangspunt als de meetwaardetegels: een responsieve minimale hoogte, met ruimte om op basis van de daadwerkelijke inhoud verder te groeien. De minimale hoogte gebruikt `clamp(220px, 24vw, 340px)`. Er is geen vaste kaart- of viewporthoogte die de inhoud afsnijdt.
+
+De meetwaarden onder de buitentemperatuur en weersomschrijving mogen naar meerdere kolommen/rijen teruglopen. Elk meetgegeven behoudt zijn eigen minimale breedte; bij meer ingeschakelde weerbronnen groeit de kaart dus verticaal in plaats van de gegevens horizontaal te proppen of buiten de kaart te laten vallen. De tablet- en mobiele regels overschrijven de oude vaste hoogtes en laten de kaart op automatische hoogte staan.
+
+Deze wijziging is uitsluitend toegepast op de weerkaart. De klok, meetwaardetegels, snelle acties en meldingen zijn niet opnieuw vormgegeven. De weerkaart is hiermee de tweede praktijktest van intrinsieke minimale componentafmetingen.
