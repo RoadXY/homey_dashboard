@@ -544,7 +544,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const [count, setCount] = React.useState<MeasurementTileCount>(4);
   const [savedCount, setSavedCount] = React.useState<MeasurementTileCount>(4);
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
-  const [selectedId, setSelectedId] = React.useState("measurement-1");
+  const [selectedId, setSelectedId] = React.useState("");
   const [editorOpen, setEditorOpen] = React.useState(false);
   const [zoneId, setZoneId] = React.useState("");
   const [deviceId, setDeviceId] = React.useState("");
