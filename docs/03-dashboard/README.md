@@ -17,7 +17,7 @@
 - Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.\n- De Homey-gegevens worden eventgestuurd bijgewerkt via de realtimeverbinding; de footer toont daarom geen vaste verversingsinterval of laatste-updateklok.
 - De gebruiker kiest 2, 4 of 6 meetwaardetegels. Elke tegel toont een eigen naam, numerieke Homey-meetwaarde en eventuele eenheid.
 - De ruimtenaam en temperatuurwaarde worden hierdoor groter weergegeven. De vaste tegelafmetingen en 2×2-indeling blijven ongewijzigd.
-- Temperatuurtegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
+- Meetwaardetegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
 - Bij een offline kamersensor blijft de tegel zichtbaar met de tekst ‘Geen gegevens’.
 - Een waarde ouder dan 15 minuten wordt als verouderd beschouwd; alleen bij verouderde waarden wordt het tijdstip van laatste update getoond.
 
@@ -190,7 +190,7 @@ Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare H
 - De meldingen staan onder de actieknoppen in twee kolommen. Alle meldingskaarten hebben dezelfde vaste, bijna vierkante afmetingen; langere tekst loopt over meerdere regels.
 - Links worden 2, 4 of 6 meetwaardetegels in twee kolommen getoond, afhankelijk van het ingestelde aantal.
 - Dashboardtekst en waarden moeten vanaf circa vier meter afstand goed leesbaar zijn.
-- Temperatuurtegels en actieknoppen blijven neutraal; kleur wordt uitsluitend functioneel gebruikt, bijvoorbeeld voor meldingsniveaus/statussen.
+- Meetwaardetegels en actieknoppen blijven neutraal; kleur wordt uitsluitend functioneel gebruikt, bijvoorbeeld voor meldingsniveaus/statussen.
 
 ### Meetwaardetegels – definitieve indeling
 Het aantal meetwaardetegels is instelbaar op 2, 4 of 6. De tegels staan altijd direct onder de weerkaart in twee kolommen: één, twee of drie rijen. Binnen dezelfde indeling zijn de tegels even groot en gebruiken ze een neutrale stijl met goed leesbare waarden.
@@ -204,7 +204,7 @@ De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de bes
 
 ## Uniforme tussenruimtes en buitenmarges (10 november 2026)
 - Alle tussenruimtes tussen dashboardkaarten en -onderdelen moeten gelijk zijn, ook tussen de linker- en rechterkolom en tussen de actieknoppenrij en het meldingenpaneel.
-- De verticale afstand tussen de tijdkaart en weerkaart moet gelijk zijn aan de afstand tussen de weerkaart en het temperatuurtegelsraster.
+- De verticale afstand tussen de tijdkaart en weerkaart moet gelijk zijn aan de afstand tussen de weerkaart en het meetwaardetegelsraster.
 - De horizontale afstand tussen de linkerkolom en rechterkolom moet consistent zijn met de overige kaartafstanden.
 - De afstand tussen de actieknoppen en het meldingenpaneel moet gelijk zijn aan de tussenruimte tussen de meldingskaarten en andere kaarten.
 - Gebruik één consistente spacing-token/waarde voor de standaard tussenruimte; pas alleen bewust afwijkende binnenruimte binnen kaarten toe.
