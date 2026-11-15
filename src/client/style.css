@@ -5,6 +5,69 @@
   color: var(--text-primary); background: var(--dashboard-background); font-synthesis: none; text-rendering: optimizeLegibility;
 
   /* Semantische design tokens: thema's overschrijven deze waarden, componenten niet. */
+  /* Instellingen: semantische tokens. Thema's overschrijven deze laag; componenten gebruiken alleen de tokens. */
+  --settings-shell-background: #091321;
+  --settings-shell-glow: radial-gradient(ellipse at 75% 0%,rgba(20,48,83,.16),transparent 45%);
+  --settings-topbar-background: rgba(10,20,34,.94);
+  --settings-topbar-border: rgba(160,184,211,.16);
+  --settings-sidebar-background: rgba(10,22,38,.72);
+  --settings-sidebar-border: rgba(155,182,212,.25);
+  --settings-surface-background: linear-gradient(145deg,rgba(20,36,54,.9),rgba(15,29,45,.94));
+  --settings-surface-raised-background: linear-gradient(145deg,#10263c,#0b1b2d);
+  --settings-surface-muted-background: rgba(9,25,43,.62);
+  --settings-surface-border: rgba(146,173,204,.16);
+  --settings-divider: rgba(164,190,218,.14);
+  --settings-shadow: 0 12px 28px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.025);
+  --settings-text-primary: #edf2f8;
+  --settings-text-secondary: #c3d0df;
+  --settings-text-muted: #91a8c2;
+  --settings-heading-icon: #d8e6f6;
+  --settings-nav-text: #d5deea;
+  --settings-nav-active-background: #0965d7;
+  --settings-nav-active-text: #ffffff;
+  --settings-control-background: #101d2d;
+  --settings-control-border: rgba(151,178,209,.32);
+  --settings-control-text: #e9eff7;
+  --settings-control-hover-border: rgba(160,205,245,.8);
+  --settings-control-hover-background: #142b43;
+  --settings-control-hover-shadow: inset 0 0 0 1px rgba(160,205,245,.12);
+  --settings-control-active-background: #1c3048;
+  --settings-control-focus: #8fc8ff;
+  --settings-control-selected-border: #8fc8ff;
+  --settings-control-selected-background: rgba(9,48,82,.55);
+  --settings-control-selected-text: #ffffff;
+  --settings-accent: #1684ff;
+  --settings-accent-strong: #0874ed;
+  --settings-accent-soft-background: rgba(13,73,132,.35);
+  --settings-accent-soft-border: rgba(19,125,235,.45);
+  --settings-accent-soft-text: #40a9ff;
+  --settings-button-primary-background: #0874ed;
+  --settings-button-primary-border: #1684ff;
+  --settings-button-primary-text: #ffffff;
+  --settings-button-secondary-background: rgba(39,56,77,.75);
+  --settings-button-secondary-border: rgba(149,177,208,.3);
+  --settings-button-secondary-text: #e5ebf3;
+  --settings-info-background: rgba(0,105,210,.28);
+  --settings-info-border: rgba(0,105,210,.35);
+  --settings-info-text: #e8f2ff;
+  --settings-menu-background: #10243a;
+  --settings-menu-raised-background: #172f49;
+  --settings-menu-hover-background: #2c4b6b;
+  --settings-menu-border: rgba(151,178,209,.55);
+  --settings-menu-shadow: 0 16px 38px rgba(0,0,0,.58);
+  --settings-workspace-background: #171b22;
+  --settings-workspace-toolbar-background: #202630;
+  --settings-workspace-hover-background: #303a48;
+  --settings-workspace-selected-background: #34465b;
+  --settings-workspace-text: #dce3ec;
+  --settings-error-background: rgba(153,27,27,.24);
+  --settings-error-border: rgba(248,113,113,.75);
+  --settings-error-text: #ffdada;
+  --settings-warning-background: rgba(128,82,18,.18);
+  --settings-warning-border: rgba(245,181,74,.4);
+  --settings-warning-text: #ffd58a;
+  --settings-success-text: #8bd6ae;
+
   --dashboard-background: #101216;
   --dashboard-background-glow: radial-gradient(ellipse at 5% 5%, rgba(64,74,91,.23), transparent 42%),
                                radial-gradient(ellipse at 95% 92%, rgba(49,59,75,.15), transparent 38%);
@@ -356,19 +419,19 @@ body {
 .sidebar-collapse-toggle:focus-visible { outline:2px solid var(--nav-button-active-border); outline-offset:2px; }
 .settings-shell.sidebar-collapsed .sidebar-collapse-toggle { top:8px; right:8px; }
 
-.settings-nav { min-height:50px;
 .settings-interactive {
   cursor:var(--settings-interactive-cursor, pointer);
   transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease,filter .12s ease;
 }
 .settings-interactive:focus-visible { outline:2px solid var(--settings-interactive-focus); outline-offset:2px; }
 @media (hover:hover) and (pointer:fine) {
-  .settings-interactive:not(:disabled):not(.selected):hover {
+  .settings-interactive:not(:disabled):not(.selected):not(.active):hover {
     border-color:var(--settings-interactive-hover-border);
     background-color:var(--settings-interactive-hover-background);
     box-shadow:var(--settings-interactive-hover-shadow);
   }
-  .settings-interactive.selected:hover {
+  .settings-interactive.selected:hover,
+  .settings-interactive.active:hover {
     border-color:var(--settings-interactive-selected-hover);
     outline:2px solid var(--settings-interactive-selected-hover);
     outline-offset:1px;
@@ -376,11 +439,13 @@ body {
   }
 }
 @media (hover:none), (pointer:coarse) {
-  .settings-interactive:not(:disabled):not(.selected):active { background-color:var(--settings-interactive-active-background); }
-  .settings-interactive.selected:active { filter:brightness(1.05); }
+  .settings-interactive:not(:disabled):not(.selected):not(.active):active { background-color:var(--settings-interactive-active-background); }
+  .settings-interactive.selected:active,
+  .settings-interactive.active:active { filter:brightness(1.05); }
 }
 .settings-interactive--text { --settings-interactive-cursor:text; }
- display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:14px; padding:0 20px; background:transparent; color:#d5deea; text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
+
+.settings-nav { min-height:50px; display:flex; align-items:center; gap:18px; border:1px solid transparent; border-radius:14px; padding:0 20px; background:transparent; color:var(--settings-nav-text); text-align:left; font-size:17px; margin:0 0 7px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .settings-nav > .mdi { width:22px; flex:0 0 22px; font-size:23px; line-height:1; text-align:center; }
 .settings-nav-label { min-width:0; }
 .settings-nav.active { background:#0965d7; color:white; }
