@@ -4,8 +4,8 @@
 - Donker thema.
 - Landscape en responsive voor Samsung Galaxy Tab A SM-T515.
 - Kolomverhouding: links 40%, rechts 60%.
-- Dashboard zelf staat vast; geen paginascroll.
-- Alleen het meldingenpaneel mag verticaal scrollen als er veel meldingen zijn.
+- Het dashboard vult minimaal de viewport. Alleen wanneer intrinsieke minimale componentafmetingen niet binnen de beschikbare schermhoogte passen, mag de dashboardpagina meegroeien en verticaal scrollen.
+- Het meldingenpaneel behoudt zijn eigen verticale scrollmogelijkheid bij veel meldingen.
 - Bij een mislukte quick button-actie verschijnt een algemene foutmelding bovenaan het dashboard.
 
 ## Linkerzijde\n\nDe weerconditie en het bijbehorende icoon komen uitsluitend uit de beveiligde Weather API; Homey levert alleen de aanvullende meetwaarden. Zie [Weather condition source](weather-mapping.md).
@@ -16,7 +16,7 @@
 - Weersomschrijving bestaat uit een weericoon met korte tekst.
 - Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.\n- De Homey-gegevens worden eventgestuurd bijgewerkt via de realtimeverbinding; de footer toont daarom geen vaste verversingsinterval of laatste-updateklok.
 - De gebruiker kiest 2, 4 of 6 meetwaardetegels. Elke tegel toont een eigen naam, numerieke Homey-meetwaarde en eventuele eenheid.
-- De ruimtenaam en temperatuurwaarde worden hierdoor groter weergegeven. De vaste tegelafmetingen en 2×2-indeling blijven ongewijzigd.
+- De tegelgroep gebruikt twee kolommen en één, twee of drie rijen voor 2, 4 of 6 tegels. Iedere tegel heeft een responsieve minimale hoogte die voorkomt dat de naam, meetwaarde en eenheid elkaar overlappen.
 - Meetwaardetegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
 - Bij een offline kamersensor blijft de tegel zichtbaar met de tekst ‘Geen gegevens’.
 - Een waarde ouder dan 15 minuten wordt als verouderd beschouwd; alleen bij verouderde waarden wordt het tijdstip van laatste update getoond.
