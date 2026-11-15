@@ -24,6 +24,9 @@ Inventarisatierondes 1 t/m 22 zijn afgerond en vastgelegd in het besluitenlog. D
 - Scherm blijft 24/7 aan.
 
 ## Navigatie
+- [Notifications and Blockly – Developer Guide](../02-architectuur/meldingen-blockly-developer-guide.md)
+- [Blockly-meldingen – zichtbaarheidstijd (gebruikershandleiding)](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md)
+
 - [Besluitenlog](besluitenlog.md)
 - [Architectuur](../02-architectuur/README.md)
 - [Dashboardontwerp](../03-dashboard/README.md)
