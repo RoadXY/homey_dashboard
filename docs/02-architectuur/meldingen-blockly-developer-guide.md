@@ -60,7 +60,7 @@ These are separate concepts and must not be conflated:
 - **Condition duration** (existing): how long a condition must remain active before it evaluates as active. It is represented by a `duration` condition node and is part of the condition tree.
 - **Notification visibility timeout** (approved, not implemented): how long an already-triggered Blockly notification remains visible on the dashboard.
 
-The visibility timeout belongs to the fixed `Genereer melding` notification configuration/root block as notification behavior. It is not another condition node and must not change the meaning of existing duration blocks.
+The visibility timeout is selected by choosing a separate `Genereer melding` root block variant. There are two distinct root blocks: one without a timeout and one with a timeout. The timeout variant carries the selected visibility duration as notification behavior; it is not another condition node and must not change the meaning of existing duration blocks.
 
 ## 6. Approved Blockly visibility-timeout behavior
 
@@ -75,6 +75,33 @@ The user approved the following behavior on 15 November 2026:
 Example: a 15-minute notification is triggered at 12:00. The condition becomes inactive at 12:03 and active again at 12:08. The notification still expires at 12:15, not 12:23.
 
 This behavior is specific to Blockly notifications. It does not change API notification expiry semantics or the API's storage/lifecycle implementation.
+
+### Two root-block variants
+
+The Blockly editor must provide two distinct `Genereer melding` root blocks:
+
+- **Without timeout:** retains the existing lifecycle. The notification is visible while its condition is active and disappears when that condition becomes inactive.
+- **With timeout:** starts the selected visibility timer when the notification is first triggered. The notification remains visible until that original timer expires, regardless of an intervening inactive condition. Reactivation while the timer is running does not restart or extend it.
+
+There is no `Never`/permanent option inside the timeout block. Users who do not want a timeout select the separate root block without timeout.
+
+### Allowed timeout values
+
+The timeout block offers exactly these fixed choices:
+
+- 1 minute
+- 2 minutes
+- 5 minutes
+- 15 minutes
+- 30 minutes
+- 1 hour
+- 2 hours
+- 4 hours
+- 8 hours
+- 12 hours
+- 24 hours
+
+Use stable technical duration values (milliseconds) in the serialized configuration; user-facing labels must use the project's i18n resources. Do not add arbitrary free-form durations unless the user approves a change.
 
 ## 7. Notifications API boundary
 
@@ -91,8 +118,8 @@ The API may only manage its own API-owned records. Blockly configuration and sys
 - Blockly condition evaluation and the current duration-condition start tracking are in `notifications.ts` and `notification-conditions.ts`.
 - The current duration-condition start tracking uses in-memory state (`durationStartedAt`); it is not persistent across container restarts.
 - The dashboard's evaluation response can provide a next evaluation deadline for condition transitions. This is separate from a future notification visibility expiry deadline.
-- Do not assume that a future Blockly visibility timer is persistent across restarts. Persistence and restart recovery have not yet been decided for this feature.
-- Preserve existing Blockly configuration compatibility: notifications without a configured visibility timeout must retain their current behavior until a separate user decision specifies otherwise.
+- Blockly visibility timers are intentionally not persistent. A Docker/container restart does not need to restore an in-progress timeout; the in-memory timer state is lost on restart.
+- The two root-block variants make the behavior explicit. Existing notifications using the no-timeout behavior retain their current lifecycle.
 
 ## 9. Implementation constraints for the visibility timeout
 
@@ -107,7 +134,7 @@ When implementation is approved to proceed:
 - Keep the Notifications API module and its exclusive ownership unchanged.
 - Add tests for initial activation, early condition deactivation, reactivation without timer reset, expiry, multiple notifications, and existing configurations without the new setting.
 
-The exact configuration property, default value, user-selectable duration range, disabled/permanent option, persistence strategy, and restart behavior remain to be decided before implementation. Do not invent these values or silently infer them from the API's `expiresAt` contract.
+The exact serialized property name and internal state representation remain implementation details to be designed. The user-facing block variants, allowed duration choices, absence of a permanent option in the timeout block, and non-persistent timer behavior are decided. Do not infer or reuse the API's `expiresAt` contract.
 
 ## 10. Related documentation
 
