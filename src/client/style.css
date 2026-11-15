@@ -724,7 +724,7 @@ body {
 .notification-rule-selector select { cursor:pointer; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .notification-rule-selector select:focus-visible { outline:2px solid #8fc8ff; outline-offset:2px; }
 @media (hover:hover) and (pointer:fine) {
-  .notification-rule-selector select:hover { border-color:rgba(160,205,245,.8); box-shadow:inset 0 0 0 1px rgba(160,205,245,.12); }
+  .notification-rule-selector select:hover:not(:disabled) { border-color:#8fc8ff; background-color:#142b43; box-shadow:inset 0 0 0 1px rgba(143,200,255,.3),0 0 0 2px rgba(143,200,255,.16); }
 }
 @media (hover:none), (pointer:coarse) {
   .notification-rule-selector select:active { background:#1c3048; }
