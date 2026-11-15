@@ -5,7 +5,14 @@
 
 ## Wat doet de zichtbaarheidstijd?
 
-Met een zichtbaarheidstijd kan een Blockly-melding na activering nog een ingestelde periode zichtbaar blijven op het dashboard. De melding verdwijnt automatisch wanneer die periode voorbij is.
+Er komen twee aparte varianten van het vaste Blockly-blok **Genereer melding**:
+
+- **Genereer melding zonder time-out:** behoudt het bestaande gedrag. De melding is zichtbaar zolang de voorwaarde actief is en verdwijnt zodra de voorwaarde inactief wordt.
+- **Genereer melding met time-out:** toont de melding gedurende een gekozen vaste periode. Na afloop verdwijnt de melding automatisch.
+
+De variant met time-out krijgt een vaste keuzelijst met de volgende mogelijkheden: **1 minuut, 2 minuten, 5 minuten, 15 minuten, 30 minuten, 1 uur, 2 uur, 4 uur, 8 uur, 12 uur en 24 uur**.
+
+Er is geen optie **Nooit** in de time-outvariant. Wil je geen time-out, kies dan het aparte blok **Genereer melding zonder time-out**.
 
 De zichtbaarheidstijd bepaalt dus hoelang de melding op het dashboard blijft staan. Dit is iets anders dan de bestaande Blockly-blokken **Gedurende X minuten actief** en **Gedurende X minuten inactief**. Die bestaande blokken bepalen wanneer een voorwaarde waar wordt; ze bepalen niet hoelang een melding zichtbaar blijft.
 
@@ -36,8 +43,10 @@ Opnieuw activeren verandert de oorspronkelijke vervaltijd dus niet.
 
 ## Wat is al besloten en wat volgt nog?
 
-De bovenstaande werking is door de gebruiker goedgekeurd en wordt als uitgangspunt voor de implementatie gebruikt.
+De bovenstaande werking, de twee afzonderlijke blokvarianten, de keuzelijst met tijdsduren en het niet-persistente timergedrag zijn door de gebruiker goedgekeurd en vormen het uitgangspunt voor de implementatie.
 
-De precieze bediening in Blockly, beschikbare tijdsopties, standaardinstelling en het gedrag bij een Docker-herstart zijn nog niet vastgesteld. Deze handleiding beschrijft daarom het goedgekeurde gedrag, niet een reeds beschikbare instelling.
+De bediening is nog niet gebouwd. Deze handleiding beschrijft daarom het goedgekeurde ontwerp, niet een reeds beschikbare instelling.
+
+De timer wordt niet bewaard over een Docker/container-herstart. Na een herstart hoeft een lopende time-out dus niet verder te lopen of te worden hersteld.
 
 De zichtbaarheidstijd voor Blockly-meldingen staat los van de levensduurinstelling van de externe Notifications API. De API heeft een eigen contract en beheer; deze Blockly-instelling verandert dat niet.
