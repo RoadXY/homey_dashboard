@@ -13,6 +13,7 @@ The documents cover architecture, code paths, API contracts, runtime behavior, s
 - [Notifications API architecture](../02-architectuur/meldingen-api.md)
 - [Realtime dashboard updates](../03-dashboard/realtime-updates.md)
 - [Quick Actions implementation](../../docs/quick-actions.md)
+- [Settings UI design system and theme tokens](settings-design-system.md)
 
 ## Documentation lifecycle and final structure
 
