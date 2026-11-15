@@ -17,7 +17,7 @@
 ## Tablet portrait: compact top row and equal tile rows (14 November 2026)
 
 - In the tablet portrait layout (621–900px), the clock and weather cards are reduced from two tile-row heights to approximately one and a half tile-row heights, while remaining equal to each other.
-- The measurement row (four temperature tiles) is set to the same responsive height as each quick-action row. Both quick-action rows use that same explicit height, so rows 2, 3 and 4 match the height of the first quick-action row (row 3 in the full dashboard).
+- The measurement group always follows the weather card. It uses two columns and one, two or three rows for 2, 4 or 6 tiles respectively. Its total height grows with the selected count instead of being forced to match a quick-action row.
 - These dimensions are scoped to tablet portrait. Desktop and narrow phone layouts are not changed.
 
 
