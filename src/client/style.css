@@ -171,7 +171,10 @@ body {
 .weather-details div { display: flex; flex-direction: column; gap: 5px; }
 .weather-details span { color: #8992a0; font-size: clamp(16px, 1.08vw, 20px); line-height:1.25; }
 .weather-details strong { color: #d9dde3; font-size: clamp(21px, 1.42vw, 26px); font-weight: 600; }
-.temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
+.temperature-grid { flex: 1.08; min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(10px,1.1vw,16px); }
+.temperature-grid.measurement-count-2 { grid-template-rows: minmax(0,1fr); }
+.temperature-grid.measurement-count-4 { grid-template-rows: repeat(2,minmax(0,1fr)); }
+.temperature-grid.measurement-count-6 { grid-template-rows: repeat(3,minmax(0,1fr)); }
 .temperature-tile { min-height: 0; padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; container-type: inline-size; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
 .temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(38px, 22cqi, 104px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
@@ -238,11 +241,10 @@ body {
   .weather-card { align-self: start; width: 100%; height: 230px; min-height: 0; }
   .temperature-grid {
     grid-column: 1/-1;
-    height: clamp(132px,16vh,176px);
+    height: auto;
     min-height: 0;
-    flex: 0 0 auto;
-    grid-template-columns: repeat(4,minmax(0,1fr));
-    grid-template-rows: 1fr;
+    flex: 1 0 auto;
+    grid-template-columns: repeat(2,minmax(0,1fr));
   }
   /* Both quick-action rows use exactly the measurement-row height. */
   .actions-grid {
@@ -259,7 +261,10 @@ body {
   .clock-card { height: calc(2 * 124px + 10px); min-height: 0; }
   .clock { font-size: clamp(100px, 19vw, 160px); }
   .weather-card { height: 180px; min-height: 0; }
-  .temperature-grid { min-height: 250px; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(110px,1fr)); }
+  .temperature-grid { min-height: 0; flex: 0 0 auto; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .temperature-grid.measurement-count-2 { grid-template-rows: minmax(110px,auto); }
+  .temperature-grid.measurement-count-4 { grid-template-rows: repeat(2,minmax(110px,auto)); }
+  .temperature-grid.measurement-count-6 { grid-template-rows: repeat(3,minmax(110px,auto)); }
   .notification-list { grid-template-columns:minmax(0,1fr); gap:12px; }
   .notification-list:before { display:none; }
   .actions-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -618,9 +623,11 @@ body {
 
 /* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
 .measurement-workspace { min-height:560px; align-items:stretch; grid-auto-rows:auto; }
+.measurement-count-setting { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:14px 0 16px; color:#c3d0df; font-size:14px; }
+.measurement-count-setting select { width:112px; min-height:40px; border:1px solid rgba(135,166,201,.22); border-radius:10px; background:rgba(9,25,43,.72); color:#edf3fb; padding:8px 12px; font:inherit; }
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
 .measurement-tile-list { margin-bottom:18px; }
-/* Meetwaardetegels hebben geen pictogramkolom: geef de naam alle resterende ruimte en plaats Bewerken uiterst rechts. */
+/* Meetwaardetegels tonen alleen nummer, naam en de bewerkactie. */
 .measurement-tile-list .quick-action-row { grid-template-columns:42px minmax(0,1fr) 28px; }
 .measurement-tile-list .quick-action-name { min-width:0; }
 .measurement-tile-list .quick-action-edit { justify-self:end; }
