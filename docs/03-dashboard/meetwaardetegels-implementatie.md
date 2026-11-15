@@ -20,3 +20,14 @@ Wanneer de beschikbare breedte kleiner wordt en de kaarten onder elkaar worden g
 ## Gestapelde tablet-/smalle layout hersteld (13 november 2026)
 
 De meetwaardetegels gebruikten ook de algemene Quick Actions-breakpointregels. Die regels zetten de preview expliciet op gridrij 3 en lieten de meetwaardetegelspecifieke minimale kaarthoogtes staan. In de gestapelde weergave kon daardoor onnodige ruimte/een verkeerde gridplaatsing ontstaan. Een gerichte override voor maximaal 1100 px zet beide kaarten terug in normale documentvolgorde, maakt de kaarthoogte inhoudsafhankelijk en houdt de previewtegels in twee kolommen. De editor blijft daarna als afzonderlijke kaart onder beide kaarten staan. De gelijke hoogte geldt uitsluitend wanneer de twee kaarten naast elkaar staan.
+
+
+## Instelbaar aantal meetwaardetegels (15 november 2026)
+
+Het aantal zichtbare meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** opties. De standaardwaarde blijft vier. De configuratie bewaart altijd zes vaste tegelrecords; verlagen van het zichtbare aantal verbergt de overige records zonder hun naam of Homey-bron te wissen. Bij opnieuw verhogen komen die instellingen terug.
+
+De dashboardlayout plaatst de meetwaardegroep altijd onder de weerkaart. De tegels staan in twee kolommen met één, twee of drie rijen voor respectievelijk 2, 4 of 6 tegels. De hoogte van de tegelgroep groeit mee met het aantal rijen. De instellingenlijst en preview tonen direct het gekozen aantal.
+
+De opslagstructuur is vervangen door een object met `count` en `tiles`. De API-instellingenroutes lezen en bewaren dit model; de dashboardroute geeft alleen de zichtbare tegels en hun meetwaarden terug. De zes vaste configuraties gebruiken stabiele IDs `measurement-1` t/m `measurement-6`.
+
+De gebruiker heeft bevestigd dat geen migratie nodig is: het dashboard is nog in ontwikkeling en heeft één gebruiker. De nieuwe opslagstructuur kan daarom direct worden gebruikt. De tegelconfiguratie bevat alleen naam en numerieke Homey-meetbron.
