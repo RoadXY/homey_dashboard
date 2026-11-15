@@ -289,3 +289,16 @@ De doorzoekbare keuzelijst toont naast iedere uitgeschakelde melding (`enabled: 
 ## Blockly – tekstuele Homey-capabilities vergelijken (14 november 2026)
 
 De meldingeneditor ondersteunt naast numerieke en boolean Homey-bronnen nu ook tekstuele Homey-capabilities en tekstuele Logic-variabelen. De broncatalogus neemt alleen bronnen op waarvan Homey het datatype als `string` rapporteert. Tekstbronnen gebruiken uitsluitend `is gelijk aan` en `is niet gelijk aan`; de ingevoerde tekst wordt exact (case-sensitive) vergeleken met de actuele Homey-waarde. Numerieke bronnen behouden de zes numerieke operatoren en boolean-bronnen behouden de twee gelijkheidsoperatoren. De bestaande `comparison`-node en schema-versie 1 blijven behouden; alleen het toegestane datatype van `expectedType` en de vergelijkingswaarde is uitgebreid. Ontbrekende of afwijkend getypeerde waarden blijven `unknown` en veroorzaken geen foutieve actieve melding.
+
+
+## Blockly-melding zichtbaarheidstijd – 15 november 2026
+
+De implementatie is gestart volgens het goedgekeurde ontwerp:
+
+- Serverconfiguratie ondersteunt optioneel `timeoutMs`; bestaande meldingen zonder dit veld behouden hun bestaande gedrag.
+- De server valideert de waarde tegen de elf vaste duurwaarden en houdt de zichtbaarheidstimer los van de Notifications API.
+- De Blockly-editor bevat een aparte root-blockdefinitie voor de timeoutvariant en Nederlandse/Engelse labels.
+- Backendtests dekken eerste activering, inactief worden tijdens de zichtbaarheidstijd, heractivering zonder deadlineverlenging en verlopen van de timer.
+- TypeScript-controle en geautomatiseerde tests zijn groen in de workflow voor de eerste editorwijziging.
+
+Nog niet afgerond: bediening om een bestaande melding tussen de twee rootvarianten te wisselen, end-to-end controle van de refresh op de exacte vervaltijd en opruimen van timerstatus bij verwijderen/uitschakelen/herconfigureren. De functie is dus nog niet productieklaar.
