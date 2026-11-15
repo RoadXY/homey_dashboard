@@ -448,7 +448,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
     <h1>{translate(locale, "settings.lockedTitle")}</h1><p>{translate(locale, "settings.pinPrompt")}</p>
     <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
-    <div className="settings-actions"><button type="button" className="secondary-button" onClick={onCancel}>{translate(locale, "settings.back")}</button><button className="primary-button" type="submit">{translate(locale, "settings.unlock")}</button></div>
+    <div className="settings-actions"><button type="button" className="secondary-button settings-interactive" onClick={onCancel}>{translate(locale, "settings.back")}</button><button className="primary-button settings-interactive" type="submit">{translate(locale, "settings.unlock")}</button></div>
   </form></main>;
 }
 
@@ -658,11 +658,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
       </section>
     </div>
     {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
-        <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
+        <button className="quick-editor-close settings-interactive" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("measurement.editTitle").replace("{number}", String(tiles.findIndex(tile => tile.id === selected.id) + 1))}</h2>
         <div className="measurement-inline-editor">
           <label>{t("measurement.name")}<input maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
-          <div className="measurement-source-types"><button type="button" className={sourceType === "device" ? "active" : ""} onClick={() => setSourceType("device")}>{t("measurement.device")}</button><button type="button" className={sourceType === "logic" ? "active" : ""} onClick={() => setSourceType("logic")}>{t("measurement.homeyLogic")}</button></div>
+          <div className="measurement-source-types"><button type="button" className={"settings-interactive " + (sourceType === "device" ? "active" : "")} onClick={() => setSourceType("device")}>{t("measurement.device")}</button><button type="button" className={"settings-interactive " + (sourceType === "logic" ? "active" : "")} onClick={() => setSourceType("logic")}>{t("measurement.homeyLogic")}</button></div>
           {sourceType === "device" ? <>
             <label>{t("measurement.room")}<select value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">{t("measurement.selectRoom")}</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
             <label>{t("measurement.device")}<select value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">{t("measurement.selectDevice")}</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
@@ -671,7 +671,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : "▣  " + t("measurement.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : "▣  " + t("measurement.save")}</button></div>
   </div>;
 }
 
@@ -1683,7 +1683,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
           <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
           <div className="notification-rule-options" role="listbox" aria-label={t("notifications.createdList")}>
             {matchingNotifications.map(item =>
-              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option" + (item.id === selected?.id ? " selected" : "")}
+              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
                 onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{item.enabled && notificationWarningIds.has(item.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}</button>
             )}
             {matchingNotifications.length === 0 && <div className="notification-rule-empty">{t("notifications.noneFound")}</div>}
@@ -1691,7 +1691,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
           <div className="notification-rule-footer">{matchingNotifications.length} {t("notifications.results")}</div>
         </div>}
       </div>
-      <button type="button" className="notification-create-button" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
+      <button type="button" className="notification-create-button settings-interactive" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
       {!busy && !configs.length && <p>{t("notifications.emptyList")}</p>}
       {!busy && sourceCatalogError && <p className="notification-editor-error" role="alert">{t("notifications.sourceLoadError").replace("{error}", sourceCatalogError)}</p>}
     </div>
@@ -1705,12 +1705,12 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     </section>}
     <div className="notification-settings-layout">
       <section className="settings-card notification-editor-card">
-        {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-heading-controls"><button type="button" className="notification-delete-button" disabled={busy || saving} onClick={deleteNotification}><span className="mdi mdi-trash-can-outline" aria-hidden="true"/> {t("notifications.delete")}</button><button type="button" className={"notification-enabled-toggle" + (selected.enabled ? " is-enabled" : " is-disabled")} aria-pressed={selected.enabled} disabled={busy || saving} onClick={() => updateEnabled(!selected.enabled)}><span className="notification-toggle-indicator" aria-hidden="true"/>{selected.enabled ? t("notifications.enabled") : t("notifications.disabledState")}</button><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div></div>
+        {selected ? <><div className="notification-editor-heading"><div className="notification-title-wrap"><label className="visually-hidden" htmlFor="notification-title-input">{t("notifications.name")}</label><input id="notification-title-input" className="notification-title-input" value={selected.title} disabled={busy || saving} onChange={event => updateTitle(event.target.value)} /></div><div className="notification-heading-controls"><button type="button" className="notification-delete-button settings-interactive" disabled={busy || saving} onClick={deleteNotification}><span className="mdi mdi-trash-can-outline" aria-hidden="true"/> {t("notifications.delete")}</button><button type="button" className={"notification-enabled-toggle settings-interactive" + (selected.enabled ? " is-enabled" : " is-disabled")} aria-pressed={selected.enabled} disabled={busy || saving} onClick={() => updateEnabled(!selected.enabled)}><span className="notification-toggle-indicator" aria-hidden="true"/>{selected.enabled ? t("notifications.enabled") : t("notifications.disabledState")}</button><div className="notification-severity-control"><label htmlFor="notification-severity-select">{translate(locale, "notifications.currentLevel")}</label><span className={"notification-severity-pill severity-" + selected.severity}>{translate(locale, "notifications.severity." + selected.severity)}</span><select id="notification-severity-select" value={selected.severity} disabled={busy || saving} onChange={event => updateSeverity(event.target.value as "critical" | "warning" | "info")}><option value="critical">{translate(locale, "notifications.severity.critical")}</option><option value="warning">{translate(locale, "notifications.severity.warning")}</option><option value="info">{translate(locale, "notifications.severity.info")}</option></select></div></div></div>
           <ScheduleBlocklyEditor key={selected.id + "-" + locale + "-" + (selected.timeoutMs === undefined ? "no-timeout" : "timeout")} condition={selected.condition} schedule={selectedSchedule} onChange={updateSchedule} onConditionChange={updateCondition} notificationTitle={selected.notificationTitle ?? selected.title} notificationMessage={selected.message} onContentChange={updateNotificationContent} locale={locale} sourceCatalog={sourceCatalog} sourceKey={currentSourceKey} onSourceChange={updateSource} comparison={selectedComparison} onComparisonChange={updateComparison} timeoutMs={selected.timeoutMs} onTimeoutChange={(value) => setConfigs(current => current.map(item => item.id === selected.id ? { ...item, ...(value === undefined ? { timeoutMs: undefined } : { timeoutMs: value }) } : item))}/>
         </> : <p>{busy ? translate(locale, "notifications.loading") : t("notifications.noneAvailable")}</p>}
       </section>
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
   </div>;
 }
 
@@ -1819,7 +1819,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         </div>
       </section>
     {editorOpen && <section className="settings-card quick-editor-card">
-        <button className="quick-editor-close" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
+        <button className="quick-editor-close settings-interactive" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("settings.editQuickAction")}</h2>
         <label>{t("settings.quickActionName")}<input maxLength={40} value={selected.name || actionName(selected)} onChange={event => updateSelected({ name: event.target.value })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
@@ -1827,7 +1827,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder={t("quickActions.searchIcons")} aria-label={t("quickActions.searchIconsLabel")} /></div>
           <div className="quick-icon-picker">
             {visibleIcons.map(icon =>
-              <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={selected.icon === icon.name ? "active" : ""} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
+              <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={"settings-interactive " + (selected.icon === icon.name ? "active" : "")} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
             )}
             {matchingIcons.length === 0 && <div className="mdi-no-results">{t("quickActions.noIcons")}</div>}
           </div>
@@ -1842,7 +1842,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
           <div className="quick-flow-picker">
-            <button type="button" className="quick-flow-trigger" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
+            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
               <span className="quick-flow-trigger-name" title={selectedFlow?.name}>{selectedFlow?.name ?? t("settings.selectFlow")}</span>
@@ -1857,7 +1857,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
               </div>
               <div className="quick-flow-results">
                 {matchingFlows.map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
-                  className={"quick-flow-option" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
+                  className={"quick-flow-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
@@ -1871,7 +1871,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         </> : <>
           <label>{t("settings.device")}</label>
           <div className="quick-device-picker">
-            <button type="button" className="quick-flow-trigger" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
               onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
               <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
               <span className="quick-flow-trigger-name">{selectedDeviceLabel}</span>
@@ -1886,7 +1886,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
               </div>
               <div className="quick-flow-results">
                 {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === selected.deviceId}
-                  className={"quick-flow-option" + (device.id === selected.deviceId ? " selected" : "")}
+                  className={"quick-flow-option settings-interactive" + (device.id === selected.deviceId ? " selected" : "")}
                   key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
                   <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
                   <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
@@ -1904,10 +1904,10 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
           {selectedDevice && !selectedDevice.available && <p className="quick-warning">{t("settings.deviceUnavailable")}</p>}
         </>}
-        <div className="quick-editor-actions"><button className="secondary-button" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
+        <div className="quick-editor-actions"><button className="secondary-button settings-interactive" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
       </section>}
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
   </div>;
 }
 
@@ -2072,16 +2072,16 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
   return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
     <header className="settings-topbar">
-      <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
+      <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button settings-interactive" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
     </header>
     <aside className="settings-sidebar" id="settings-sidebar">
-      <button type="button" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
+      <button type="button" className="sidebar-collapse-toggle settings-interactive" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
       <h2>{t("settings.navTitle")}</h2>
       {[t("settings.general"),t("settings.quickActions"),t("settings.notifications"),t("settings.measurementTiles"),t("settings.weather")].map((name,index)=>{
         const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
         const pages = ["general","quick-actions","notifications","measurement-tiles","weather"] as const;
         const icons = ["mdi-cog-outline","mdi-flash-outline","mdi-bell-outline","mdi-thermometer","mdi-weather-partly-cloudy"];
-        return <button key={name} className={"settings-nav "+(page===pages[index]?"active":"")} onClick={()=>navigateSettings(pages[index],routes[index])} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
+        return <button key={name} className={"settings-nav settings-interactive "+(page===pages[index]?"active":"")} onClick={()=>navigateSettings(pages[index],routes[index])} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
       })}
       <div className="sidebar-product"><i className="mdi mdi-information-outline" aria-hidden="true" /><span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
@@ -2116,9 +2116,9 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <input className="settings-interactive settings-interactive--text" id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
           <button className="primary-button settings-interactive" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
         </div>
-        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><div className="token-copy-actions"><button className="secondary-button" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button>{tokenCopyStatus && <span className={"token-copy-feedback " + tokenCopyStatus} role="status" aria-live="polite">{tokenCopyStatus === "success" ? t("settings.tokenCopySuccess") : t("settings.tokenCopyError")}</span>}</div></div>}
+        {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><div className="token-copy-actions"><button className="secondary-button settings-interactive" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button>{tokenCopyStatus && <span className={"token-copy-feedback " + tokenCopyStatus} role="status" aria-live="polite">{tokenCopyStatus === "success" ? t("settings.tokenCopySuccess") : t("settings.tokenCopyError")}</span>}</div></div>}
         <div className="token-list">
-          {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
+          {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button settings-interactive" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
         </div>
         <p className="save-message" role="status">{tokenMessage}</p>
       </section>
@@ -2129,10 +2129,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
       </section>
-      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
       </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} onDirtyChange={page === "quick-actions" ? setQuickActionDirty : setMeasurementDirty} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
-    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
+    {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button settings-interactive" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button settings-interactive" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button settings-interactive" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
 }
 
@@ -2212,7 +2212,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
             const matchingVariables = catalog.variables.filter(variable => expectedTypes.includes(variable.type) && (!query || (variable.name+" "+variable.type).toLocaleLowerCase(locale).includes(query)));
             return <div className={"weather-source-row"+(!enabled?" is-disabled":"")} key={id}>
               <div className="weather-source-label"><i className={"mdi "+({outdoorTemperature:"mdi-thermometer",feelsLike:"mdi-thermometer-lines",humidity:"mdi-water-percent",pressure:"mdi-gauge",windSpeed:"mdi-weather-windy",windDirection:"mdi-compass-outline",precipitation:"mdi-weather-rainy",sunrise:"mdi-weather-sunset-up",sunset:"mdi-weather-sunset-down"} as Record<WeatherSettingId,string>)[id]} aria-hidden="true"/><span>{t("weatherSettings.field."+id)}</span></div>
-              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
+              <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle settings-interactive"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
                 <span/>
               </button>
               <div className="weather-source-picker">
@@ -2245,7 +2245,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <p className="quick-card-description">{t("weatherSettings.iconDescription")}</p>
           <div className="weather-motion-setting">
             <div className="weather-motion-copy"><strong>{t("weatherSettings.motionHeading")}</strong><small>{t("weatherSettings.motionDescription")}</small></div>
-            <button type="button" role="switch" aria-checked={settings.animateIcons} className={"weather-motion-toggle"+(settings.animateIcons?" active":"")} onClick={()=>setSettings(current=>({...current,animateIcons:!current.animateIcons}))} aria-label={t("weatherSettings.motionHeading")}><span/></button>
+            <button type="button" role="switch" aria-checked={settings.animateIcons} className={"weather-motion-toggle settings-interactive"+(settings.animateIcons?" active":"")} onClick={()=>setSettings(current=>({...current,animateIcons:!current.animateIcons}))} aria-label={t("weatherSettings.motionHeading")}><span/></button>
           </div>
           <div className="weather-pack-options" role="radiogroup" aria-label={t("weatherSettings.iconHeading")}>
             {packs.map(pack=><label key={pack.id} className={"weather-pack-option settings-interactive"+(settings.iconPack===pack.id?" selected":"")}>
@@ -2265,11 +2265,11 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
           <p>{t("weatherSettings.apiDescription")}</p>
           <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link" onClick={onNavigate}>{t("settings.general")}</button>.</p>
-          <a className="secondary-button weather-doc-link" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
+          <a className="secondary-button weather-doc-link settings-interactive" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
         </section>
       </div>
     </div>
-    <div className="settings-bottom"><span className={"save-message"+(message.includes("Error")?" error":"")} role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty||saving||busy} onClick={()=>void save()}>{saving?t("settings.saving"):t("settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message"+(message.includes("Error")?" error":"")} role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty||saving||busy} onClick={()=>void save()}>{saving?t("settings.saving"):t("settings.save")}</button></div>
   </div>;
 }
 
