@@ -2072,7 +2072,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
   return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
     <header className="settings-topbar">
-      <button type="button" className="settings-brand" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button settings-interactive" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
+      <button type="button" className="settings-brand settings-interactive" onClick={() => { if (window.matchMedia("(min-width: 701px)").matches) setSidebarCollapsed(value => !value); }} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><span className="brand-orb" /><span>Homey Dashboard</span></button><div className="topbar-spacer" /><button className="crumb-button settings-interactive" onClick={leave} aria-label={t("settings.back")}><span className="mdi mdi-view-dashboard-outline" aria-hidden="true" /><span>{t("settings.back")}</span></button>
     </header>
     <aside className="settings-sidebar" id="settings-sidebar">
       <button type="button" className="sidebar-collapse-toggle settings-interactive" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
@@ -2264,7 +2264,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
         <section className="settings-card weather-api-card">
           <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
           <p>{t("weatherSettings.apiDescription")}</p>
-          <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link" onClick={onNavigate}>{t("settings.general")}</button>.</p>
+          <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link settings-interactive" onClick={onNavigate}>{t("settings.general")}</button>.</p>
           <a className="secondary-button weather-doc-link settings-interactive" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
         </section>
       </div>
