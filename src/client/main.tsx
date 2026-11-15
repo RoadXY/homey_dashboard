@@ -1452,7 +1452,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     hydrating = false;
     return () => ws.dispose();
   }, []);
-  return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
+  return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><label className="notification-timeout-mode"><span>{translate(locale, "blockly.visibilityMode")}</span><select aria-label={translate(locale, "blockly.visibilityMode")} value={timeoutMs === undefined ? "none" : "timeout"} onChange={event => onTimeoutChange(event.target.value === "timeout" ? 60000 : undefined)}><option value="none">{translate(locale, "blockly.noTimeout")}</option><option value="timeout">{translate(locale, "blockly.withTimeout")}</option></select></label></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
 }
 function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; onDirtyChange: (dirty: boolean) => void }) {
   const t = (key: string) => translate(locale, key);
