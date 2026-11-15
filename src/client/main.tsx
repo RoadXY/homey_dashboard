@@ -1178,9 +1178,9 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         this.appendDummyInput("FOOTER").appendField(translate(locale, "blockly.notificationRoot"));
         this.setColour(285);
         this.setTooltip(translate(locale, "notifications.blockHelp"));
-        // This is the single fixed root block for the notification workspace.
-        this.setMovable(false);
-        this.setDeletable(false);
+        // Root blocks are available from the toolbox; the active root is locked after placement.
+        this.setMovable(true);
+        this.setDeletable(true);
       }
     };
     Blockly.Blocks.homey_notification_root_timeout = {
@@ -1198,13 +1198,22 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
         this.appendDummyInput("FOOTER").appendField(translate(locale, "blockly.notificationRootTimeout"));
         this.setColour(285);
         this.setTooltip(translate(locale, "notifications.blockHelp"));
-        this.setMovable(false);
-        this.setDeletable(false);
+        this.setMovable(true);
+        this.setDeletable(true);
       }
     };
     const toolbox = {
       kind: "categoryToolbox",
       contents: [
+        {
+          kind: "category",
+          name: translate(locale, "blockly.toolboxNotifications"),
+          categorystyle: "logic_category",
+          contents: [
+            { kind: "block", type: "homey_notification_root" },
+            { kind: "block", type: "homey_notification_root_timeout" }
+          ]
+        },
         {
           kind: "category",
           name: translate(locale, "blockly.toolboxConditions"),
@@ -1350,7 +1359,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
       if (block) { block.initSvg(); block.render(); }
       return block;
     };
-    const rootBlock = ws.newBlock(timeoutMs === undefined ? "homey_notification_root" : "homey_notification_root_timeout");
+    let rootBlock = ws.newBlock(timeoutMs === undefined ? "homey_notification_root" : "homey_notification_root_timeout");
     rootBlock.initSvg();
     rootBlock.render();
     if (timeoutMs !== undefined) rootBlock.setFieldValue(String(timeoutMs), "TIMEOUT_MS");
@@ -1435,6 +1444,33 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     };
     ws.addChangeListener((event: any) => {
       if (event.isUiEvent || event.type === Blockly.Events.FINISHED_LOADING) return;
+      if (event.type === Blockly.Events.BLOCK_CREATE) {
+        const createdIds: string[] = event.ids ?? (event.blockId ? [event.blockId] : []);
+        const replacement = createdIds.map(id => ws.getBlockById(id)).find((block: any) =>
+          block && (block.type === "homey_notification_root" || block.type === "homey_notification_root_timeout") && block.id !== rootBlock.id
+        );
+        if (replacement) {
+          hydrating = true;
+          const previousRoot = rootBlock;
+          const previousTitle = String(previousRoot.getFieldValue("NOTIFICATION_TITLE") ?? "");
+          const previousMessage = String(previousRoot.getFieldValue("NOTIFICATION_MESSAGE") ?? "");
+          const previousCondition = previousRoot.getInputTargetBlock("CONDITIONS");
+          if (previousCondition) previousRoot.getInput("CONDITIONS")?.connection?.disconnect();
+          replacement.setFieldValue(previousTitle, "NOTIFICATION_TITLE");
+          replacement.setFieldValue(previousMessage, "NOTIFICATION_MESSAGE");
+          if (previousCondition) replacement.getInput("CONDITIONS")?.connection?.connect(previousCondition.previousConnection);
+          replacement.setMovable(false);
+          replacement.setDeletable(false);
+          rootBlock = replacement;
+          previousRoot.dispose(false, true);
+          const nextTimeout = replacement.type === "homey_notification_root_timeout" ? Number(replacement.getFieldValue("TIMEOUT_MS")) : undefined;
+          timeoutChangeRef.current(nextTimeout);
+          contentChangeRef.current({ notificationTitle: previousTitle, message: previousMessage });
+          hydrating = false;
+          emitCondition();
+          return;
+        }
+      }
       if (event.type === Blockly.Events.BLOCK_CHANGE && event.element === "field" && event.blockId === rootBlock.id && event.name === "TIMEOUT_MS") {
         timeoutChangeRef.current(Number(rootBlock.getFieldValue("TIMEOUT_MS")));
         return;
@@ -1452,7 +1488,7 @@ function ScheduleBlocklyEditor({ condition, schedule, onChange, onConditionChang
     hydrating = false;
     return () => ws.dispose();
   }, []);
-  return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span><label className="notification-timeout-mode"><span>{translate(locale, "blockly.visibilityMode")}</span><select aria-label={translate(locale, "blockly.visibilityMode")} value={timeoutMs === undefined ? "none" : "timeout"} onChange={event => onTimeoutChange(event.target.value === "timeout" ? 60000 : undefined)}><option value="none">{translate(locale, "blockly.noTimeout")}</option><option value="timeout">{translate(locale, "blockly.withTimeout")}</option></select></label></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
+  return <><div className="schedule-blockly-shell"><div className="schedule-blockly-toolbar"><span><i className="mdi mdi-puzzle-outline"/> {translate(locale, "notifications.editorLabel")}</span></div>{blocklyUnavailable ? <p className="notification-editor-hint">{translate(locale, "notifications.editorUnavailable")}</p> : <div ref={host} className="schedule-blockly-workspace" />}</div>{conditionError && <p className="notification-editor-error" role="alert">{conditionError}</p>}</>;
 }
 function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; onDirtyChange: (dirty: boolean) => void }) {
   const t = (key: string) => translate(locale, key);
