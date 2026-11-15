@@ -436,3 +436,8 @@ De algemene instellingenpagina bevat daarnaast API-tokenbeheer. Token aanmaken e
 ### Praktijktest
 
 Controleer per instellingenpagina dat een wijziging zonder Opslaan gevolgd door een klik op een andere instellingenpagina de bevestiging toont. Herhaal dit met de browserknop Vorige en, waar van toepassing, Volgende. Kies zowel Annuleren (blijven op de pagina met behoud van wijzigingen) als Bevestigen (navigeren en conceptwijzigingen weggooien). Controleer daarnaast dat na Opslaan geen waarschuwing meer verschijnt.
+
+
+### Quick Actions – geen standaardselectie (15 november 2026)
+
+Bij het openen van Instellingen → Quick Actions is geen actie vooraf geselecteerd. De lijst toont alle acht acties in een neutrale, niet-geselecteerde toestand. Pas nadat de gebruiker zelf een actieregel aanklikt, wordt die regel geselecteerd en opent de editor. Dit voorkomt dat de eerste actie ten onrechte de indruk wekt dat deze al actief wordt bewerkt.
