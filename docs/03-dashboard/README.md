@@ -467,3 +467,8 @@ De feedback werkt alleen als hover op het apparaat beschikbaar is. Op touchappar
 Alle negen bronkeuze-dropdowns in de Weerinstellingen gebruiken dezelfde hoverfeedback als het instellingenhoofdmenu: een lichtere rand en subtiele inset-schaduw. De hoverstijl geldt uitsluitend voor ingeschakelde dropdowns; uitgeschakelde bronkeuzes blijven visueel gedimd en reageren niet op hover. De negen velden zijn buitentemperatuur, gevoelstemperatuur, luchtvochtigheid, luchtdruk, windsnelheid, windrichting, neerslag, zonsopkomst en zonsondergang.
 
 De vier keuzebalken voor de weericonensets hebben eveneens hoverfeedback. Bij niet-geselecteerde opties wordt de rand lichter. Bij de reeds geselecteerde optie blijft de bestaande geselecteerde achtergrond zichtbaar en komt daar bij hover een duidelijkere, lichtere omlijning en subtiele helderheidsverhoging bovenop. Zo blijft het onderscheid tussen selectie en hover duidelijk. Op touchapparaten is een actieve indruktoestand beschikbaar; toetsenbordfocus blijft herkenbaar.
+
+
+### Weerinstellingen – overbodige Bearer-token infobox verwijderd (15 november 2026)
+
+In de kaart Weersomschrijving (API) is de afzonderlijke infobox met de jip-en-janneke-uitleg over Bearer-tokens verwijderd. De algemene API-beschrijving erboven blijft staan, evenals de verwijzing naar Algemeen voor het aanmaken van een token en de knop naar de Weer-API-documentatie. De kaart blijft dus bruikbaar zonder de dubbele toelichting.
