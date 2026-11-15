@@ -25,3 +25,12 @@
 
 - The tablet dashboard grid now aligns its implicit rows to the start rather than stretching them to fill the viewport's minimum height. This prevents leftover viewport height from becoming a large blank band between the measurement tiles (row 2) and quick actions (row 3).
 - The vertical gap between the stacked dashboard sections is explicitly set to the same compact responsive spacing used by the tile grids (10–16px). This is scoped to the tablet breakpoint (621–900px); desktop and narrow phone layouts remain unchanged.
+
+
+## Meetwaardetegels: intrinsieke minimale hoogte (15 november 2026)
+
+- Elke dashboardtegel heeft een responsieve minimale hoogte van `clamp(132px, calc(11cqi + 60px), 190px)`. De voorkeursmaat volgt de breedte van de meetwaardegroep, met een minimum en maximum om te kleine of buitensporig grote tegels te voorkomen.
+- De gridrijen gebruiken `minmax(auto, 1fr)`, zodat hun intrinsieke minimumhoogte niet wordt weggedrukt door een beperkte viewporthoogte.
+- De instellingenpreview gebruikt een afzonderlijke, op de previewbreedte afgestemde minimale hoogte.
+- De dashboardpagina vult minimaal de viewport, maar mag alleen verticaal meegroeien en scrollen wanneer de minimale inhoudsafmetingen anders niet passen. Bij voldoende ruimte blijft de bestaande schermvullende presentatie behouden.
+- Deze regel geldt voorlopig uitsluitend voor meetwaardetegels. Pas na beoordeling op de tablet wordt besloten of dezelfde aanpak naar andere componenten wordt uitgebreid.
