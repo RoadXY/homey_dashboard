@@ -566,3 +566,8 @@ De meetwaardetegels staan altijd direct onder de weerkaart, ongeacht de hoogte v
 Iedere tegel heeft uitsluitend een naam en een numerieke Homey-meetwaardebron. De navigatienaam is **Meetwaardetegels** in Nederlands en Engels (**Measurement tiles**).
 
 De opslag is vervangen door een configuratiemodel met `count` en zes vaste tegelrecords. Omdat het dashboard nog in ontwikkeling is en één gebruiker heeft, is expliciet besloten dat er geen migratie van de oude opslagstructuur nodig is.
+
+
+## Gebruikersbesluit – zichtbaarheidstijd voor Blockly-meldingen (15 november 2026)
+
+De gebruiker keurt twee afzonderlijke hoofdblokken goed: **Genereer melding zonder time-out** en **Genereer melding met time-out**. De timeoutvariant biedt uitsluitend 1, 2, 5, 15 en 30 minuten en 1, 2, 4, 8, 12 en 24 uur. Zodra de melding voor het eerst actief wordt, start de zichtbaarheidstimer. Inactief worden en opnieuw actief worden vóór de deadline wijzigen de oorspronkelijke eindtijd niet. Na de deadline verdwijnt de melding. De zichtbaarheidstimer is niet persistent over containerherstarts en staat volledig los van de externe Notifications API.
