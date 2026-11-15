@@ -80,7 +80,7 @@ function App() {
   const [loadError, setLoadError] = React.useState("");
   const [settingsOpen, setSettingsOpen] = React.useState(() => window.location.pathname.startsWith("/settings"));
   const [settingsPath, setSettingsPath] = React.useState(() => window.location.pathname);
-  const notificationDirtyRef = React.useRef(false);
+  const settingsDirtyRef = React.useRef(false);
   const currentRouteRef = React.useRef(window.location.pathname);
   const allowNextPopstateRef = React.useRef(false);
   const [settingsUnlocked, setSettingsUnlocked] = React.useState(false);
@@ -251,14 +251,14 @@ function App() {
       };
       if (allowNextPopstateRef.current) {
         allowNextPopstateRef.current = false;
-      } else if (notificationDirtyRef.current) {
+      } else if (settingsDirtyRef.current) {
         const currentPath = currentRouteRef.current;
         // A popstate cannot be cancelled. Restore the current history entry,
         // ask the user, then replay the Back action only after confirmation.
         window.history.pushState({}, "", currentPath);
         const shouldLeave = window.confirm(t("notifications.discardChanges"));
         if (!shouldLeave) return;
-        notificationDirtyRef.current = false;
+        settingsDirtyRef.current = false;
         allowNextPopstateRef.current = true;
         window.history.back();
         return;
@@ -341,7 +341,7 @@ function App() {
     ? "notifications-heading has-" + notificationIndicatorSeverity
     : "notifications-heading";
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onDirtyChange={dirty => { notificationDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
+    ? <GeneralSettingsPage onDirtyChange={dirty => { settingsDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
     : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
@@ -537,7 +537,7 @@ function normalizeQuickActionIcon(icon: string): string {
 
 
 
-function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => string; onNavigate: (path: string) => void }) {
+function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (key: string) => string; onNavigate: (path: string) => void; onDirtyChange: (dirty: boolean) => void }) {
   const [tiles, setTiles] = React.useState<MeasurementTile[]>([]);
   const [saved, setSaved] = React.useState<MeasurementTile[]>([]);
   const [count, setCount] = React.useState<MeasurementTileCount>(4);
@@ -554,6 +554,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [isError, setIsError] = React.useState(false);
   const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
   const dirty = count !== savedCount || JSON.stringify(tiles) !== JSON.stringify(saved);
+  React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const visibleTiles = tiles.slice(0, count);
   const selected = visibleTiles.find(tile => tile.id === selectedId) ?? visibleTiles[0];
   React.useEffect(() => {
@@ -1712,13 +1713,13 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   </div>;
 }
 
-function DashboardSettingsPage({ page, locale, t }: { page: "quick-actions" | "measurement-tiles"; locale: string; t: (key: string) => string }) {
+function DashboardSettingsPage({ page, locale, t, onDirtyChange }: { page: "quick-actions" | "measurement-tiles"; locale: string; t: (key: string) => string; onDirtyChange: (dirty: boolean) => void }) {
   return page === "measurement-tiles"
-    ? <MeasurementTilesSettingsPage t={t} onNavigate={() => {}}/>
-    : <QuickActionsSettingsPage locale={locale} t={t} onNavigate={() => {}}/>;
+    ? <MeasurementTilesSettingsPage t={t} onNavigate={() => {}} onDirtyChange={onDirtyChange}/>
+    : <QuickActionsSettingsPage locale={locale} t={t} onNavigate={() => {}} onDirtyChange={onDirtyChange}/>;
 }
 
-function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void }) {
+function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale: string; t: (key: string) => string; onNavigate: (path: string) => void; onDirtyChange: (dirty: boolean) => void }) {
   const [items, setItems] = React.useState<QuickAction[]>(quickActionDefaults);
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
@@ -1738,6 +1739,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate }: { locale: string; t
   const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
   const visibleIcons = matchingIcons.slice(0, 120);
   const dirty = JSON.stringify(items) !== JSON.stringify(saved);
+  React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const selected = items.find(item => item.id === editingId) ?? items[0];
   const selectedDevice = catalog.devices.find(device => device.id === selected.deviceId);
   const selectedCapability = selectedDevice?.capabilities.find(capability => capability.id === selected.capabilityId);
@@ -1913,9 +1915,26 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
   const [notificationDirty, setNotificationDirty] = React.useState(false);
   const [weatherDirty, setWeatherDirty] = React.useState(false);
-  React.useEffect(() => { onDirtyChange(notificationDirty || weatherDirty); }, [notificationDirty, weatherDirty, onDirtyChange]);
+  const [quickActionDirty, setQuickActionDirty] = React.useState(false);
+  const [measurementDirty, setMeasurementDirty] = React.useState(false);
+  const [generalDirty, setGeneralDirty] = React.useState(false);
   React.useEffect(() => setPage(initialPage), [initialPage]);
   const confirmLeaveCurrentPage = () => {
+    if (page === "general" && generalDirty) {
+      const confirmed = window.confirm(t("notifications.discardChanges"));
+      if (confirmed) { setSettings(saved); setGeneralDirty(false); }
+      return confirmed;
+    }
+    if (page === "quick-actions" && quickActionDirty) {
+      const confirmed = window.confirm(t("notifications.discardChanges"));
+      if (confirmed) setQuickActionDirty(false);
+      return confirmed;
+    }
+    if (page === "measurement-tiles" && measurementDirty) {
+      const confirmed = window.confirm(t("notifications.discardChanges"));
+      if (confirmed) setMeasurementDirty(false);
+      return confirmed;
+    }
     if (page === "notifications" && notificationDirty) {
       const confirmed = window.confirm(t("notifications.discardChanges"));
       if (confirmed) setNotificationDirty(false);
@@ -1947,6 +1966,11 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const [tokenMessage, setTokenMessage] = React.useState("");
   const [tokenCopyStatus, setTokenCopyStatus] = React.useState<"success" | "error" | "">("");
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  React.useEffect(() => { setGeneralDirty(dirty); }, [dirty]);
+  React.useEffect(() => { onDirtyChange(generalDirty || quickActionDirty || measurementDirty || notificationDirty || weatherDirty); }, [generalDirty, quickActionDirty, measurementDirty, notificationDirty, weatherDirty, onDirtyChange]);
+  React.useEffect(() => {
+    if (page === "general" && initialPage !== "general" && generalDirty) { setSettings(saved); setGeneralDirty(false); }
+  }, [initialPage]);
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
@@ -2032,9 +2056,8 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => {
-    if (!confirmLeaveCurrentPage()) return;
-    if (dirty) setShowLeave(true);
-    else onBack();
+    if (page === "general" && dirty) { setShowLeave(true); return; }
+    if (confirmLeaveCurrentPage()) onBack();
   };
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale.toLowerCase().startsWith("nl") ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale.toLowerCase().startsWith("en") ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
@@ -2100,7 +2123,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
-      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
+      </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} onDirtyChange={page === "quick-actions" ? setQuickActionDirty : setMeasurementDirty} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
   </main>;
