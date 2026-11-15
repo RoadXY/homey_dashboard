@@ -1,11 +1,11 @@
-# Foutmeldingen op het dashboard
+# Dashboard Error Messages
 
-Soms gaat er iets mis terwijl je het dashboard gebruikt. Bijvoorbeeld wanneer een opdracht niet goed wordt uitgevoerd of wanneer het dashboard bepaalde gegevens niet kan ophalen.
+Sometimes something goes wrong while you are using the dashboard. For example, an action may not work or the dashboard may be unable to retrieve some information.
 
-Voor dit soort problemen is er een vaste plek op het dashboard: **de rode balk direct boven het blok ‘Meldingen’**. Daar verschijnen foutmeldingen die te maken hebben met het gebruik of de werking van het dashboard.
+There is a dedicated place for these problems: **the red bar directly above the “Notifications” panel**. Dashboard-related errors are shown there.
 
-Deze plek is bedoeld voor problemen van het dashboard zelf. Het is dus geen overzicht van alle meldingen die Homey of je apparaten kunnen geven.
+This is a place for problems caused by using the dashboard. It is not a list of every notification that Homey or your devices may generate.
 
-Kort gezegd: zie je daar een rode foutmelding, dan weet je dat er iets niet goed is gegaan bij het gebruik van het dashboard.
+In short: if you see a red error message there, something went wrong while the dashboard was being used.
 
-> Let op: de centrale foutplek is als uitgangspunt vastgelegd. Op dit moment toont de rode balk nog niet ieder soort dashboardfout; de uitbreiding daarvan moet nog worden uitgevoerd.
+> Please note: the central error area has been defined as the intended place for dashboard errors. At present, the red bar does not yet display every type of dashboard error.
