@@ -452,7 +452,7 @@ body {
   margin-top: 14px;
 }
 .token-create-row > label { grid-column: 1 / -1; }
-.token-create-row > input {.token-create-row > input {
+.token-create-row > input {
   display: block;
   width: 100%;
   min-width: 0;
