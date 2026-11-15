@@ -11,7 +11,7 @@ The settings interface uses a shared semantic design-token layer and a shared in
 - Measurement tiles and their source/editor controls
 - Weather sources, toggles, icon-pack choices and Weather API token controls
 
-The current token values describe the existing dark appearance. The architecture is prepared for additional themes, but a theme switcher, persisted theme preference and a light theme are **not implemented**.
+The current token values describe the existing dark appearance. The agreed theme scope is deliberately limited: themes may change colors and visual surfaces, while layout, sizing, typography, spacing, interaction behavior and responsive rules remain fixed. A theme switcher, persisted theme preference and a light theme are **not implemented**.
 
 ## Source of truth
 
@@ -19,7 +19,7 @@ The current token values describe the existing dark appearance. The architecture
 - Interactive element classes: `src/client/main.tsx`
 - This document: implementation and extension contract
 
-All settings theme values are defined as semantic CSS custom properties on `:root`. The `:root` values are the default theme. A future theme can override the same properties on a selector such as `:root[data-theme="light"]`, without rewriting individual component selectors.
+The `--settings-*` properties on `:root` are the current dark-theme defaults. They are intended for theme-dependent presentation only: backgrounds/surfaces, text, accent, borders, shadows and (optionally) corner radii. Geometry and behavior tokens are not theme customization points. The current stylesheet still contains settings rules that use legacy dashboard tokens or local literal values; do not assume that every settings color is fully routed through the semantic namespace yet. The v2 work is to close those gaps selectively without changing the current appearance.
 
 The `--ui-color-scheme` token drives the browser's native control color scheme through `color-scheme: var(--ui-color-scheme)`. A future light theme should set this token to `light`; the current default is `dark`.
 
@@ -39,7 +39,9 @@ Use the existing semantic tokens rather than introducing literal colors in setti
 | `--settings-menu-*`, `--settings-source-menu-*` | Searchable dropdowns and popup menus |
 | `--settings-workspace-*` | Blockly/editor workspace, toolbox and fields |
 | `--settings-quick-*`, `--settings-preview-*`, `--settings-editor-*` | Quick Actions and measurement editor surfaces |
-| `--settings-radius-*`, `--settings-control-height*`, `--settings-card-padding`, `--settings-transition-*` | Shared component geometry and motion |
+| `--settings-radius-*` | Optional theme-dependent corner radii |
+
+Fixed component geometry (heights, padding, spacing), typography, transitions and responsive rules are implementation standards, not theme options.
 
 The severity tokens `--severity-critical-*`, `--severity-warning-*` and `--severity-info-*` remain the shared semantic source for notification severity badges and states. Do not replace those with generic accent colors.
 
@@ -85,6 +87,10 @@ Do not add a second component-specific hover rule unless the interaction is inte
 
 All native `select` elements in the settings UI use `settings-interactive`. Custom dropdown triggers and option buttons use the same class on their actual buttons. Disabled weather-source dropdowns remain excluded from hover feedback.
 
+## Shared component standards
+
+The reusable settings vocabulary is: cards/panels, settings rows, labels/descriptions, inputs/selects, primary/secondary/danger buttons, toggles/selections and status messages/badges. Components must retain the established dimensions and behavior across themes. Extract shared styling only where the existing pages genuinely share the same structure; do not force unrelated controls into a single visual variant.
+
 ## Geometry and component variants
 
 Use the existing geometry tokens for common shapes and dimensions. The interface intentionally retains compact and large variants where the context requires them (for example, a compact severity select and a larger searchable source picker). Do not force every control to one height when that would reduce usability or break the established layout.
@@ -100,16 +106,9 @@ A few colors are content semantics rather than theme chrome:
 
 These exceptions should remain explicit. New settings surfaces, controls and menu states should use the `--settings-*` token family.
 
-## Adding a future theme
+## Theme boundaries
 
-1. Add a theme selector to the application and apply its value to the document root, for example `data-theme="light"`.
-2. Add a theme override block such as `:root[data-theme="light"]` in `src/client/style.css`.
-3. Override the semantic `--settings-*` tokens and set `--ui-color-scheme: light`.
-4. Check text, controls, dropdown menus, focus outlines, disabled states, selected states, error/warning/success feedback and Blockly surfaces for sufficient contrast.
-5. Verify that weather-condition colors and notification severity colors remain semantically clear.
-6. Test every settings page at desktop, tablet and phone widths, including keyboard and touch interaction.
-
-Do not add theme-specific selectors to individual components. A theme should change the token values, not the component structure.
+A future theme may override only presentation tokens for backgrounds/surfaces, text, accent colors, borders, shadows and optionally corner radii. Keep component dimensions, placement, typography, spacing, transitions, interactions and responsive behavior identical. No theme selector, persistence mechanism or second theme is part of this work. Do not introduce a generalized theming framework.
 
 ## Validation notes
 
