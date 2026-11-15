@@ -82,7 +82,7 @@ Op de pagina **Dashboard** zijn onder andere het aantal en de bronnen van de mee
 
 Het aantal meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** tegels. De standaardinstelling is **vier**. De zes tegelconfiguraties worden altijd bewaard; bij een lager zichtbaar aantal blijven de overige configuraties behouden en komen ze terug wanneer de gebruiker het aantal weer verhoogt. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron. Omdat het dashboard nog in ontwikkeling is en één gebruiker heeft, is voor deze wijziging geen migratie van de bestaande meetwaardetegelconfiguratie nodig.
 
-De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term temperatuurtegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
+De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term meetwaardetegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
 
 Bronselectie voor Homey-apparaten: eerst een Homey-kamer/ruimte kiezen en daarna een apparaat en één van de numerieke capabilities van dat apparaat. De ruimtehiërarchie is volledig genest en wordt zonder vaste maximale diepte ondersteund. Alleen apparaten met ten minste één geschikte numerieke meetwaarde worden getoond. De sensorselectie wordt op stabiele Homey-ID's gebaseerd: apparaat-ID plus capability-ID; veranderlijke namen zijn uitsluitend presentatietekst.
 
@@ -158,8 +158,8 @@ Een handmatig gekozen dashboardtaal wordt persistent opgeslagen en blijft behoud
 ### Locatie taalinstelling
 De taalkeuze staat op de instellingenpagina **Algemeen**, bij de datum- en tijdinstellingen.
 
-### Live preview temperatuurtegels
-De voorbeeldweergave van de temperatuurtegels wordt direct bijgewerkt bij iedere wijziging aan naam, geselecteerde sensor of volgorde. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
+### Live preview meetwaardetegels
+De voorbeeldweergave van de meetwaardetegels wordt direct bijgewerkt bij iedere wijziging aan naam, geselecteerde sensor of volgorde. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
 
 ### Sensorselectie – geneste Homey-ruimtes en kruimelpad
 De sensorpicker volgt de volledige geneste Homey-ruimtestructuur zonder vaste maximale diepte. Bij selectie van een ruimte worden alleen apparaten getoond die een geschikte temperatuursensor aanbieden; per apparaat wordt de beschikbare temperatuurwaarde getoond en selecteerbaar gemaakt. Ruimte-iconen uit Homey worden niet overgenomen. Navigatie terug gebeurt uitsluitend via het aanklikbare kruimelpad; er staat geen aparte optie Terug tussen de ruimtes of apparaten. Bij lange paden worden het laatste niveau en de twee voorgaande niveaus getoond; tussenliggende niveaus worden achter een aanklikbare ellipsis (…) verborgen, waarmee elk verborgen niveau bereikbaar blijft.
@@ -254,7 +254,7 @@ Alle hoofdcategorieën in de instellingen hebben nu een eigen directe URL. Deze 
 
 De zijbalknavigatie werkt voor alle vijf categorieën en werkt de URL bij. De drie onderdelen waarvan de inhoud nog niet is gebouwd tonen een tijdelijke melding in plaats van een niet-werkende/uitgeschakelde menuoptie. De browsergeschiedenis (terug/vooruit) blijft de route synchroniseren.
 
-De bestaande Dashboard-subtabellen Temperatuurtegels en Weer hebben nog geen afzonderlijke inhoudsroutes; op dit moment is alleen Snelle acties als dashboard-subpagina geïmplementeerd. Dit wordt aangevuld zodra die instellingenpagina's worden gebouwd.
+De bestaande Dashboard-subtabellen Meetwaardetegels en Weer hebben nog geen afzonderlijke inhoudsroutes; op dit moment is alleen Snelle acties als dashboard-subpagina geïmplementeerd. Dit wordt aangevuld zodra die instellingenpagina's worden gebouwd.
 
 
 ## Quick Actions: statusgestuurde apparaattegels en Toggle-bediening (12 november 2026)
@@ -379,7 +379,7 @@ Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-
 ### Dashboard-instellingen – navigatie vereenvoudigd (12 november 2026)
 
 - De bovenste navigatiebalk met de tabs **Quick Actions** en **Meetwaardetegels** is verwijderd; deze was dubbelop naast de sectieknoppen in de pagina.
-- De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Temperatuurtegels** opent de configuratie van de vier meetwaardetegels en **Snelle acties** opent de configuratie van de acht Quick Actions.
+- De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Meetwaardetegels** opent de configuratie van de vier meetwaardetegels en **Snelle acties** opent de configuratie van de acht Quick Actions.
 - De actieve sectieknop wordt visueel gemarkeerd. De navigatie werkt op beide pagina's, zodat tussen de twee onderdelen heen en weer kan worden geschakeld.
 - De knop **Weer** blijft voorlopig een niet-actieve aanduiding; de instellingenpagina voor weer valt buiten deze wijziging.
 
@@ -387,7 +387,7 @@ Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-
 ### Visuele basisstijl – navigatieknoppen en themaregels (12 november 2026)
 
 #### Aanleiding
-De navigatieknoppen bovenaan (Quick Actions / Meetwaardetegels) en de sectieknoppen (Temperatuurtegels / Weer / Snelle acties) hadden verschillende kleur- en actieve-stijlen. Dat is ongewenst: knoppen met dezelfde navigatiefunctie moeten binnen één thema dezelfde visuele taal gebruiken.
+De navigatieknoppen bovenaan (Quick Actions / Meetwaardetegels) en de sectieknoppen (Meetwaardetegels / Weer / Snelle acties) hadden verschillende kleur- en actieve-stijlen. Dat is ongewenst: knoppen met dezelfde navigatiefunctie moeten binnen één thema dezelfde visuele taal gebruiken.
 
 #### Afgesproken basisstijl voor sectienavigatie
 - **Inactief:** donkere blauwgrijze achtergrond, subtiele blauwgrijze rand en lichte tekst.
@@ -469,16 +469,6 @@ Component-CSS verwijst naar deze tokens en bevat geen eigen thema-kleurwaarden v
 - De audit is uitgevoerd op de clientbestanden en de Nederlandse/Engelse woordenboeken. Nieuwe talen moeten dezelfde sleutelopschoning volgen als die later worden toegevoegd.
 
 
-### Meetwaardetegels – configureerbare pictogrammen (13 november 2026)
-
-- Iedere vaste meetwaardetegel heeft nu een eigen Material Design Icon (MDI), naast naam en numerieke bron.
-- De pictogramkiezer hergebruikt de doorzoekbare MDI-catalogus en picker-interactie van Quick Actions, inclusief Nederlandse zoektermen, actieve selectie en limiet van 120 zichtbare resultaten.
-- De gekozen icon wordt getoond in de tegelrij, instellingenpreview en op het dashboard zelf.
-- Nieuwe en bestaande configuraties zonder `icon` blijven compatibel: de server vult automatisch `thermometer` als standaardpictogram in.
-- De configuratie blijft opgeslagen in `data/measurement-tiles.json`; geen aparte i18n-vertalingen nodig voor iconnamen.
-- Nog te testen na deployment: icon selecteren, opslaan, pagina herladen en controleren op instellingenpreview en dashboard.
-
-
 ## Meldingsconfiguratie – canoniek schema v1 (13 november 2026)
 
 Het enige officiële meldingsmodel is schemaVersion 1. Het JSON Schema staat in `docs/04-configuratie/schemas/notification-v1.schema.json`. Dit is een schone ontwikkelbasis; er is geen compatibiliteit met of migratie vanuit de eerder gebruikte legacy-v1-structuur.
@@ -509,18 +499,25 @@ De API-routes `GET /api/settings/notifications` en `POST /api/settings/notificat
 
 ## Instellingenmenu en URL's (13 november 2026)
 
-De vaste menuvolgorde is **Algemeen**, **Snelle acties**, **Meldingen**, **Temperatuurtegels** en **Weer**. De oude bovenliggende categorie Dashboard is vervallen; snelle acties en meetwaardetegels zijn eigen instellingenpagina's. De aparte menu-items Apparaten, Homey en Systeem zijn vervallen. Algemene Homey-/serverstatus blijft onderdeel van Algemeen.
+De vaste menuvolgorde is **Algemeen**, **Snelle acties**, **Meldingen**, **Meetwaardetegels** en **Weer**. De oude bovenliggende categorie Dashboard is vervallen; snelle acties en meetwaardetegels zijn eigen instellingenpagina's. De aparte menu-items Apparaten, Homey en Systeem zijn vervallen. Algemene Homey-/serverstatus blijft onderdeel van Algemeen.
 
 | Menu-item | Canonieke URL |
 |---|---|
 | Algemeen | `/settings/general` |
 | Snelle acties | `/settings/quick-actions` |
 | Meldingen | `/settings/notifications` |
-| Temperatuurtegels | `/settings/measurement-tiles` |
+| Meetwaardetegels | `/settings/measurement-tiles` |
 | Weer | `/settings/weather` |
 
 De Weer-pagina is voorlopig een placeholder. De beoogde afzonderlijke opties zijn buitentemperatuur, gevoelstemperatuur, weericoon/-omschrijving, wind, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang.
 
-Oude bookmarks worden naar de nieuwe canonieke routes omgezet: dashboard en de oude quick-actions route naar Snelle acties; de oude dashboard/measurement-tiles route naar Temperatuurtegels; de oude Apparaten-, Homey- en Systeemroutes naar Algemeen. De redirects wijzigen geen opgeslagen instellingen.
+Oude bookmarks worden naar de nieuwe canonieke routes omgezet: dashboard en de oude quick-actions route naar Snelle acties; de oude dashboard/measurement-tiles route naar Meetwaardetegels; de oude Apparaten-, Homey- en Systeemroutes naar Algemeen. De redirects wijzigen geen opgeslagen instellingen.
 
 De backend serveert voor onbekende niet-API-paden de frontend `index.html` (SPA-fallback). Daardoor kunnen de canonieke instellingen-URL's rechtstreeks in de adresbalk worden geopend of na een browser-refresh opnieuw worden geladen; de client bepaalt vervolgens de juiste instellingenpagina en controleert de bestaande instellingen-sessie.
+
+
+### Meetwaardetegels – configureerbaar aantal en actuele opslag (15 november 2026)
+
+De pagina gebruikt een dropdown met 2, 4 of 6 zichtbare tegels (standaard vier). De configuratie bewaart zes vaste tegelrecords; verborgen tegels behouden hun naam en numerieke Homey-bron. De preview en de dashboardweergave volgen het gekozen aantal. Het dashboard plaatst de tegelgroep altijd onder de weerkaart in twee kolommen en één, twee of drie rijen.
+
+De opslag heeft de vorm `{ count, tiles }`. Een aparte pictograminstelling maakt geen deel uit van de meetwaardetegelconfiguratie. Er is geen migratie nodig omdat het dashboard nog in ontwikkeling is en één gebruiker heeft.
