@@ -571,3 +571,8 @@ De opslag is vervangen door een configuratiemodel met `count` en zes vaste tegel
 ## Gebruikersbesluit – zichtbaarheidstijd voor Blockly-meldingen (15 november 2026)
 
 De gebruiker keurt twee afzonderlijke hoofdblokken goed: **Genereer melding zonder time-out** en **Genereer melding met time-out**. De timeoutvariant biedt uitsluitend 1, 2, 5, 15 en 30 minuten en 1, 2, 4, 8, 12 en 24 uur. Zodra de melding voor het eerst actief wordt, start de zichtbaarheidstimer. Inactief worden en opnieuw actief worden vóór de deadline wijzigen de oorspronkelijke eindtijd niet. Na de deadline verdwijnt de melding. De zichtbaarheidstimer is niet persistent over containerherstarts en staat volledig los van de externe Notifications API.
+
+
+## Blockly – categorie Meldingen met twee hoofdblokken (15 november 2026)
+
+De twee varianten van het hoofdblok **Genereer melding** worden als afzonderlijke blokken aangeboden in een eigen Blockly-toolboxcategorie **Meldingen** (Engels: **Notifications**). De categorie staat naast de bestaande categorieën voor voorwaarden, containers en tijd. De bestaande variant blijft zonder time-out; de tweede variant toont de vaste time-outdropdown direct onder de invoervelden Titel en Tekst. De gebruiker kan tussen beide varianten wisselen door het gewenste hoofdblok vanuit de categorie naar de werkruimte te slepen. Bij het wisselen blijven titel, bericht en de volledige opgebouwde conditieboom behouden; er blijft steeds precies één hoofdblok in de werkruimte. Een losse toolbar-dropdown voor het kiezen van de time-outmodus wordt niet gebruikt.
