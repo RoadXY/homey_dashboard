@@ -319,7 +319,7 @@
   "blockly.selectHomeySourceOption": "— selecteer Homey-bron —",
   "blockly.selectHomeySourceTooltip": "Selecteer een Homey-apparaat/capability of Logic-variabele.",
   "blockly.sourceSearchDescription": "Zoek een Homey-bron.",
-  "notifications.discardChanges": "Je hebt niet-opgeslagen wijzigingen in je meldingen. Als je teruggaat, gaan deze wijzigingen verloren. Wil je doorgaan?",
+  "notifications.discardChanges": "Je hebt niet-opgeslagen wijzigingen. Als je verdergaat, gaan deze wijzigingen verloren. Wil je doorgaan?",
   "notifications.selectValidNotification": "Selecteer een melding",
   "notifications.search": "Zoek een melding...",
   "notifications.searchLabel": "Zoek een melding",
