@@ -82,7 +82,7 @@ Op de pagina **Dashboard** zijn onder andere het aantal en de bronnen van de mee
 
 Het aantal meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** tegels. De standaardinstelling is **vier**. De zes tegelconfiguraties worden altijd bewaard; bij een lager zichtbaar aantal blijven de overige configuraties behouden en komen ze terug wanneer de gebruiker het aantal weer verhoogt. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron. Omdat het dashboard nog in ontwikkeling is en één gebruiker heeft, is voor deze wijziging geen migratie van de bestaande meetwaardetegelconfiguratie nodig.
 
-De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term meetwaardetegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
+Een meetwaardetegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
 
 Bronselectie voor Homey-apparaten: eerst een Homey-kamer/ruimte kiezen en daarna een apparaat en één van de numerieke capabilities van dat apparaat. De ruimtehiërarchie is volledig genest en wordt zonder vaste maximale diepte ondersteund. Alleen apparaten met ten minste één geschikte numerieke meetwaarde worden getoond. De sensorselectie wordt op stabiele Homey-ID's gebaseerd: apparaat-ID plus capability-ID; veranderlijke namen zijn uitsluitend presentatietekst.
 
@@ -159,7 +159,7 @@ Een handmatig gekozen dashboardtaal wordt persistent opgeslagen en blijft behoud
 De taalkeuze staat op de instellingenpagina **Algemeen**, bij de datum- en tijdinstellingen.
 
 ### Live preview meetwaardetegels
-De voorbeeldweergave van de meetwaardetegels wordt direct bijgewerkt bij iedere wijziging aan naam, geselecteerde sensor of volgorde. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
+De voorbeeldweergave van de meetwaardetegels wordt direct bijgewerkt bij wijzigingen aan het zichtbare aantal, een tegelnaam of de geselecteerde meetbron. Dit gebeurt al vóórdat de gebruiker op Opslaan klikt; Opslaan bewaart de wijzigingen definitief.
 
 ### Sensorselectie – geneste Homey-ruimtes en kruimelpad
 De sensorpicker volgt de volledige geneste Homey-ruimtestructuur zonder vaste maximale diepte. Bij selectie van een ruimte worden alleen apparaten getoond die een geschikte temperatuursensor aanbieden; per apparaat wordt de beschikbare temperatuurwaarde getoond en selecteerbaar gemaakt. Ruimte-iconen uit Homey worden niet overgenomen. Navigatie terug gebeurt uitsluitend via het aanklikbare kruimelpad; er staat geen aparte optie Terug tussen de ruimtes of apparaten. Bij lange paden worden het laatste niveau en de twee voorgaande niveaus getoond; tussenliggende niveaus worden achter een aanklikbare ellipsis (…) verborgen, waarmee elk verborgen niveau bereikbaar blijft.
@@ -379,7 +379,7 @@ Deze stap is nog niet als runtime-gevalideerd beschouwd. Eerst moeten de GitHub-
 ### Dashboard-instellingen – navigatie vereenvoudigd (12 november 2026)
 
 - De bovenste navigatiebalk met de tabs **Quick Actions** en **Meetwaardetegels** is verwijderd; deze was dubbelop naast de sectieknoppen in de pagina.
-- De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Meetwaardetegels** opent de configuratie van de vier meetwaardetegels en **Snelle acties** opent de configuratie van de acht Quick Actions.
+- De navigatie gebeurt nu via de bestaande knoppen onder de paginatitel: **Meetwaardetegels** opent de configuratie van de zes vaste tegelrecords en het zichtbare aantal van 2, 4 of 6 en **Snelle acties** opent de configuratie van de acht Quick Actions.
 - De actieve sectieknop wordt visueel gemarkeerd. De navigatie werkt op beide pagina's, zodat tussen de twee onderdelen heen en weer kan worden geschakeld.
 - De knop **Weer** blijft voorlopig een niet-actieve aanduiding; de instellingenpagina voor weer valt buiten deze wijziging.
 
@@ -520,4 +520,4 @@ De backend serveert voor onbekende niet-API-paden de frontend `index.html` (SPA-
 
 De pagina gebruikt een dropdown met 2, 4 of 6 zichtbare tegels (standaard vier). De configuratie bewaart zes vaste tegelrecords; verborgen tegels behouden hun naam en numerieke Homey-bron. De preview en de dashboardweergave volgen het gekozen aantal. Het dashboard plaatst de tegelgroep altijd onder de weerkaart in twee kolommen en één, twee of drie rijen.
 
-De opslag heeft de vorm `{ count, tiles }`. Een aparte pictograminstelling maakt geen deel uit van de meetwaardetegelconfiguratie. Er is geen migratie nodig omdat het dashboard nog in ontwikkeling is en één gebruiker heeft.
+De opslag heeft de vorm `{ count, tiles }`. Er is geen migratie nodig omdat het dashboard nog in ontwikkeling is en één gebruiker heeft.
