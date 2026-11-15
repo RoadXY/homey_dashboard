@@ -555,3 +555,14 @@ De Blockly-time-outfunctionaliteit is nog niet geïmplementeerd. De twee blokvar
 Bijgewerkte handleidingen:
 - [Notifications and Blockly – Developer Guide](../02-architectuur/meldingen-blockly-developer-guide.md)
 - [Blockly-meldingen – zichtbaarheidstijd](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md)
+
+
+## Meetwaardetegels – instelbaar aantal (15 november 2026)
+
+De gebruiker stelt het aantal zichtbare meetwaardetegels in via een dropdown met **2, 4 of 6** opties. De standaard blijft vier. Alle zes tegelconfiguraties worden permanent bewaard, ook wanneer er tijdelijk maar twee of vier zichtbaar zijn. Bij opnieuw verhogen worden de eerder ingestelde namen en Homey-bronnen hersteld.
+
+De meetwaardetegels staan altijd direct onder de weerkaart, ongeacht de hoogte van de weerkaart. De indeling gebruikt twee kolommen en één, twee of drie rijen voor respectievelijk 2, 4 of 6 tegels. De tegelgroep groeit in hoogte mee met het aantal rijen. De instellingenlijst en preview tonen het ingestelde aantal.
+
+Iedere tegel heeft uitsluitend een naam en een numerieke Homey-meetwaardebron. De navigatienaam is **Meetwaardetegels** in Nederlands en Engels (**Measurement tiles**).
+
+De opslag is vervangen door een configuratiemodel met `count` en zes vaste tegelrecords. Omdat het dashboard nog in ontwikkeling is en één gebruiker heeft, is expliciet besloten dat er geen migratie van de oude opslagstructuur nodig is.
