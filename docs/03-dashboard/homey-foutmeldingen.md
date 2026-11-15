@@ -1,14 +1,18 @@
-# Homey-foutmeldingen boven de meldingenkaart
+# Dashboardfoutmeldingen boven de meldingenkaart
 
-**Status:** inventarisatie van de bestaande implementatie  
+**Status:** gebruikersbesluit en inventarisatie bestaande implementatie  
 **Datum:** 15 november 2026  
 **Branch:** `phase_1_foundation`
 
-## 1. Doel en afbakening
+## 1. Doel en gebruikersbesluit
 
-Dit document beschrijft welke rode foutmeldingen op dit moment boven de dashboardkaart **Meldingen** kunnen verschijnen. Het gaat specifiek om de tijdelijke rode foutbalk die in de frontend wordt weergegeven als `action-error-list`.
+De rode zone direct boven de dashboardkaart **Meldingen** wordt de centrale plek waar fouten worden getoond die optreden tijdens het gebruik van het dashboard. De gebruiker heeft expliciet bevestigd dat deze plek niet bedoeld is als algemene Homey-notificatiefeed, maar als herkenbare foutzone voor de werking van onze eigen dashboardapplicatie.
 
-Deze foutbalk is op dit moment **geen algemene Homey-notificatiefeed** en leest geen Homey-tijdlijn, Homey-notificaties of algemene apparaatdiagnostiek uit. De balk wordt uitsluitend gevuld wanneer een gebruiker een **Quick Action** uitvoert en die uitvoering aan de dashboardkant mislukt.
+Daaronder vallen in ieder geval fouten uit de dashboardfrontend en -backend, fouten bij het ophalen of verwerken van dashboardgegevens, fouten in communicatie met Homey die dashboardfunctionaliteit verstoren en fouten bij het uitvoeren van Quick Actions. Een fout die door Homey of een apparaatdriver wordt teruggegeven valt eronder wanneer die optreedt als gevolg van een dashboardactie of dashboardverzoek.
+
+Niet bedoeld zijn zelfstandige Homey-appmeldingen, Homey-tijdlijnberichten of Flow-fouten die buiten het dashboard ontstaan en geen verband hebben met een dashboardactie of dashboardverzoek.
+
+**Huidige situatie versus doel:** de bestaande rode foutbalk (`action-error-list`) toont momenteel alleen tijdelijke Quick Action-uitvoeringsfouten. Algemene dashboard/serverfouten en de Homey-verbindingswaarschuwing worden momenteel op een andere plek (bij de klok) getoond. Het gebruikersbesluit is om de foutzone als centrale plek voor dashboardgerelateerde fouten te hanteren; de benodigde uitbreiding en eventuele verplaatsing zijn nog niet geïmplementeerd.
 
 Quick Actions zijn:
 - een Standard Flow starten;
@@ -107,13 +111,26 @@ Dit ondersteunt twee verschillende foutgroepen:
 - **Dashboard- en validatiefouten:** vaste teksten die wij zelf in de backend produceren.
 - **Homey-/driverfouten:** dynamische teksten die vanuit de API, Homey of een apparaatdriver terugkomen.
 
-## 6. Ontwerpconclusies voor toekomstige uitbreiding
+## 6. Functionele uitgangspunten voor de centrale dashboardfoutzone
 
-1. Behoud het onderscheid tussen Quick Action-uitvoeringsfouten en de reguliere meldingenkaart.
-2. Behandel foutteksten van Homey/driver als dynamische, onbetrouwbare invoer: toon ze als tekst, niet als HTML.
-3. Registreer intern minimaal de actie-ID, het actietype, het tijdstip en de foutcategorie. Log nooit API-sleutels of Authorization-headers.
-4. Voeg geen fouttypen toe aan de vaste catalogus zonder bewijs uit een concrete API-response, Homey-log of driver.
-5. Als we later ook Flow-uitvoeringsfouten, apparaatbeschikbaarheid of Homey-tijdlijnmeldingen willen tonen, moet daarvoor een afzonderlijke bron-/eventintegratie worden ontworpen. Alleen het afvangen van de Quick Action HTTP-response is daarvoor niet voldoende.
+1. De foutzone is bedoeld voor fouten die het gebruik of de werking van het dashboard beïnvloeden. De bron kan frontend, backend, netwerk/API of Homey-integratie zijn.
+2. Quick Action-fouten blijven onderdeel van deze zone.
+3. Een fout uit Homey of een driver wordt opgenomen wanneer deze terugkomt op een dashboardactie of dashboardverzoek. Zelfstandige Homey-meldingen buiten het dashboard vallen buiten scope.
+4. De foutzone blijft gescheiden van de reguliere meldingenkaart: Blockly-, externe Notifications API- en gebruikersmeldingen zijn geen technische dashboardfouten.
+5. Foutteksten van Homey/driver zijn dynamische, onbetrouwbare invoer: toon ze als tekst, niet als HTML.
+6. Registreer waar zinvol intern de foutcategorie, bron, tijdstip en betrokken dashboardactie. Log nooit API-sleutels of Authorization-headers.
+7. Voeg geen fouttypen toe aan een vaste catalogus zonder bewijs uit een concrete API-response, log of codepad.
+
+### Nog niet besloten / nader uit te werken
+
+- Of meerdere identieke fouten worden samengevoegd of afzonderlijk getoond.
+- Of fouten automatisch verdwijnen, alleen handmatig sluitbaar zijn of beide mogelijkheden ondersteunen.
+- Of de foutzone een maximumaantal zichtbare fouten krijgt.
+- Welke fouten als technisch detail worden getoond en welke een gebruiksvriendelijke tekst krijgen.
+- Of fouten worden bewaard na een pagina-refresh of containerherstart.
+- Welke niet-fatale situaties (bijvoorbeeld tijdelijk ontbrekende meetwaarde) als fout gelden in plaats van als status/onbekend.
+
+Deze punten worden niet stilzwijgend ingevuld; ze vragen zo nodig om een afzonderlijk gebruikersbesluit.
 
 ## 7. Bronnen
 
@@ -130,4 +147,4 @@ Dit ondersteunt twee verschillende foutgroepen:
 
 ---
 
-**Samenvatting:** de rode balk toont momenteel fouten van Quick Action-uitvoeringen. De vaste dashboardfouten zijn volledig uit de code te inventariseren; Homey-, driver- en netwerkfouten vormen een open verzameling. De huidige code verzamelt geen algemene Homey-foutmeldingen buiten deze uitvoerroute.
+**Samenvatting:** de gebruiker heeft de zone boven de meldingenkaart aangewezen als centrale plek voor fouten tijdens het gebruik van het dashboard. De huidige implementatie toont daar alleen Quick Action-fouten; algemene dashboard-/serverfouten en verbindingswaarschuwingen staan nog elders. De inventaris van vaste Quick Action-foutteksten blijft nuttig als technische onderbouwing, maar de toekomstige scope is breder: dashboardgerelateerde fouten uit frontend, backend, netwerk en Homey-integratie.
