@@ -403,6 +403,6 @@ De meetwaarden onder de buitentemperatuur en weersomschrijving mogen naar meerde
 Deze wijziging is uitsluitend toegepast op de weerkaart. De klok, meetwaardetegels, snelle acties en meldingen zijn niet opnieuw vormgegeven. De weerkaart is hiermee de tweede praktijktest van intrinsieke minimale componentafmetingen.
 
 
-## Homey-foutmeldingen boven de meldingenkaart
+## Centrale dashboardfoutmeldingen boven de meldingenkaart
 
-De inventarisatie van de rode Quick Action-foutbalk, de vaste dashboardfoutteksten, dynamische Homey-/driverfouten en de grenzen van de huidige implementatie staat in [Homey-foutmeldingen](homey-foutmeldingen.md). Dit is nadrukkelijk geen inventaris van Homey's volledige interne of tijdlijnnotificatiesysteem.
+De zone boven de meldingenkaart is bedoeld als centrale plek voor fouten die tijdens het gebruik van het dashboard ontstaan (frontend, backend, netwerk/API, Homey-integratie en Quick Actions). Zelfstandige Homey-notificaties en Flow-fouten buiten een dashboardactie vallen buiten scope. De huidige implementatie toont hier nog alleen Quick Action-fouten; algemene server-/dashboardfouten en Homey-verbindingswaarschuwingen staan elders. De inventaris en functionele afbakening staan in [Dashboardfoutmeldingen](homey-foutmeldingen.md).
