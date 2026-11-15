@@ -79,6 +79,7 @@ type NotificationConfig = {
   severity: Severity;
   enabled: boolean;
   testOnly?: boolean;
+  timeoutMs?: number;
   condition: ConditionNode;
 };
 
@@ -192,6 +193,7 @@ export function isValidNotificationConfig(value: unknown): value is Notification
       !["critical", "warning", "info"].includes(String(config.severity)) ||
       typeof config.enabled !== "boolean" ||
       (config.testOnly !== undefined && typeof config.testOnly !== "boolean") ||
+      (config.timeoutMs !== undefined && !isValidBlocklyNotificationTimeout(config.timeoutMs)) ||
       config.source !== undefined) return false;
   return isConditionNode(config.condition);
 }
