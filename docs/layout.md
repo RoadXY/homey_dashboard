@@ -34,3 +34,11 @@
 - De instellingenpreview gebruikt een afzonderlijke, op de previewbreedte afgestemde minimale hoogte.
 - De dashboardpagina vult minimaal de viewport, maar mag alleen verticaal meegroeien en scrollen wanneer de minimale inhoudsafmetingen anders niet passen. Bij voldoende ruimte blijft de bestaande schermvullende presentatie behouden.
 - Deze regel geldt voorlopig uitsluitend voor meetwaardetegels. Pas na beoordeling op de tablet wordt besloten of dezelfde aanpak naar andere componenten wordt uitgebreid.
+
+
+## Weerkaart: intrinsieke en responsieve hoogte (15 november 2026)
+
+- De weerkaart heeft een responsieve minimale hoogte van `clamp(220px, 24vw, 340px)` en gebruikt een automatische hoogte in plaats van vaste hoogtes op tablet en mobiel.
+- De aanvullende weermeetwaarden mogen teruglopen naar meerdere kolommen en rijen. Elk veld houdt een minimale breedte aan; bij meer ingeschakelde bronnen groeit de kaart mee met de inhoud.
+- De kaart mag dus hoger worden wanneer de ingeschakelde weergegevens dat vereisen, zonder dat de inhoud wordt samengedrukt of horizontaal buiten de kaart loopt.
+- De wijziging is beperkt tot de weerkaart; andere dashboardcomponenten blijven ongewijzigd.
