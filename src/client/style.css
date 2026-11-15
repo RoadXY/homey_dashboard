@@ -246,6 +246,9 @@ body {
     flex: 1 0 auto;
     grid-template-columns: repeat(2,minmax(0,1fr));
   }
+  .temperature-grid.measurement-count-2 { min-height: clamp(132px,16vh,176px); }
+  .temperature-grid.measurement-count-4 { min-height: calc(2 * clamp(132px,16vh,176px) + clamp(10px,1vw,16px)); }
+  .temperature-grid.measurement-count-6 { min-height: calc(3 * clamp(132px,16vh,176px) + 2 * clamp(10px,1vw,16px)); }
   /* Both quick-action rows use exactly the measurement-row height. */
   .actions-grid {
     grid-auto-rows: clamp(132px,16vh,176px);
