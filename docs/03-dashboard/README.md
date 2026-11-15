@@ -414,13 +414,13 @@ Alle bewerkbare instellingenpagina's moeten waarschuwen voordat de gebruiker de 
 
 ### Pagina-inventarisatie
 
-| Instellingenpagina | Opslaan van conceptwijzigingen | Waarschuwing vóór navigatie |
+| Instellingenpagina | Situatie vóór deze wijziging | Situatie na deze wijziging |
 | --- | --- | --- |
-| Algemeen | Ja, voor taal-, datum-, tijd- en meldingsinstellingen | Geïmplementeerd |
-| Quick Actions | Ja, voor knopnaam, pictogram, actietype en actie-instellingen | Geïmplementeerd |
-| Meetwaardetegels | Ja, voor aantal tegels, namen en meetbronnen | Geïmplementeerd |
-| Meldingen | Ja, voor meldingsregels en voorwaarden | Reeds aanwezig; behouden |
-| Weer | Ja, voor meetbronnen en pictograminstellingen | Reeds aanwezig; behouden |
+| Algemeen | Gedeeltelijk: de knop Terug naar dashboard had een eigen waarschuwing, maar interne navigatie en browsergeschiedenis waren niet afgedekt | Volledig beschermd |
+| Quick Actions | Geen waarschuwing | Volledig beschermd |
+| Meetwaardetegels | Geen waarschuwing | Volledig beschermd |
+| Meldingen | Waarschuwing bij interne navigatie en browsergeschiedenis was al aanwezig | Behouden en opgenomen in de centrale bescherming |
+| Weer | Waarschuwing bij interne navigatie en browsergeschiedenis was al aanwezig | Behouden en opgenomen in de centrale bescherming |
 
 De algemene instellingenpagina bevat daarnaast API-tokenbeheer. Token aanmaken en intrekken zijn directe serveracties en geen conceptwijzigingen die met de algemene Opslaan-knop worden vastgelegd; deze acties hebben hun eigen bevestiging/feedback.
 
