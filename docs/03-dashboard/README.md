@@ -448,3 +448,8 @@ Bij het openen van Instellingen → Quick Actions is geen actie vooraf geselecte
 De regels in de Quick Actions- en Meetwaardetegels-editor gebruiken dezelfde subtiele muis-hoverfeedback als de navigatie in het instellingenhoofdmenu: een lichtere rand en een lichte inset-schaduw. De visuele feedback is alleen actief op apparaten met een echte hoveraanwijzer; op touchapparaten wordt een subtiele actieve indruktoestand gebruikt.
 
 Bij het openen van beide pagina's is geen regel vooraf geselecteerd. De gebruiker selecteert zelf een Quick Action of meetwaardetegel om de betreffende editor te openen. Een reeds gekozen regel behoudt zijn duidelijke geselecteerde stijl; hoverfeedback vervangt of wist die selectie niet.
+
+
+### Meetwaardetegels – hoverfeedback op aantal-dropdown (15 november 2026)
+
+De dropdown voor het aantal meetwaardetegels heeft dezelfde subtiele hoverfeedback als de navigatie in het instellingenhoofdmenu en de regels in de Quick Actions- en Meetwaardetegellijsten: een lichtere rand en lichte inset-schaduw. Dit wordt alleen getoond bij apparaten met een echte hoveraanwijzer. Op touchapparaten is er een subtiele actieve indruktoestand. De toetsenbordfocus blijft herkenbaar via een aparte focus-visible omlijning.
