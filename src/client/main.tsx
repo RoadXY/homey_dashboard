@@ -446,7 +446,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
   return <main className="settings-gate"><form className="pin-card" onSubmit={(event) => { event.preventDefault(); onUnlock(); }}>
     <div className="settings-brand"><span className="brand-orb" /><span>Homey Dashboard</span></div>
     <h1>{translate(locale, "settings.lockedTitle")}</h1><p>{translate(locale, "settings.pinPrompt")}</p>
-    <input autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
+    <input className="settings-interactive settings-interactive--text" autoFocus type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={(event) => setPin(event.target.value)} aria-label="PIN" />
     {error && <div className="settings-error" role="alert">{error}</div>}
     <div className="settings-actions"><button type="button" className="secondary-button settings-interactive" onClick={onCancel}>{translate(locale, "settings.back")}</button><button className="primary-button settings-interactive" type="submit">{translate(locale, "settings.unlock")}</button></div>
   </form></main>;
@@ -1680,7 +1680,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
           <span className="notification-rule-trigger-name">{selected?.title ?? t("notifications.selectNotification")}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
         {notificationPickerOpen && <div className="notification-rule-menu">
-          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
+          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input className="settings-interactive settings-interactive--text" type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
           <div className="notification-rule-options" role="listbox" aria-label={t("notifications.createdList")}>
             {matchingNotifications.map(item =>
               <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
@@ -1824,7 +1824,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         <label>{t("settings.quickActionName")}<input className="settings-interactive settings-interactive--text" maxLength={40} value={selected.name || actionName(selected)} onChange={event => updateSelected({ name: event.target.value })} /></label>
         <div className="quick-editor-label">{t("settings.quickActionIcon")}</div>
         <div className="mdi-picker">
-          <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder={t("quickActions.searchIcons")} aria-label={t("quickActions.searchIconsLabel")} /></div>
+          <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input className="settings-interactive settings-interactive--text" type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder={t("quickActions.searchIcons")} aria-label={t("quickActions.searchIconsLabel")} /></div>
           <div className="quick-icon-picker">
             {visibleIcons.map(icon =>
               <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={"settings-interactive " + (selected.icon === icon.name ? "active" : "")} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
@@ -1851,7 +1851,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
             {flowPickerOpen && <div className="quick-flow-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
               <div className="quick-flow-search-wrap">
                 <span aria-hidden="true">⌕</span>
-                <input autoFocus type="search" className="quick-flow-search" value={flowSearch}
+                <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={flowSearch}
                   onChange={event => setFlowSearch(event.target.value)}
                   placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
               </div>
@@ -1880,7 +1880,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
             {devicePickerOpen && <div className="quick-flow-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
               <div className="quick-flow-search-wrap">
                 <span aria-hidden="true">⌕</span>
-                <input autoFocus type="search" className="quick-flow-search" value={deviceSearch}
+                <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
                   onChange={event => setDeviceSearch(event.target.value)}
                   placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
               </div>
@@ -2222,7 +2222,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
                   <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
                 </button>
                 {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
-                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
+                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search settings-interactive settings-interactive--text" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
                   <div className="quick-flow-results">
                     <div className="weather-source-group-label">{t("weatherSettings.devices")}</div>
                     {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option settings-interactive" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
