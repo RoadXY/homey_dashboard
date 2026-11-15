@@ -576,3 +576,8 @@ De gebruiker keurt twee afzonderlijke hoofdblokken goed: **Genereer melding zond
 ## Blockly – categorie Meldingen met twee hoofdblokken (15 november 2026)
 
 De twee varianten van het hoofdblok **Genereer melding** worden als afzonderlijke blokken aangeboden in een eigen Blockly-toolboxcategorie **Meldingen** (Engels: **Notifications**). De categorie staat naast de bestaande categorieën voor voorwaarden, containers en tijd. De bestaande variant blijft zonder time-out; de tweede variant toont de vaste time-outdropdown direct onder de invoervelden Titel en Tekst. De gebruiker kan tussen beide varianten wisselen door het gewenste hoofdblok vanuit de categorie naar de werkruimte te slepen. Bij het wisselen blijven titel, bericht en de volledige opgebouwde conditieboom behouden; er blijft steeds precies één hoofdblok in de werkruimte. Een losse toolbar-dropdown voor het kiezen van de time-outmodus wordt niet gebruikt.
+
+
+## Inventarisatie rode Homey-/Quick Action-foutmeldingen (15 november 2026)
+
+De rode foutbalk boven de dashboardkaart Meldingen is in de huidige implementatie uitsluitend gekoppeld aan mislukte Quick Action-uitvoeringen (Standard Flow, Advanced Flow of directe apparaat-capability). De backend toont eigen validatie- en configuratiefouten en geeft daarnaast dynamische foutteksten uit de Homey Web API/driver door. Het is geen algemene Homey-notificatiefeed en verzamelt geen zelfstandige Flow-uitvoeringsfouten of Homey-tijdlijnmeldingen. De volledige code-inventaris, exacte vaste foutteksten, technische foutketen en uitbreidingsgrenzen zijn vastgelegd in [Homey-foutmeldingen](../03-dashboard/homey-foutmeldingen.md).
