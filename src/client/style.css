@@ -1,6 +1,7 @@
 * { box-sizing: border-box; }
 :root {
-  color-scheme: dark;
+  --ui-color-scheme: dark;
+  color-scheme: var(--ui-color-scheme);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text-primary); background: var(--dashboard-background); font-synthesis: none; text-rendering: optimizeLegibility;
 
@@ -760,13 +761,8 @@ body {
 .quick-flow-option { display:flex; align-items:center; gap:13px; width:calc(100% - 12px); min-height:62px; height:auto; margin:6px 6px; padding:12px 14px; border:1px solid transparent; border-radius:10px; background:transparent; color:var(--settings-control-text); font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .quick-flow-option.selected { background:var(--settings-control-selected-background); }
 .quick-flow-option:focus-visible { outline:2px solid var(--settings-control-focus); outline-offset:2px; }
-@media (hover:hover) and (pointer:fine) {
-  .quick-flow-option:hover { border-color:var(--settings-control-hover-border); box-shadow:var(--settings-control-hover-shadow); }
-  .quick-flow-option.selected:hover { background:var(--settings-control-selected-background); border-color:var(--settings-control-selected-border); }
-}
 @media (hover:none), (pointer:coarse) {
   .quick-flow-option { min-height:62px; padding:12px 14px; }
-  .quick-flow-option:active:not(.selected) { background:var(--settings-control-active-background); }
 }
 .quick-flow-type { flex:0 0 auto; align-self:center; color:var(--settings-text-muted); font-size:12px; white-space:nowrap; }
 .quick-flow-empty,.quick-flow-footer { padding:9px 12px; color:var(--settings-text-muted); font-size:12px; }
