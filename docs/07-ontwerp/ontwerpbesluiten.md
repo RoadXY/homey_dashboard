@@ -149,3 +149,13 @@ De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorb
 - De gedeelde componentstandaarden omvatten kaarten/panelen, instellingenrijen, labels/beschrijvingen, invoervelden/selects, primaire/secundaire/gevaarlijke knoppen, toggles/selecties en statusmeldingen/badges.
 - Er wordt geen themawisselaar, opgeslagen themavoorkeur, licht thema of uitgebreid themasysteem gebouwd in deze stap.
 - Uitvoering gebeurt op featurebranch `feature/settings-design-system-v2`; `phase_1_foundation` blijft onaangeroerd totdat de gebruiker de integratie goedkeurt.
+
+
+### Implementatiestatus v2 (15 november 2026)
+
+- De vier circulaire CSS custom properties voor Blockly-workspace en source-menu oppervlakken hebben concrete donkere standaardwaarden gekregen.
+- Instellingenregels die voor oppervlakken, tekst en tab-/accentkleuren nog dashboardbrede tokens gebruikten, zijn omgezet naar de instellingen-tokens `--settings-panel-*`, `--settings-tab-*` en `--settings-accent-*`. De standaardwaarden verwijzen naar de bestaande dashboardpaletwaarden om de huidige vormgeving te behouden.
+- De statusrij- en tokenlijstscheidingslijnen en Blockly-veldoutline gebruiken nu semantische instellingen-tokens.
+- De enige resterende letterlijke kleuren in het instellingen-CSS-gedeelte zijn de multicolor merkbol en de herkenbare weerconditiekleuren. Dit zijn expliciete semantische uitzonderingen.
+- Broncontrole: geen zelfverwijzende CSS custom properties, geen ongedefinieerde `var(--...)`-verwijzingen en alle 15 native select-elementen in `main.tsx` gebruiken `settings-interactive`.
+- Build, tests, CI en visuele controle op de tablet zijn op dit moment nog niet bevestigd; deze blijven onderdeel van de afronding.
