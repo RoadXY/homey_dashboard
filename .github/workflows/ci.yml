@@ -2,7 +2,7 @@ name: Validate dashboard build
 
 on:
   push:
-    branches: [phase_1_foundation, feature/weather-settings]
+    branches: [phase_1_foundation, feature/weather-settings, feature/settings-design-system-v2]
   pull_request:
     branches: [phase_1_foundation]
   workflow_dispatch:
