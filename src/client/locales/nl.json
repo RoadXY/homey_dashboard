@@ -127,7 +127,6 @@
   "settings.tokenCopyError": "Kopiëren is niet gelukt. Selecteer en kopieer de token handmatig.",
   "settings.quickActions": "Snelle acties",
   "settings.quickActionsSubtitle": "Configureer de acht actieknoppen: pictogram, Flow of apparaatbediening.",
-  "settings.temperatureTiles": "Meetwaardetegels",
   "settings.quickActionsDescription": "Configureer de acht knoppen op het dashboard.",
   "settings.quickActionsHint": "Stel voor elke knop een naam, pictogram en Homey-actie in.",
   "settings.preview": "Voorbeeld",
@@ -219,8 +218,8 @@
   "measurement.loadError": "Laden mislukt.",
   "measurement.unavailable": "Meetwaarden tijdelijk niet beschikbaar.",
   "measurement.saved": "Meetwaardetegels opgeslagen.",
-  "measurement.configureIntro": "Configureer de vier meetwaardetegels op het dashboard.",
-  "measurement.configureDescription": "Configureer de vier vaste tegels. Kies per tegel een naam en één numerieke Homey-meetwaarde.",
+  "measurement.configureIntro": "Configureer de meetwaardetegels op het dashboard.",
+  "measurement.configureDescription": "Kies hoeveel meetwaardetegels je wilt tonen. Stel per tegel een naam en één numerieke Homey-meetwaarde in.",
   "measurement.selectHint": "Selecteer een tegel om de naam en Homey-meetbron aan te passen.",
   "measurement.previewDescription": "Zo worden de meetwaardetegels op het dashboard weergegeven.",
   "measurement.editTitle": "Meetwaardetegel {number} bewerken",
@@ -437,5 +436,7 @@
   "weatherSettings.previewWind": "Wind",
   "weatherSettings.motionHeading": "Bewegende iconen",
   "weatherSettings.motionDescription": "Schakel animaties voor alle icon packs in of uit.",
-  "weatherSettings.field.feelsLikeDashboard": "Gevoel"
+  "weatherSettings.field.feelsLikeDashboard": "Gevoel",
+  "settings.measurementTiles": "Meetwaardetegels",
+  "measurement.count": "Aantal meetwaardetegels"
 }
