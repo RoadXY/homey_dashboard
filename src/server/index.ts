@@ -287,15 +287,15 @@ app.post("/api/settings/notifications", async (request, reply) => {
 
 app.get("/api/settings/measurement-tiles", async (request, reply) => {
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
-  return { tiles: await readMeasurementTiles() };
+  return await readMeasurementTiles();
 });
 app.post("/api/settings/measurement-tiles", async (request, reply) => {
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
-    const body = request.body as { tiles?: unknown } | undefined;
-    const tiles = await saveMeasurementTiles(body?.tiles);
+    const body = request.body as { count?: unknown; tiles?: unknown } | undefined;
+    const settings = await saveMeasurementTiles(body);
     broadcastSettingsUpdated("quick-actions");
-    return { tiles };
+    return settings;
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Meetwaardetegels opslaan mislukt." });
   }
