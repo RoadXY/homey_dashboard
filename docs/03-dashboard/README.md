@@ -406,3 +406,33 @@ Deze wijziging is uitsluitend toegepast op de weerkaart. De klok, meetwaardetege
 ## Centrale dashboardfoutmeldingen boven de meldingenkaart
 
 De zone boven de meldingenkaart is bedoeld als centrale plek voor fouten die tijdens het gebruik van het dashboard ontstaan (frontend, backend, netwerk/API, Homey-integratie en Quick Actions). Zelfstandige Homey-notificaties en Flow-fouten buiten een dashboardactie vallen buiten scope. De huidige implementatie toont hier nog alleen Quick Action-fouten; algemene server-/dashboardfouten en Homey-verbindingswaarschuwingen staan elders. De inventaris en functionele afbakening staan in [Dashboardfoutmeldingen](homey-foutmeldingen.md).
+
+
+## Instellingen: waarschuwing bij niet-opgeslagen wijzigingen (15 november 2026)
+
+Alle bewerkbare instellingenpagina's moeten waarschuwen voordat de gebruiker de pagina verlaat met niet-opgeslagen wijzigingen. Dit geldt zowel voor navigatie via het instellingenmenu en de knop Terug naar dashboard als voor de browserknoppen Vorige en Volgende. De browserhistorie kan een `popstate`-navigatie niet annuleren; daarom wordt de huidige history-entry hersteld, wordt dezelfde bevestiging getoond en wordt de navigatie pas na bevestiging opnieuw uitgevoerd. Bij annuleren blijft de gebruiker op de huidige pagina en blijven de wijzigingen behouden.
+
+### Pagina-inventarisatie
+
+| Instellingenpagina | Opslaan van conceptwijzigingen | Waarschuwing vóór navigatie |
+| --- | --- | --- |
+| Algemeen | Ja, voor taal-, datum-, tijd- en meldingsinstellingen | Geïmplementeerd |
+| Quick Actions | Ja, voor knopnaam, pictogram, actietype en actie-instellingen | Geïmplementeerd |
+| Meetwaardetegels | Ja, voor aantal tegels, namen en meetbronnen | Geïmplementeerd |
+| Meldingen | Ja, voor meldingsregels en voorwaarden | Reeds aanwezig; behouden |
+| Weer | Ja, voor meetbronnen en pictograminstellingen | Reeds aanwezig; behouden |
+
+De algemene instellingenpagina bevat daarnaast API-tokenbeheer. Token aanmaken en intrekken zijn directe serveracties en geen conceptwijzigingen die met de algemene Opslaan-knop worden vastgelegd; deze acties hebben hun eigen bevestiging/feedback.
+
+### Implementatieafspraken
+
+- Iedere editor rapporteert of de huidige configuratie afwijkt van de laatst opgeslagen configuratie.
+- De centrale instellingencontainer combineert deze status en beschermt zowel interne navigatie als browsergeschiedenisnavigatie.
+- Bij bevestigde navigatie worden conceptwijzigingen van de verlaten pagina weggegooid. Bij annuleren blijven ze intact.
+- Na succesvol opslaan verdwijnt de waarschuwing automatisch doordat de opgeslagen en bewerkte configuraties weer gelijk zijn.
+- De bestaande vertaalde bevestigingstekst voor het weggooien van meldingswijzigingen wordt hergebruikt; er worden geen nieuwe hardcoded teksten toegevoegd.
+- De dashboardpagina zelf heeft geen bewerkbare conceptinstellingen en valt daarom niet onder deze waarschuwing.
+
+### Praktijktest
+
+Controleer per instellingenpagina dat een wijziging zonder Opslaan gevolgd door een klik op een andere instellingenpagina de bevestiging toont. Herhaal dit met de browserknop Vorige en, waar van toepassing, Volgende. Kies zowel Annuleren (blijven op de pagina met behoud van wijzigingen) als Bevestigen (navigeren en conceptwijzigingen weggooien). Controleer daarnaast dat na Opslaan geen waarschuwing meer verschijnt.
