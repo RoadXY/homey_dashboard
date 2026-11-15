@@ -78,9 +78,9 @@ Elk navigatie-item krijgt een klein pictogram vóór de categorienaam.
 
 De instellingen-navigatie bevat de zes categorieën: **Algemeen**, **Dashboard**, **Meldingen**, **Apparaten**, **Homey** en **Systeem**.
 
-Op de pagina **Dashboard** zijn deze onderdelen instelbaar: welke kamers en sensoren zichtbaar zijn in de temperatuurtegels; welke weergegevens zichtbaar zijn; en de zichtbaarheid, volgorde en instellingen van snelle actieknoppen.
+Op de pagina **Dashboard** zijn onder andere het aantal en de bronnen van de meetwaardetegels instelbaar, welke weergegevens zichtbaar zijn en de zichtbaarheid, volgorde en instellingen van snelle actieknoppen.
 
-Het aantal meetwaardetegels staat vast op **vier**. Het aantal tegels en de tegelindeling zijn niet instelbaar. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron.
+Het aantal meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** tegels. De standaardinstelling is **vier**. De zes tegelconfiguraties worden altijd bewaard; bij een lager zichtbaar aantal blijven de overige configuraties behouden en komen ze terug wanneer de gebruiker het aantal weer verhoogt. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron.
 
 De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term temperatuurtegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
 
@@ -92,7 +92,9 @@ Per meetwaardebron wordt waar beschikbaar de capabilitymetadata gebruikt, waaron
 
 De backend moet capabilitytype en actuele waarde controleren en uitsluitend eindige numerieke waarden aanbieden/weergeven. Onbeschikbare apparaten, verdwenen capabilities of verwijderde Logic-variabelen mogen de overige tegels niet blokkeren; de betreffende tegel toont een neutrale onbekende/niet-beschikbaar-weergave.
 
-De editor toont vier vaste tegelconfiguraties met naam en bron. De preview wordt direct bijgewerkt bij iedere wijziging, vóór Opslaan. Opslaan bewaart de wijzigingen definitief. Er zijn geen instelbare tegelvolgorde, kleur, pictogram, formaat of eenheid.
+De editor toont maximaal zes vaste tegelconfiguraties met naam en bron; alleen het gekozen aantal (2, 4 of 6) wordt getoond en bewerkt. De preview wordt direct bijgewerkt bij iedere wijziging, vóór Opslaan. Opslaan bewaart zowel het gekozen aantal als alle zes tegelconfiguraties. Er zijn geen instelbare tegelvolgorde, kleur, formaat of eenheid.
+
+Op het dashboard staan de meetwaardetegels altijd direct onder de weerkaart, ongeacht de hoogte van de weerkaart. De tegels gebruiken twee kolommen: 2 tegels vormen één rij, 4 tegels twee rijen en 6 tegels drie rijen. De weerkaart en de tegelgroep delen de beschikbare verticale ruimte; de tegelgroep blijft onder de weerkaart staan en groeit in hoogte mee met het gekozen aantal.
 
 De Homey-ruimtepicker volgt de volledige geneste ruimtestructuur. De navigatie gebruikt het aanklikbare kruimelpad; bij lange paden worden de laatste niveaus getoond en tussenliggende niveaus achter een aanklikbare ellipsis verborgen. In fase 2 kan zoeken aan de bronselectie worden toegevoegd.
 
