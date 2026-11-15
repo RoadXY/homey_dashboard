@@ -270,7 +270,7 @@ function App() {
       const isSettingsRoute = canonicalPath.startsWith("/settings");
       setSettingsOpen(isSettingsRoute);
       setSettingsPath(canonicalPath);
-      if (!isSettingsRoute) { void fetch("/api/settings/logout", { method: "POST" }); setSettingsUnlocked(false); return; }
+      if (!isSettingsRoute) { settingsDirtyRef.current = false; void fetch("/api/settings/logout", { method: "POST" }); setSettingsUnlocked(false); return; }
       void fetch("/api/settings/session").then(response => {
         if (response.ok) { setSettingsUnlocked(true); setPin(""); setPinError(""); lastSessionRefresh.current = 0; }
         else { setSettingsUnlocked(false);  }
@@ -283,6 +283,7 @@ function App() {
   React.useEffect(() => {
     if (!settingsOpen || !settingsUnlocked) return;
     const expireSettings = () => {
+      settingsDirtyRef.current = false;
       if (settingsIdleTimer.current !== null) window.clearTimeout(settingsIdleTimer.current);
       settingsIdleTimer.current = null;
       void fetch("/api/settings/logout", { method: "POST" });
@@ -341,8 +342,8 @@ function App() {
     ? "notifications-heading has-" + notificationIndicatorSeverity
     : "notifications-heading";
   if (settingsOpen) return settingsUnlocked
-    ? <GeneralSettingsPage onDirtyChange={dirty => { settingsDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
-    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
+    ? <GeneralSettingsPage onDirtyChange={dirty => { settingsDirtyRef.current = dirty; }} onNavigate={path => { window.history.pushState({}, "", path); currentRouteRef.current = path; setSettingsPath(path); }} onBack={() => { settingsDirtyRef.current = false; void fetch("/api/settings/logout", { method: "POST" }); window.history.pushState({}, "", "/"); currentRouteRef.current = "/"; setSettingsPath("/"); setSettingsOpen(false); setSettingsUnlocked(false); void refresh(); }} initialPage={settingsPath === "/settings/quick-actions" ? "quick-actions" : settingsPath === "/settings/measurement-tiles" ? "measurement-tiles" : settingsPath.startsWith("/settings/notifications") ? "notifications" : settingsPath.startsWith("/settings/weather") ? "weather" : "general"} />
+    : <SettingsPinGate locale={locale} pin={pin} setPin={setPin} error={pinError} onCancel={() => { settingsDirtyRef.current = false; window.history.replaceState({}, "", "/"); setSettingsPath("/"); setSettingsOpen(false); }} onUnlock={async () => {
         try {
           const response = await fetch("/api/settings/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin }) });
           if (!response.ok) throw new Error(translate(locale, "settings.pinDenied"));
