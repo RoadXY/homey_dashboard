@@ -624,7 +624,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
         <h2><span>♙</span>{t("measurement.heading")}</h2>
         <p className="quick-card-description">{t("measurement.configureDescription")}</p>
         <label className="measurement-count-setting">{t("measurement.count")}
-          <select value={count} onChange={event => {
+          <select className="settings-interactive" value={count} onChange={event => {
             const nextCount = Number(event.target.value) as MeasurementTileCount;
             setCount(nextCount);
             if (tiles.findIndex(tile => tile.id === selectedId) >= nextCount) {
@@ -636,7 +636,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           </select>
         </label>
         <div className="quick-action-list measurement-tile-list">
-          {visibleTiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
+          {visibleTiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row settings-interactive" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
@@ -1675,7 +1675,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     <div className="notification-rule-selector">
       <label id="notification-rule-label">{t("notifications.ruleLabel")}</label>
       <div className="notification-rule-picker">
-        <button type="button" className="notification-rule-trigger" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
+        <button type="button" className="notification-rule-trigger settings-interactive" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
           <span className="notification-rule-trigger-name">{selected?.title ?? t("notifications.selectNotification")}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
@@ -1805,7 +1805,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         <h2><span>ϟ</span>{t("settings.quickActions")}</h2>
         <p className="quick-card-description">{t("settings.quickActionsDescription")}</p>
         <div className="quick-action-list">
-          {items.map((item, index) => <button key={item.id} className={"quick-action-row " + (item.id === editingId ? "selected" : "")} onClick={() => { setEditingId(item.id); setEditorOpen(true); }}>
+          {items.map((item, index) => <button key={item.id} className={"quick-action-row settings-interactive " + (item.id === editingId ? "selected" : "")} onClick={() => { setEditingId(item.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><MdiIcon name={item.icon} className="quick-action-icon" /><span className="quick-action-name">{actionName(item)}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
@@ -2090,18 +2090,18 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
-          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automaticHomeyLanguage")}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
+          <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select className="settings-interactive" value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automaticHomeyLanguage")}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
           <div className="language-info"><div>ℹ <span><strong>{t("settings.automatic")}</strong><br/>{t("settings.autoDescription")}</span></div><div>● <span>{t("settings.detectedHomey")} <strong>{status?.homeyLanguage ? `${status.homeyLanguage.toUpperCase()} (${languageName(status.homeyLanguage)})` : t("settings.notAvailable")}</strong></span><em>{status?.homeyLanguage ? t("settings.detected") : t("settings.fallback")}</em></div></div>
         </section>
         <section className="settings-card date-card"><h2><span>◷</span>{t("settings.dateTime")}</h2>
-          <label className="setting-row"><span>{t("settings.dateFormat")}</span><select value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">{t("settings.shortDate")} ({datePreview})</option><option value="iso">{t("settings.isoDate")} ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
-          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value as GeneralSettings["timeFormat"])}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
-          <label className="setting-row"><span>{t("settings.firstDay")}</span><select value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value as GeneralSettings["firstDayOfWeek"])}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.dateFormat")}</span><select className="settings-interactive" value={settings.dateFormat} onChange={e=>update("dateFormat",e.target.value)}><option value="short">{t("settings.shortDate")} ({datePreview})</option><option value="iso">{t("settings.isoDate")} ({datePreview})</option><option value="long">{t("settings.longDate")} ({datePreview})</option></select></label>
+          <label className="setting-row"><span>{t("settings.timeFormat")}</span><select className="settings-interactive" value={settings.timeFormat} onChange={e=>update("timeFormat",e.target.value as GeneralSettings["timeFormat"])}><option value="24h">{t("settings.24hour")}</option><option value="12h">{t("settings.12hour")}</option></select></label>
+          <label className="setting-row"><span>{t("settings.firstDay")}</span><select className="settings-interactive" value={settings.firstDayOfWeek} onChange={e=>update("firstDayOfWeek",e.target.value as GeneralSettings["firstDayOfWeek"])}><option value="monday">{t("settings.monday")}</option><option value="sunday">{t("settings.sunday")}</option></select></label>
         </section>
       </div>
       <section className="settings-card notification-timeout-card">
         <h2><span>♧</span>{t("settings.notificationBehavior")}</h2>
-        <label className="setting-row"><span>{t("settings.notificationTimeout")}</span><select value={settings.notificationTimeout} onChange={e=>update("notificationTimeout",e.target.value as NotificationTimeout)}>
+        <label className="setting-row"><span>{t("settings.notificationTimeout")}</span><select className="settings-interactive" value={settings.notificationTimeout} onChange={e=>update("notificationTimeout",e.target.value as NotificationTimeout)}>
           <option value="never">{t("settings.timeoutNever")}</option>
           <option value="1">1 s</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option>
           <option value="60">1 min</option><option value="300">5 min</option><option value="900">15 min</option><option value="1800">30 min</option>
@@ -2113,8 +2113,8 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         <p>{t("settings.weatherTokensDescription")}</p>
         <div className="setting-row token-create-row">
           <label htmlFor="weather-token-name">{t("settings.tokenName")}</label>
-          <input id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
-          <button className="primary-button" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
+          <input className="settings-interactive settings-interactive--text" id="weather-token-name" value={tokenName} maxLength={60} onChange={event => setTokenName(event.target.value)} placeholder={t("settings.tokenNamePlaceholder")} />
+          <button className="primary-button settings-interactive" disabled={tokenBusy || !tokenName.trim()} onClick={() => void createToken()}>{t("settings.tokenCreate")}</button>
         </div>
         {newToken && <div className="token-secret-panel"><strong>{t("settings.tokenShowOnce")}</strong><p>{t("settings.tokenCopyWarning")}</p><code>{newToken}</code><div className="token-copy-actions"><button className="secondary-button" onClick={() => void copyWeatherToken()}>{t("settings.tokenCopy")}</button>{tokenCopyStatus && <span className={"token-copy-feedback " + tokenCopyStatus} role="status" aria-live="polite">{tokenCopyStatus === "success" ? t("settings.tokenCopySuccess") : t("settings.tokenCopyError")}</span>}</div></div>}
         <div className="token-list">
@@ -2216,7 +2216,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
                 <span/>
               </button>
               <div className="weather-source-picker">
-                <button type="button" className="quick-flow-trigger weather-source-trigger" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
+                <button type="button" className="quick-flow-trigger weather-source-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
                   onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
                   <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
                   <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
@@ -2248,7 +2248,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
             <button type="button" role="switch" aria-checked={settings.animateIcons} className={"weather-motion-toggle"+(settings.animateIcons?" active":"")} onClick={()=>setSettings(current=>({...current,animateIcons:!current.animateIcons}))} aria-label={t("weatherSettings.motionHeading")}><span/></button>
           </div>
           <div className="weather-pack-options" role="radiogroup" aria-label={t("weatherSettings.iconHeading")}>
-            {packs.map(pack=><label key={pack.id} className={"weather-pack-option"+(settings.iconPack===pack.id?" selected":"")}>
+            {packs.map(pack=><label key={pack.id} className={"weather-pack-option settings-interactive"+(settings.iconPack===pack.id?" selected":"")}>
               <input type="radio" name="weather-icon-pack" value={pack.id} checked={settings.iconPack===pack.id} onChange={()=>setSettings(current=>({...current,iconPack:pack.id as WeatherSettingsModel["iconPack"]}))}/>
               <span className="weather-pack-radio" aria-hidden="true"/>
               <span className="weather-pack-copy"><strong>{pack.title}</strong><small>{pack.description}</small></span>
