@@ -639,7 +639,14 @@ body {
 /* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
 .measurement-workspace { min-height:560px; align-items:stretch; grid-auto-rows:auto; }
 .measurement-count-setting { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:14px 0 16px; color:#c3d0df; font-size:14px; }
-.measurement-count-setting select { width:112px; min-height:40px; border:1px solid rgba(135,166,201,.22); border-radius:10px; background:rgba(9,25,43,.72); color:#edf3fb; padding:8px 12px; font:inherit; }
+.measurement-count-setting select { width:112px; min-height:40px; border:1px solid rgba(135,166,201,.22); border-radius:10px; background:rgba(9,25,43,.72); color:#edf3fb; padding:8px 12px; font:inherit; cursor:pointer; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
+.measurement-count-setting select:focus-visible { outline:2px solid #8fc8ff; outline-offset:2px; }
+@media (hover:hover) and (pointer:fine) {
+  .measurement-count-setting select:hover { border-color:rgba(160,205,245,.8); box-shadow:inset 0 0 0 1px rgba(160,205,245,.12); }
+}
+@media (hover:none), (pointer:coarse) {
+  .measurement-count-setting select:active { background:rgba(28,76,119,.55); }
+}
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
 .measurement-tile-list { margin-bottom:18px; }
 /* Meetwaardetegels tonen alleen nummer, naam en de bewerkactie. */
