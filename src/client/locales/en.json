@@ -127,7 +127,6 @@
   "settings.tokenCopyError": "Copy failed. Select and copy the token manually.",
   "settings.quickActions": "Quick actions",
   "settings.quickActionsSubtitle": "Configure the eight action buttons: icon, Flow or device control.",
-  "settings.temperatureTiles": "Temperature tiles",
   "settings.quickActionsDescription": "Configure the eight buttons on the dashboard.",
   "settings.quickActionsHint": "Set a name, icon and Homey action for each button.",
   "settings.preview": "Preview",
@@ -219,8 +218,8 @@
   "measurement.loadError": "Loading failed.",
   "measurement.unavailable": "Measurements are temporarily unavailable.",
   "measurement.saved": "Measurement tiles saved.",
-  "measurement.configureIntro": "Configure the four measurement tiles on the dashboard.",
-  "measurement.configureDescription": "Configure the four fixed tiles. Choose a name and one numeric Homey measurement for each tile.",
+  "measurement.configureIntro": "Configure the measurement tiles on the dashboard.",
+  "measurement.configureDescription": "Choose how many measurement tiles to display. Set a name and one numeric Homey measurement for each tile.",
   "measurement.selectHint": "Select a tile to adjust its name and Homey source.",
   "measurement.previewDescription": "This is how the measurement tiles will appear on the dashboard.",
   "measurement.editTitle": "Edit measurement tile {number}",
@@ -437,5 +436,7 @@
   "weatherSettings.previewWind": "Wind",
   "weatherSettings.motionHeading": "Animated icons",
   "weatherSettings.motionDescription": "Turn animations on or off for all icon packs.",
-  "weatherSettings.field.feelsLikeDashboard": "Feels like"
+  "weatherSettings.field.feelsLikeDashboard": "Feels like",
+  "settings.measurementTiles": "Measurement tiles",
+  "measurement.count": "Number of measurement tiles"
 }
