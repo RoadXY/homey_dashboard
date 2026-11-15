@@ -29,9 +29,11 @@ type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; nam
 type WeatherTokenInfo = { id: string; name: string; createdAt: string; lastFour: string };
 type MeasurementTileSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
 type MeasurementTile = { id: string; name: string; source: MeasurementTileSource };
+type MeasurementTileCount = 2 | 4 | 6;
+type MeasurementTileSettings = { count: MeasurementTileCount; tiles: MeasurementTile[] };
 type MeasurementSourceCatalog = { zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; units: string; decimals: number | null }[] }[]; variables: { id: string; name: string; type: "number" }[] };
 type MeasurementTileValue = { id: string; value: number | null; units: string; decimals: number | null; available: boolean };
-type MeasurementTileResponse = { tiles: MeasurementTile[]; values: MeasurementTileValue[] };
+type MeasurementTileResponse = { count: MeasurementTileCount; tiles: MeasurementTile[]; values: MeasurementTileValue[] };
 function formatMeasurementParts(reading: MeasurementTileValue | undefined, locale: string = "nl"): { value: string; units: string } {
   if (!reading?.available || typeof reading.value !== "number" || !Number.isFinite(reading.value)) return { value: "—", units: "" };
   // Keep readings compact and consistent across dashboard and settings preview.
@@ -377,7 +379,7 @@ function App() {
             })}
           </div>
         </article>
-        <section className="temperature-grid" aria-label="Temperature sensors">
+        <section className={"temperature-grid measurement-count-" + (measurementTileData?.count ?? 4)} aria-label={t("measurement.heading")}>
           {(measurementTileData?.tiles ?? []).map(tile => {
             const reading = measurementTileData?.values.find(value => value.id === tile.id);
             const formatted = formatMeasurementParts(reading, locale);
@@ -538,6 +540,8 @@ function normalizeQuickActionIcon(icon: string): string {
 function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => string; onNavigate: (path: string) => void }) {
   const [tiles, setTiles] = React.useState<MeasurementTile[]>([]);
   const [saved, setSaved] = React.useState<MeasurementTile[]>([]);
+  const [count, setCount] = React.useState<MeasurementTileCount>(4);
+  const [savedCount, setSavedCount] = React.useState<MeasurementTileCount>(4);
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
   const [selectedId, setSelectedId] = React.useState("measurement-1");
   const [editorOpen, setEditorOpen] = React.useState(false);
@@ -549,14 +553,15 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const [message, setMessage] = React.useState("");
   const [isError, setIsError] = React.useState(false);
   const [previewData, setPreviewData] = React.useState<MeasurementTileResponse | null>(null);
-  const dirty = JSON.stringify(tiles) !== JSON.stringify(saved);
-  const selected = tiles.find(tile => tile.id === selectedId) ?? tiles[0];
+  const dirty = count !== savedCount || JSON.stringify(tiles) !== JSON.stringify(saved);
+  const visibleTiles = tiles.slice(0, count);
+  const selected = visibleTiles.find(tile => tile.id === selectedId) ?? visibleTiles[0];
   React.useEffect(() => {
     let active = true;
     Promise.all([
-      fetch("/api/settings/measurement-tiles").then(async r => { if (!r.ok) throw new Error(t("measurement.loadTilesError")); return r.json() as Promise<{ tiles: MeasurementTile[] }>; }),
+      fetch("/api/settings/measurement-tiles").then(async r => { if (!r.ok) throw new Error(t("measurement.loadTilesError")); return r.json() as Promise<MeasurementTileSettings>; }),
       fetch("/api/settings/measurement-sources").then(async r => { if (!r.ok) throw new Error(t("measurement.loadSourcesError")); return r.json() as Promise<MeasurementSourceCatalog>; }),
-    ]).then(([config, sources]) => { if (!active) return; setTiles(config.tiles); setSaved(config.tiles); setCatalog(sources); })
+    ]).then(([config, sources]) => { if (!active) return; setTiles(config.tiles); setSaved(config.tiles); setCount(config.count); setSavedCount(config.count); setCatalog(sources); })
       .catch(error => { if (active) { setMessage(error instanceof Error ? error.message : t("measurement.loadError")); setIsError(true); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -603,21 +608,33 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
   const save = async () => {
     setSaving(true); setMessage(""); setIsError(false);
     try {
-      const response = await fetch("/api/settings/measurement-tiles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tiles }) });
-      const result = await response.json() as { tiles?: MeasurementTile[]; error?: string };
+      const response = await fetch("/api/settings/measurement-tiles", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ count, tiles }) });
+      const result = await response.json() as MeasurementTileSettings & { error?: string };
       if (!response.ok || !result.tiles) throw new Error(result.error ?? t("settings.saveError"));
-      setTiles(result.tiles); setSaved(result.tiles); setMessage(t("measurement.saved"));
+      setTiles(result.tiles); setSaved(result.tiles); setCount(result.count); setSavedCount(result.count); setMessage(t("measurement.saved"));
     } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); setIsError(true); }
     finally { setSaving(false); }
   };
   return <div className="quick-settings-page">
-    <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.temperatureTiles")}</h1><p>{t("measurement.configureIntro")}</p></div></div>
+    <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.measurementTiles")}</h1><p>{t("measurement.configureIntro")}</p></div></div>
     <div className="quick-workspace measurement-workspace">
       <section className="settings-card quick-list-card measurement-list-card">
         <h2><span>♙</span>{t("measurement.heading")}</h2>
         <p className="quick-card-description">{t("measurement.configureDescription")}</p>
+        <label className="measurement-count-setting">{t("measurement.count")}
+          <select value={count} onChange={event => {
+            const nextCount = Number(event.target.value) as MeasurementTileCount;
+            setCount(nextCount);
+            if (tiles.findIndex(tile => tile.id === selectedId) >= nextCount) {
+              setSelectedId("measurement-1");
+              setEditorOpen(false);
+            }
+          }}>
+            <option value={2}>2</option><option value={4}>4</option><option value={6}>6</option>
+          </select>
+        </label>
         <div className="quick-action-list measurement-tile-list">
-          {tiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
+          {visibleTiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
           </button>)}
         </div>
@@ -627,7 +644,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate }: { t: (key: string) => s
         <h2><span>◎</span>{t("settings.preview")}</h2>
         <p className="quick-card-description">{t("measurement.previewDescription")}</p>
         <div className="quick-preview-grid measurement-preview-grid">
-          {tiles.map(tile => {
+          {visibleTiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
             const formatted = formatMeasurementParts(reading);
             return <div className="quick-preview-item measurement-preview-item" key={tile.id}>
@@ -1955,7 +1972,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     <aside className="settings-sidebar" id="settings-sidebar">
       <button type="button" className="sidebar-collapse-toggle" onClick={() => setSidebarCollapsed(value => !value)} aria-label={sidebarCollapsed ? t("settings.expandMenu") : t("settings.collapseMenu")} aria-expanded={!sidebarCollapsed} aria-controls="settings-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5" /><path d="M9 4.5v15" /></svg></button>
       <h2>{t("settings.navTitle")}</h2>
-      {[t("settings.general"),t("settings.quickActions"),t("settings.notifications"),t("settings.temperatureTiles"),t("settings.weather")].map((name,index)=>{
+      {[t("settings.general"),t("settings.quickActions"),t("settings.notifications"),t("settings.measurementTiles"),t("settings.weather")].map((name,index)=>{
         const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
         const pages = ["general","quick-actions","notifications","measurement-tiles","weather"] as const;
         const icons = ["mdi-cog-outline","mdi-flash-outline","mdi-bell-outline","mdi-thermometer","mdi-weather-partly-cloudy"];
