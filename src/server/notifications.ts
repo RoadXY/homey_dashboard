@@ -26,6 +26,50 @@ type ConditionNode = ConditionGroup | NotNode | WeekdayNode | ConditionLeaf | Du
 
 const durationStartedAt = new Map<string, number>();
 
+// Blockly visibility timers are intentionally in-memory and independent from
+// the external Notifications API expiry lifecycle.
+type VisibilityTimerState = { expiresAt: number; timedOut: boolean; conditionWasActive: boolean };
+const visibilityTimers = new Map<string, VisibilityTimerState>();
+export const BLOCKLY_NOTIFICATION_TIMEOUTS_MS = [
+  60_000, 120_000, 300_000, 900_000, 1_800_000,
+  3_600_000, 7_200_000, 14_400_000, 28_800_000,
+  43_200_000, 86_400_000,
+] as const;
+
+export function isValidBlocklyNotificationTimeout(value: unknown): value is number {
+  return typeof value === "number" &&
+    (BLOCKLY_NOTIFICATION_TIMEOUTS_MS as readonly number[]).includes(value);
+}
+
+export function evaluateBlocklyVisibilityTimeout(
+  notificationId: string,
+  conditionState: Evaluation["state"],
+  timeoutMs: number,
+  now: number,
+): { state: Evaluation["state"]; nextEvaluationAt?: number } {
+  let timer = visibilityTimers.get(notificationId);
+  if (!timer) {
+    if (conditionState !== "active") return { state: conditionState };
+    timer = { expiresAt: now + timeoutMs, timedOut: false, conditionWasActive: true };
+    visibilityTimers.set(notificationId, timer);
+  } else {
+    if (conditionState === "inactive") timer.conditionWasActive = false;
+    if (timer.expiresAt <= now) {
+      timer.timedOut = true;
+      if (!timer.conditionWasActive && conditionState === "active") {
+        timer = { expiresAt: now + timeoutMs, timedOut: false, conditionWasActive: true };
+        visibilityTimers.set(notificationId, timer);
+      } else {
+        return { state: conditionState === "unknown" ? "unknown" : "inactive" };
+      }
+    } else if (conditionState === "active") {
+      timer.conditionWasActive = true;
+    }
+  }
+  if (timer.timedOut) return { state: conditionState === "unknown" ? "unknown" : "inactive" };
+  return { state: "active", nextEvaluationAt: timer.expiresAt };
+}
+
 type NotificationConfig = {
   schemaVersion: 1;
   id: string;
@@ -371,10 +415,18 @@ export async function getDashboardNotifications(): Promise<{ retrievedAt: string
   const notifications = configs.map((config): DashboardNotification => {
     const base = { id: config.id, title: config.title, notificationTitle: config.notificationTitle?.trim() || config.title, message: config.message, severity: config.severity, testOnly: Boolean(config.testOnly) };
     const result = evaluateNode(config.condition, values, config.id, evaluationTime);
+    let state = result.state;
+    if (config.timeoutMs !== undefined) {
+      const visibility = evaluateBlocklyVisibilityTimeout(config.id, result.state, config.timeoutMs, evaluationTime.getTime());
+      state = visibility.state;
+      if (visibility.nextEvaluationAt !== undefined) {
+        nextEvaluationAt = nextEvaluationAt === undefined ? visibility.nextEvaluationAt : Math.min(nextEvaluationAt, visibility.nextEvaluationAt);
+      }
+    }
     if (result.reevaluateAt !== undefined) {
       nextEvaluationAt = nextEvaluationAt === undefined ? result.reevaluateAt : Math.min(nextEvaluationAt, result.reevaluateAt);
     }
-    return { ...base, state: result.state, ...(result.reason ? { reason: result.reason } : {}) };
+    return { ...base, state, ...(result.reason ? { reason: result.reason } : {}) };
   });
 
   const apiNotifications = await getActiveApiNotifications();
