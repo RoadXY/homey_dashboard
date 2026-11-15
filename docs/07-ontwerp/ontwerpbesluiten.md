@@ -139,3 +139,13 @@ Op verzoek is de knippercyclus nogmaals met 20% verlengd: van 2,4 naar 2,88 seco
 Alle instellingenonderdelen volgen één gedeeld ontwerpsysteem: Algemeen, Snelle acties, Meldingen, Meetwaardetegels, Weer, de navigatie en de bijbehorende keuzemenu's/editors. Componenten gebruiken semantische CSS-tokens in plaats van eigen hardgecodeerde themakleuren. De gedeelde klasse `settings-interactive` bepaalt hover-, focus-, touch- en overgangsgedrag. Geselecteerde opties behouden hun eigen geselecteerde achtergrond en krijgen bij hover een afzonderlijke omlijning.
 
 De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorbereid op toekomstige thema's die de semantische `--settings-*` tokens en `--ui-color-scheme` overschrijven. Een themawisselaar, themakeuze-opslag en een licht thema vallen nadrukkelijk nog buiten deze implementatie; eerst wordt de huidige instellingeninterface op de tablet visueel gevalideerd. De technische conventies staan in de [Settings UI design system developer guide](../10-ontwikkelaarshandleiding/settings-design-system.md).
+
+
+## Instellingen – beperkte themascope en componentstandaarden (15 november 2026)
+
+- De instellingen behouden de bestaande donkere vormgeving als uitgangspunt; deze refactor mag de huidige visuele presentatie en werking niet onbedoeld veranderen.
+- Een toekomstig thema mag uitsluitend visuele eigenschappen aanpassen: achtergronden/oppervlakken, tekstkleuren, accentkleur, randkleuren, schaduwen en optioneel hoekradius.
+- Afmetingen, positionering, typografie, fontgroottes, spacing, interacties, overgangen en responsive gedrag blijven gelijk tussen thema's.
+- De gedeelde componentstandaarden omvatten kaarten/panelen, instellingenrijen, labels/beschrijvingen, invoervelden/selects, primaire/secundaire/gevaarlijke knoppen, toggles/selecties en statusmeldingen/badges.
+- Er wordt geen themawisselaar, opgeslagen themavoorkeur, licht thema of uitgebreid themasysteem gebouwd in deze stap.
+- Uitvoering gebeurt op featurebranch `feature/settings-design-system-v2`; `phase_1_foundation` blijft onaangeroerd totdat de gebruiker de integratie goedkeurt.
