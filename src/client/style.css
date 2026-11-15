@@ -522,8 +522,16 @@ body {
 .quick-list-card,.quick-preview-card { min-height:480px; }
 .quick-card-description { color:#c3d0df; margin:-5px 0 17px; line-height:1.4; }
 .quick-action-list { display:flex; flex-direction:column; gap:7px; }
-.quick-action-row { width:100%; min-height:47px; display:grid; grid-template-columns:42px 40px minmax(0,1fr) 28px; align-items:center; gap:10px; padding:4px 8px; border:1px solid rgba(135,166,201,.22); border-radius:10px; background:rgba(9,25,43,.62); color:#edf3fb; font:inherit; text-align:left; cursor:pointer; }
+.quick-action-row { width:100%; min-height:47px; display:grid; grid-template-columns:42px 40px minmax(0,1fr) 28px; align-items:center; gap:10px; padding:4px 8px; border:1px solid rgba(135,166,201,.22); border-radius:10px; background:rgba(9,25,43,.62); color:#edf3fb; font:inherit; text-align:left; cursor:pointer; transition:border-color .12s ease,box-shadow .12s ease,background-color .12s ease; }
 .quick-action-row.selected { border:2px solid #0b9cff; padding:3px 7px; background:rgba(9,48,82,.55); }
+@media (hover:hover) and (pointer:fine) {
+  .quick-action-row:not(:disabled):hover { border-color:rgba(160,205,245,.8); box-shadow:inset 0 0 0 1px rgba(160,205,245,.12); }
+  .quick-action-row.selected:hover { border-color:rgba(160,205,245,.9); }
+}
+@media (hover:none), (pointer:coarse) {
+  .quick-action-row:not(:disabled):active:not(.selected) { background:rgba(28,76,119,.55); }
+}
+
 .quick-action-number { width:36px; height:36px; display:grid; place-items:center; border-radius:50%; background:rgba(117,145,174,.26); font-weight:650; }
  .quick-action-icon { font-size:25px; text-align:center; }
 .quick-action-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
