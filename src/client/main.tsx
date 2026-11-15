@@ -1969,8 +1969,14 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   React.useEffect(() => { setGeneralDirty(dirty); }, [dirty]);
   React.useEffect(() => { onDirtyChange(generalDirty || quickActionDirty || measurementDirty || notificationDirty || weatherDirty); }, [generalDirty, quickActionDirty, measurementDirty, notificationDirty, weatherDirty, onDirtyChange]);
   React.useEffect(() => {
-    if (page === "general" && initialPage !== "general" && generalDirty) { setSettings(saved); setGeneralDirty(false); }
-  }, [initialPage]);
+    if (page !== initialPage) {
+      if (page === "general" && generalDirty) { setSettings(saved); setGeneralDirty(false); }
+      if (page === "quick-actions") setQuickActionDirty(false);
+      if (page === "measurement-tiles") setMeasurementDirty(false);
+      if (page === "notifications") setNotificationDirty(false);
+      if (page === "weather") setWeatherDirty(false);
+    }
+  }, [initialPage, page, generalDirty, saved]);
   const locale = resolveLocale(settings.language, status?.homeyLanguage);
   const t = (key: string) => translate(locale, key);
   React.useEffect(() => {
