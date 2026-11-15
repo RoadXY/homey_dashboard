@@ -31,3 +31,12 @@ De dashboardlayout plaatst de meetwaardegroep altijd onder de weerkaart. De tege
 De opslagstructuur is vervangen door een object met `count` en `tiles`. De API-instellingenroutes lezen en bewaren dit model; de dashboardroute geeft alleen de zichtbare tegels en hun meetwaarden terug. De zes vaste configuraties gebruiken stabiele IDs `measurement-1` t/m `measurement-6`.
 
 De gebruiker heeft bevestigd dat geen migratie nodig is: het dashboard is nog in ontwikkeling en heeft één gebruiker. De nieuwe opslagstructuur kan daarom direct worden gebruikt. De tegelconfiguratie bevat alleen naam en numerieke Homey-meetbron.
+
+
+## Intrinsieke minimale tegelhoogte (15 november 2026)
+
+De dashboardtegels krijgen een minimale hoogte die meegroeit met hun beschikbare breedte. De basis is `clamp(132px, calc(11cqi + 60px), 190px)`: 132 px minimum, een breedte-afhankelijke voorkeursmaat en 190 px maximum. De breedte wordt gemeten ten opzichte van de meetwaardegroep; de waarde zelf blijft via de bestaande container-query op de tegelbreedte schalen. Zo blijft er voldoende verticale ruimte voor de naam, de grote meetwaarde, de eenheid en de interne padding.
+
+De gridrijen gebruiken een intrinsieke minimummaat (`minmax(auto, 1fr))) in plaats van nul als ondergrens. Daardoor kunnen de rijen niet worden samengedrukt tot een hoogte waarin de inhoud buiten de kaart valt. De instellingenpreview gebruikt dezelfde benadering met eigen, op de previewbreedte afgestemde grenzen.
+
+Het dashboard vult minimaal de viewporthoogte, maar heeft geen vaste hoogte of verborgen buitenrand meer. Als de minimale benodigde hoogte van de meetwaardetegels groter is dan de beschikbare schermhoogte, groeit de dashboardpagina mee en kan de pagina scrollen. Als alles past, blijft het dashboard de volledige viewport vullen zonder onnodige scrollruimte. Dit is bewust de eerste toepassing van de nieuwe ontwerpregel en geldt nog niet voor andere componenten.
