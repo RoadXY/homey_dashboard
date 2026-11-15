@@ -58,7 +58,7 @@ Reusable time and duration evaluation helpers live in `notification-conditions.t
 These are separate concepts and must not be conflated:
 
 - **Condition duration** (existing): how long a condition must remain active before it evaluates as active. It is represented by a `duration` condition node and is part of the condition tree.
-- **Notification visibility timeout** (approved, not implemented): how long an already-triggered Blockly notification remains visible on the dashboard.
+- **Notification visibility timeout** (implemented, runtime validation in progress): how long an already-triggered Blockly notification remains visible on the dashboard.
 
 The visibility timeout is selected by choosing a separate `Genereer melding` root block variant. There are two distinct root blocks: one without a timeout and one with a timeout. The timeout variant carries the selected visibility duration as notification behavior; it is not another condition node and must not change the meaning of existing duration blocks.
 
@@ -123,7 +123,7 @@ The API may only manage its own API-owned records. Blockly configuration and sys
 
 ## 9. Implementation constraints for the visibility timeout
 
-When implementation is approved to proceed:
+Implementation constraints and verification checklist:
 
 - Keep the implementation in the Blockly notification path, with the relevant configuration/editor conversion on the client and lifecycle/evaluation handling in the Blockly notification backend.
 - Keep the visibility timer separate from condition-tree evaluation and from the API expiry monitor.
@@ -134,7 +134,7 @@ When implementation is approved to proceed:
 - Keep the Notifications API module and its exclusive ownership unchanged.
 - Add tests for initial activation, early condition deactivation, reactivation without timer reset, expiry, multiple notifications, and existing configurations without the new setting.
 
-The exact serialized property name and internal state representation remain implementation details to be designed. The user-facing block variants, allowed duration choices, absence of a permanent option in the timeout block, and non-persistent timer behavior are decided. Do not infer or reuse the API's `expiresAt` contract.
+The serialized property is `timeoutMs`; the runtime visibility timer is maintained in memory. The user-facing block variants, allowed duration choices, absence of a permanent option in the timeout block, and non-persistent timer behavior are implemented. Do not infer or reuse the API's `expiresAt` contract.
 
 ## 10. Related documentation
 
