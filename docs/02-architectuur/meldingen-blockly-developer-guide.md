@@ -1,6 +1,6 @@
 # Notifications and Blockly – Developer Guide
 
-**Status:** Current architecture documented; Blockly notification visibility timeout is an approved design decision and is not implemented yet.  
+**Status:** Architecture documented; backend timeout evaluation and Blockly timeout root variant are implemented; selection and runtime verification remain in progress.  
 **Branch:** `phase_1_foundation`  
 **Last reviewed:** 15 November 2026
 
@@ -142,3 +142,12 @@ The exact serialized property name and internal state representation remain impl
 - [Notifications API – design and contract](meldingen-api.md)
 - [Project decision log](../01-project/besluitenlog.md)
 - [Blockly notification visibility – user guide](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md)
+
+
+## 11. Implementation progress – 15 November 2026
+
+- Added optional `timeoutMs` to Blockly notification configuration and server validation. Existing configurations without this property retain their original behavior.
+- Added the timeout root-block definition and Dutch/English labels for all eleven approved durations.
+- Added backend tests for allowed values, first activation, inactive condition during the visibility window, reactivation without deadline extension, and expiry.
+- The timeout root variant is currently selected from the persisted `timeoutMs` value. A clear user-facing way to switch an existing notification between the two root variants remains to be implemented.
+- Verify dashboard refresh exactly at expiry, behavior after disable/delete/reconfigure, and complete editor interaction before declaring the feature finished.
