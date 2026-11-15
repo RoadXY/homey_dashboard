@@ -453,3 +453,10 @@ Bij het openen van beide pagina's is geen regel vooraf geselecteerd. De gebruike
 ### Meetwaardetegels – hoverfeedback op aantal-dropdown (15 november 2026)
 
 De dropdown voor het aantal meetwaardetegels heeft dezelfde subtiele hoverfeedback als de navigatie in het instellingenhoofdmenu en de regels in de Quick Actions- en Meetwaardetegellijsten: een lichtere rand en lichte inset-schaduw. Dit wordt alleen getoond bij apparaten met een echte hoveraanwijzer. Op touchapparaten is er een subtiele actieve indruktoestand. De toetsenbordfocus blijft herkenbaar via een aparte focus-visible omlijning.
+
+
+### Hoverfeedback op dropdowns en invoervelden – Algemeen en Meldingen (15 november 2026)
+
+De dropdown voor het selecteren van een melding bovenaan de Meldingenpagina heeft dezelfde subtiele hoverfeedback als het instellingenhoofdmenu: een lichtere rand en inset-schaduw. Dezelfde stijl is toegepast op de zes gemarkeerde invoervelden/keuzemogelijkheden op de pagina Algemeen. De controle is expliciet uitgevoerd: dit zijn de vijf dropdowns voor dashboardtaal, datumnotatie, tijdnotatie, eerste dag van de week en timeout voor meldingen, plus het invoerveld voor de naam van een weer-API-token. De knop Token aanmaken naast dit zesde veld krijgt eveneens hoverfeedback wanneer deze knop actief is.
+
+De feedback werkt alleen als hover op het apparaat beschikbaar is. Op touchapparaten is een subtiele actieve toestand beschikbaar. De toetsenbordfocus blijft herkenbaar met een aparte focus-visible omlijning.
