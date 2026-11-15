@@ -1,6 +1,6 @@
 # Blockly-meldingen – zichtbaarheidstijd
 
-**Status:** Backend-time-out en timeoutvariant in de Blockly-editor zijn gedeeltelijk geïmplementeerd; bediening en end-to-end validatie zijn nog niet afgerond.  
+**Status:** Backend-time-out, beide Blockly-hoofdblokken en de categorie Meldingen zijn geïmplementeerd; end-to-end validatie volgt nog.  
 **Besluitdatum:** 15 november 2026
 
 ## Wat doet de zichtbaarheidstijd?
@@ -45,7 +45,7 @@ Opnieuw activeren verandert de oorspronkelijke vervaltijd dus niet.
 
 De bovenstaande werking, de twee afzonderlijke blokvarianten, de keuzelijst met tijdsduren en het niet-persistente timergedrag zijn door de gebruiker goedgekeurd en vormen het uitgangspunt voor de implementatie.
 
-De timeoutvariant en de keuzelijst zijn in de editorcode toegevoegd. Het omschakelen tussen de twee varianten en de volledige runtimewerking moeten nog worden gevalideerd; beschouw de feature daarom nog niet als afgerond.
+Beide hoofdblokken staan in de extra Blockly-categorie **Meldingen**. Sleep het gewenste hoofdblok vanuit die categorie naar de werkruimte om van variant te wisselen. De bestaande titel, tekst en volledige conditieboom blijven daarbij behouden. In de time-outvariant staat de keuzelijst direct onder Titel en Tekst. De volledige runtimewerking moet nog end-to-end worden gevalideerd; beschouw de feature daarom nog niet als afgerond.
 
 De timer wordt niet bewaard over een Docker/container-herstart. Na een herstart hoeft een lopende time-out dus niet verder te lopen of te worden hersteld.
 
