@@ -401,3 +401,8 @@ De weerkaart volgt nu hetzelfde uitgangspunt als de meetwaardetegels: een respon
 De meetwaarden onder de buitentemperatuur en weersomschrijving mogen naar meerdere kolommen/rijen teruglopen. Elk meetgegeven behoudt zijn eigen minimale breedte; bij meer ingeschakelde weerbronnen groeit de kaart dus verticaal in plaats van de gegevens horizontaal te proppen of buiten de kaart te laten vallen. De tablet- en mobiele regels overschrijven de oude vaste hoogtes en laten de kaart op automatische hoogte staan.
 
 Deze wijziging is uitsluitend toegepast op de weerkaart. De klok, meetwaardetegels, snelle acties en meldingen zijn niet opnieuw vormgegeven. De weerkaart is hiermee de tweede praktijktest van intrinsieke minimale componentafmetingen.
+
+
+## Homey-foutmeldingen boven de meldingenkaart
+
+De inventarisatie van de rode Quick Action-foutbalk, de vaste dashboardfoutteksten, dynamische Homey-/driverfouten en de grenzen van de huidige implementatie staat in [Homey-foutmeldingen](homey-foutmeldingen.md). Dit is nadrukkelijk geen inventaris van Homey's volledige interne of tijdlijnnotificatiesysteem.
