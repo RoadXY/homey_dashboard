@@ -389,3 +389,9 @@ De vier meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op éé
 - Het bewerkpaneel voor een Snelle actie staat als derde grid-item binnen de werkruimte, onder de twee bovenste kaarten (lijst en preview) en beslaat beide kolommen.
 - De werkruimte gebruikt automatische inhoudsrijen en heeft geen vaste minimale hoogte; het bewerkpaneel blijft in de normale grid-flow (`position: static`) en kan de lijst of preview niet overlappen.
 - De lijst en preview behouden hun bestaande naast-elkaar-indeling op brede schermen en stapelen op smallere beschikbare contentbreedtes.
+
+
+
+## Blockly-meldingen – zichtbaarheidstijd
+
+The approved behavior for keeping a triggered Blockly notification visible for a fixed period is documented in the [Blockly notification visibility user guide](meldingen-zichtbaarheid-gebruikershandleiding.md). The feature is documented as approved but is not implemented yet.
