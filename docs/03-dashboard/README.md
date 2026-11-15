@@ -441,3 +441,10 @@ Controleer per instellingenpagina dat een wijziging zonder Opslaan gevolgd door 
 ### Quick Actions – geen standaardselectie (15 november 2026)
 
 Bij het openen van Instellingen → Quick Actions is geen actie vooraf geselecteerd. De lijst toont alle acht acties in een neutrale, niet-geselecteerde toestand. Pas nadat de gebruiker zelf een actieregel aanklikt, wordt die regel geselecteerd en opent de editor. Dit voorkomt dat de eerste actie ten onrechte de indruk wekt dat deze al actief wordt bewerkt.
+
+
+### Instellingenlijsten – hoverfeedback en neutrale startselectie (15 november 2026)
+
+De regels in de Quick Actions- en Meetwaardetegels-editor gebruiken dezelfde subtiele muis-hoverfeedback als de navigatie in het instellingenhoofdmenu: een lichtere rand en een lichte inset-schaduw. De visuele feedback is alleen actief op apparaten met een echte hoveraanwijzer; op touchapparaten wordt een subtiele actieve indruktoestand gebruikt.
+
+Bij het openen van beide pagina's is geen regel vooraf geselecteerd. De gebruiker selecteert zelf een Quick Action of meetwaardetegel om de betreffende editor te openen. Een reeds gekozen regel behoudt zijn duidelijke geselecteerde stijl; hoverfeedback vervangt of wist die selectie niet.
