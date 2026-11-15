@@ -2264,7 +2264,6 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
         <section className="settings-card weather-api-card">
           <h2><i className="mdi mdi-key-outline" aria-hidden="true"/>{t("weatherSettings.apiHeading")}</h2>
           <p>{t("weatherSettings.apiDescription")}</p>
-          <p className="weather-api-tip"><strong>{t("weatherSettings.apiTipTitle")}</strong> {t("weatherSettings.apiTip")}</p>
           <p className="weather-api-link">{t("weatherSettings.tokenLocation")} <button type="button" className="text-link" onClick={onNavigate}>{t("settings.general")}</button>.</p>
           <a className="secondary-button weather-doc-link" href={window.location.origin+"/api-docs/#/Weather/getWeather"} target="_blank" rel="noreferrer"><i className="mdi mdi-open-in-new" aria-hidden="true"/>{t("weatherSettings.apiDocs")}</a>
         </section>
