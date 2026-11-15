@@ -534,3 +534,24 @@ Nog niet besloten en dus niet als bestaand gedrag te implementeren: exacte confi
 Documentatie:
 - Developer handleiding: [Notifications and Blockly – Developer Guide](../02-architectuur/meldingen-blockly-developer-guide.md).
 - Gebruikershandleiding: [Blockly-meldingen – zichtbaarheidstijd](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md).
+
+
+## Aanvullend gebruikersbesluit – twee Blockly-meldingsblokken en time-outopties (15 november 2026)
+
+De gebruiker vult het eerder goedgekeurde ontwerp voor zichtbaarheidstijd aan en stelt de volgende keuzes definitief vast:
+
+1. **Twee afzonderlijke hoofdblokken:** er komen twee varianten van het vaste Blockly-hoofdblok:
+   - `Genereer melding` zonder time-out: behoudt het bestaande gedrag; de melding verdwijnt zodra de onderliggende voorwaarde inactief wordt.
+   - `Genereer melding` met time-out: na de eerste activering blijft de melding zichtbaar tot de ingestelde timer afloopt, ook wanneer de voorwaarde tussentijds inactief wordt.
+2. **Vaste time-outkeuzes:** 1 minuut, 2 minuten, 5 minuten, 15 minuten, 30 minuten, 1 uur, 2 uur, 4 uur, 8 uur, 12 uur en 24 uur. Er is geen vrije invoer van andere tijden besloten.
+3. **Geen optie ‘Nooit’ binnen het time-outblok:** voor meldingen zonder time-out gebruikt de gebruiker de aparte blokvariant zonder time-out.
+4. **Geen persistentie over containerherstarts:** de zichtbaarheidstimer hoeft een Docker/container-herstart niet te overleven. Lopende timerstatus hoeft na een herstart niet te worden hersteld.
+5. **Eerder besluit blijft gelden:** opnieuw activeren terwijl de oorspronkelijke time-out nog loopt start of verlengt de timer niet. De eerste vervaltijd blijft leidend.
+
+De time-outinstelling is gedrag van het Blockly-meldingshoofdblok en geen conditie-node. De bestaande duurvoorwaarden blijven uitsluitend bepalen hoelang een voorwaarde actief/inactief moet zijn. `src/server/notifications-api.ts` blijft exclusief voor de externe Notifications API en wordt niet aangepast voor deze Blockly-functionaliteit.
+
+De Blockly-time-outfunctionaliteit is nog niet geïmplementeerd. De twee blokvarianten en de genoemde keuzes moeten nog worden gebouwd en getest.
+
+Bijgewerkte handleidingen:
+- [Notifications and Blockly – Developer Guide](../02-architectuur/meldingen-blockly-developer-guide.md)
+- [Blockly-meldingen – zichtbaarheidstijd](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md)
