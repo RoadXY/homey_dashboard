@@ -363,19 +363,20 @@ body {
 }
 .settings-interactive:focus-visible { outline:2px solid var(--settings-interactive-focus); outline-offset:2px; }
 @media (hover:hover) and (pointer:fine) {
-  .settings-interactive:not(:disabled):hover {
+  .settings-interactive:not(:disabled):not(.selected):hover {
     border-color:var(--settings-interactive-hover-border);
     background-color:var(--settings-interactive-hover-background);
     box-shadow:var(--settings-interactive-hover-shadow);
   }
   .settings-interactive.selected:hover {
+    border-color:var(--settings-interactive-selected-hover);
     outline:2px solid var(--settings-interactive-selected-hover);
     outline-offset:1px;
     filter:brightness(1.05);
   }
 }
 @media (hover:none), (pointer:coarse) {
-  .settings-interactive:not(:disabled):active { background-color:var(--settings-interactive-active-background); }
+  .settings-interactive:not(:disabled):not(.selected):active { background-color:var(--settings-interactive-active-background); }
   .settings-interactive.selected:active { filter:brightness(1.05); }
 }
 .settings-interactive--text { --settings-interactive-cursor:text; }
