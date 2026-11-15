@@ -14,6 +14,27 @@ The documents cover architecture, code paths, API contracts, runtime behavior, s
 - [Realtime dashboard updates](../03-dashboard/realtime-updates.md)
 - [Quick Actions implementation](../../docs/quick-actions.md)
 
+## Documentation lifecycle and final structure
+
+The long-term goal is to keep only two maintained project documentation guides:
+
+1. **User Guide** — the complete, practical guide for people using the dashboard.
+2. **Developer Guide** — the complete technical reference for architecture, implementation, configuration, APIs, operational procedures and development decisions.
+
+Supporting documents, design notes, investigation records and temporary implementation references may be created during active development. They are working documentation, not automatically part of the final documentation set.
+
+The following rules apply throughout development:
+
+- Capture relevant decisions and implementation details in the appropriate working document when they are made.
+- Move all information that is still relevant to operating, using, maintaining or extending the dashboard into the User Guide or Developer Guide as appropriate.
+- Keep the two guides accurate as the implementation changes. Clearly distinguish current implementation, approved design and work not yet implemented.
+- Do not delete or archive supporting documentation merely because its feature has been implemented.
+- Before removing supporting documentation, audit it and verify that every piece of relevant information has been transferred to one of the two guides. Preserve necessary context, constraints, rationale and links to source code.
+- Only after both guides are complete enough to stand on their own and have been reviewed for completeness may the remaining supporting project documentation be removed or archived.
+- Perform that final consolidation deliberately, checking internal links and repository references so that no required information or navigation is lost.
+
+This is a documentation cleanup milestone, not a restriction on creating temporary or focused documents during development. Until the final audit is explicitly completed, supporting documentation remains available as project reference material.
+
 ## Documentation rules
 
 For every behavior, distinguish clearly between:
