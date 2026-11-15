@@ -46,10 +46,10 @@
 
 ## Centrale instellingenstijl en thema-tokens (15 november 2026)
 
-- Alle instellingenmenu's gebruiken semantische `--settings-*` tokens voor kleuren, oppervlakken, randen, schaduwen, feedbackstatussen en herbruikbare componentgeometrie.
+- Alle instellingenmenu's gebruiken semantische `--settings-*` tokens voor kleuren, oppervlakken, randen, schaduwen en feedbackstatussen. Afmetingen, spacing en responsive gedrag blijven vaste componentstandaarden en zijn geen themaopties.
 - Gebruik `settings-interactive` op het daadwerkelijke interactieve element. De klasse verzorgt hover, focus-visible, touch-active en overgangen.
 - Gebruik `settings-interactive--text` aanvullend op tekstvelden en zoekvelden om de tekstcursor te behouden.
 - De gedeelde interactiestijl gebruikt `--settings-control-*` tokens. Pas die tokens aan; voeg geen component-specifieke hoverkleuren toe.
 - Geselecteerde/actieve opties behouden hun eigen geselecteerde achtergrond; hover voegt alleen een omlijning toe. Disabled elementen reageren niet op hover.
-- De huidige tokenwaarden zijn het donkere standaardthema. `--ui-color-scheme` is voorbereid op native form controls. Een themawisselaar en licht thema zijn nog niet geïmplementeerd.
+- De huidige presentatietokens zijn de donkere standaardwaarden. Thema-aanpassing is beperkt tot kleuren, oppervlakken, randen, schaduwen en optioneel hoekradius; geometrie, typografie, spacing en gedrag blijven gelijk. `--ui-color-scheme` is voorbereid op native form controls. Een themawisselaar en licht thema zijn nog niet geïmplementeerd.
 - Zie [Settings UI design system](10-ontwikkelaarshandleiding/settings-design-system.md) voor de volledige implementatie- en uitbreidingsafspraken.
