@@ -19,7 +19,7 @@ The current token values describe the existing dark appearance. The agreed theme
 - Interactive element classes: `src/client/main.tsx`
 - This document: implementation and extension contract
 
-The `--settings-*` properties on `:root` are the current dark-theme defaults. They are intended for theme-dependent presentation only: backgrounds/surfaces, text, accent, borders, shadows and (optionally) corner radii. Geometry and behavior tokens are not theme customization points. The current stylesheet still contains settings rules that use legacy dashboard tokens or local literal values; do not assume that every settings color is fully routed through the semantic namespace yet. The v2 work is to close those gaps selectively without changing the current appearance.
+The `--settings-*` properties on `:root` are the current dark-theme defaults. They are intended for theme-dependent presentation only: backgrounds/surfaces, text, accent, borders, shadows and (optionally) corner radii. Geometry and behavior tokens are not theme customization points. Settings rules that previously depended on dashboard-wide surface, text and navigation tokens now use settings aliases (`--settings-panel-*`, `--settings-tab-*` and `--settings-accent-*`). Their defaults reference the existing dashboard palette so the current appearance is retained, while a future settings theme can override the settings aliases independently.
 
 The `--ui-color-scheme` token drives the browser's native control color scheme through `color-scheme: var(--ui-color-scheme)`. A future light theme should set this token to `light`; the current default is `dark`.
 
@@ -89,7 +89,19 @@ All native `select` elements in the settings UI use `settings-interactive`. Cust
 
 ## Shared component standards
 
-The reusable settings vocabulary is: cards/panels, settings rows, labels/descriptions, inputs/selects, primary/secondary/danger buttons, toggles/selections and status messages/badges. Components must retain the established dimensions and behavior across themes. Extract shared styling only where the existing pages genuinely share the same structure; do not force unrelated controls into a single visual variant.
+The reusable settings primitives currently live in CSS and are applied by the existing page markup; this is not a new React component framework:
+
+| Primitive | Existing implementation | Contract |
+|---|---|---|
+| Cards/panels | `.settings-card`, `.notification-rule-selector`, editor/preview card classes | Use semantic surface, border and shadow tokens; preserve page-specific padding where needed. |
+| Settings rows | `.setting-row`, `.status-row`, `.token-list-row` | Keep established row layout and density; use semantic divider/text tokens. |
+| Labels/descriptions | Existing `label`, `.quick-card-description`, `.settings-title p` and page-specific description classes | Use settings text tokens; keep current typography hierarchy. |
+| Inputs/selects | Page-specific field selectors plus `.settings-interactive` | Use semantic control/menu/workspace tokens; retain compact/large size variants. |
+| Buttons | `.primary-button`, `.secondary-button`, `.notification-create-button` and page-specific actions | Keep primary/secondary/danger semantics and existing dimensions; do not flatten distinct action hierarchy. |
+| Toggles/selections | `.settings-interactive`, `.settings-nav.active`, `.selected` and toggle classes | Preserve selected state and shared focus/hover/touch behavior. |
+| Status messages/badges | `.save-message`, `.status-pill`, `.action-error`, `.quick-catalog-warning` | Use semantic success/warning/error tokens and accessible status semantics. |
+
+Components must retain established dimensions and behavior across themes. Extract shared styling only where the existing pages genuinely share the same structure; do not force unrelated controls into a single visual variant.
 
 ## Geometry and component variants
 
@@ -97,7 +109,7 @@ Use the existing geometry tokens for common shapes and dimensions. The interface
 
 ## Intentional exceptions
 
-A few colors are content semantics rather than theme chrome:
+A small, explicit set of colors are content semantics rather than theme chrome:
 
 - The multicolor brand orb remains brand artwork.
 - The weather icon pack retains recognizable sun, rain, snow, lightning and wind colors. These communicate weather conditions, not the settings theme.
@@ -112,4 +124,4 @@ A future theme may override only presentation tokens for backgrounds/surfaces, t
 
 ## Validation notes
 
-The source audit verifies that the settings stylesheet has balanced braces, all referenced CSS custom properties are defined, all settings native selects use the shared interaction class, and the settings page controls use the shared class. Visual verification in the running Docker container remains a separate tablet/browser test. No light theme or theme-switching behavior is claimed by this implementation.
+The v2 source audit verifies that the settings stylesheet has balanced braces, every referenced CSS custom property is defined, the former dashboard-wide surface/text/navigation references have been replaced within settings rules by settings aliases, and the four self-referential workspace/source-menu tokens have concrete defaults. The remaining literal colors in the settings region are limited to the multicolor brand artwork and recognizable weather-condition colors; weather-icon drop shadows remain decorative. Visual verification in the running Docker container remains a separate tablet/browser test. No light theme or theme-switching behavior is claimed by this implementation.
