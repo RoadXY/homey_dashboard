@@ -101,9 +101,9 @@ body {
 .weather-card {
   flex: 0 0 auto; min-height: clamp(220px,24vw,340px);
   padding: clamp(16px, 1.55vw, 24px); display: flex; flex-direction: column;
-  justify-content: space-between; container-type: inline-size;
+  justify-content: space-between;
 }
-.weather-main { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-width: 0; }
+.weather-main { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-width: 0; flex: 0 0 auto; }
 
 .weather-temp { font-size: clamp(50px, 4.8vw, 78px); line-height: 1.02; letter-spacing: -.06em; font-weight: 560; margin-top: 0; }
 .weather-description { color: #aab1bc; font-size: clamp(15px, 1.05vw, 19px); text-transform: capitalize; margin-top: 4px; }
