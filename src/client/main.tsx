@@ -1725,7 +1725,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
   const [saved, setSaved] = React.useState<QuickAction[]>(quickActionDefaults);
   const [catalog, setCatalog] = React.useState<QuickActionCatalog>({ devices: [], flows: [] });
   const [catalogWarning, setCatalogWarning] = React.useState("");
-  const [editingId, setEditingId] = React.useState("qmusic");
+  const [editingId, setEditingId] = React.useState("");
   const [editorOpen, setEditorOpen] = React.useState(false);
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
