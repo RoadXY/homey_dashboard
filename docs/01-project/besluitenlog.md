@@ -284,10 +284,10 @@ De instellingen navigeren voortaan rechtstreeks per functie, in deze vaste volgo
 1. Algemeen — `/settings/general`
 2. Snelle acties — `/settings/quick-actions`
 3. Meldingen — `/settings/notifications`
-4. Temperatuurtegels — `/settings/measurement-tiles`
+4. Meetwaardetegels — `/settings/measurement-tiles`
 5. Weer — `/settings/weather`
 
-Het verzamelmenu-item **Dashboard** vervalt; de twee nog relevante onderdelen (Snelle acties en Temperatuurtegels) zijn zelfstandige menu-items. De menu-items Apparaten, Homey en Systeem vervallen eveneens. Informatie over Homey- en dashboardstatus blijft op de pagina Algemeen staan waar die al onderdeel is van het overzicht; er is geen bestaande statusfunctionaliteit verwijderd.
+Het verzamelmenu-item **Dashboard** vervalt; de twee nog relevante onderdelen (Snelle acties en Meetwaardetegels) zijn zelfstandige menu-items. De menu-items Apparaten, Homey en Systeem vervallen eveneens. Informatie over Homey- en dashboardstatus blijft op de pagina Algemeen staan waar die al onderdeel is van het overzicht; er is geen bestaande statusfunctionaliteit verwijderd.
 
 De pagina Weer is als placeholder toegevoegd. De toekomstige instellingen zijn alvast benoemd: buitentemperatuur, gevoelstemperatuur, weericoon/-omschrijving, wind, luchtvochtigheid, neerslag, luchtdruk en zonsopkomst/-ondergang. De placeholder doet nog geen instellingenwijzigingen.
 
@@ -308,7 +308,7 @@ Bij controle bleek dat de merknaam in de instellingen-header nog een gewone `div
 
 
 ## Instellingenpagina's: titeluitlijning en responsive werkruimte (13 november 2026)
-- Op de functionele instellingenpagina's is de dubbele paginakop (decoratief icoon + grote titel) verwijderd; de toelichtende regel blijft staan en lijnt links uit met de kaart eronder. Dit is centraal via `.quick-settings-page` gestyled en geldt voor Snelle acties, Temperatuurtegels en de Weer-placeholder.
+- Op de functionele instellingenpagina's is de dubbele paginakop (decoratief icoon + grote titel) verwijderd; de toelichtende regel blijft staan en lijnt links uit met de kaart eronder. Dit is centraal via `.quick-settings-page` gestyled en geldt voor Snelle acties, Meetwaardetegels en de Weer-placeholder.
 - De instellingencontent is een CSS-container geworden. De twee-koloms werkruimtes schakelen op basis van de werkelijk beschikbare contentbreedte (dus ná aftrek van het linkermenu) over naar één kolom. Daardoor kunnen de lijst-/bewerkkaart en Voorbeeld-kaart niet meer naast of over elkaar heen worden gedrukt wanneer het venster smaller wordt.
 - In de smalle layout krijgen de kaarten een automatische hoogte en staat de Voorbeeld-kaart onder de lijst/editor; geen vaste minimale hoogte die onnodige overlap of lege ruimte veroorzaakt.
 
@@ -324,7 +324,7 @@ De Algemeen-pagina gebruikt container queries op `.settings-content` zodat de la
 
 
 ## Instellingen – navigatielabels bij smallere desktop/tabletbreedtes (13 november 2026)
-Bij viewportbreedtes van 701–1050 px blijft de instellingen-zijbalk in desktopmodus, maar kregen de navigatielabels onvoldoende horizontale ruimte en brak 'Temperatuurtegels' af. De zijbalk wordt in dit bereik 200 px breed met compactere padding, iconen, tussenruimte en tekstgrootte. Navigatielabels blijven op één regel (`white-space: nowrap`). Onder 700 px blijft de bestaande horizontaal scrollbare navigatie actief.
+Bij viewportbreedtes van 701–1050 px blijft de instellingen-zijbalk in desktopmodus, maar kregen de navigatielabels onvoldoende horizontale ruimte en brak 'Meetwaardetegels' af. De zijbalk wordt in dit bereik 200 px breed met compactere padding, iconen, tussenruimte en tekstgrootte. Navigatielabels blijven op één regel (`white-space: nowrap`). Onder 700 px blijft de bestaande horizontaal scrollbare navigatie actief.
 
 
 ## Mobiele instellingen-navigatie – labelbreedte hersteld (13 november 2026)
