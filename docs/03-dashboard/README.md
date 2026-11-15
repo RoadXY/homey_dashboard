@@ -472,3 +472,10 @@ De vier keuzebalken voor de weericonensets hebben eveneens hoverfeedback. Bij ni
 ### Weerinstellingen – overbodige Bearer-token infobox verwijderd (15 november 2026)
 
 In de kaart Weersomschrijving (API) is de afzonderlijke infobox met de jip-en-janneke-uitleg over Bearer-tokens verwijderd. De algemene API-beschrijving erboven blijft staan, evenals de verwijzing naar Algemeen voor het aanmaken van een token en de knop naar de Weer-API-documentatie. De kaart blijft dus bruikbaar zonder de dubbele toelichting.
+
+
+### Herstel CSS-opmaak na hoverfeedback voor het weer-API-tokenveld (15 november 2026)
+
+Na het toevoegen van hoverfeedback aan de algemene instellingen is per ongeluk de selector voor het invoerveld van het weer-API-token dubbel achter elkaar geplaatst op één CSS-regel: `.token-create-row > input {.token-create-row > input {`. Daardoor werd het CSS-blok ongeldig geïnterpreteerd en vielen meerdere daaropvolgende instellingenstijlen weg, waaronder de opmaak van Quick Actions, Meldingen, Meetwaardetegels en Weer. Dit was geen letterlijk ingevoegde `\n`-reeks, maar een dubbele selector/openingsaccolade door een onjuiste tekstuele CSS-vervanging.
+
+De dubbele selector is verwijderd. De CSS-accolades zijn gecontroleerd op balans en de selectors voor het tokenveld, Quick Actions, Meldingen, Meetwaardetegels en Weer zijn opnieuw gecontroleerd op aanwezigheid. Na deze reparatie moet de volledige interface nog in de draaiende Docker-container visueel worden gevalideerd. De browserconsole toonde daarnaast een afzonderlijke `/api/events`-melding (`ERR_INCOMPLETE_CHUNKED_ENCODING` bij HTTP 200); deze SSE-verbinding valt buiten de CSS-fout en moet apart worden beoordeeld als die melding blijft terugkomen.
