@@ -111,3 +111,9 @@ De runtime kan voor de dashboardassets en normale werking zonder publieke intern
 ## Externe meldingen-API (14 november 2026)
 
 Het definitieve ontwerp voor het extern publiceren, wijzigen en verwijderen van dashboardmeldingen staat in [Meldingen-API – definitief ontwerp](meldingen-api.md). De API gebruikt de bestaande Bearer-tokenvalidatie, een afzonderlijk persistent opslagbestand en voegt de meldingen alleen in de presentatielaag samen met Blockly-meldingen. Herkomst blijft verborgen op het dashboard. De routes zijn ontworpen maar nog niet geïmplementeerd.
+
+
+
+## Notifications and Blockly developer guide
+
+The ownership boundaries, condition model, Blockly data flow, and approved notification visibility-timeout behavior are documented in the [Notifications and Blockly – Developer Guide](meldingen-blockly-developer-guide.md). The guide explicitly separates Blockly lifecycle behavior from the externally owned Notifications API.
