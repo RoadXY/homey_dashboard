@@ -1,6 +1,6 @@
 # Notifications and Blockly – Developer Guide
 
-**Status:** Architecture documented; backend timeout evaluation and Blockly timeout root variant are implemented; selection and runtime verification remain in progress.  
+**Status:** Backend timeout evaluation and two Blockly root variants are implemented; toolbox switching is implemented; end-to-end runtime verification remains in progress.  
 **Branch:** `phase_1_foundation`  
 **Last reviewed:** 15 November 2026
 
