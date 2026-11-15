@@ -132,3 +132,10 @@ Op verzoek is de knippercyclus van de meldingsindicator vertraagd van 1,15 naar 
 
 ## Meldingsindicator – 20% langzamer knipperen (13 november 2026)
 Op verzoek is de knippercyclus nogmaals met 20% verlengd: van 2,4 naar 2,88 seconden. Kleuren, animatievorm en ondersteuning voor `prefers-reduced-motion` blijven ongewijzigd.
+
+
+## Instellingen – gedeeld ontwerpsysteem en voorbereiding op thema's (15 november 2026)
+
+Alle instellingenonderdelen volgen één gedeeld ontwerpsysteem: Algemeen, Snelle acties, Meldingen, Meetwaardetegels, Weer, de navigatie en de bijbehorende keuzemenu's/editors. Componenten gebruiken semantische CSS-tokens in plaats van eigen hardgecodeerde themakleuren. De gedeelde klasse `settings-interactive` bepaalt hover-, focus-, touch- en overgangsgedrag. Geselecteerde opties behouden hun eigen geselecteerde achtergrond en krijgen bij hover een afzonderlijke omlijning.
+
+De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorbereid op toekomstige thema's die de semantische `--settings-*` tokens en `--ui-color-scheme` overschrijven. Een themawisselaar, themakeuze-opslag en een licht thema vallen nadrukkelijk nog buiten deze implementatie; eerst wordt de huidige instellingeninterface op de tablet visueel gevalideerd. De technische conventies staan in de [Settings UI design system developer guide](../10-ontwikkelaarshandleiding/settings-design-system.md).
