@@ -15,8 +15,7 @@
 - Weersinformatie bevat gevoelstemperatuur, wind, neerslag, luchtvochtigheid en een korte weersomschrijving.
 - Weersomschrijving bestaat uit een weericoon met korte tekst.
 - Bij tijdelijk ontbrekende weerinformatie verschijnt een melding dat weerinformatie niet beschikbaar is.\n- De Homey-gegevens worden eventgestuurd bijgewerkt via de realtimeverbinding; de footer toont daarom geen vaste verversingsinterval of laatste-updateklok.
-- Maximaal vier door de gebruiker geselecteerde kamertemperaturen, weergegeven als afzonderlijke temperatuurtegels.
-- Temperatuurtegels tonen uitsluitend de ruimtenaam en temperatuur; temperatuur-iconen zijn verwijderd.
+- De gebruiker kiest 2, 4 of 6 meetwaardetegels. Elke tegel toont een eigen naam, numerieke Homey-meetwaarde en eventuele eenheid.
 - De ruimtenaam en temperatuurwaarde worden hierdoor groter weergegeven. De vaste tegelafmetingen en 2×2-indeling blijven ongewijzigd.
 - Temperatuurtegels hebben een neutrale, uniforme stijl zonder kleurcodering op basis van de waarde.
 - Bij een offline kamersensor blijft de tegel zichtbaar met de tekst ‘Geen gegevens’.
@@ -189,18 +188,18 @@ Voor Q-Music en Rolluiken openen worden in fase 1 echte, zelfstandig bruikbare H
 - De aparte kop/balk ‘Snelle acties’ vervalt; de actieknoppen blijven bovenaan de rechterzijde staan.
 - De twee mediaspelerkaarten/-knoppen vervallen volledig uit het dashboard.
 - De meldingen staan onder de actieknoppen in twee kolommen. Alle meldingskaarten hebben dezelfde vaste, bijna vierkante afmetingen; langere tekst loopt over meerdere regels.
-- Links worden vier bijna vierkante temperatuurtegels in een 2×2-raster getoond.
+- Links worden 2, 4 of 6 meetwaardetegels in twee kolommen getoond, afhankelijk van het ingestelde aantal.
 - Dashboardtekst en waarden moeten vanaf circa vier meter afstand goed leesbaar zijn.
 - Temperatuurtegels en actieknoppen blijven neutraal; kleur wordt uitsluitend functioneel gebruikt, bijvoorbeeld voor meldingsniveaus/statussen.
 
-### Temperatuurtegels – definitieve indeling
-De vier temperatuurtegels zijn allemaal exact even groot en worden in een vast 2×2-raster geplaatst. Ze gebruiken een neutrale stijl en grote, goed leesbare waarden.
+### Meetwaardetegels – definitieve indeling
+Het aantal meetwaardetegels is instelbaar op 2, 4 of 6. De tegels staan altijd direct onder de weerkaart in twee kolommen: één, twee of drie rijen. Binnen dezelfde indeling zijn de tegels even groot en gebruiken ze een neutrale stijl met goed leesbare waarden.
 
 ### Actieknoppen – definitieve plaatsing
 De acht actieknoppen staan in één horizontale rij boven de meldingen, zoals in de mockup. De eerder vastgelegde volgorde blijft behouden. De gebruiker geeft aan dat de bediening bewust dichtbij het tabletscherm plaatsvindt; daarom is één compacte rij gewenst.
 
 ### Kolomverhouding – bijgewerkt ontwerpbesluit
-De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de besproken mockup. Dit vervangt de eerdere voorlopige 50/50-verdeling. Links blijven klok, weer en vier temperatuurtegels; rechts komen de acht actieknoppen en de meldingen in twee kolommen.
+De gebruiker kiest voor een verhouding van 40% links en 60% rechts, zoals de besproken mockup. Dit vervangt de eerdere voorlopige 50/50-verdeling. Links blijven klok, weer en de ingestelde 2, 4 of 6 meetwaardetegels; rechts komen de acht actieknoppen en de meldingen in twee kolommen.
 
 
 ## Uniforme tussenruimtes en buitenmarges (10 november 2026)
@@ -370,19 +369,17 @@ De kopregel Meldingen toont rechts een knipperend uitroepteken in een cirkel bij
 De meldingeninstellingen gebruiken binnen `NotificationSettingsPage` de vertaalhelper `t`. Deze helper moet lokaal worden afgeleid van de ontvangen `locale` (`translate(locale, key)`); de pagina ontvangt geen `t`-prop. Een ontbrekende helper veroorzaakte een `ReferenceError: t is not defined` tijdens renderen, waardoor de volledige pagina leeg bleef. Dit is hersteld door de helper lokaal te definiëren. CI-build en tests controleren de code; controle in de browser blijft onderdeel van de praktijktest.
 
 
-## Meetwaardetegels zonder pictogrammen (13 november 2026)
-Meetwaardetegels tonen op het dashboard uitsluitend de naam en de meetwaarde. Het pictogram boven de waarde is verwijderd om de beschikbare tegelruimte volledig te benutten. In Instellingen → Meetwaardetegels is de pictogramkiezer verwijderd; ook de lijst en voorbeeldweergave tonen geen pictogrammen meer. Per tegel blijven naam en Homey-meetbron configureerbaar.
-
-De clientconfiguratie en serverconfiguratie bevatten geen pictogramveld meer. Bestaande `measurement-tiles.json`-bestanden met een oud `icon`-veld blijven leesbaar: de server negeert dat verouderde veld en schrijft bij de eerstvolgende opslag de opgeschoonde structuur terug. Quick Actions behouden hun eigen pictogramselectie; deze wijziging geldt uitsluitend voor meetwaardetegels.
+## Meetwaardetegels – tegelinhoud (13 november 2026)
+Iedere meetwaardetegel toont de eigen naam, de actuele numerieke meetwaarde en waar beschikbaar de eenheid. Per tegel zijn alleen de naam en de Homey-meetbron configureerbaar.
 
 
 ### Meetwaardetegels – rij-indeling (13 november 2026)
-De lijst met meetwaardetegels gebruikt een eigen grid-indeling zonder gereserveerde pictogramkolom. De tegelnaam krijgt daardoor de volledige resterende breedte; het bewerkpotlood staat consequent uiterst rechts, onafhankelijk van de schermbreedte.
+De lijst met meetwaardetegels gebruikt een eigen grid-indeling met nummer, naam en bewerkactie. De tegelnaam krijgt de resterende breedte; het bewerkpotlood staat consequent uiterst rechts, onafhankelijk van de schermbreedte.
 
 
 ## Meetwaardetegels – compacte waardeweergave (13 november 2026)
 
-De vier meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op één regel. De waarde schaalt responsief mee met de beschikbare tegelbreedte via container-relative typografie; de eenheid wordt kleiner weergegeven zodat de meetwaarde visueel leidend blijft. Eenheden blijven behouden (onder andere `ppm` en `%`). Bij absolute waarden vanaf 1.000 wordt de waarde op nul decimalen weergegeven om onnodig lange getallen te voorkomen. Onder die grens blijft de precisie uit Homey-metadata behouden, met maximaal drie decimalen. De instellingen-preview blijft dezelfde formatter gebruiken.
+Alle getoonde meetwaardetegels tonen de meetwaarde en eventuele eenheid altijd op één regel. De waarde schaalt responsief mee met de beschikbare tegelbreedte via container-relative typografie; de eenheid wordt kleiner weergegeven zodat de meetwaarde visueel leidend blijft. Eenheden blijven behouden (onder andere `ppm` en `%`). Bij absolute waarden vanaf 1.000 wordt de waarde op nul decimalen weergegeven om onnodig lange getallen te voorkomen. Onder die grens blijft de precisie uit Homey-metadata behouden, met maximaal drie decimalen. De instellingen-preview blijft dezelfde formatter gebruiken.
 
 ## Instellingen: editor voor Snelle acties (13 november 2026)
 
