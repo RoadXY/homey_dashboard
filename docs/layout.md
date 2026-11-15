@@ -42,3 +42,12 @@
 - De aanvullende weermeetwaarden mogen teruglopen naar meerdere kolommen en rijen. Elk veld houdt een minimale breedte aan; bij meer ingeschakelde bronnen groeit de kaart mee met de inhoud.
 - De kaart mag dus hoger worden wanneer de ingeschakelde weergegevens dat vereisen, zonder dat de inhoud wordt samengedrukt of horizontaal buiten de kaart loopt.
 - De wijziging is beperkt tot de weerkaart; andere dashboardcomponenten blijven ongewijzigd.
+
+
+## Centrale interactiestijl voor instellingen (15 november 2026)
+
+- Gebruik `settings-interactive` op interactieve bedieningselementen binnen Instellingen. De klasse beheert gedeelde hover-, focus-visible-, touch-active- en transition-stijlen.
+- De kleuren en schaduwen komen uit centrale CSS-custom-properties met prefix `--settings-interactive-*` op `:root`. Pas deze tokens aan in plaats van losse componentkleuren te introduceren.
+- Geselecteerde opties behouden hun component-eigen geselecteerde achtergrond. De gedeelde klasse voegt bij hover een aparte omlijning toe.
+- Gebruik de modifier `settings-interactive--text` voor tekstinvoervelden om de normale tekstcursor te behouden.
+- Voeg de klasse toe aan het werkelijke interactieve element; een custom dropdown kan bijvoorbeeld een `button` zijn in plaats van een native `select`.
