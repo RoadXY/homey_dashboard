@@ -80,7 +80,7 @@ De instellingen-navigatie bevat de zes categorieën: **Algemeen**, **Dashboard**
 
 Op de pagina **Dashboard** zijn onder andere het aantal en de bronnen van de meetwaardetegels instelbaar, welke weergegevens zichtbaar zijn en de zichtbaarheid, volgorde en instellingen van snelle actieknoppen.
 
-Het aantal meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** tegels. De standaardinstelling is **vier**. De zes tegelconfiguraties worden altijd bewaard; bij een lager zichtbaar aantal blijven de overige configuraties behouden en komen ze terug wanneer de gebruiker het aantal weer verhoogt. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron.
+Het aantal meetwaardetegels is instelbaar via een dropdown met **2, 4 of 6** tegels. De standaardinstelling is **vier**. De zes tegelconfiguraties worden altijd bewaard; bij een lager zichtbaar aantal blijven de overige configuraties behouden en komen ze terug wanneer de gebruiker het aantal weer verhoogt. Iedere tegel heeft uitsluitend twee instelbare eigenschappen: een eigen weergavenaam en één numerieke meetwaardebron. Omdat het dashboard nog in ontwikkeling is en één gebruiker heeft, is voor deze wijziging geen migratie van de bestaande meetwaardetegelconfiguratie nodig.
 
 De term **meetwaardetegels** vervangt hier de eerdere, te beperkte term temperatuurtegels. Een tegel mag iedere numerieke meetwaarde tonen die via Homey beschikbaar is, bijvoorbeeld temperatuur, luchtvochtigheid, CO₂, PM2.5 of een andere numerieke capability. Ook numerieke Homey Logic-variabelen zijn toegestane bronnen. Boolean- en tekstwaarden worden niet aangeboden.
 
