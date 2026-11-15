@@ -484,3 +484,22 @@ De dubbele selector is verwijderd. De CSS-accolades zijn gecontroleerd op balans
 ### Meldingen – duidelijkere hover op meldingenselector (15 november 2026)
 
 De dropdown bovenaan de Meldingenpagina had al een hoverregel, maar de visuele verandering was in de praktijk onvoldoende opvallend. De hover is daarom versterkt: bij aanwijzen krijgt de selector een duidelijk lichtere blauwe rand, een iets lichtere achtergrond en een subtiele dubbele focusachtige gloed. De stijl geldt niet voor uitgeschakelde selectoren. De toetsenbordfocus en touch-actieve toestand blijven afzonderlijk ondersteund.
+
+
+### Centrale interactiestijl voor instellingen (15 november 2026)
+
+Bedieningselementen in Instellingen gebruiken voortaan de gedeelde CSS-klasse `settings-interactive`. Deze klasse centraliseert de hover-, focus-, overgangs- en touchstatussen, zodat nieuwe bedieningselementen niet telkens hun eigen kleur- en schaduwregels nodig hebben.
+
+De centrale stijl wordt gevoed door CSS-custom-properties op `:root`:
+- `--settings-interactive-hover-border`
+- `--settings-interactive-hover-background`
+- `--settings-interactive-hover-shadow`
+- `--settings-interactive-active-background`
+- `--settings-interactive-focus`
+- `--settings-interactive-selected-hover`
+
+Voor tekstinvoervelden die de gedeelde stijl gebruiken, is de modifier `settings-interactive--text` beschikbaar zodat de tekstcursor behouden blijft. Bestaande geselecteerde elementen houden hun `selected`-klasse; de gedeelde stijl geeft die bij hover een afzonderlijke omlijning zonder de geselecteerde achtergrond te vervangen.
+
+De klasse is toegepast op de Quick Actions-regels, meetwaardetegels-regels, het aantal-dropdownveld, de vijf algemene instellingen-dropdowns, het naamveld en de knop voor weer-API-tokens, de daadwerkelijke knop van de meldingenselector, de negen weerbron-dropdowns en de vier weericonen-opties.
+
+**Nieuwe elementen:** voeg `settings-interactive` toe aan het daadwerkelijke interactieve HTML-element (bijvoorbeeld de `button` die een custom dropdown opent, niet een niet-bestaande `select`). Voor een tekstveld voeg je ook `settings-interactive--text` toe. Gebruik `selected` voor een bestaande geselecteerde toestand. Pas de centrale tokens aan als de hoverstijl later voor alle instellingen moet veranderen.
