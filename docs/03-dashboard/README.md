@@ -460,3 +460,10 @@ De dropdown voor het aantal meetwaardetegels heeft dezelfde subtiele hoverfeedba
 De dropdown voor het selecteren van een melding bovenaan de Meldingenpagina heeft dezelfde subtiele hoverfeedback als het instellingenhoofdmenu: een lichtere rand en inset-schaduw. Dezelfde stijl is toegepast op de zes gemarkeerde invoervelden/keuzemogelijkheden op de pagina Algemeen. De controle is expliciet uitgevoerd: dit zijn de vijf dropdowns voor dashboardtaal, datumnotatie, tijdnotatie, eerste dag van de week en timeout voor meldingen, plus het invoerveld voor de naam van een weer-API-token. De knop Token aanmaken naast dit zesde veld krijgt eveneens hoverfeedback wanneer deze knop actief is.
 
 De feedback werkt alleen als hover op het apparaat beschikbaar is. Op touchapparaten is een subtiele actieve toestand beschikbaar. De toetsenbordfocus blijft herkenbaar met een aparte focus-visible omlijning.
+
+
+### Weerinstellingen – hoverfeedback op bronkeuzes en iconensets (15 november 2026)
+
+Alle negen bronkeuze-dropdowns in de Weerinstellingen gebruiken dezelfde hoverfeedback als het instellingenhoofdmenu: een lichtere rand en subtiele inset-schaduw. De hoverstijl geldt uitsluitend voor ingeschakelde dropdowns; uitgeschakelde bronkeuzes blijven visueel gedimd en reageren niet op hover. De negen velden zijn buitentemperatuur, gevoelstemperatuur, luchtvochtigheid, luchtdruk, windsnelheid, windrichting, neerslag, zonsopkomst en zonsondergang.
+
+De vier keuzebalken voor de weericonensets hebben eveneens hoverfeedback. Bij niet-geselecteerde opties wordt de rand lichter. Bij de reeds geselecteerde optie blijft de bestaande geselecteerde achtergrond zichtbaar en komt daar bij hover een duidelijkere, lichtere omlijning en subtiele helderheidsverhoging bovenop. Zo blijft het onderscheid tussen selectie en hover duidelijk. Op touchapparaten is een actieve indruktoestand beschikbaar; toetsenbordfocus blijft herkenbaar.
