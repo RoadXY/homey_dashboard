@@ -509,3 +509,28 @@ De eerste backendimplementatie is gestart op `phase_1_foundation`. De API krijgt
 ## Notifications API – backend eerste implementatie (14 november 2026)
 
 De eerste backendimplementatie is toegevoegd: dedicated opslagmodule en JSON-bestand voor API-meldingen, CRUD-routes onder `/api/v1/notifications`, hergebruik van Bearer-tokenauthenticatie, validatie en optionele expiratie. API-meldingen worden samengevoegd met Blockly-meldingen in de bestaande dashboardresponse. De dashboardclient luistert naar `notifications-updated`; het event bevat uitsluitend `updatedAt`. De client-side Quick Action-foutmeldingen zijn intern als `system` geclassificeerd. Tests voor opslag, validatie, PATCH, expiratie en gelijktijdige schrijfacties zijn toegevoegd. OpenAPI en de Docker-served kopie worden synchroon bijgewerkt.
+
+
+## Gebruikersbesluit – zichtbaarheidstijd voor Blockly-meldingen (15 november 2026)
+
+De gebruiker keurt een optionele zichtbaarheidstijd voor Blockly-meldingen goed. Dit is een aparte eigenschap van de melding en geen conditie-node. De bestaande duurvoorwaarden (**Gedurende X minuten actief/inactief**) behouden hun huidige betekenis: zij bepalen wanneer een voorwaarde actief wordt, niet hoelang een melding zichtbaar blijft.
+
+Vastgesteld gedrag:
+- De zichtbaarheidstimer start wanneer de Blockly-melding wordt geactiveerd.
+- Als de onderliggende voorwaarde inactief wordt voordat de zichtbaarheidstijd verstreken is, blijft de melding zichtbaar tot de oorspronkelijke timer afloopt.
+- Als dezelfde melding opnieuw actief wordt terwijl de timer nog loopt, blijft de oorspronkelijke timer behouden. Opnieuw activeren start de timer niet opnieuw en verlengt de vervaltijd niet.
+- Voorbeeld: een melding wordt om 12:00 geactiveerd met een zichtbaarheidstijd van 15 minuten. De voorwaarde wordt om 12:03 inactief en om 12:08 opnieuw actief. De melding verdwijnt nog steeds om 12:15.
+
+Architectuurgrens:
+- De functionaliteit wordt uitsluitend in de Blockly-meldingenstroom gebouwd.
+- `src/server/notifications.ts` blijft verantwoordelijk voor de Blockly-meldingenengine.
+- `src/server/notification-conditions.ts` bevat de herbruikbare evaluatie van bestaande tijdschema- en duurvoorwaarden.
+- `src/client/notification-condition-blockly.ts` vertaalt Blockly-blokken naar en van het canonieke conditiemodel.
+- `src/server/notifications-api.ts` blijft exclusief verantwoordelijk voor externe API-meldingen en wordt voor deze functionaliteit niet aangepast. De API-expiratie via `expiresAt` is geen gedeelde Blockly-timer.
+- De bestaande leesintegratie waarbij `notifications.ts` actieve API-meldingen ophaalt voor de dashboardpresentatie blijft uitsluitend een presentatie-integratie.
+
+Nog niet besloten en dus niet als bestaand gedrag te implementeren: exacte configuratie-eigenschap, keuzelijst/tijdsbereik, standaardwaarde, optie voor permanent/nooit verlopen, persistentie en herstel na Docker-herstart. De functionaliteit is nog niet geïmplementeerd.
+
+Documentatie:
+- Developer handleiding: [Notifications and Blockly – Developer Guide](../02-architectuur/meldingen-blockly-developer-guide.md).
+- Gebruikershandleiding: [Blockly-meldingen – zichtbaarheidstijd](../03-dashboard/meldingen-zichtbaarheid-gebruikershandleiding.md).
