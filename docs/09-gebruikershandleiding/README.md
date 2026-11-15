@@ -1,11 +1,13 @@
-# Gebruikershandleiding
+# User Guide
 
-Welkom bij de gebruikershandleiding van het Homey Dashboard.
+Welcome to the Homey Dashboard user guide.
 
-In deze map leggen we uit hoe je het dashboard gebruikt. We schrijven zo eenvoudig mogelijk, zonder technische uitleg of programmeertaal.
+This folder explains how to use the dashboard. The instructions are written in clear, everyday English and avoid technical implementation details.
 
-## Onderwerpen
+## Topics
 
-- [Foutmeldingen op het dashboard](dashboard-foutmeldingen.md)
+- [Dashboard error messages](dashboard-error-messages.md)
 
-Deze handleiding beschrijft wat je als gebruiker kunt zien en wat dat voor jou betekent. Technische details staan in de [ontwikkelaarshandleiding](../10-ontwikkelaarshandleiding/README.md).
+This guide explains what users can see and what it means. Technical details are documented in the [Developer Guide](../10-ontwikkelaarshandleiding/README.md).
+
+**Language convention:** the documentation in this folder is written in English. The dashboard interface itself can still be displayed in the language selected in its settings.
