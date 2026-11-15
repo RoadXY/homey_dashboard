@@ -124,3 +124,9 @@ The Dutch and English locale files parse successfully and contain matching keys.
 - The standard animated weather icon pack now animates the two curved wind trails independently instead of translating the complete wind symbol.
 - Each trail uses a short moving stroke highlight that travels along the curved line; the second trail is phase-shifted so the two streams flow in sequence. The underlying wind paths remain in place, preserving the original icon silhouette.
 - The animation is applied only to the animated icon pack and respects the global animated-icons switch and reduced-motion preference. Other icon packs and static mode are unchanged.
+
+
+## Wider windy icon lines (15 November 2026)
+
+- The two horizontal wind strokes in the standard windy icon are now twice as long. Their curved end details and vertical spacing are preserved, and the wider SVG viewBox keeps the extended lines within the existing icon area.
+- The independent flowing-stroke animation remains unchanged and continues to run only in the animated standard pack.
