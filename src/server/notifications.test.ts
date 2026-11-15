@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { combineConditionResults, mergeNotificationConfigs, parseNotificationConfigJson } from "./notifications.js";
+import { combineConditionResults, evaluateBlocklyVisibilityTimeout, isValidBlocklyNotificationTimeout, mergeNotificationConfigs, parseNotificationConfigJson } from "./notifications.js";
 
 describe("combineConditionResults", () => {
   it("requires every child to be active for AND", () => {
@@ -90,5 +90,41 @@ describe("mergeNotificationConfigs", () => {
     const defaults = [config("default-a", "Old title"), config("default-b", "B")];
     const saved = [config("default-a", "Updated title"), config("custom", "Custom")];
     expect(mergeNotificationConfigs(defaults, saved, []).map((item) => item.title)).toEqual(["Updated title", "B", "Custom"]);
+  });
+});
+
+
+describe("Blockly notification visibility timeout", () => {
+  it("accepts only the approved fixed timeout values", () => {
+    expect(isValidBlocklyNotificationTimeout(60_000)).toBe(true);
+    expect(isValidBlocklyNotificationTimeout(86_400_000)).toBe(true);
+    expect(isValidBlocklyNotificationTimeout(90_000)).toBe(false);
+    expect(isValidBlocklyNotificationTimeout("60000")).toBe(false);
+  });
+
+  it("starts a visibility window on the first active condition", () => {
+    expect(evaluateBlocklyVisibilityTimeout("timeout-start-test", "active", 60_000, 1_000))
+      .toEqual({ state: "active", nextEvaluationAt: 61_000 });
+    expect(evaluateBlocklyVisibilityTimeout("timeout-start-test", "active", 60_000, 10_000))
+      .toEqual({ state: "active", nextEvaluationAt: 61_000 });
+  });
+
+  it("keeps the notification visible when the condition becomes inactive before expiry", () => {
+    evaluateBlocklyVisibilityTimeout("timeout-inactive-test", "active", 60_000, 1_000);
+    expect(evaluateBlocklyVisibilityTimeout("timeout-inactive-test", "inactive", 60_000, 20_000))
+      .toEqual({ state: "active", nextEvaluationAt: 61_000 });
+  });
+
+  it("does not restart the timer when the condition reactivates", () => {
+    evaluateBlocklyVisibilityTimeout("timeout-reactivate-test", "active", 60_000, 1_000);
+    evaluateBlocklyVisibilityTimeout("timeout-reactivate-test", "inactive", 60_000, 20_000);
+    expect(evaluateBlocklyVisibilityTimeout("timeout-reactivate-test", "active", 60_000, 30_000))
+      .toEqual({ state: "active", nextEvaluationAt: 61_000 });
+  });
+
+  it("hides the notification at the original expiry deadline", () => {
+    evaluateBlocklyVisibilityTimeout("timeout-expiry-test", "active", 60_000, 1_000);
+    expect(evaluateBlocklyVisibilityTimeout("timeout-expiry-test", "inactive", 60_000, 61_000))
+      .toEqual({ state: "inactive" });
   });
 });
