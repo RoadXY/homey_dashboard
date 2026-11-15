@@ -311,8 +311,13 @@ app.get("/api/settings/measurement-sources", async (request, reply) => {
   catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardebronnen konden niet worden geladen." }); }
 });
 app.get("/api/dashboard/measurement-tiles", async (_request, reply) => {
-  try { return { tiles: await readMeasurementTiles(), ...(await getMeasurementTileValues(await readMeasurementTiles())) }; }
-  catch (error) { return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardetegels konden niet worden bijgewerkt." }); }
+  try {
+    const settings = await readMeasurementTiles();
+    const tiles = settings.tiles.slice(0, settings.count);
+    return { count: settings.count, tiles, ...(await getMeasurementTileValues(tiles)) };
+  } catch (error) {
+    return reply.code(503).send({ error: error instanceof Error ? error.message : "Meetwaardetegels konden niet worden bijgewerkt." });
+  }
 });
 
 app.get("/api/settings/weather", async (request, reply) => {
