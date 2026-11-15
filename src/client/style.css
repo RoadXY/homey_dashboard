@@ -56,8 +56,8 @@
   --settings-menu-hover-background:var(--settings-workspace-menu-hover);
   --settings-menu-border: rgba(151,178,209,.55);
   --settings-menu-shadow: 0 16px 38px rgba(0,0,0,.58);
-  --settings-workspace-background:var(--settings-workspace-background);
-  --settings-workspace-toolbar-background:var(--settings-workspace-toolbar-background);
+  --settings-workspace-background: #171b22;
+  --settings-workspace-toolbar-background: #101d2d;
   --settings-workspace-hover-background: #303a48;
   --settings-workspace-selected-background: #34465b;
   --settings-workspace-text: #dce3ec;
@@ -172,7 +172,7 @@
   --settings-menu-border-strong: #53677d;
   --settings-menu-background-deep: #112237;
   --settings-menu-background-mid: #1a3047;
-  --settings-source-menu-background:var(--settings-source-menu-background);
+  --settings-source-menu-background: #10243a;
   --settings-source-menu-border: rgba(145,170,198,.42);
   --settings-source-menu-shadow: 0 12px 28px rgba(0,0,0,.38);
   --settings-blockly-text: #f4f6f9;
@@ -204,7 +204,7 @@
   --settings-quick-title-icon: #e6effa;
   --settings-create-text: #ffffff;
   --settings-workspace-panel-background: rgba(23,27,34,.72);
-  --settings-workspace-search-background:var(--settings-workspace-search-background);
+  --settings-workspace-search-background: #0c1929;
   --settings-workspace-menu-hover: #2c4b6b;
   --settings-workspace-menu-border: rgba(170,190,215,.15);
   --settings-source-menu-text: #eef4fb;
