@@ -318,7 +318,7 @@
   "blockly.selectHomeySourceOption": "— select Homey source —",
   "blockly.selectHomeySourceTooltip": "Select a Homey device/capability or Logic variable.",
   "blockly.sourceSearchDescription": "Search for a Homey source.",
-  "notifications.discardChanges": "You have unsaved changes in your notifications. If you go back, these changes will be lost. Do you want to continue?",
+  "notifications.discardChanges": "You have unsaved changes. If you continue, these changes will be lost. Do you want to continue?",
   "notifications.selectValidNotification": "Select a notification",
   "notifications.search": "Search notifications...",
   "notifications.searchLabel": "Search notifications",
