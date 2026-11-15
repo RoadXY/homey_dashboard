@@ -1111,7 +1111,7 @@ body {
   fill: var(--settings-text-inverted) !important;
 }
 
-.weather-placeholder-card ul { margin:16px 0 0; padding-left:24px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 28px; color:var(--settings-text-secondary,#c5ceda); }
+.weather-placeholder-card ul { margin:16px 0 0; padding-left:24px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 28px; color:var(--settings-text-secondary); }
 .weather-placeholder-card li { padding-left:4px; }
 @media (max-width:700px) { .weather-placeholder-card ul { grid-template-columns:minmax(0,1fr); } }
 
