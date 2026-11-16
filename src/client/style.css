@@ -1416,3 +1416,14 @@ body {
 
 /* Informational status in searchable pickers (e.g. Advanced Flow type). */
 .settings-status-info { display:inline-flex; flex:0 0 auto; align-items:center; padding:4px 8px; border:1px solid var(--settings-accent-soft-border); border-radius:6px; background:var(--settings-accent-soft-background); color:var(--settings-accent-soft-text); font-size:11px; font-weight:650; line-height:1.2; white-space:nowrap; }
+
+/* Flow picker keeps a compact desktop width instead of stretching to the browser. */
+.quick-flow-picker > .quick-flow-menu { width:min(100%, 670px); max-width:670px; right:auto; }
+.quick-flow-footer { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.quick-flow-tip { color:var(--settings-menu-search-text); font-size:11px; text-align:right; }
+.quick-flow-tip strong { color:var(--settings-accent-soft-text); font-weight:700; }
+@media (max-width:560px) {
+  .quick-flow-picker > .quick-flow-menu { width:min(100%, 670px); max-width:calc(100vw - 40px); }
+  .quick-flow-footer { align-items:flex-start; flex-wrap:wrap; gap:4px 10px; }
+  .quick-flow-tip { text-align:left; }
+}
