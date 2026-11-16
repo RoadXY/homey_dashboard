@@ -1482,3 +1482,16 @@ body {
 @media (max-width:1100px) {
   .measurement-workspace > .measurement-editor-card { grid-column:1; grid-row:auto; }
 }
+
+
+/* Standalone measurement settings layout: independent from Quick Actions workspace rules. */
+.measurement-settings-page { display:flex; flex-direction:column; gap:18px; min-height:100%; }
+.measurement-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; gap:18px; width:100%; min-width:0; }
+.measurement-layout > .settings-card { min-width:0; width:100%; min-height:0; height:auto; align-self:stretch; }
+.measurement-layout > .measurement-editor-card { grid-column:1 / -1; grid-row:auto; position:static; width:100%; min-width:0; margin:0; align-self:start; }
+.measurement-preview-dashboard-grid { width:100%; min-width:0; align-content:start; grid-auto-rows:minmax(132px,auto); }
+.measurement-preview-dashboard-grid .temperature-tile { min-height:clamp(132px,calc(11cqi + 60px),190px); }
+@media (max-width:900px) {
+  .measurement-layout { grid-template-columns:minmax(0,1fr); }
+  .measurement-layout > .measurement-editor-card { grid-column:1; }
+}

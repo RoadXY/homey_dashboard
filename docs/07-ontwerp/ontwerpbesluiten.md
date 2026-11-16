@@ -230,3 +230,8 @@ De preview bij zes tegels moet de volledige drie rijen tonen. De linker tegelcon
 ### Meetwaardetegels – editor als derde gridrij (16 november 2026)
 
 De meetwaardetegel-editor wordt een directe child van `.measurement-workspace`. De twee configuratie-/previewkaarten blijven de eerste rij (naast elkaar waar de ruimte dat toelaat); de editor beslaat daarna de volledige breedte als derde rij. In de smalle layout valt alles in één kolom. De editor mag niet absoluut of fixed gepositioneerd worden en mag de hoogte van de bovenste kaarten niet beïnvloeden door overlap.
+
+
+## Meetwaardetegels – pagina opnieuw opgebouwd (16 november 2026)
+
+De instellingenpagina krijgt een zelfstandige layout, los van Quick Actions: twee gelijkwaardige kaarten (configuratie en preview) verdelen de volledige contentbreedte; bij maximaal 900px stapelen ze. De bewerkkaart staat als normale derde rij over de volledige breedte. De preview hergebruikt de daadwerkelijke dashboardklassen `.temperature-grid` en `.temperature-tile` met dezelfde count-rijindeling, zodat de tegels hetzelfde vaste formaat en uiterlijk houden als op het dashboard. Geen absolute/fixed editorpositie, vaste kaarthoogtes die inhoud afknippen of overlappende actievoet.

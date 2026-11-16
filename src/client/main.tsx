@@ -660,9 +660,9 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
     } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); setIsError(true); }
     finally { setSaving(false); }
   };
-  return <div className="quick-settings-page">
+  return <div className="quick-settings-page measurement-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.measurementTiles")}</h1><p>{t("measurement.configureIntro")}</p></div></div>
-    <div className="quick-workspace measurement-workspace">
+    <div className="measurement-layout">
       <section className="settings-card quick-list-card measurement-list-card">
         <h2><span>♙</span>{t("measurement.heading")}</h2>
         <p className="quick-card-description">{t("measurement.configureDescription")}</p>
@@ -693,14 +693,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
       <section className="settings-card quick-preview-card">
         <h2><span>◎</span>{t("settings.preview")}</h2>
         <p className="quick-card-description">{t("measurement.previewDescription")}</p>
-        <div className="quick-preview-grid measurement-preview-grid">
+        <div className={"temperature-grid measurement-preview-dashboard-grid measurement-count-" + count}>
           {visibleTiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
             const formatted = formatMeasurementParts(reading);
-            return <div className="quick-preview-item measurement-preview-item" key={tile.id}>
-              <TemperatureTile label={tile.name || "Tegel"} value={formatted.value} units={formatted.units} className="measurement-preview-dashboard-tile"/>
-              <small>{sourceDescription(tile)}</small>
-            </div>;
+            return <TemperatureTile key={tile.id} label={tile.name || "Tegel"} value={formatted.value} units={formatted.units}/>;
           })}
         </div>
       </section>

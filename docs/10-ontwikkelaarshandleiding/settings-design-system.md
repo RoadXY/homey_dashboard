@@ -308,3 +308,10 @@ De gedeelde instellingenactievoet `.settings-bottom` blijft in de normale docume
 ### Meetwaardetegel-editor in dezelfde responsive grid
 
 De bewerkkaart is een directe grid-child van `.measurement-workspace`, na de lijst- en previewkaart. Op brede schermen beslaat de editor beide kolommen als derde rij; in de gestapelde layout beslaat hij de enkele kolom als volgende rij. Plaats deze editor niet buiten de workspace en gebruik geen absolute/fixed positionering. Hierdoor blijven de twee bovenste kaarten hun natuurlijke inhoudshoogte behouden en kan het openen van de editor geen overlap of inkrimping van de preview veroorzaken.
+
+
+## Meetwaardetegels – zelfstandige pagina-layout
+
+De Meetwaardetegels-instellingen gebruiken een eigen `.measurement-settings-page` en `.measurement-layout`; hergebruik van de Quick Actions workspace-grid is bewust vermeden. De bovenste configuratie- en previewkaart verdelen de volledige beschikbare contentbreedte in twee gelijke kolommen. Bij maximaal 900px stapelen ze in één kolom. De editor is een normale derde gridrij over de volle breedte en mag geen vaste/absolute positie gebruiken.
+
+De preview gebruikt dezelfde `.temperature-grid`, `.temperature-tile` en `measurement-count-2/4/6`-klassen als het dashboard. Daarmee blijven de tegelverhoudingen, typografie en afmetingen gelijk aan de dashboardtegels. Het raster blijft twee kolommen breed en krijgt één, twee of drie rijen op basis van het gekozen aantal. Laat de previewkaart meegroeien; knip de derde rij nooit af. Bewaar alle bestaande Homey-, Logic-, selectie-, validatie-, opslag- en i18n-logica bij layoutwijzigingen.
