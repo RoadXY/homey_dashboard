@@ -179,3 +179,6 @@ The Quick Actions device searchable picker (`.quick-device-menu`) uses the same 
 ### Meetwaardetegels: annuleren van wijzigingen
 
 De vaste actiebar onderaan de instellingenpagina voor meetwaardetegels toont naast Opslaan ook Annuleren. Annuleren herstelt zowel het aantal tegels als alle tegelinstellingen naar de laatst opgeslagen serverconfiguratie, sluit de geopende editor en wist een eventuele tijdelijke statusmelding. De actie is uitgeschakeld wanneer er geen wijzigingen zijn, tijdens laden of tijdens opslaan. Gebruik de bestaande vertaling `settings.cancel` en de gedeelde `.secondary-button`-stijl.
+
+
+Bij Annuleren op de meetwaardetegels-pagina wordt de laatst opgeslagen configuratie hersteld, de geselecteerde tegel leeggemaakt en de editor gesloten. Daarmee keert de gebruiker terug naar het overzicht met tegels en voorbeeld, zonder een tegel geselecteerd te laten.
