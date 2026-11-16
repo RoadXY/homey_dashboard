@@ -55,6 +55,7 @@ Oorspronkelijk afgesproken:
 - alle acht Quick Actions zijn in de live Homey-omgeving gecontroleerd op de definitief bedoelde Flow/apparaatactie en werking;
 - de volledige oorspronkelijke Home Assistant-dashboardconfiguratie is één-op-één gemapt naar Homey, inclusief alle afwijkende bronentiteiten en samengestelde voorwaarden;
 - alle offline-, herverbindings- en laatst bekende waarde-scenario's zijn integraal op de live installatie getest;
+- de oorspronkelijke Home Assistant-mediakaarten zijn in het nieuwe dashboard bewust vervallen op basis van het latere ontwerpbesluit; dit is dus geen openstaande porttaak;
 - de definitieve tablet-/Fully Kiosk-praktijktest en acceptatie van alle schermformaten zijn afgerond.
 
 De codebasis bevat dus een vergaand basisdashboard, maar fase 1A wordt pas als volledig afgerond beschouwd wanneer de openstaande functionele controles zijn uitgevoerd en geaccepteerd.
@@ -105,6 +106,7 @@ Deze onderdelen hoeven niet opnieuw als volledig toekomstig werk te worden behan
 
 **Niet automatisch als voltooid aanmerken:**
 - de volledige functionele acceptatie van iedere Blockly-combinatie en ieder randgeval;
+- de afgesproken Homey Flow-aanlevering van meldingen is niet als volledig gerealiseerd aangetoond. De externe Notifications API is aanwezig, maar de daadwerkelijke Homey Flow-/clientintegratie moet nog worden gevalideerd;
 - toekomstige Homey-aanlevering van meldingen. De externe API is een afzonderlijke implementatieroute en vervangt de nog te beoordelen integratie-/gebruikersscenario's niet;
 - verdere uitbreidingen die alleen als ontwerp of wens zijn vastgelegd.
 
@@ -123,7 +125,7 @@ Deze onderdelen hoeven niet opnieuw als volledig toekomstig werk te worden behan
 - meerdere volledig uitgewerkte en geteste thema's, waaronder het afgesproken Homey-stijlthema;
 - volledige meertalige acceptatie van alle interface-, fout- en randgevallen.
 
-De aanwezigheid van i18n en thematokens betekent dus dat de technische basis deels klaar is, niet dat fase 3 als geheel is afgerond.
+De aanwezigheid van i18n en thematokens betekent dus dat de technische basis deels klaar is, niet dat fase 3 als geheel is afgerond. In de oudere fasenotities staan bovendien tegenstrijdige taalafspraken: op sommige plekken is Engels de standaard bij installatie, op andere plekken wordt automatisch de Homey-taal gekozen. De huidige code-default is `automatic`; de definitieve gebruikersregel moet bij verdere fase-3-validatie eenduidig worden vastgelegd en met code en handleiding overeenkomen.
 
 ### 3.3 Oorspronkelijk fase 4 – Externe Notifications API
 
