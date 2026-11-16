@@ -192,3 +192,8 @@ Alle primaire Opslaan-acties binnen Instellingen tonen uitsluitend de vertaalde 
 ### Uniforme Opslaan- en Annuleren-knoppen
 
 Alle Opslaan- en Annuleren-knoppen in de vaste actievoeten van Instellingen gebruiken dezelfde gedeelde geometrie en typografie, ongeacht de instellingenpagina. Beide varianten zijn 112px breed en hebben dezelfde vaste hoogte via `--settings-button-height`, zonder afwijkende horizontale padding. Lettertype, grootte (16px), gewicht (500), regelhoogte, letterafstand en uitlijning zijn identiek. Alleen de semantische kleur-/randstijl en de vertaalde knoptekst verschillen. De regel is bewust beperkt tot actievoeten zodat secundaire acties zoals token intrekken niet onbedoeld breder worden.
+
+
+### Consistente Opslaan-labels
+
+Knoppen die wijzigingen van een instellingenformulier bevestigen gebruiken de bestaande `settings.save`-vertaling. De Quick Actions-editor gebruikt dus ook Opslaan/Save en niet Toepassen/Apply. De ongebruikte i18n-sleutel `settings.apply` is verwijderd uit alle ondersteunde vertaalbestanden (Nederlands en Engels). Gebruik geen aparte Apply-labelsleutel voor het opslaan of bevestigen van formulierwijzigingen.
