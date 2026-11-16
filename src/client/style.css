@@ -886,6 +886,8 @@ body {
 .measurement-count-option .mdi { color:var(--settings-accent-text); }
 
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
+.measurement-workspace .quick-preview-card { min-height:0; height:auto; align-self:stretch; }
+.measurement-workspace .measurement-preview-grid { grid-auto-rows:minmax(150px,auto); }
 .measurement-tile-list { margin-bottom:18px; }
 /* Meetwaardetegels tonen alleen nummer, naam en de bewerkactie. */
 .measurement-tile-list .quick-action-row { grid-template-columns:42px minmax(0,1fr) 28px; }

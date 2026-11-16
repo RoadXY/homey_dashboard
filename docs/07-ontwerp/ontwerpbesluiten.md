@@ -215,3 +215,8 @@ Kies de lichtste variant die de gebruiker goed helpt. Aantal meetwaardetegels (2
 ### Variant A – aantal meetwaardetegels als referentie (16 november 2026)
 
 De native select voor het aantal meetwaardetegels (2, 4, 6) wordt vervangen door de custom eenvoudige dropdown van Variant A. De popup toont uitsluitend de drie vaste opties, zonder zoekveld. Selectie, sluiten bij buitenklik/Escape en bestaande editor-/tegelgedrag blijven intact. Deze implementatie dient als visuele en functionele referentie voor de overige kleine vaste native select-keuzelijsten.
+
+
+### Meetwaardetegels – preview schaalt mee bij zes tegels (16 november 2026)
+
+De voorbeeldkaart moet bij zes meetwaardetegels automatisch voldoende hoogte krijgen voor het raster van twee kolommen en drie rijen. Alle previewtegels blijven volledig binnen de kaart, inclusief de onderste rij en de kaartonderrand. De bestaande tegelgrootte en representatie worden behouden; geen clipping of overlap.

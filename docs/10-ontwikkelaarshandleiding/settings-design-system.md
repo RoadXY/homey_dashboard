@@ -291,3 +291,8 @@ Gebruik de variant die het eenvoudigste en duidelijkste keuzepatroon oplevert. H
 ### Variant A toegepast: aantal meetwaardetegels
 
 De keuzelijst voor het aantal meetwaardetegels is de referentie-implementatie van Variant A. De kleine vaste optieset (2, 4, 6) gebruikt een custom eenvoudige dropdown zonder zoekveld. De popup en opties gebruiken settings-menu/control-tokens en gedeelde interactieve feedback. De dropdown sluit na selectie, bij klikken buiten de picker en met Escape. De bestaande count-update en selectie-/editorlogica blijft behouden.
+
+
+### Meetwaardetegels-preview bij zes tegels
+
+De previewkaart groeit mee met het aantal zichtbare tegels. Bij zes tegels blijft de preview een raster van twee kolommen en drie rijen; de kaart krijgt automatische hoogte zodat de derde rij binnen de kaart valt en de volledige onderrand zichtbaar blijft. Behoud de bestaande tegelafmetingen en inhoud; los ruimtegebrek niet op door tegels af te knijpen of te laten overlappen.
