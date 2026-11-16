@@ -1880,7 +1880,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
-                  {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
+                  {flow.type === "advanced" && <span className="quick-flow-type settings-status-info">Advanced</span>}
                 </button>)}
                 {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
               </div>
