@@ -197,3 +197,10 @@ Alle Opslaan- en Annuleren-knoppen in de vaste actievoeten van Instellingen gebr
 ### Consistente Opslaan-labels
 
 Knoppen die wijzigingen van een instellingenformulier bevestigen gebruiken de bestaande `settings.save`-vertaling. De Quick Actions-editor gebruikt dus ook Opslaan/Save en niet Toepassen/Apply. De ongebruikte i18n-sleutel `settings.apply` is verwijderd uit alle ondersteunde vertaalbestanden (Nederlands en Engels). Gebruik geen aparte Apply-labelsleutel voor het opslaan of bevestigen van formulierwijzigingen.
+
+
+### Dynamische openingsrichting van searchable dropdowns
+
+De gedeelde searchable picker bepaalt bij openen automatisch aan welke kant van de trigger de meeste bruikbare viewport-ruimte beschikbaar is. Als de ruimte onder de trigger kleiner is dan de benodigde menuhoogte en er boven meer ruimte beschikbaar is, krijgt het menu de klasse `opens-up` en opent het omhoog. Anders opent het omlaag. De maximale hoogte wordt begrensd op 440px en aangepast aan de beschikbare ruimte; de resultatenlijst behoudt de eigen scrollbar.
+
+De positie wordt opnieuw berekend bij DOM-wijzigingen (openen/sluiten), scrollen en wijzigen van de viewportgrootte. De logica is centraal in de applicatie geïmplementeerd en vereist geen handmatige richtinginstelling per picker. De bestaande pickerbreedtes blijven ongewijzigd.
