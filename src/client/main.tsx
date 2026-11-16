@@ -583,6 +583,8 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const [deviceId, setDeviceId] = React.useState("");
   const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
   const [deviceSearch, setDeviceSearch] = React.useState("");
+  const [logicPickerOpen, setLogicPickerOpen] = React.useState(false);
+  const [logicSearch, setLogicSearch] = React.useState("");
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
@@ -627,6 +629,8 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const devices = catalog.devices;
   const matchingDevices = devices.filter(device => device.name.toLocaleLowerCase().includes(deviceSearch.trim().toLocaleLowerCase()));
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
+  const matchingVariables = catalog.variables.filter(variable => variable.name.toLocaleLowerCase().includes(logicSearch.trim().toLocaleLowerCase()));
+  const chosenVariable = selected.source?.type === "logic" ? catalog.variables.find(variable => variable.id === selected.source?.variableId) : undefined;
   const sourceDescription = (tile: MeasurementTile) => {
     const source = tile.source;
     if (!source) return t("measurement.noSource");
@@ -721,7 +725,34 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
               </div>}
             </div>
             <label>{t("measurement.value")}<select className="settings-interactive" disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">{t("measurement.selectNumericValue")}</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
-          </> : <label>{t("measurement.numericLogicVariable")}<select className="settings-interactive" value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">{t("measurement.selectLogicVariable")}</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+          </> : <div className="measurement-logic-picker">
+            <label>{t("measurement.numericLogicVariable")}</label>
+            <div className="quick-device-picker settings-searchable-picker">
+              <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={logicPickerOpen}
+                onClick={() => { setLogicPickerOpen(open => !open); setLogicSearch(""); }}>
+                <span className="quick-flow-trigger-icon"><MdiIcon name="variable" /></span>
+                <span className="quick-flow-trigger-name">{chosenVariable?.name ?? t("measurement.selectLogicVariable")}</span>
+                <span className="quick-flow-chevron">▾</span>
+              </button>
+              {logicPickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("measurement.numericLogicVariable")}>
+                <div className="quick-flow-search-wrap settings-searchable-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={logicSearch}
+                    onChange={event => setLogicSearch(event.target.value)} placeholder={t("measurement.searchLogicVariables")} aria-label={t("measurement.searchLogicVariables")} />
+                </div>
+                <div className="quick-flow-results settings-searchable-results">
+                  {matchingVariables.map(variable => <button type="button" role="option" aria-selected={variable.id === selected.source?.variableId}
+                    className={"quick-flow-option settings-searchable-option settings-interactive" + (variable.id === selected.source?.variableId ? " selected" : "")}
+                    key={variable.id} onClick={() => { update({ source: { type: "logic", variableId: variable.id } }); setLogicPickerOpen(false); setLogicSearch(""); }}>
+                    <span className="quick-flow-option-icon"><MdiIcon name="variable" /></span>
+                    <span className="quick-flow-option-name">{variable.name}</span>
+                  </button>)}
+                  {matchingVariables.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("measurement.noLogicVariablesFound")}</div>}
+                </div>
+                <div className="quick-flow-footer settings-searchable-footer">{matchingVariables.length} {t("measurement.logicVariableResults")}</div>
+              </div>}
+            </div>
+          </div>}
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
