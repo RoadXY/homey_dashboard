@@ -189,3 +189,8 @@ De knop **Annuleren** wordt op alle instellingenpagina's met een Opslaan/Annuler
 ## Instellingen – veilige onderruimte bij scrollen (16 november 2026)
 
 Instellingenpagina's houden onderaan het scrollbare contentgebied minimaal 44px vrije ruimte. De gedeelde `.quick-settings-page` voegt 24px interne onderpadding toe. Hierdoor staan Opslaan-/Annuleren-acties niet tegen de viewport-onderrand en blijft de volledige onderrand van de laatste editor-kaart zichtbaar. Op lage schermen blijft de inhoud scrollbaar; kaartinhoud of actieknoppen worden niet afgeknipt om alles in één viewport te forceren.
+
+
+## Instellingen – actievoet met vaste vrije ondermarge (16 november 2026)
+
+Aanvullend op de onderpadding van het scrollgebied krijgt de gedeelde actievoet `.settings-bottom` een eigen ondermarge van 20px en `flex: 0 0 auto`. Dit voorkomt dat `margin-top:auto` de actieknoppen alsnog tegen de onderrand van de beschikbare flexruimte plaatst. De pagina blijft normaal scrollbaar; de actievoet overlapt de editor-kaarten niet.

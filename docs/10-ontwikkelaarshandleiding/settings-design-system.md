@@ -239,3 +239,8 @@ De actie **Annuleren** is op instellingenpagina's alleen zichtbaar zolang het fo
 ### Onder- en scrollruimte op instellingenpagina's
 
 Het scrollgebied van Instellingen moet onderaan voldoende vrije ruimte behouden, zodat de vaste Opslaan-/Annuleren-acties niet tegen de onderrand van het browservenster staan. Gebruik minimaal 44px onderpadding op `.settings-content`. Pagina's die de gedeelde `.quick-settings-page` gebruiken behouden daarnaast 24px interne onderpadding. De verticale ruimte hoort bij het scrollbare document: alle inhoud moet bereikbaar blijven en de laatste kaart (zoals de Quick Action-editor) moet met de volledige onderrand zichtbaar zijn vóór de actievoet. Verklein deze ruimte niet om de pagina kunstmatig passend te maken op lage schermen; laat het contentgebied scrollen.
+
+
+### Actievoet los van de viewport-onderrand houden
+
+De onderpadding van het scrollgebied alleen is niet voldoende wanneer de pagina-inhoud met `margin-top:auto` de actievoet naar de onderkant van de beschikbare flexruimte duwt. Daarom heeft de gedeelde `.settings-bottom` zelf ook `margin-bottom:20px` en `flex:0 0 auto`. Zo blijven Opslaan-/Annuleren-knoppen zichtbaar met een vaste vrije afstand tot de onderrand, terwijl de volledige pagina blijft scrollen. De ruimte mag niet worden vervangen door positionering die de actievoet over de inhoud heen legt.
