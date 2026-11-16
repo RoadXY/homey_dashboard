@@ -221,3 +221,7 @@ De selectie van een numerieke Homey Logic-variabele gebruikt nu eveneens variant
 ## Measurement Tiles: safe initial render for the Logic picker
 
 The Measurement Tiles page renders before its settings request has completed. During that initial render, the tile collection is empty and there is no selected tile yet. Any derived value that reads the selected tile's source must therefore guard both the selected tile and its source (for example, use optional chaining before checking the source type). Do not assume that a selected tile exists until configuration loading has completed. This prevents the page from crashing during initial load and leaving the settings view blank.
+
+## Quick Actions device picker: Variant B (16 November 2026)
+
+The device picker in the Quick Actions editor uses Variant B: a searchable picker with a search field, selected-option state, empty-results message and result-count footer. Its trigger, search row, result list, options, empty state and footer must use the canonical shared classes: `.settings-searchable-trigger`, `.settings-searchable-search`, `.settings-searchable-results`, `.settings-searchable-option`, `.settings-searchable-empty` and `.settings-searchable-footer`. The wrapper and popup use `.settings-searchable-picker` and `.settings-searchable-menu`. Keep `.settings-interactive` on actual interactive controls. Page-specific classes may remain for content styling but must not replace these shared structural classes.

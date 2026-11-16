@@ -171,3 +171,7 @@ De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorb
 ## Meetwaardetegels – veilige initiële render (16 november 2026)
 
 De instellingenpagina wordt al gerenderd terwijl de meetwaardetegels nog asynchroon worden geladen. In die eerste render bestaat er nog geen geselecteerde tegel. Afgeleide waarden van de Logic-picker moeten daarom zowel de selectie als de bron defensief uitlezen. De UI mag niet aannemen dat er vóór afronding van het laden al een geselecteerde tegel bestaat. Dit voorkomt een JavaScript-crash en een leeg/zwart instellingenmenu.
+
+## Snelle acties – apparaatpicker Variant B (16 november 2026)
+
+De apparaatselectie in de editor voor Snelle acties is gestandaardiseerd als Variant B, in lijn met de apparaat- en Logic-picker bij Meetwaardetegels. De picker behoudt zoeken op apparaatnaam, geselecteerde status, offline-waarschuwing, lege-resultatenmelding en resultatenteller. De gedeelde CSS-klassen zijn toegevoegd aan trigger, zoekrij, resultatenlijst, opties, lege status en footer; de bestaande selectie- en opslaglogica blijft ongewijzigd.

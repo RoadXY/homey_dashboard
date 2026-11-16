@@ -1978,30 +1978,30 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         </> : <>
           <label>{t("settings.device")}</label>
           <div className="quick-device-picker settings-searchable-picker">
-            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+            <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
               onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
               <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
               <span className="quick-flow-trigger-name">{selectedDeviceLabel}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
             {devicePickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
-              <div className="quick-flow-search-wrap">
+              <div className="quick-flow-search-wrap settings-searchable-search">
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
                   onChange={event => setDeviceSearch(event.target.value)}
                   placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
               </div>
-              <div className="quick-flow-results">
+              <div className="quick-flow-results settings-searchable-results">
                 {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === selected.deviceId}
-                  className={"quick-flow-option settings-interactive" + (device.id === selected.deviceId ? " selected" : "")}
+                  className={"quick-flow-option settings-searchable-option settings-interactive" + (device.id === selected.deviceId ? " selected" : "")}
                   key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
                   <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
                   <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
                   {!device.available && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
                 </button>)}
-                {matchingDevices.length === 0 && <div className="quick-flow-empty">{t("quickActions.noDevices")}</div>}
+                {matchingDevices.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("quickActions.noDevices")}</div>}
               </div>
-              <div className="quick-flow-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
+              <div className="quick-flow-footer settings-searchable-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
             </div>}
           </div>
           <label>{t("settings.deviceActionLabel")}<select className="settings-interactive" value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
