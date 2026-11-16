@@ -649,7 +649,7 @@ body {
 .status-detail { color:var(--settings-text-body); }
 .system-note { display:flex; gap:13px; align-items:center; padding-top:13px; color:var(--settings-info-accent-strong); font-size:15px; }
 .system-note span { color:var(--settings-text-body); }
-.settings-bottom { position:sticky; bottom:20px; z-index:5; margin-top:auto; margin-bottom:20px; display:flex; align-items:stretch; justify-content:flex-end; gap:16px; min-height:54px; flex:0 0 auto; }
+.settings-bottom { position:static; bottom:auto; z-index:5; margin-top:auto; margin-bottom:20px; display:flex; align-items:stretch; justify-content:flex-end; gap:16px; min-height:54px; flex:0 0 auto; }
 .save-message { flex:1 1 auto; min-width:0; min-height:44px; margin-right:auto; display:flex; align-items:center; padding:0 12px; border:1px solid transparent; border-radius:9px; color:var(--settings-save-message-text); font-size:14px; overflow-wrap:anywhere; }
 .save-message.error { color:var(--settings-error-text); background:var(--settings-error-background); border-color:var(--settings-error-border); box-shadow:inset 3px 0 0 var(--settings-error-indicator); }
 .primary-button,.secondary-button { min-height:var(--settings-button-height); border-radius:var(--settings-radius-control); padding:0 23px; font:inherit; font-size:16px; cursor:pointer; }
@@ -876,7 +876,7 @@ body {
 }
 
 /* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
-.measurement-workspace { min-height:560px; align-items:stretch; grid-auto-rows:auto; }
+.measurement-workspace { min-height:0; align-items:stretch; grid-auto-rows:minmax(0,auto); }
 .measurement-count-setting { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:14px 0 16px; color:var(--settings-text-secondary); font-size:14px; }
 .measurement-count-picker { position:relative; flex:0 0 112px; }
 .measurement-count-trigger { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:40px; padding:8px 12px; border:1px solid var(--settings-control-border); border-radius:var(--settings-radius-control-large); background:var(--settings-control-background); color:var(--settings-control-text); font:inherit; text-align:left; cursor:pointer; }
@@ -886,8 +886,8 @@ body {
 .measurement-count-option .mdi { color:var(--settings-accent-text); }
 
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
-.measurement-workspace .quick-preview-card { min-height:0; height:auto; align-self:stretch; }
-.measurement-workspace .measurement-preview-grid { grid-auto-rows:minmax(150px,auto); }
+.measurement-workspace .quick-preview-card { min-height:0; height:auto; align-self:stretch; overflow:visible; }
+.measurement-workspace .measurement-preview-grid { grid-auto-rows:minmax(150px,auto); align-content:start; }
 .measurement-tile-list { margin-bottom:18px; }
 /* Meetwaardetegels tonen alleen nummer, naam en de bewerkactie. */
 .measurement-tile-list .quick-action-row { grid-template-columns:42px minmax(0,1fr) 28px; }

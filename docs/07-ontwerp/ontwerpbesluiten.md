@@ -220,3 +220,8 @@ De native select voor het aantal meetwaardetegels (2, 4, 6) wordt vervangen door
 ### Meetwaardetegels – preview schaalt mee bij zes tegels (16 november 2026)
 
 De voorbeeldkaart moet bij zes meetwaardetegels automatisch voldoende hoogte krijgen voor het raster van twee kolommen en drie rijen. Alle previewtegels blijven volledig binnen de kaart, inclusief de onderste rij en de kaartonderrand. De bestaande tegelgrootte en representatie worden behouden; geen clipping of overlap.
+
+
+## Meetwaardetegels – preview/editor/actievoet zonder overlap (16 november 2026)
+
+De preview bij zes tegels moet de volledige drie rijen tonen. De linker tegelconfiguratiekaart en rechter previewkaart strekken binnen dezelfde gridrij mee tot de hoogte van de grootste kaart, zodat de infobalk links niet tegen of onder de onderste previewrij schuift. De editor volgt als normale volgende sectie en overlapt de preview niet. De algemene instellingenactievoet is niet sticky maar volgt in de documentstroom na alle inhoud; zo worden editorvelden en statusmeldingen nooit door Opslaan/Annuleren bedekt. Bij korte pagina's mag de actievoet met auto-marge onderaan staan.
