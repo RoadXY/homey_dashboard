@@ -11,7 +11,7 @@
 
 Het project is aanzienlijk verder dan de oudere fasendocumentatie beschrijft. De applicatie is niet langer alleen een ontwerp of lege Docker-basis: er staat een werkende TypeScript/React/Fastify-applicatie met Homey-integratie, dashboardweergave, instellingen, Quick Actions, meetwaardetegels, weerinstellingen, meldingenverwerking, Blockly-functionaliteit en een eerste externe meldingen-API.
 
-De actuele fase blijft fase 1 omdat de basisoplevering en de functionele nulmeting nog niet aantoonbaar volledig zijn afgerond. Met name de volledige en gecontroleerde mapping van de oorspronkelijke Home Assistant-dashboardlogica naar Homey, en de integrale praktijktest van alle onderdelen op de Ubuntu-server en tablet, zijn nog niet als afgerond aangetoond.
+De actuele fase blijft fase 1 omdat één operationele acceptatietest nog openstaat: het volledig nieuw aanmaken van de Docker-container wanneer er nog geen persistente gegevens aanwezig zijn. De gebruiker heeft de Homey-koppeling, de volledige Home Assistant-naar-Homey-mapping, de acht Quick Actions, de tablet/Fully Kiosk-weergave en de meldingen-/Blockly-functionaliteit als volledig gerealiseerd en praktisch getest bevestigd.
 
 Tegelijkertijd zijn verschillende fase-2-onderdelen en een afgebakend onderdeel uit fase 4 al gerealiseerd. Die voortijdige realisatie wordt hieronder expliciet vermeld, zodat deze functionaliteit niet opnieuw als toekomstig werk wordt ingepland.
 
@@ -19,8 +19,8 @@ Tegelijkertijd zijn verschillende fase-2-onderdelen en een afgebakend onderdeel 
 
 | Fase | Oorspronkelijk afgesproken scope | Huidige realisatie | Status |
 |---|---|---|---|
-| **1 – Foundation en eerste dashboard** | Docker-webapp, Homey-koppeling, basisdashboard, configuratie, Quick Actions, meetwaarden/weer, functionele port van de bestaande dashboardlogica en offlinegedrag | Applicatie en het merendeel van de basisfunctionaliteit zijn aanwezig. Volledige Home Assistant-naar-Homey-mapping en integrale acceptatie-/tabletvalidatie zijn nog niet afgerond. | **Actief – gedeeltelijk gerealiseerd** |
-| **2 – Beheer en uitbreidingen** | Meldingenbeheer, visuele editor, dynamische voorwaarden en AND/OR-combinaties, uitbreidingen op configuratie/presentatie | Een groot deel is al gebouwd: beveiligde instellingen, meldingeneditor, Blockly-blokken, condition-model en opslag. Niet elk oorspronkelijk genoemd onderdeel is aantoonbaar afgerond. | **Grotendeels voortijdig gerealiseerd; resterende punten open** |
+| **1 – Foundation en eerste dashboard** | Docker-webapp, Homey-koppeling, basisdashboard, configuratie, Quick Actions, meetwaarden/weer, functionele port van de bestaande dashboardlogica en offlinegedrag | Applicatie draait en de functionele onderdelen zijn door de gebruiker getest en geaccepteerd. Alleen de eerste installatie/initialisatie van een volledig nieuwe container zonder bestaande persistente data moet nog worden getest. | **Actief – vrijwel volledig; één acceptatietest open** |
+| **2 – Beheer en uitbreidingen** | Meldingenbeheer, visuele editor, dynamische voorwaarden en AND/OR-combinaties, uitbreidingen op configuratie/presentatie | Meldingenbeheer, Blockly, condition-model, tijdschema's en time-outs zijn door de gebruiker volledig getest en geaccepteerd. Pushmeldingen vanuit een Homey Flow via de toekomstige Homey-app zijn bewust uitgesteld naar de fase waarin die app wordt ontwikkeld. | **Grotendeels gerealiseerd; Homey-app-integratie uitgesteld** |
 | **3 – Thema's en meertaligheid** | Vooraf ontworpen thema's en verdere taalondersteuning | i18n-infrastructuur en Nederlandse/Engelse vertaalbestanden zijn aanwezig. Semantische thematokens zijn voorbereid; themawisselaar en meerdere complete thema's ontbreken nog. | **Gedeeltelijk voorbereid/gerealiseerd** |
 | **4 – Externe integratie en events** | Externe API voor dashboardmeldingen en aanvullende presentatie-/geluidsacties vanuit externe systemen | De externe Notifications API v1 is in code aanwezig, inclusief opslag, validatie, Bearer-authenticatie, endpoints, tests en OpenAPI-documentatie. Geluid-/presentatieopdrachten en overige event-ingangen zijn niet aangetoond. | **Gedeeltelijk gerealiseerd** |
 | **5 – Camera en deurbel** | Live camerastreams en deurbel-popup via Homey | Onderzoek en architectuurdocumentatie zijn aanwezig. Er is geen fase-5-implementatie of Homey-configuratiewijziging vastgelegd. | **Niet gestart – onderzoek/documentatie aanwezig** |
@@ -51,14 +51,16 @@ Oorspronkelijk afgesproken:
 - meetwaardetegels met instelbaar aantal (2, 4 of 6), apparaat-/capability- en Logic-bronnen;
 - configuratie van weerbronnen en weergaveopties.
 
-**Nog niet als volledig afgerond aangetoond:**
-- alle acht Quick Actions zijn in de live Homey-omgeving gecontroleerd op de definitief bedoelde Flow/apparaatactie en werking;
-- de volledige oorspronkelijke Home Assistant-dashboardconfiguratie is één-op-één gemapt naar Homey, inclusief alle afwijkende bronentiteiten en samengestelde voorwaarden;
-- alle offline-, herverbindings- en laatst bekende waarde-scenario's zijn integraal op de live installatie getest;
-- de oorspronkelijke Home Assistant-mediakaarten zijn in het nieuwe dashboard bewust vervallen op basis van het latere ontwerpbesluit; dit is dus geen openstaande porttaak;
-- de definitieve tablet-/Fully Kiosk-praktijktest en acceptatie van alle schermformaten zijn afgerond.
+**Door de gebruiker bevestigd als volledig gerealiseerd en getest:**
+- Homey Pro 2023-koppeling;
+- alle acht Quick Actions, inclusief de bedoelde live Homey-acties;
+- volledige Home Assistant-naar-Homey-mapping;
+- tabletweergave op de Samsung Galaxy Tab A SM-T515 met Fully Kiosk.
 
-De codebasis bevat dus een vergaand basisdashboard, maar fase 1A wordt pas als volledig afgerond beschouwd wanneer de openstaande functionele controles zijn uitgevoerd en geaccepteerd.
+**Enige resterende acceptatietest voor fase 1A:**
+- een volledig nieuwe Docker-container aanmaken en starten wanneer er nog geen persistente gegevens/data aanwezig zijn. De bestaande installatie is operationeel; juist het lege-data-/eerste-installatiescenario moet nog worden gecontroleerd.
+
+De oorspronkelijke Home Assistant-mediakaarten zijn bewust vervallen op basis van een later ontwerpbesluit en vormen geen openstaande porttaak.
 
 ### 2.2 Fase 1B – Meldingen inventariseren en voorbereiden
 
@@ -79,10 +81,10 @@ Oorspronkelijk afgesproken:
 - dashboardpresentatie en sortering van meldingen;
 - tests voor de meldingenengine en conditionele bouwstenen.
 
-**Nog open:**
-- de volledige mapping en controle van alle relevante oorspronkelijke YAML-kaarten/voorwaarden naar concrete Homey-bronnen is niet als afgerond gedocumenteerd;
-- resterende semantische verschillen of niet één-op-één te vertalen voorwaarden moeten expliciet worden afgehandeld;
-- integrale praktijktest van alle overgenomen meldingsregels op de echte Homey Pro is nog niet als afgerond aangetoond.
+**Status na gebruikersacceptatie:**
+- de volledige relevante Home Assistant-naar-Homey-mapping is door de gebruiker als volledig gerealiseerd en getest bevestigd;
+- de overgenomen meldings-/dashboardvoorwaarden zijn in de live omgeving gecontroleerd en geaccepteerd;
+- eventuele afwijkingen die bewust zijn vervallen of anders zijn ontworpen, gelden niet als onopgeloste mapping zolang het besluit elders is vastgelegd.
 
 ## 3. Onderdelen uit latere fases die al zijn gerealiseerd
 
@@ -104,11 +106,13 @@ Deze onderdelen hoeven niet opnieuw als volledig toekomstig werk te worden behan
 - optionele zichtbaarheidstijd voor Blockly-meldingen en tijdelijke systeemfoutmeldingen;
 - onderscheid tussen Blockly-, API- en systeemmeldingen in de interne gegevenslaag.
 
-**Niet automatisch als voltooid aanmerken:**
-- de volledige functionele acceptatie van iedere Blockly-combinatie en ieder randgeval;
-- de afgesproken Homey Flow-aanlevering van meldingen is niet als volledig gerealiseerd aangetoond. De externe Notifications API is aanwezig, maar de daadwerkelijke Homey Flow-/clientintegratie moet nog worden gevalideerd;
-- toekomstige Homey-aanlevering van meldingen. De externe API is een afzonderlijke implementatieroute en vervangt de nog te beoordelen integratie-/gebruikersscenario's niet;
-- verdere uitbreidingen die alleen als ontwerp of wens zijn vastgelegd.
+**Door de gebruiker bevestigd als volledig gerealiseerd en getest:**
+- Blockly-meldingen en de beschikbare voorwaardebouwstenen;
+- combinaties van EN/OF/NIET en bron-/vergelijkingsblokken;
+- tijdschema's en time-outs, inclusief de twee varianten van het blok `Genereer melding`.
+
+**Bewust uitgesteld:**
+- de directe push-/Flow-integratie vanuit Homey via een eigen Homey-app. De externe Notifications API is al aangeroepen en de API-call werkt. De daadwerkelijke Homey Flow-kaart/clientintegratie wordt niet binnen de huidige fase-2-dashboardimplementatie afgemaakt, maar doorgeschoven naar de toekomstige fase waarin de Homey-app wordt ontwikkeld. Deze uitgestelde integratie is dus geen openstaande test van de bestaande Blockly-editor of de externe API.
 
 ### 3.2 Oorspronkelijk fase 3 – i18n en themafundament
 
@@ -143,7 +147,7 @@ De aanwezigheid van i18n en thematokens betekent dus dat de technische basis dee
 
 **Nog niet gerealiseerd/aangetoond:**
 - alle overige externe event-domeinen uit het bredere ontwerp, zoals geluidsopdrachten en visuele presentatieacties;
-- praktijktest met een daadwerkelijke externe client of Homey Flow/app;
+- de Homey Flow-/clientintegratie via de toekomstige eigen Homey-app. De gebruiker heeft bevestigd dat een rechtstreekse API-call werkt; de Homey-app en de Flow-kaart die deze API aanroept worden bewust uitgesteld naar de fase waarin de Homey-app wordt ontwikkeld;
 - eventuele aanvullende event-ingangen die niet tot de Notifications API v1 behoren.
 
 Daarom is alleen het Notifications API-deel van fase 4 als gerealiseerd aangemerkt, niet de volledige fase.
@@ -221,4 +225,4 @@ De volgende documenten bevatten detailinformatie en onderbouwing. Ze vervangen d
 
 ---
 
-**Actuele conclusie (16 november 2026):** we werken nog in **fase 1**. De technische basis en een groot deel van het dashboard zijn gerealiseerd. Fase 1 is nog niet formeel afgerond door de resterende Home Assistant-naar-Homey-mapping en integrale praktijktests. Tegelijkertijd zijn grote delen van fase 2, de i18n-/themafundering uit fase 3 en de Notifications API uit fase 4 al voortijdig gerealiseerd.
+**Actuele conclusie (16 november 2026):** we werken nog in **fase 1**. De gebruiker heeft de Homey-koppeling, volledige Home Assistant-naar-Homey-mapping, Quick Actions, tablet/Fully Kiosk, Blockly-meldingen en tijdschema-/time-outfunctionaliteit als volledig gerealiseerd en getest bevestigd. Het enige resterende fase-1-acceptatiepunt is het testen van een volledig nieuwe Docker-container zonder vooraf bestaande persistente data. De externe Notifications API is via een API-call getest en werkt; de Homey Flow-/clientintegratie wordt bewust uitgesteld naar de toekomstige fase waarin de eigen Homey-app wordt ontwikkeld.
