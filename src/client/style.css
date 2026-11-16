@@ -1441,3 +1441,26 @@ body {
 @media (max-width:560px) {
   .quick-device-picker > .quick-device-menu { width:min(100%, 670px); max-width:calc(100vw - 40px); }
 }
+
+
+/* Uniform geometry and typography for save/cancel actions in settings footers. */
+.settings-bottom > .primary-button,
+.settings-bottom > .secondary-button,
+.settings-bottom .settings-actions > .primary-button,
+.settings-bottom .settings-actions > .secondary-button {
+  box-sizing:border-box;
+  width:112px;
+  min-width:112px;
+  height:var(--settings-button-height);
+  min-height:var(--settings-button-height);
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:500;
+  line-height:1;
+  letter-spacing:normal;
+  text-align:center;
+}
