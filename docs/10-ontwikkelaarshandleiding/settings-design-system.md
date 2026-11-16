@@ -174,3 +174,8 @@ In the Quick Action editor, the action type (Flow / Apparaat) is presented as a 
 
 
 The Quick Actions device searchable picker (`.quick-device-menu`) uses the same 670px maximum width as the Flow picker. On narrow viewports it is constrained to the available viewport width with 20px side allowance.
+
+
+### Meetwaardetegels: annuleren van wijzigingen
+
+De vaste actiebar onderaan de instellingenpagina voor meetwaardetegels toont naast Opslaan ook Annuleren. Annuleren herstelt zowel het aantal tegels als alle tegelinstellingen naar de laatst opgeslagen serverconfiguratie, sluit de geopende editor en wist een eventuele tijdelijke statusmelding. De actie is uitgeschakeld wanneer er geen wijzigingen zijn, tijdens laden of tijdens opslaan. Gebruik de bestaande vertaling `settings.cancel` en de gedeelde `.secondary-button`-stijl.
