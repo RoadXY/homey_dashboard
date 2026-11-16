@@ -1406,3 +1406,10 @@ body {
 .settings-searchable-option:hover,.settings-searchable-option.selected { background:var(--settings-menu-hover-background); }
 .settings-searchable-empty { padding:14px 13px; color:var(--settings-menu-empty-text); font-size:13px; }
 .settings-searchable-footer { flex:0 0 auto; padding:6px 12px; border-top:1px solid var(--settings-workspace-menu-border); background:var(--settings-menu-background-deep); color:var(--settings-menu-search-text); font-size:11px; }
+
+/* Keep page-specific quick picker classes from overriding the canonical option density. */
+.quick-flow-menu .quick-flow-option.settings-searchable-option { display:flex; align-items:center; width:100%; min-height:42px; height:auto; margin:0; padding:9px 13px; border:0; border-radius:0; font-size:14px; }
+.quick-flow-menu .quick-flow-option.settings-searchable-option:hover,
+.quick-flow-menu .quick-flow-option.settings-searchable-option.selected { background:var(--settings-menu-hover-background); }
+.quick-flow-menu .quick-flow-search-wrap.settings-searchable-search { min-height:46px; padding:8px 12px; }
+.quick-flow-menu .quick-flow-search-wrap.settings-searchable-search input { height:28px; min-height:28px; padding:0; font-size:14px; }
