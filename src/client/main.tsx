@@ -1884,7 +1884,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
                 </button>)}
                 {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
               </div>
-              <div className="quick-flow-footer settings-searchable-footer">{matchingFlows.length} {t("settings.flowResults")}</div>
+              <div className="quick-flow-footer settings-searchable-footer"><span>{matchingFlows.length} {t("settings.flowResults")}</span><span className="quick-flow-tip">Tip: Gebruik <strong>Advanced</strong> om te filteren op Advanced flows</span></div>
             </div>}
           </div>
         </> : <>
