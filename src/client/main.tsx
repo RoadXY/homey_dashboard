@@ -704,8 +704,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           })}
         </div>
       </section>
-    </div>
-    {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
+      {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
         <button className="quick-editor-close settings-interactive" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("measurement.editTitle").replace("{number}", String(tiles.findIndex(tile => tile.id === selected.id) + 1))}</h2>
         <div className="measurement-inline-editor">
@@ -772,6 +771,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
+    </div>
     <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><div className="settings-actions">{dirty && <button type="button" className="secondary-button settings-interactive" disabled={saving || busy} onClick={() => { setTiles(saved.map(tile => ({ ...tile, source: tile.source ? { ...tile.source } : null }))); setCount(savedCount); setSelectedId(""); setEditorOpen(false); setMessage(""); setIsError(false); }}>{t("settings.cancel")}</button>}<button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : t("measurement.save")}</button></div></div>
   </div>;
 }

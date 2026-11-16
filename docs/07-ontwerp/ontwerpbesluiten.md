@@ -225,3 +225,8 @@ De voorbeeldkaart moet bij zes meetwaardetegels automatisch voldoende hoogte kri
 ## Meetwaardetegels – preview/editor/actievoet zonder overlap (16 november 2026)
 
 De preview bij zes tegels moet de volledige drie rijen tonen. De linker tegelconfiguratiekaart en rechter previewkaart strekken binnen dezelfde gridrij mee tot de hoogte van de grootste kaart, zodat de infobalk links niet tegen of onder de onderste previewrij schuift. De editor volgt als normale volgende sectie en overlapt de preview niet. De algemene instellingenactievoet is niet sticky maar volgt in de documentstroom na alle inhoud; zo worden editorvelden en statusmeldingen nooit door Opslaan/Annuleren bedekt. Bij korte pagina's mag de actievoet met auto-marge onderaan staan.
+
+
+### Meetwaardetegels – editor als derde gridrij (16 november 2026)
+
+De meetwaardetegel-editor wordt een directe child van `.measurement-workspace`. De twee configuratie-/previewkaarten blijven de eerste rij (naast elkaar waar de ruimte dat toelaat); de editor beslaat daarna de volledige breedte als derde rij. In de smalle layout valt alles in één kolom. De editor mag niet absoluut of fixed gepositioneerd worden en mag de hoogte van de bovenste kaarten niet beïnvloeden door overlap.

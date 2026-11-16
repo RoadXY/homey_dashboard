@@ -303,3 +303,8 @@ De previewkaart groeit mee met het aantal zichtbare tegels. Bij zes tegels blijf
 Bij zes meetwaardetegels moet de previewkaart volledig meegroeien met de drie rijen van het previewraster. De twee kaarten in `.measurement-workspace` moeten in dezelfde gridrij op gelijke hoogte uitrekken; gebruik hiervoor stretch-uitlijning en laat de gridrij de hoogte van de volledige preview bepalen. De infobalk onder de tegelkeuze blijft binnen de linker kaart. De editor wordt als volgende gridrij/documentsectie geplaatst en mag de preview niet overlappen.
 
 De gedeelde instellingenactievoet `.settings-bottom` blijft in de normale documentstroom (niet sticky). Een sticky actievoet kan tijdens het scrollen over lange editors heen schuiven en statusmeldingen of editorvelden bedekken. De actievoet volgt daarom na de volledige inhoud; bij korte pagina's mag `margin-top:auto` hem naar beneden duwen, maar nooit over inhoud heen.
+
+
+### Meetwaardetegel-editor in dezelfde responsive grid
+
+De bewerkkaart is een directe grid-child van `.measurement-workspace`, na de lijst- en previewkaart. Op brede schermen beslaat de editor beide kolommen als derde rij; in de gestapelde layout beslaat hij de enkele kolom als volgende rij. Plaats deze editor niet buiten de workspace en gebruik geen absolute/fixed positionering. Hierdoor blijven de twee bovenste kaarten hun natuurlijke inhoudshoogte behouden en kan het openen van de editor geen overlap of inkrimping van de preview veroorzaken.
