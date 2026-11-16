@@ -1501,6 +1501,14 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   const [selectedId, setSelectedId] = React.useState("");
   const [notificationSearch, setNotificationSearch] = React.useState("");
   const [notificationPickerOpen, setNotificationPickerOpen] = React.useState(false);
+  const notificationPickerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!notificationPickerOpen) return;
+    const dismiss = (event: PointerEvent) => { if (notificationPickerRef.current && !notificationPickerRef.current.contains(event.target as Node)) setNotificationPickerOpen(false); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") setNotificationPickerOpen(false); };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [notificationPickerOpen]);
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -1674,21 +1682,21 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     <div className="settings-title"><p>{t("notifications.subtitle")}</p></div>
     <div className="notification-rule-selector">
       <label id="notification-rule-label">{t("notifications.ruleLabel")}</label>
-      <div className="notification-rule-picker">
-        <button type="button" className="notification-rule-trigger settings-interactive" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
+      <div className="notification-rule-picker settings-searchable-picker" ref={notificationPickerRef}>
+        <button type="button" className="notification-rule-trigger settings-searchable-trigger settings-interactive" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
           <span className="notification-rule-trigger-name">{selected?.title ?? t("notifications.selectNotification")}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
-        {notificationPickerOpen && <div className="notification-rule-menu">
-          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input className="settings-interactive settings-interactive--text" type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
-          <div className="notification-rule-options" role="listbox" aria-label={t("notifications.createdList")}>
+        {notificationPickerOpen && <div className="notification-rule-menu settings-searchable-menu">
+          <div className="notification-rule-search settings-searchable-search"><span aria-hidden="true">⌕</span><input className="settings-interactive settings-interactive--text" type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
+          <div className="notification-rule-options settings-searchable-results" role="listbox" aria-label={t("notifications.createdList")}>
             {matchingNotifications.map(item =>
-              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
+              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-searchable-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
                 onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{item.enabled && notificationWarningIds.has(item.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}</button>
             )}
-            {matchingNotifications.length === 0 && <div className="notification-rule-empty">{t("notifications.noneFound")}</div>}
+            {matchingNotifications.length === 0 && <div className="notification-rule-empty settings-searchable-empty">{t("notifications.noneFound")}</div>}
           </div>
-          <div className="notification-rule-footer">{matchingNotifications.length} {t("notifications.results")}</div>
+          <div className="notification-rule-footer settings-searchable-footer">{matchingNotifications.length} {t("notifications.results")}</div>
         </div>}
       </div>
       <button type="button" className="notification-create-button settings-interactive" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
@@ -1735,6 +1743,17 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
   const [deviceSearch, setDeviceSearch] = React.useState("");
   const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!flowPickerOpen && !devicePickerOpen) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest(".quick-flow-picker, .quick-device-picker")) return;
+      setFlowPickerOpen(false); setDevicePickerOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setFlowPickerOpen(false); setDevicePickerOpen(false); } };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [flowPickerOpen, devicePickerOpen]);
   const [iconSearch, setIconSearch] = React.useState("");
   const iconQuery = iconSearch.trim().toLocaleLowerCase();
   const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
@@ -1841,43 +1860,43 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         {catalogWarning && <div className="quick-catalog-warning" role="status">{catalogWarning}</div>}
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
-          <div className="quick-flow-picker">
-            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
+          <div className="quick-flow-picker settings-searchable-picker">
+            <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
               <span className="quick-flow-trigger-name" title={selectedFlow?.name}>{selectedFlow?.name ?? t("settings.selectFlow")}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
-            {flowPickerOpen && <div className="quick-flow-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
-              <div className="quick-flow-search-wrap">
+            {flowPickerOpen && <div className="quick-flow-menu settings-searchable-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
+              <div className="quick-flow-search-wrap settings-searchable-search">
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={flowSearch}
                   onChange={event => setFlowSearch(event.target.value)}
                   placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
               </div>
-              <div className="quick-flow-results">
+              <div className="quick-flow-results settings-searchable-results">
                 {matchingFlows.map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
-                  className={"quick-flow-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
+                  className={"quick-flow-option settings-searchable-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
                   {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
                 </button>)}
-                {matchingFlows.length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
+                {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
               </div>
-              <div className="quick-flow-footer">{matchingFlows.length} {t("settings.flowResults")}</div>
+              <div className="quick-flow-footer settings-searchable-footer">{matchingFlows.length} {t("settings.flowResults")}</div>
             </div>}
           </div>
         </> : <>
           <label>{t("settings.device")}</label>
-          <div className="quick-device-picker">
+          <div className="quick-device-picker settings-searchable-picker">
             <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
               onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
               <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
               <span className="quick-flow-trigger-name">{selectedDeviceLabel}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
-            {devicePickerOpen && <div className="quick-flow-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
+            {devicePickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
               <div className="quick-flow-search-wrap">
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
@@ -2154,6 +2173,17 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
   const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);
   const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
   const [search,setSearch] = React.useState("");
+  React.useEffect(() => {
+    if (!searchId) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest(".weather-source-picker")) return;
+      setSearchId(null); setPendingEnabledId(null);
+    };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setSearchId(null); setPendingEnabledId(null); } };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [searchId]);
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   React.useEffect(() => {
@@ -2215,17 +2245,17 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
               <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle settings-interactive"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
                 <span/>
               </button>
-              <div className="weather-source-picker">
-                <button type="button" className="quick-flow-trigger weather-source-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
+              <div className="weather-source-picker settings-searchable-picker">
+                <button type="button" className="quick-flow-trigger weather-source-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
                   onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
                   <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
                   <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
                 </button>
-                {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
-                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search settings-interactive settings-interactive--text" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
+                {isOpen && <div className="quick-flow-menu settings-searchable-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
+                  <div className="quick-flow-search-wrap settings-searchable-search"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search settings-interactive settings-interactive--text" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
                   <div className="quick-flow-results">
                     <div className="weather-source-group-label">{t("weatherSettings.devices")}</div>
-                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option settings-interactive" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
+                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option settings-searchable-option settings-interactive" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
                     {matchingDevices.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noDeviceSources")}</div>}
                     <div className="weather-source-group-label">{t("weatherSettings.logicVariables")}</div>
                     {matchingVariables.map(variable=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="logic"&&settings.sources[id]?.variableId===variable.id} className="quick-flow-option settings-interactive" key={variable.id} onClick={()=>{updateSource(id,{type:"logic",variableId:variable.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-variable" aria-hidden="true"/><span className="quick-flow-option-name">{variable.name}</span><small>{variable.type}</small></button>)}
