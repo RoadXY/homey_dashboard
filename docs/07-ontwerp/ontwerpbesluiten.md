@@ -167,3 +167,7 @@ De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorb
 - De apparaatkeuze is variant B: searchable dropdown met zoekbalk. Offline apparaten blijven selecteerbaar en krijgen een amberkleurig statuslabel.
 - De capability-/meetwaardekeuze blijft in deze stap een gewone dropdown. De keuze voor eventuele verdere dropdownmigraties wordt per onderdeel met de gebruiker afgestemd.
 - De opgeslagen bronstructuur (apparaat-ID + capability-ID) en de backend-API blijven ongewijzigd; de ruimte was alleen een frontendfilter.
+
+## Meetwaardetegels – veilige initiële render (16 november 2026)
+
+De instellingenpagina wordt al gerenderd terwijl de meetwaardetegels nog asynchroon worden geladen. In die eerste render bestaat er nog geen geselecteerde tegel. Afgeleide waarden van de Logic-picker moeten daarom zowel de selectie als de bron defensief uitlezen. De UI mag niet aannemen dat er vóór afronding van het laden al een geselecteerde tegel bestaat. Dit voorkomt een JavaScript-crash en een leeg/zwart instellingenmenu.

@@ -630,7 +630,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const matchingDevices = devices.filter(device => device.name.toLocaleLowerCase().includes(deviceSearch.trim().toLocaleLowerCase()));
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const matchingVariables = catalog.variables.filter(variable => variable.name.toLocaleLowerCase().includes(logicSearch.trim().toLocaleLowerCase()));
-  const selectedLogicVariableId = selected.source && selected.source.type === "logic" ? selected.source.variableId : "";
+  const selectedLogicVariableId = selected?.source?.type === "logic" ? selected.source.variableId : "";
   const chosenVariable = selectedLogicVariableId ? catalog.variables.find(variable => variable.id === selectedLogicVariableId) : undefined;
   const sourceDescription = (tile: MeasurementTile) => {
     const source = tile.source;

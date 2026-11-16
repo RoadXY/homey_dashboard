@@ -217,3 +217,7 @@ De apparaatkeuze gebruikt de bestaande searchable picker-styling en -positioneri
 ### Meetwaardetegels – Logic-variabelepicker (16 november 2026)
 
 De selectie van een numerieke Homey Logic-variabele gebruikt nu eveneens variant B van de searchable picker. De picker biedt zoeken op variabelenaam, toont de geselecteerde variabele en geeft een lege-resultatenmelding wanneer de zoekterm niets oplevert. De selectie blijft gekoppeld aan de bestaande Logic-variabele-ID; API en opslagmodel zijn niet gewijzigd. De Nederlandse en Engelse teksten zijn toegevoegd aan de locale dictionaries.
+
+## Measurement Tiles: safe initial render for the Logic picker
+
+The Measurement Tiles page renders before its settings request has completed. During that initial render, the tile collection is empty and there is no selected tile yet. Any derived value that reads the selected tile's source must therefore guard both the selected tile and its source (for example, use optional chaining before checking the source type). Do not assume that a selected tile exists until configuration loading has completed. This prevents the page from crashing during initial load and leaving the settings view blank.
