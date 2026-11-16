@@ -671,7 +671,7 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><div className="settings-actions"><button type="button" className="secondary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => { setTiles(saved.map(tile => ({ ...tile, source: tile.source ? { ...tile.source } : null }))); setCount(savedCount); setSelectedId(""); setEditorOpen(false); setMessage(""); setIsError(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : "▣  " + t("measurement.save")}</button></div></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><div className="settings-actions"><button type="button" className="secondary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => { setTiles(saved.map(tile => ({ ...tile, source: tile.source ? { ...tile.source } : null }))); setCount(savedCount); setSelectedId(""); setEditorOpen(false); setMessage(""); setIsError(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : t("measurement.save")}</button></div></div>
   </div>;
 }
 
@@ -1718,7 +1718,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
         </> : <p>{busy ? translate(locale, "notifications.loading") : t("notifications.noneAvailable")}</p>}
       </section>
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : translate(locale, "settings.save")}</button></div>
   </div>;
 }
 
@@ -1928,7 +1928,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         <div className="quick-editor-actions"><button className="secondary-button settings-interactive" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
       </section>}
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => void save()}>{t("settings.save")}</button></div>
   </div>;
 }
 
@@ -2150,7 +2150,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
       </section>
-      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>{t("settings.save")}</button></div>
       </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} onDirtyChange={page === "quick-actions" ? setQuickActionDirty : setMeasurementDirty} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button settings-interactive" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button settings-interactive" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button settings-interactive" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
