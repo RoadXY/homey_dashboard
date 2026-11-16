@@ -4,8 +4,13 @@ This folder contains technical documentation for developers who maintain or exte
 
 The documents cover architecture, code paths, API contracts, runtime behavior, security boundaries, error handling and implementation decisions. User-facing instructions are in the [User Guide](../09-gebruikershandleiding/README.md).
 
+## Project status and phases
+
+The single source of truth for the active project phase, implementation progress across all phases, completed early work and outstanding scope is the [central project phase and status overview](../06-fases/README.md). Do not infer current phase status from historical phase labels in individual design or implementation documents.
+
 ## Topics
 
+- [Central project phase and status overview](../06-fases/README.md)
 - [Central dashboard error area](dashboard-error-messages.md)
 - [Runtime architecture, configuration and security](runtime-architecture-and-security.md)
 - [Detailed inventory of Homey and dashboard errors](../03-dashboard/homey-foutmeldingen.md)
