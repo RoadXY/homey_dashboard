@@ -580,8 +580,9 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
   const [selectedId, setSelectedId] = React.useState("");
   const [editorOpen, setEditorOpen] = React.useState(false);
-  const [zoneId, setZoneId] = React.useState("");
   const [deviceId, setDeviceId] = React.useState("");
+  const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
+  const [deviceSearch, setDeviceSearch] = React.useState("");
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
@@ -620,18 +621,11 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
     } else {
       setSourceType("device");
       setDeviceId(source.deviceId);
-      const sourceDevice = catalog.devices.find(device => device.id === source.deviceId);
-      setZoneId(sourceDevice?.zone ?? "");
     }
   }, [selected?.id, selected?.source, catalog.devices]);
-  const zonePath = (id: string | null): string => {
-    if (!id) return "";
-    const zone = catalog.zones.find(item => item.id === id);
-    if (!zone) return "";
-    return [zonePath(zone.parent), zone.name].filter(Boolean).join(" / ");
-  };
   const update = (patch: Partial<MeasurementTile>) => setTiles(current => current.map(tile => tile.id === selected.id ? { ...tile, ...patch } : tile));
-  const devices = catalog.devices.filter(device => device.zone === zoneId);
+  const devices = catalog.devices;
+  const matchingDevices = devices.filter(device => device.name.toLocaleLowerCase().includes(deviceSearch.trim().toLocaleLowerCase()));
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const sourceDescription = (tile: MeasurementTile) => {
     const source = tile.source;
@@ -698,8 +692,34 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
           <label>{t("measurement.name")}<input className="settings-interactive settings-interactive--text" maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
           <div className="measurement-source-types"><button type="button" className={"settings-interactive " + (sourceType === "device" ? "active" : "")} onClick={() => setSourceType("device")}>{t("measurement.device")}</button><button type="button" className={"settings-interactive " + (sourceType === "logic" ? "active" : "")} onClick={() => setSourceType("logic")}>{t("measurement.homeyLogic")}</button></div>
           {sourceType === "device" ? <>
-            <label>{t("measurement.room")}<select className="settings-interactive" value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">{t("measurement.selectRoom")}</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
-            <label>{t("measurement.device")}<select className="settings-interactive" value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">{t("measurement.selectDevice")}</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+            <label>{t("measurement.device")}</label>
+            <div className="quick-device-picker settings-searchable-picker">
+              <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+                onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
+                <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
+                <span className="quick-flow-trigger-name">{chosenDevice?.name ?? t("measurement.selectDevice")}</span>
+                {!chosenDevice?.available && chosenDevice && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
+                <span className="quick-flow-chevron">▾</span>
+              </button>
+              {devicePickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("measurement.device")}>
+                <div className="quick-flow-search-wrap settings-searchable-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
+                    onChange={event => setDeviceSearch(event.target.value)} placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
+                </div>
+                <div className="quick-flow-results settings-searchable-results">
+                  {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === deviceId}
+                    className={"quick-flow-option settings-searchable-option settings-interactive" + (device.id === deviceId ? " selected" : "")}
+                    key={device.id} onClick={() => { setDeviceId(device.id); setDevicePickerOpen(false); setDeviceSearch(""); update({ source: null }); }}>
+                    <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
+                    <span className="quick-flow-option-name">{device.name}</span>
+                    {!device.available && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
+                  </button>)}
+                  {matchingDevices.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("quickActions.noDevices")}</div>}
+                </div>
+                <div className="quick-flow-footer settings-searchable-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
+              </div>}
+            </div>
             <label>{t("measurement.value")}<select className="settings-interactive" disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">{t("measurement.selectNumericValue")}</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
           </> : <label>{t("measurement.numericLogicVariable")}<select className="settings-interactive" value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">{t("measurement.selectLogicVariable")}</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
