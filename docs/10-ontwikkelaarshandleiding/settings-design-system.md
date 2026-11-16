@@ -145,3 +145,8 @@ Page-specific classes may remain for content layout and semantic details (icons,
 ## Searchable picker dismissal
 
 Every custom searchable picker must close when the user clicks or taps outside its picker, or presses Escape. Pointer events inside the trigger, search field, result list and menu must not dismiss it. Selection continues to close the picker through its existing selection handler. For a page with multiple sibling pickers, an interaction inside any active picker must not be mistaken for an outside click on another picker.
+
+
+## Statuslabels in zoekresultaten
+
+Gebruik `.settings-status-warning` voor een status die extra aandacht vraagt maar geen kritieke fout is, zoals een Homey-apparaat dat offline is. De klasse deelt de gele waarschuwingsbadge-stijl met `.notification-warning-badge`. Pas dit toe op offline-labels in alle zoekbare bronlijsten; gebruik geen gedempte standaardtekst voor deze status. De vertaalde statusinhoud blijft afkomstig uit de bestaande i18n-sleutel.
