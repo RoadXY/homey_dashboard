@@ -1434,3 +1434,10 @@ body {
 .quick-action-type-tabs { display:flex; flex-wrap:wrap; gap:8px; }
 .quick-action-type-tabs button { min-height:40px; padding:8px 14px; border:1px solid var(--settings-quick-row-border); border-radius:10px; color:var(--settings-text-secondary); background:var(--settings-surface-muted-background); cursor:pointer; font:inherit; }
 .quick-action-type-tabs button.active { color:var(--settings-nav-active-text); border-color:var(--settings-accent-border); background:var(--settings-accent-background); }
+
+
+/* Device picker uses the same 670px maximum width as the Flow picker. */
+.quick-device-picker > .quick-device-menu { width:min(100%, 670px); max-width:670px; right:auto; }
+@media (max-width:560px) {
+  .quick-device-picker > .quick-device-menu { width:min(100%, 670px); max-width:calc(100vw - 40px); }
+}
