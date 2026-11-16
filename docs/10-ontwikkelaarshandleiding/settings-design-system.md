@@ -171,3 +171,6 @@ De Flow-zoekkiezer heeft een maximale popupbreedte van 670 px, gebaseerd op de g
 ### Quick Action-type selector
 
 In the Quick Action editor, the action type (Flow / Apparaat) is presented as a two-button segmented selector rather than a native dropdown. It follows the same visual pattern as the Apparaat / Homey Logic selector in Measurement Tiles. Keep the selected state visually clear and expose it with `aria-pressed`.
+
+
+The Quick Actions device searchable picker (`.quick-device-menu`) uses the same 670px maximum width as the Flow picker. On narrow viewports it is constrained to the available viewport width with 20px side allowance.
