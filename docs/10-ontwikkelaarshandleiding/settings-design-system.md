@@ -166,3 +166,8 @@ Gebruik kleur op basis van betekenis, niet alleen om items decoratief te ondersc
 ## Flow picker breedte en filtertip
 
 De Flow-zoekkiezer heeft een maximale popupbreedte van 670 px, gebaseerd op de gewenste breedte uit de referentiescreenshot. De popup blijft smaller wanneer de beschikbare ruimte kleiner is. De footer toont de resultatenteller links en de tip over het label Advanced rechts. Op smalle schermen mogen deze elementen naar een tweede regel doorlopen.
+
+
+### Quick Action-type selector
+
+In the Quick Action editor, the action type (Flow / Apparaat) is presented as a two-button segmented selector rather than a native dropdown. It follows the same visual pattern as the Apparaat / Homey Logic selector in Measurement Tiles. Keep the selected state visually clear and expose it with `aria-pressed`.
