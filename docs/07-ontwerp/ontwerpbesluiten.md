@@ -179,3 +179,8 @@ De apparaatselectie in de editor voor Snelle acties is gestandaardiseerd als Var
 ## Weer – gedeelde searchable picker-klassen (16 november 2026)
 
 De negen bronselecties op de Weer-instellingenpagina gebruiken nu ook de ontbrekende gedeelde klassen voor de resultatenlijst, alle opties (apparaten én Logic-variabelen) en beide lege-resultatenmeldingen. De bestaande groepskoppen voor apparaten en Logic-variabelen, bronlabels en offline-status blijven behouden. Er is bewust geen resultatenteller/footer toegevoegd: de twee expliciet benoemde resultaatgroepen geven de indeling al aan. Er is geen wijziging aangebracht aan bronselectie, filtering, inschakelen/uitschakelen of opslaggedrag.
+
+
+## Instellingen – Annuleren alleen bij niet-opgeslagen wijzigingen (16 november 2026)
+
+De knop **Annuleren** wordt op alle instellingenpagina's met een Opslaan/Annuleren-actievoet uitsluitend getoond wanneer er niet-opgeslagen wijzigingen zijn ten opzichte van de laatst opgeslagen configuratie. Zonder wijzigingen is de knop verborgen (niet slechts uitgeschakeld). Na Annuleren worden de laatst opgeslagen waarden hersteld en verdwijnt de knop weer. Ook wanneer de gebruiker alle wijzigingen handmatig terugdraait naar de opgeslagen waarden, wordt de knop verborgen. Dit gedrag is consistent op alle instellingenpagina's.

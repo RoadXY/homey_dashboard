@@ -229,3 +229,8 @@ The device picker in the Quick Actions editor uses Variant B: a searchable picke
 ## Weather source pickers: shared searchable classes completed (16 November 2026)
 
 All nine Weather source pickers use the canonical shared searchable-picker structure. The scrollable result container uses `.settings-searchable-results`; both device and Logic-variable options use `.settings-searchable-option`; and both empty-result states use `.settings-searchable-empty`. The existing grouped headings, source-specific labels and offline status remain page-specific semantic content. A result-count footer is intentionally not shown: the two result groups are already explicitly labelled. The wrapper, trigger, menu, search row and interactive controls retain their shared classes.
+
+
+### Zichtbaarheid van Annuleren bij niet-opgeslagen wijzigingen
+
+De actie **Annuleren** is op instellingenpagina's alleen zichtbaar zolang het formulier niet-opgeslagen wijzigingen bevat ten opzichte van de laatst opgeslagen configuratie. Zonder wijzigingen wordt Annuleren verborgen; toon dus niet standaard een uitgeschakelde Annuleren-knop. Zodra de gebruiker een wijziging aanbrengt, verschijnt de knop. Annuleren herstelt de laatst opgeslagen waarden en laat de knop daarna weer verdwijnen. Als de gebruiker wijzigingen handmatig terugzet naar exact de laatst opgeslagen waarden, geldt het formulier opnieuw als ongewijzigd en wordt Annuleren verborgen. Deze regel geldt voor alle instellingenpagina's met een Opslaan/Annuleren-actievoet. De zichtbaarheid moet worden afgeleid van dezelfde dirty-state die bepaalt of Opslaan beschikbaar is; pagina's mogen hierin niet onderling afwijken.
