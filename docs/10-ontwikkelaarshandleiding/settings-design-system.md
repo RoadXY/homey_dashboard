@@ -244,3 +244,8 @@ Het scrollgebied van Instellingen moet onderaan voldoende vrije ruimte behouden,
 ### Actievoet los van de viewport-onderrand houden
 
 De onderpadding van het scrollgebied alleen is niet voldoende wanneer de pagina-inhoud met `margin-top:auto` de actievoet naar de onderkant van de beschikbare flexruimte duwt. Daarom heeft de gedeelde `.settings-bottom` zelf ook `margin-bottom:20px` en `flex:0 0 auto`. Zo blijven Opslaan-/Annuleren-knoppen zichtbaar met een vaste vrije afstand tot de onderrand, terwijl de volledige pagina blijft scrollen. De ruimte mag niet worden vervangen door positionering die de actievoet over de inhoud heen legt.
+
+
+### Actievoet verankeren aan de onderzijde van het scrollgebied
+
+De gedeelde `.settings-bottom` gebruikt `position: sticky` met `bottom: 20px` en een eigen ondermarge van 20px. Hierdoor blijft de actievoet op desktop/tablet minimaal 20px vrij van de onderrand van het zichtbare scrollgebied, ook wanneer de pagina-inhoud langer is dan de viewport. De actievoet blijft in de normale documentstroom en reserveert dus zijn eigen ruimte; de editor-kaart wordt niet absoluut gepositioneerd en blijft volledig scrollbaar. Op mobiele layouts (maximaal 700px), waar de instellingen-shell zelf weer in de documentstroom staat, wordt sticky uitgeschakeld.

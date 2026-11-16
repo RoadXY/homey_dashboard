@@ -194,3 +194,8 @@ Instellingenpagina's houden onderaan het scrollbare contentgebied minimaal 44px 
 ## Instellingen – actievoet met vaste vrije ondermarge (16 november 2026)
 
 Aanvullend op de onderpadding van het scrollgebied krijgt de gedeelde actievoet `.settings-bottom` een eigen ondermarge van 20px en `flex: 0 0 auto`. Dit voorkomt dat `margin-top:auto` de actieknoppen alsnog tegen de onderrand van de beschikbare flexruimte plaatst. De pagina blijft normaal scrollbaar; de actievoet overlapt de editor-kaarten niet.
+
+
+## Instellingen – actievoet sticky binnen scrollgebied (16 november 2026)
+
+De gedeelde actievoet is op desktop/tablet sticky aan de onderzijde van `.settings-content` met 20px afstand tot de onderrand en 20px eigen ondermarge. Dit geeft een voorspelbare zichtbare marge, ook bij lange instellingenpagina's. De actievoet blijft in de documentstroom zodat de inhoud niet wordt overlapt. Op mobiele layouts (maximaal 700px) is de actievoet statisch.
