@@ -187,3 +187,8 @@ Bij Annuleren op de meetwaardetegels-pagina wordt de laatst opgeslagen configura
 ### Opslaan-knoppen in Instellingen
 
 Alle primaire Opslaan-acties binnen Instellingen tonen uitsluitend de vertaalde tekst (of de vertaalde bezig-status tijdens opslaan). Gebruik geen decoratief vierkant-/diskette-icoon of ander prefixteken op Opslaan-knoppen. Houd de bestaande primaire knopstijl en vertalingen intact.
+
+
+### Uniforme Opslaan- en Annuleren-knoppen
+
+Alle Opslaan- en Annuleren-knoppen in de vaste actievoeten van Instellingen gebruiken dezelfde gedeelde geometrie en typografie, ongeacht de instellingenpagina. Beide varianten zijn 112px breed en hebben dezelfde vaste hoogte via `--settings-button-height`, zonder afwijkende horizontale padding. Lettertype, grootte (16px), gewicht (500), regelhoogte, letterafstand en uitlijning zijn identiek. Alleen de semantische kleur-/randstijl en de vertaalde knoptekst verschillen. De regel is bewust beperkt tot actievoeten zodat secundaire acties zoals token intrekken niet onbedoeld breder worden.
