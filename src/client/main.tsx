@@ -630,7 +630,8 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const matchingDevices = devices.filter(device => device.name.toLocaleLowerCase().includes(deviceSearch.trim().toLocaleLowerCase()));
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
   const matchingVariables = catalog.variables.filter(variable => variable.name.toLocaleLowerCase().includes(logicSearch.trim().toLocaleLowerCase()));
-  const chosenVariable = selected.source?.type === "logic" ? catalog.variables.find(variable => variable.id === selected.source.variableId) : undefined;
+  const selectedLogicVariableId = selected.source && selected.source.type === "logic" ? selected.source.variableId : "";
+  const chosenVariable = selectedLogicVariableId ? catalog.variables.find(variable => variable.id === selectedLogicVariableId) : undefined;
   const sourceDescription = (tile: MeasurementTile) => {
     const source = tile.source;
     if (!source) return t("measurement.noSource");
@@ -741,8 +742,8 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
                     onChange={event => setLogicSearch(event.target.value)} placeholder={t("measurement.searchLogicVariables")} aria-label={t("measurement.searchLogicVariables")} />
                 </div>
                 <div className="quick-flow-results settings-searchable-results">
-                  {matchingVariables.map(variable => <button type="button" role="option" aria-selected={selected.source?.type === "logic" && variable.id === selected.source.variableId}
-                    className={"quick-flow-option settings-searchable-option settings-interactive" + (selected.source?.type === "logic" && variable.id === selected.source.variableId ? " selected" : "")}
+                  {matchingVariables.map(variable => <button type="button" role="option" aria-selected={variable.id === selectedLogicVariableId}
+                    className={"quick-flow-option settings-searchable-option settings-interactive" + (variable.id === selectedLogicVariableId ? " selected" : "")}
                     key={variable.id} onClick={() => { update({ source: { type: "logic", variableId: variable.id } }); setLogicPickerOpen(false); setLogicSearch(""); }}>
                     <span className="quick-flow-option-icon"><MdiIcon name="variable" /></span>
                     <span className="quick-flow-option-name">{variable.name}</span>
