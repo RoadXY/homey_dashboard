@@ -159,3 +159,11 @@ De huidige tokenwaarden vormen het donkere standaardthema. De structuur is voorb
 - De enige resterende letterlijke kleuren in het instellingen-CSS-gedeelte zijn de multicolor merkbol en de herkenbare weerconditiekleuren. Dit zijn expliciete semantische uitzonderingen.
 - Broncontrole: geen zelfverwijzende CSS custom properties, geen ongedefinieerde `var(--...)`-verwijzingen en alle 15 native select-elementen in `main.tsx` gebruiken `settings-interactive`.
 - Build, tests, CI en visuele controle op de tablet zijn op dit moment nog niet bevestigd; deze blijven onderdeel van de afronding.
+
+
+## Meetwaardetegels – bronselectie (16 november 2026)
+
+- De aparte selectie van een ruimte vervalt. Een apparaat wordt rechtstreeks gekozen uit de volledige apparatenlijst; er wordt niet langer eerst op Homey-ruimte gefilterd.
+- De apparaatkeuze is variant B: searchable dropdown met zoekbalk. Offline apparaten blijven selecteerbaar en krijgen een amberkleurig statuslabel.
+- De capability-/meetwaardekeuze blijft in deze stap een gewone dropdown. De keuze voor eventuele verdere dropdownmigraties wordt per onderdeel met de gebruiker afgestemd.
+- De opgeslagen bronstructuur (apparaat-ID + capability-ID) en de backend-API blijven ongewijzigd; de ruimte was alleen een frontendfilter.
