@@ -1390,3 +1390,19 @@ body {
 @media(max-width:700px) { .weather-source-row { grid-template-columns:minmax(110px,.8fr) 36px minmax(150px,1.2fr); gap:7px; } .weather-pack-preview-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; } .weather-pack-preview-item { min-height:62px; } .weather-pack-preview-item .weather-symbol { min-height:58px; } .weather-details { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 
 .weather-details .is-unavailable strong, .weather-temp.is-unavailable { color:var(--settings-text-muted); opacity:.72; }
+
+
+/* Canonical searchable picker: shared by Notifications, Quick Actions and Weather. */
+.settings-searchable-picker { position:relative; min-width:0; }
+.settings-searchable-trigger { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-width:0; min-height:var(--settings-control-height); padding:8px 13px; border:1px solid var(--settings-control-border); border-radius:var(--settings-radius-control); background:var(--settings-control-background); color:var(--settings-text-primary); font:inherit; font-size:15px; text-align:left; cursor:pointer; }
+.settings-searchable-trigger:disabled { opacity:.55; cursor:not-allowed; }
+.settings-searchable-menu { position:absolute; z-index:30; top:calc(100% + 3px); left:0; right:0; display:flex; flex-direction:column; width:100%; max-height:min(440px,calc(100vh - 32px)); overflow:hidden; border:1px solid var(--settings-menu-border-strong); border-radius:9px; background:var(--settings-menu-background-deep); box-shadow:var(--settings-shadow-dropdown); box-sizing:border-box; }
+.settings-searchable-search { position:relative; z-index:1; display:flex; flex:0 0 auto; align-items:center; gap:9px; min-height:46px; padding:8px 12px; border-bottom:1px solid var(--settings-menu-search-border); background:var(--settings-menu-background-mid); color:var(--settings-menu-search-text); }
+.settings-searchable-search > span { flex:0 0 auto; font-size:18px; line-height:1; }
+.settings-searchable-search input { width:100%; min-width:0; height:28px; margin:0; padding:0; border:0!important; outline:0; background:transparent!important; color:var(--settings-source-search-text); font:inherit; font-size:14px; box-shadow:none!important; }
+.settings-searchable-search input::placeholder { color:var(--settings-menu-placeholder); }
+.settings-searchable-results { min-height:0; flex:1 1 auto; overflow-y:auto; overscroll-behavior:contain; padding:4px 0; }
+.settings-searchable-option { display:flex; align-items:center; justify-content:flex-start; gap:10px; width:100%; min-height:42px; height:auto; margin:0; padding:9px 13px; border:0; border-radius:0; background:transparent; color:var(--settings-menu-option-text); font:inherit; font-size:14px; line-height:1.35; text-align:left; cursor:pointer; }
+.settings-searchable-option:hover,.settings-searchable-option.selected { background:var(--settings-menu-hover-background); }
+.settings-searchable-empty { padding:14px 13px; color:var(--settings-menu-empty-text); font-size:13px; }
+.settings-searchable-footer { flex:0 0 auto; padding:6px 12px; border-top:1px solid var(--settings-workspace-menu-border); background:var(--settings-menu-background-deep); color:var(--settings-menu-search-text); font-size:11px; }
