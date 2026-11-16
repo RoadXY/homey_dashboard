@@ -249,3 +249,40 @@ De onderpadding van het scrollgebied alleen is niet voldoende wanneer de pagina-
 ### Actievoet verankeren aan de onderzijde van het scrollgebied
 
 De gedeelde `.settings-bottom` gebruikt `position: sticky` met `bottom: 20px` en een eigen ondermarge van 20px. Hierdoor blijft de actievoet op desktop/tablet minimaal 20px vrij van de onderrand van het zichtbare scrollgebied, ook wanneer de pagina-inhoud langer is dan de viewport. De actievoet blijft in de normale documentstroom en reserveert dus zijn eigen ruimte; de editor-kaart wordt niet absoluut gepositioneerd en blijft volledig scrollbaar. Op mobiele layouts (maximaal 700px), waar de instellingen-shell zelf weer in de documentstroom staat, wordt sticky uitgeschakeld.
+
+
+## Standaard dropdownvarianten
+
+Gebruik voor dropdowns in Instellingen één van de drie onderstaande standaardvarianten. Kies de variant op basis van de aard en omvang van de keuzelijst; maak geen zoekveld verplicht voor kleine, vaste keuzelijsten.
+
+### Variant A – Eenvoudige dropdown
+
+- Voor een kleine, vaste keuzelijst met een beperkt aantal opties.
+- Geen zoekveld en geen gegroepeerde resultaten.
+- Behoudt het compacte dropdownpatroon met een duidelijke geselecteerde waarde en consistente settings-control-styling.
+- Voorbeelden: aantal meetwaardetegels (2, 4 of 6), datumformaat en tijdnotatie.
+
+### Variant B – Zoekbare dropdown
+
+- Voor een grotere, hoofdzakelijk vlakke keuzelijst waarin zoeken de keuze versnelt.
+- Bevat een zoekveld, een scrollbaar resultatengebied, een duidelijke geselecteerde optie en een lege-resultatenmelding.
+- Gebruik de gedeelde structuurklassen `.settings-searchable-picker`, `.settings-searchable-trigger`, `.settings-searchable-menu`, `.settings-searchable-search`, `.settings-searchable-results`, `.settings-searchable-option` en `.settings-searchable-empty`. Voeg een footer/resultatenteller toe wanneer die inhoudelijk nuttig is.
+- Voorbeelden: Homey-apparaten, Homey Logic-variabelen en Homey Flows.
+
+### Variant C – Gegroepeerde zoekbare dropdown
+
+- Voor grotere keuzelijsten waarvan de opties betekenisvolle categorieën of groepen hebben.
+- Bevat dezelfde zoek- en selectiefuncties als Variant B, aangevuld met herkenbare groepskoppen en waar relevant contextuele status- of informatielabels.
+- Groepskoppen en statuslabels zijn semantische inhoud; de gedeelde picker-klassen blijven verantwoordelijk voor de algemene menu-, zoek-, resultaten- en optie-opmaak.
+- Een footer/resultatenteller is optioneel en wordt alleen getoond als die de gebruiker helpt.
+- Voorbeeld: de Weather-bronkeuze met afzonderlijke groepen voor apparaten en Logic-variabelen.
+
+### Variantkeuze en consistentie
+
+Gebruik de variant die het eenvoudigste en duidelijkste keuzepatroon oplevert. Houd de bestaande selectie-, validatie-, opslag- en toegankelijkheidslogica intact bij omzetting. Page-specifieke klassen mogen inhoud en semantiek aanvullen, maar mogen de gedeelde geometrie en interactiestaten van de gekozen standaard niet opnieuw definiëren. Een native `select` met alleen `settings-interactive` is nog niet automatisch een volledig gestandaardiseerde Variant A; controleer ook de afgesproken visuele styling.
+
+### Huidige toepassing
+
+- Variant A: aantal meetwaardetegels is de aangewezen variant; de huidige keuzelijst bevat 2, 4 en 6.
+- Variant B: apparaat-, Logic-variabele- en Flow-keuzes met een vlakke resultatenlijst.
+- Variant C: Weather-bronkeuzes met gegroepeerde apparaat- en Logic-resultaten.

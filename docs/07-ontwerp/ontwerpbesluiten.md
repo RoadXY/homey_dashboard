@@ -199,3 +199,14 @@ Aanvullend op de onderpadding van het scrollgebied krijgt de gedeelde actievoet 
 ## Instellingen – actievoet sticky binnen scrollgebied (16 november 2026)
 
 De gedeelde actievoet is op desktop/tablet sticky aan de onderzijde van `.settings-content` met 20px afstand tot de onderrand en 20px eigen ondermarge. Dit geeft een voorspelbare zichtbare marge, ook bij lange instellingenpagina's. De actievoet blijft in de documentstroom zodat de inhoud niet wordt overlapt. Op mobiele layouts (maximaal 700px) is de actievoet statisch.
+
+
+## Standaard dropdownvarianten (16 november 2026)
+
+Instellingen-dropdowns worden voortaan ingedeeld in drie vaste standaarden:
+
+- **Variant A – Eenvoudige dropdown:** kleine vaste keuzelijst, zonder zoekveld.
+- **Variant B – Zoekbare dropdown:** grotere vlakke lijst met zoekveld, geselecteerde optie en lege-resultatenmelding.
+- **Variant C – Gegroepeerde zoekbare dropdown:** zoekbare lijst met betekenisvolle groepen/groepskoppen en waar relevant status- of informatielabels.
+
+Kies de lichtste variant die de gebruiker goed helpt. Aantal meetwaardetegels (2, 4, 6) is een Variant A-keuze. De apparaat-, Logic- en Flow-pickers zijn Variant B. De gegroepeerde Weather-bronpickers zijn Variant C. Deze indeling is de standaard voor nieuwe en om te zetten dropdowns; behoud bij aanpassingen de bestaande selectie-, opslag- en toegankelijkheidslogica.
