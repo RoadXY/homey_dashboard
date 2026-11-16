@@ -1427,3 +1427,10 @@ body {
   .quick-flow-footer { align-items:flex-start; flex-wrap:wrap; gap:4px 10px; }
   .quick-flow-tip { text-align:left; }
 }
+
+/* Quick Action type selector follows the segmented source buttons used by Measurement Tiles. */
+.quick-action-type-setting { display:flex; flex-direction:column; gap:8px; }
+.quick-action-type-setting > label { color:var(--settings-text-secondary); font-size:14px; }
+.quick-action-type-tabs { display:flex; flex-wrap:wrap; gap:8px; }
+.quick-action-type-tabs button { min-height:40px; padding:8px 14px; border:1px solid var(--settings-quick-row-border); border-radius:10px; color:var(--settings-text-secondary); background:var(--settings-surface-muted-background); cursor:pointer; font:inherit; }
+.quick-action-type-tabs button.active { color:var(--settings-nav-active-text); border-color:var(--settings-accent-border); background:var(--settings-accent-background); }
