@@ -204,3 +204,11 @@ Knoppen die wijzigingen van een instellingenformulier bevestigen gebruiken de be
 De gedeelde searchable picker bepaalt bij openen automatisch aan welke kant van de trigger de meeste bruikbare viewport-ruimte beschikbaar is. Als de ruimte onder de trigger kleiner is dan de benodigde menuhoogte en er boven meer ruimte beschikbaar is, krijgt het menu de klasse `opens-up` en opent het omhoog. Anders opent het omlaag. De maximale hoogte wordt begrensd op 440px en aangepast aan de beschikbare ruimte; de resultatenlijst behoudt de eigen scrollbar.
 
 De positie wordt opnieuw berekend bij DOM-wijzigingen (openen/sluiten), scrollen en wijzigen van de viewportgrootte. De logica is centraal in de applicatie geïmplementeerd en vereist geen handmatige richtinginstelling per picker. De bestaande pickerbreedtes blijven ongewijzigd.
+
+
+### Meetwaardetegels – apparaatselectie (16 november 2026)
+
+De ruimteselectie is verwijderd uit de editor voor meetwaardetegels. De gebruiker kiest voortaan rechtstreeks een apparaat uit de volledige Homey-apparatenlijst; de gekozen apparaat-ID blijft de opgeslagen bronidentiteit. De backendconfiguratie en het bronmodel blijven ongewijzigd: de ruimte was uitsluitend een frontendfilter en maakte geen deel uit van de opgeslagen tegelbron.
+
+De apparaatkeuze gebruikt de bestaande searchable picker-styling en -positionering (variant B): zoekbalk, filteren op apparaatnaam, geselecteerde status en een amberkleurig label voor offline apparaten. Na het kiezen van een ander apparaat wordt de eerder gekozen capability gewist, zodat geen capability van het vorige apparaat per ongeluk gekoppeld blijft. De capability-keuze zelf blijft voorlopig een gewone dropdown.
+
