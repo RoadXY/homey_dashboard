@@ -150,3 +150,14 @@ Every custom searchable picker must close when the user clicks or taps outside i
 ## Statuslabels in zoekresultaten
 
 Gebruik `.settings-status-warning` voor een status die extra aandacht vraagt maar geen kritieke fout is, zoals een Homey-apparaat dat offline is. De klasse deelt de gele waarschuwingsbadge-stijl met `.notification-warning-badge`. Pas dit toe op offline-labels in alle zoekbare bronlijsten; gebruik geen gedempte standaardtekst voor deze status. De vertaalde statusinhoud blijft afkomstig uit de bestaande i18n-sleutel.
+
+
+### Kleuren voor statuslabels in zoekbare keuzemenu's
+
+De zoekbare keuzemenu's (ook aangeduid als searchable dropdowns of pickers) gebruiken drie semantische statusaccenten:
+
+- `.settings-status-danger` / bestaande `.notification-disabled-badge`: rood voor uitgeschakeld of kritiek.
+- `.settings-status-warning` / `.notification-warning-badge`: geel voor waarschuwingen, zoals een offline Homey-apparaat.
+- `.settings-status-info`: blauw voor informatieve metadata, zoals het typeaanduiding-label `Advanced`.
+
+Gebruik kleur op basis van betekenis, niet alleen om items decoratief te onderscheiden. De blauwe variant gebruikt de centrale settings-accenttokens.
