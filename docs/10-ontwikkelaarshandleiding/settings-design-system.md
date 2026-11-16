@@ -212,3 +212,8 @@ De ruimteselectie is verwijderd uit de editor voor meetwaardetegels. De gebruike
 
 De apparaatkeuze gebruikt de bestaande searchable picker-styling en -positionering (variant B): zoekbalk, filteren op apparaatnaam, geselecteerde status en een amberkleurig label voor offline apparaten. Na het kiezen van een ander apparaat wordt de eerder gekozen capability gewist, zodat geen capability van het vorige apparaat per ongeluk gekoppeld blijft. De capability-keuze zelf blijft voorlopig een gewone dropdown.
 
+
+
+### Meetwaardetegels – Logic-variabelepicker (16 november 2026)
+
+De selectie van een numerieke Homey Logic-variabele gebruikt nu eveneens variant B van de searchable picker. De picker biedt zoeken op variabelenaam, toont de geselecteerde variabele en geeft een lege-resultatenmelding wanneer de zoekterm niets oplevert. De selectie blijft gekoppeld aan de bestaande Logic-variabele-ID; API en opslagmodel zijn niet gewijzigd. De Nederlandse en Engelse teksten zijn toegevoegd aan de locale dictionaries.
