@@ -1464,3 +1464,8 @@ body {
   letter-spacing:normal;
   text-align:center;
 }
+
+
+/* Searchable menus choose the side with more available viewport space. */
+.settings-searchable-menu { max-height:var(--settings-searchable-max-height, min(440px,calc(100vh - 32px))); }
+.settings-searchable-menu.opens-up { top:auto; bottom:calc(100% + 3px); }
