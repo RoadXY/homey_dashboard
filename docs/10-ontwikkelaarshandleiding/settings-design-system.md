@@ -225,3 +225,7 @@ The Measurement Tiles page renders before its settings request has completed. Du
 ## Quick Actions device picker: Variant B (16 November 2026)
 
 The device picker in the Quick Actions editor uses Variant B: a searchable picker with a search field, selected-option state, empty-results message and result-count footer. Its trigger, search row, result list, options, empty state and footer must use the canonical shared classes: `.settings-searchable-trigger`, `.settings-searchable-search`, `.settings-searchable-results`, `.settings-searchable-option`, `.settings-searchable-empty` and `.settings-searchable-footer`. The wrapper and popup use `.settings-searchable-picker` and `.settings-searchable-menu`. Keep `.settings-interactive` on actual interactive controls. Page-specific classes may remain for content styling but must not replace these shared structural classes.
+
+## Weather source pickers: shared searchable classes completed (16 November 2026)
+
+All nine Weather source pickers use the canonical shared searchable-picker structure. The scrollable result container uses `.settings-searchable-results`; both device and Logic-variable options use `.settings-searchable-option`; and both empty-result states use `.settings-searchable-empty`. The existing grouped headings, source-specific labels and offline status remain page-specific semantic content. A result-count footer is intentionally not shown: the two result groups are already explicitly labelled. The wrapper, trigger, menu, search row and interactive controls retain their shared classes.

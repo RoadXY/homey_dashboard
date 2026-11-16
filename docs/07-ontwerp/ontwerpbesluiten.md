@@ -175,3 +175,7 @@ De instellingenpagina wordt al gerenderd terwijl de meetwaardetegels nog asynchr
 ## Snelle acties – apparaatpicker Variant B (16 november 2026)
 
 De apparaatselectie in de editor voor Snelle acties is gestandaardiseerd als Variant B, in lijn met de apparaat- en Logic-picker bij Meetwaardetegels. De picker behoudt zoeken op apparaatnaam, geselecteerde status, offline-waarschuwing, lege-resultatenmelding en resultatenteller. De gedeelde CSS-klassen zijn toegevoegd aan trigger, zoekrij, resultatenlijst, opties, lege status en footer; de bestaande selectie- en opslaglogica blijft ongewijzigd.
+
+## Weer – gedeelde searchable picker-klassen (16 november 2026)
+
+De negen bronselecties op de Weer-instellingenpagina gebruiken nu ook de ontbrekende gedeelde klassen voor de resultatenlijst, alle opties (apparaten én Logic-variabelen) en beide lege-resultatenmeldingen. De bestaande groepskoppen voor apparaten en Logic-variabelen, bronlabels en offline-status blijven behouden. Er is bewust geen resultatenteller/footer toegevoegd: de twee expliciet benoemde resultaatgroepen geven de indeling al aan. Er is geen wijziging aangebracht aan bronselectie, filtering, inschakelen/uitschakelen of opslaggedrag.
