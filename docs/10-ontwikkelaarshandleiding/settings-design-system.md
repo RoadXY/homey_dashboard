@@ -234,3 +234,8 @@ All nine Weather source pickers use the canonical shared searchable-picker struc
 ### Zichtbaarheid van Annuleren bij niet-opgeslagen wijzigingen
 
 De actie **Annuleren** is op instellingenpagina's alleen zichtbaar zolang het formulier niet-opgeslagen wijzigingen bevat ten opzichte van de laatst opgeslagen configuratie. Zonder wijzigingen wordt Annuleren verborgen; toon dus niet standaard een uitgeschakelde Annuleren-knop. Zodra de gebruiker een wijziging aanbrengt, verschijnt de knop. Annuleren herstelt de laatst opgeslagen waarden en laat de knop daarna weer verdwijnen. Als de gebruiker wijzigingen handmatig terugzet naar exact de laatst opgeslagen waarden, geldt het formulier opnieuw als ongewijzigd en wordt Annuleren verborgen. Deze regel geldt voor alle instellingenpagina's met een Opslaan/Annuleren-actievoet. De zichtbaarheid moet worden afgeleid van dezelfde dirty-state die bepaalt of Opslaan beschikbaar is; pagina's mogen hierin niet onderling afwijken.
+
+
+### Onder- en scrollruimte op instellingenpagina's
+
+Het scrollgebied van Instellingen moet onderaan voldoende vrije ruimte behouden, zodat de vaste Opslaan-/Annuleren-acties niet tegen de onderrand van het browservenster staan. Gebruik minimaal 44px onderpadding op `.settings-content`. Pagina's die de gedeelde `.quick-settings-page` gebruiken behouden daarnaast 24px interne onderpadding. De verticale ruimte hoort bij het scrollbare document: alle inhoud moet bereikbaar blijven en de laatste kaart (zoals de Quick Action-editor) moet met de volledige onderrand zichtbaar zijn vóór de actievoet. Verklein deze ruimte niet om de pagina kunstmatig passend te maken op lage schermen; laat het contentgebied scrollen.

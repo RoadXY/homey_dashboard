@@ -184,3 +184,8 @@ De negen bronselecties op de Weer-instellingenpagina gebruiken nu ook de ontbrek
 ## Instellingen – Annuleren alleen bij niet-opgeslagen wijzigingen (16 november 2026)
 
 De knop **Annuleren** wordt op alle instellingenpagina's met een Opslaan/Annuleren-actievoet uitsluitend getoond wanneer er niet-opgeslagen wijzigingen zijn ten opzichte van de laatst opgeslagen configuratie. Zonder wijzigingen is de knop verborgen (niet slechts uitgeschakeld). Na Annuleren worden de laatst opgeslagen waarden hersteld en verdwijnt de knop weer. Ook wanneer de gebruiker alle wijzigingen handmatig terugdraait naar de opgeslagen waarden, wordt de knop verborgen. Dit gedrag is consistent op alle instellingenpagina's.
+
+
+## Instellingen – veilige onderruimte bij scrollen (16 november 2026)
+
+Instellingenpagina's houden onderaan het scrollbare contentgebied minimaal 44px vrije ruimte. De gedeelde `.quick-settings-page` voegt 24px interne onderpadding toe. Hierdoor staan Opslaan-/Annuleren-acties niet tegen de viewport-onderrand en blijft de volledige onderrand van de laatste editor-kaart zichtbaar. Op lage schermen blijft de inhoud scrollbaar; kaartinhoud of actieknoppen worden niet afgeknipt om alles in één viewport te forceren.
