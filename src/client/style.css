@@ -1413,3 +1413,6 @@ body {
 .quick-flow-menu .quick-flow-option.settings-searchable-option.selected { background:var(--settings-menu-hover-background); }
 .quick-flow-menu .quick-flow-search-wrap.settings-searchable-search { min-height:46px; padding:8px 12px; }
 .quick-flow-menu .quick-flow-search-wrap.settings-searchable-search input { height:28px; min-height:28px; padding:0; font-size:14px; }
+
+/* Informational status in searchable pickers (e.g. Advanced Flow type). */
+.settings-status-info { display:inline-flex; flex:0 0 auto; align-items:center; padding:4px 8px; border:1px solid var(--settings-accent-soft-border); border-radius:6px; background:var(--settings-accent-soft-background); color:var(--settings-accent-soft-text); font-size:11px; font-weight:650; line-height:1.2; white-space:nowrap; }
