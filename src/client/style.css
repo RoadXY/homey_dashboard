@@ -878,8 +878,12 @@ body {
 /* Meetwaardetegels gebruiken dezelfde twee-koloms werkruimte als Quick Actions. */
 .measurement-workspace { min-height:560px; align-items:stretch; grid-auto-rows:auto; }
 .measurement-count-setting { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:14px 0 16px; color:var(--settings-text-secondary); font-size:14px; }
-.measurement-count-setting select { width:112px; min-height:40px; border:1px solid var(--settings-quick-row-border); border-radius:var(--settings-radius-control-large); background:var(--settings-surface-muted-background); color:var(--settings-control-text); padding:8px 12px; font:inherit; cursor:pointer; transition:border-color var(--settings-transition-fast),box-shadow var(--settings-transition-fast),background-color var(--settings-transition-fast); }
-.measurement-count-setting select:focus-visible { outline:2px solid var(--settings-control-focus); outline-offset:2px; }
+.measurement-count-picker { position:relative; flex:0 0 112px; }
+.measurement-count-trigger { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:40px; padding:8px 12px; border:1px solid var(--settings-control-border); border-radius:var(--settings-radius-control-large); background:var(--settings-control-background); color:var(--settings-control-text); font:inherit; text-align:left; cursor:pointer; }
+.measurement-count-menu { position:absolute; z-index:35; top:calc(100% + 4px); left:0; right:0; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--settings-menu-border-strong); border-radius:9px; background:var(--settings-menu-background-deep); box-shadow:var(--settings-shadow-dropdown); }
+.measurement-count-option { display:flex; align-items:center; justify-content:space-between; width:100%; min-height:42px; padding:9px 13px; border:0; border-radius:0; background:transparent; color:var(--settings-menu-option-text); font:inherit; font-size:14px; text-align:left; cursor:pointer; }
+.measurement-count-option:hover,.measurement-count-option.selected { background:var(--settings-menu-hover-background); }
+.measurement-count-option .mdi { color:var(--settings-accent-text); }
 
 .measurement-list-card,.measurement-workspace .quick-preview-card { min-height:480px; }
 .measurement-tile-list { margin-bottom:18px; }

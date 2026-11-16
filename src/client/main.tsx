@@ -585,6 +585,8 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const [deviceSearch, setDeviceSearch] = React.useState("");
   const [logicPickerOpen, setLogicPickerOpen] = React.useState(false);
   const [logicSearch, setLogicSearch] = React.useState("");
+  const [countPickerOpen, setCountPickerOpen] = React.useState(false);
+  const countPickerRef = React.useRef<HTMLDivElement>(null);
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
@@ -594,6 +596,14 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const dirty = count !== savedCount || JSON.stringify(tiles) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const visibleTiles = tiles.slice(0, count);
+  React.useEffect(() => {
+    if (!countPickerOpen) return;
+    const onPointerDown = (event: PointerEvent) => { if (!countPickerRef.current?.contains(event.target as Node)) setCountPickerOpen(false); };
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setCountPickerOpen(false); };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => { document.removeEventListener("pointerdown", onPointerDown); document.removeEventListener("keydown", onKeyDown); };
+  }, [countPickerOpen]);
   const selected = visibleTiles.find(tile => tile.id === selectedId) ?? visibleTiles[0];
   React.useEffect(() => {
     let active = true;
@@ -656,18 +666,23 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
       <section className="settings-card quick-list-card measurement-list-card">
         <h2><span>♙</span>{t("measurement.heading")}</h2>
         <p className="quick-card-description">{t("measurement.configureDescription")}</p>
-        <label className="measurement-count-setting">{t("measurement.count")}
-          <select className="settings-interactive" value={count} onChange={event => {
-            const nextCount = Number(event.target.value) as MeasurementTileCount;
-            setCount(nextCount);
-            if (tiles.findIndex(tile => tile.id === selectedId) >= nextCount) {
-              setSelectedId("measurement-1");
-              setEditorOpen(false);
-            }
-          }}>
-            <option value={2}>2</option><option value={4}>4</option><option value={6}>6</option>
-          </select>
-        </label>
+        <div className="measurement-count-setting"><span>{t("measurement.count")}</span>
+          <div className="measurement-count-picker" ref={countPickerRef}>
+            <button type="button" className="measurement-count-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={countPickerOpen} aria-controls="measurement-count-options" onClick={() => setCountPickerOpen(open => !open)}>
+              <span>{count}</span><span className="mdi mdi-chevron-down" aria-hidden="true"/>
+            </button>
+            {countPickerOpen && <div className="measurement-count-menu" id="measurement-count-options" role="listbox" aria-label={t("measurement.count")}>
+              {([2, 4, 6] as MeasurementTileCount[]).map(option => <button type="button" role="option" aria-selected={count === option} key={option} className={"measurement-count-option settings-interactive" + (count === option ? " selected" : "")} onClick={() => {
+                setCount(option);
+                if (tiles.findIndex(tile => tile.id === selectedId) >= option) {
+                  setSelectedId("measurement-1");
+                  setEditorOpen(false);
+                }
+                setCountPickerOpen(false);
+              }}>{option}{count === option && <span className="mdi mdi-check" aria-hidden="true"/>}</button>)}
+            </div>}
+          </div>
+        </div>
         <div className="quick-action-list measurement-tile-list">
           {visibleTiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row settings-interactive" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>

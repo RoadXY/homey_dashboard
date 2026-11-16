@@ -210,3 +210,8 @@ Instellingen-dropdowns worden voortaan ingedeeld in drie vaste standaarden:
 - **Variant C – Gegroepeerde zoekbare dropdown:** zoekbare lijst met betekenisvolle groepen/groepskoppen en waar relevant status- of informatielabels.
 
 Kies de lichtste variant die de gebruiker goed helpt. Aantal meetwaardetegels (2, 4, 6) is een Variant A-keuze. De apparaat-, Logic- en Flow-pickers zijn Variant B. De gegroepeerde Weather-bronpickers zijn Variant C. Deze indeling is de standaard voor nieuwe en om te zetten dropdowns; behoud bij aanpassingen de bestaande selectie-, opslag- en toegankelijkheidslogica.
+
+
+### Variant A – aantal meetwaardetegels als referentie (16 november 2026)
+
+De native select voor het aantal meetwaardetegels (2, 4, 6) wordt vervangen door de custom eenvoudige dropdown van Variant A. De popup toont uitsluitend de drie vaste opties, zonder zoekveld. Selectie, sluiten bij buitenklik/Escape en bestaande editor-/tegelgedrag blijven intact. Deze implementatie dient als visuele en functionele referentie voor de overige kleine vaste native select-keuzelijsten.

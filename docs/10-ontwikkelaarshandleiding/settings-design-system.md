@@ -286,3 +286,8 @@ Gebruik de variant die het eenvoudigste en duidelijkste keuzepatroon oplevert. H
 - Variant A: aantal meetwaardetegels is de aangewezen variant; de huidige keuzelijst bevat 2, 4 en 6.
 - Variant B: apparaat-, Logic-variabele- en Flow-keuzes met een vlakke resultatenlijst.
 - Variant C: Weather-bronkeuzes met gegroepeerde apparaat- en Logic-resultaten.
+
+
+### Variant A toegepast: aantal meetwaardetegels
+
+De keuzelijst voor het aantal meetwaardetegels is de referentie-implementatie van Variant A. De kleine vaste optieset (2, 4, 6) gebruikt een custom eenvoudige dropdown zonder zoekveld. De popup en opties gebruiken settings-menu/control-tokens en gedeelde interactieve feedback. De dropdown sluit na selectie, bij klikken buiten de picker en met Escape. De bestaande count-update en selectie-/editorlogica blijft behouden.
