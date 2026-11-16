@@ -61,6 +61,40 @@ function temperature(value: unknown, locale: string = "nl"): string {
   return typeof value === "number" && Number.isFinite(value) ? `${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)}°` : "—";
 }
 function App() {
+  React.useEffect(() => {
+    const pickerSelector = ".settings-searchable-picker";
+    const menuSelector = ".settings-searchable-menu";
+    let frame = 0;
+    const updateOpenMenus = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        document.querySelectorAll<HTMLElement>(pickerSelector).forEach((picker) => {
+          const trigger = picker.querySelector<HTMLElement>(".settings-searchable-trigger, .quick-flow-trigger, .notification-rule-trigger");
+          const menu = picker.querySelector<HTMLElement>(menuSelector);
+          if (!trigger || !menu || !menu.isConnected) return;
+          const triggerRect = trigger.getBoundingClientRect();
+          const spaceBelow = Math.max(0, window.innerHeight - triggerRect.bottom - 8);
+          const spaceAbove = Math.max(0, triggerRect.top - 8);
+          const desiredHeight = Math.min(menu.scrollHeight, 440);
+          const shouldOpenUp = spaceBelow < Math.min(desiredHeight, 260) && spaceAbove > spaceBelow;
+          const availableSpace = shouldOpenUp ? spaceAbove : spaceBelow;
+          menu.classList.toggle("opens-up", shouldOpenUp);
+          menu.style.setProperty("--settings-searchable-max-height", Math.max(120, Math.min(440, availableSpace)) + "px");
+        });
+      });
+    };
+    const observer = new MutationObserver(updateOpenMenus);
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("resize", updateOpenMenus);
+    window.addEventListener("scroll", updateOpenMenus, true);
+    updateOpenMenus();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", updateOpenMenus);
+      window.removeEventListener("scroll", updateOpenMenus, true);
+    };
+  }, []);
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
