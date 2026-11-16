@@ -125,3 +125,23 @@ A future theme may override only presentation tokens for backgrounds/surfaces, t
 ## Validation notes
 
 The v2 source audit verifies that the settings stylesheet has balanced braces, every referenced CSS custom property is defined, the former dashboard-wide surface/text/navigation references have been replaced within settings rules by settings aliases, and the four self-referential workspace/source-menu tokens have concrete defaults. The remaining literal colors in the settings region are limited to the multicolor brand artwork and recognizable weather-condition colors; weather-icon drop shadows remain decorative. Visual verification in the running Docker container remains a separate tablet/browser test. No light theme or theme-switching behavior is claimed by this implementation.
+
+
+## Canonical searchable picker
+
+Searchable settings dropdowns use one shared visual contract in `src/client/style.css`:
+
+- Wrapper: `.settings-searchable-picker`
+- Trigger: `.settings-searchable-trigger`
+- Popup: `.settings-searchable-menu`
+- Search row/input: `.settings-searchable-search`
+- Scrollable results: `.settings-searchable-results`
+- Result option: `.settings-searchable-option`
+- Empty state: `.settings-searchable-empty`
+- Result count/footer: `.settings-searchable-footer`
+
+Page-specific classes may remain for content layout and semantic details (icons, badges, grouped headings), but must not redefine the shared menu geometry, search row, option density, borders, surface, shadow or footer. The canonical appearance follows the Notifications picker. Current integrations include Notifications, Quick Actions (Flow and device) and Weather source pickers.
+
+## Searchable picker dismissal
+
+Every custom searchable picker must close when the user clicks or taps outside its picker, or presses Escape. Pointer events inside the trigger, search field, result list and menu must not dismiss it. Selection continues to close the picker through its existing selection handler. For a page with multiple sibling pickers, an interaction inside any active picker must not be mistaken for an outside click on another picker.
