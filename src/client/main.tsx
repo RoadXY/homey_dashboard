@@ -1852,11 +1852,13 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           </div>
           <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · " + t("quickActions.refineSearch") : ""}</div>
         </div>
-        <label>{t("settings.actionType")}
-          <select className="settings-interactive" value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
-            <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
-          </select>
-        </label>
+        <div className="quick-action-type-setting">
+          <label>{t("settings.actionType")}</label>
+          <div className="quick-action-type-tabs measurement-source-types" role="group" aria-label={t("settings.actionType")}>
+            <button type="button" className={"settings-interactive" + (selected.type === "flow" ? " active" : "")} aria-pressed={selected.type === "flow"} onClick={() => updateSelected({ type: "flow" })}>{t("settings.flowAction")}</button>
+            <button type="button" className={"settings-interactive" + (selected.type === "device" ? " active" : "")} aria-pressed={selected.type === "device"} onClick={() => updateSelected({ type: "device" })}>{t("settings.deviceAction")}</button>
+          </div>
+        </div>
         {catalogWarning && <div className="quick-catalog-warning" role="status">{catalogWarning}</div>}
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
