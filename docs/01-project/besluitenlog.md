@@ -586,3 +586,19 @@ De rode foutbalk boven de dashboardkaart Meldingen is in de huidige implementati
 ## Gebruikersbesluit – centrale dashboardfoutzone (15 november 2026)
 
 De rode zone direct boven de meldingenkaart wordt de centrale plek voor fouten die tijdens het gebruik van het dashboard ontstaan. Dit omvat fouten uit de dashboardfrontend en -backend, fouten bij het ophalen/verwerken van dashboardgegevens, communicatieproblemen met Homey die dashboardfunctionaliteit verstoren en fouten bij Quick Actions. Een Homey-/driverfout valt hieronder wanneer deze voortkomt uit een dashboardactie of dashboardverzoek. Zelfstandige Homey-appmeldingen, Homey-tijdlijnberichten en Flow-fouten die buiten het dashboard ontstaan vallen buiten scope. De huidige implementatie toont in deze zone alleen Quick Action-fouten; algemene dashboard-/serverfouten en de Homey-verbindingswaarschuwing staan nog elders. De uitbreiding is een vastgelegd functioneel doel en is nog niet geïmplementeerd. Gedrag rond deduplicatie, automatische verdwijning, maximumaantal, foutdetails en persistentie blijft open totdat dit afzonderlijk is afgestemd. Zie [Dashboardfoutmeldingen](../03-dashboard/homey-foutmeldingen.md).
+
+
+## Gebruikersbevestiging – fase 1- en fase 2-acceptatie (16 november 2026)
+
+De gebruiker heeft de actuele status van de openstaande fase-1- en fase-2-onderdelen expliciet bevestigd:
+
+- **Docker-container en Ubuntu-server:** gedeeltelijk gerealiseerd/getest. De bestaande installatie werkt; alleen het aanmaken en starten van een volledig nieuwe container wanneer er nog geen persistente data aanwezig is, moet nog worden getest. Dit blijft het enige openstaande acceptatiepunt voor fase 1.
+- **Homey Pro 2023-koppeling:** volledig gerealiseerd en getest.
+- **Home Assistant-naar-Homey-mapping:** volledig gerealiseerd en getest. De eerder als openstaand beschreven mapping en live controle mogen op basis van deze gebruikersbevestiging als afgerond worden beschouwd.
+- **Acht Quick Actions:** volledig gerealiseerd en getest.
+- **Tablet en Fully Kiosk:** volledig gerealiseerd en getest op de Samsung Galaxy Tab A SM-T515.
+- **Blockly-meldingen en voorwaarden:** volledig gerealiseerd en getest.
+- **Tijdschema's en time-outs:** volledig gerealiseerd en getest.
+- **Meldingen vanuit Homey Flows:** gedeeltelijk gerealiseerd/getest. Een rechtstreekse API-call naar de externe Notifications API is uitgevoerd en werkt. De integratie waarbij een Homey Flow via een eigen Homey-app de API aanroept, wordt bewust uitgesteld naar de toekomstige fase waarin de Homey-app wordt ontwikkeld. Dit is geen openstaande acceptatietest voor de bestaande Notifications API of Blockly-editor.
+
+Deze bevestiging is de gebruikersacceptatie voor de genoemde live functionaliteit. De repository/code en CI blijven afzonderlijke technische bewijsvormen; deze gebruikersbevestiging vervangt geen code-review of CI-controle. De centrale fasevoortgang staat in [Projectfasering en actuele voortgang](../06-fases/README.md).
