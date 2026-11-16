@@ -30,7 +30,7 @@ JSON moet een schema-versie, stabiele IDs, validatie en begrijpelijke foutmeldin
 - Bewerken via potloodknop.
 - Gespecialiseerde WYSIWYG-meldingeneditor.
 - Samengestelde AND/OR-condities.
-- Pushmeldingen vanuit Homey Flows.
+- Pushmeldingen vanuit Homey Flows. **Status:** de externe Notifications API is via een API-call getest en werkt. De daadwerkelijke Homey Flow-kaart/clientintegratie wordt bewust uitgesteld naar de toekomstige fase waarin de eigen Homey-app wordt ontwikkeld; dit onderdeel hoort dus niet meer bij de resterende acceptatie van de huidige dashboard-/Blockly-functionaliteit.
 - JSON blijft compatibel met de editor; fase 1 moet hier architectonisch op voorbereiden.
 
 ## Beveiliging
