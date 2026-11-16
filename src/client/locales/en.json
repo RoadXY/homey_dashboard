@@ -150,7 +150,6 @@
   "settings.turnOn": "Turn on",
   "settings.turnOff": "Turn off",
   "settings.deviceUnavailable": "This device is currently unavailable.",
-  "settings.apply": "Apply",
   "settings.close": "Close",
   "settings.quickActionsSaved": "Quick actions saved.",
   "settings.quickActionsLoadError": "Failed to load quick actions.",
