@@ -1663,11 +1663,6 @@ body {
   border-left:1px solid var(--settings-tooltip-border);
   border-top:1px solid var(--settings-tooltip-border);
 }
-.app-tooltip-trigger[data-tooltip-placement="bottom"]::after {
-  top:calc(100% + 9px);
-  bottom:auto;
-  transform:translate(-50%,-4px);
-}
 .app-tooltip-trigger::after {
   content:attr(data-tooltip);
   position:absolute;
@@ -1692,6 +1687,11 @@ body {
   opacity:0;
   visibility:hidden;
   transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
+}
+.app-tooltip-trigger[data-tooltip-placement="bottom"]::after {
+  top:calc(100% + 9px);
+  bottom:auto;
+  transform:translate(-50%,-4px);
 }
 @media (hover:hover) and (pointer:fine) {
   .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
