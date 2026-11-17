@@ -2420,38 +2420,46 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
 }
 
 function WeatherIcon({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
-  const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
-  if (pack !== "animated") return <div className={"weather-symbol weather-pack-"+pack+" weather-pack-symbol"+(animate?" is-animated":" is-static")} role="img" aria-label={label}><span>{pack === "outline" ? ({sunny:"☼",cloudy:"☁",rain:"☂",snow:"❄",windy:"≋",unknown:"?"} as Record<string,string>)[category] ?? symbols[category] : symbols[category]}</span></div>;
+  const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
+  const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
+  const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
+  const hasSnow = ["snow","snow_showers"].includes(category);
+  const isStorm = category === "thunderstorm";
+  const isHail = category === "hail";
+  const isFog = category === "fog";
+  const isWind = category === "windy";
+  const unknown = category === "unknown";
+  const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   return (
-    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate?" is-animated":" is-static"}`} role="img" aria-label={label}>
-      {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="32" cy="32" r="11" />
-        <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
-      </svg>}
-      {(["mostly_sunny", "partly_cloudy", "cloudy", "overcast", "drizzle", "rain", "heavy_rain", "showers", "thunderstorm", "hail", "snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M22 49h51a15 15 0 0 0 0-30 22 22 0 0 0-42-3A17 17 0 0 0 22 49Z" />
-      </svg>}
-      {(["drizzle", "rain", "heavy_rain", "showers"].includes(category)) && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="m30 39-5 12 M49 39l-5 12 M68 39l-5 12" />
-      </svg>}
-      {category === "thunderstorm" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
-        <path className="weather-lightning weather-lightning-a" d="m42 35-11 14h9l-5 13 17-19h-10l7-8" /><path className="weather-lightning weather-lightning-b" d="m66 39-9 11h8l-4 11 14-16h-8l6-6" />
-      </svg>}
-      {(["snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M29 42v13m-5-9 10 5m0-10-10 10 M49 42v13m-5-9 10 5m0-10-10 10 M69 42v13m-5-9 10 5m0-10-10 10" />
-      </svg>}
-      {category === "hail" && <svg className="weather-precipitation weather-hailstones" viewBox="0 0 96 64" aria-hidden="true">
-        <g className="weather-hailstone weather-hailstone-a"><path d="M29 39v5" /><circle cx="29" cy="50" r="4.2" /></g>
-        <g className="weather-hailstone weather-hailstone-b"><path d="M49 37v6" /><circle cx="49" cy="49" r="4.2" /></g>
-        <g className="weather-hailstone weather-hailstone-c"><path d="M69 40v5" /><circle cx="69" cy="51" r="4.2" /></g>
-      </svg>}
-      {category === "fog" && <svg className="weather-precipitation weather-fog-lines" viewBox="0 0 96 64" aria-hidden="true">
-        <path d="M21 31h54 M10 41h76 M16 51h64 M27 61h42" />
-      </svg>}
-      {category === "windy" && <svg className="weather-wind-lines" viewBox="0 0 176 64" preserveAspectRatio="none" aria-hidden="true">
-        <path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M10 23h114c12 0 12-15 2-15-5 0-7 3-7 6" /><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M5 39h146c13 0 13 16 2 16-5 0-7-3-7-6" />
-      </svg>}
-      {category === "unknown" && <span className="weather-unknown-mark">?</span>}
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
+      <svg className="weather-art" viewBox="0 0 128 96" aria-hidden="true">
+        <defs>
+          <linearGradient id="weather-sun-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff5a6"/><stop offset=".55" stopColor="#ffbd36"/><stop offset="1" stopColor="#ed7624"/></linearGradient>
+          <linearGradient id="weather-cloud-3d" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#dce7f2"/><stop offset="1" stopColor="#8c9caf"/></linearGradient>
+          <linearGradient id="weather-rain-3d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8ce5ff"/><stop offset="1" stopColor="#1689e5"/></linearGradient>
+          <linearGradient id="weather-snow-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset="1" stopColor="#64c9ff"/></linearGradient>
+        </defs>
+        {hasSun && <g className="weather-sun">
+          <circle className="weather-sun-disc" cx="43" cy="34" r="17"/>
+          <path className="weather-sun-rays" d="M43 5v9m0 40v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4"/>
+        </g>}
+        {hasCloud && <g className="weather-cloud">
+          {category === "overcast" && <path className="weather-cloud-back" d="M17 54h66a15 15 0 0 0 0-30 23 23 0 0 0-44-4A18 18 0 0 0 17 54Z"/>}
+          <path className="weather-cloud-front" d={cloudPath}/>
+          <path className="weather-cloud-highlight" d="M39 34c5-9 17-12 27-7"/>
+        </g>}
+        {hasRain && <g className="weather-precipitation weather-rain-drops">
+          <path d={category === "drizzle" ? "m42 69-3 7m22-7-3 7m22-7-3 7" : category === "heavy_rain" ? "m34 68-7 16m25-16-7 16m25-16-7 16m25-16-7 16" : "m39 68-6 14m25-14-6 14m25-14-6 14"}/>
+        </g>}
+        {hasSnow && <g className="weather-precipitation weather-snowflakes">
+          {[39,64,89].map(x=><g key={x} className="weather-snowflake" transform={`translate(${x} 76)`}><path d="M0-9V9M-7-4 7 4M7-4-7 4M0-9l-2 3m2-3 2 3M0 9l-2-3m2 3 2-3"/></g>)}
+        </g>}
+        {isStorm && <g className="weather-precipitation weather-lightning"><path d="m66 62-17 19h12l-5 15 27-29H68l8-13Z"/><path className="weather-lightning-secondary" d="m91 67-9 12h8l-3 10 16-17H93l5-7Z"/></g>}
+        {isHail && <g className="weather-precipitation weather-hailstones">{[39,64,89].map((x,i)=><circle key={x} className={`weather-hailstone weather-hailstone-${i}`} cx={x} cy="78" r="5"/>)}</g>}
+        {isFog && <g className="weather-precipitation weather-fog-lines"><path d="M20 36h88M10 51h105M21 66h87M34 81h61"/></g>}
+        {isWind && <g className="weather-wind-lines"><path d="M13 35h79c18 0 18-20 4-20-7 0-10 5-10 9M8 53h103c16 0 16 20 2 20-7 0-10-5-10-9M27 70h35"/></g>}
+        {unknown && <g className="weather-unknown-mark"><circle cx="64" cy="48" r="32"/><path d="M53 38c1-13 23-15 25-1 1 9-12 12-13 21m0 9v1"/></g>}
+      </svg>
     </div>
   );
 }
