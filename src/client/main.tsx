@@ -2423,7 +2423,7 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
   const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
   const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
   const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
-  const hasSnow = ["snow","snow_showers"].includes(category);
+  const hasSnow = ["snow","snow_showers","sleet"].includes(category);
   const isStorm = category === "thunderstorm";
   const isHail = category === "hail";
   const isFog = category === "fog";
