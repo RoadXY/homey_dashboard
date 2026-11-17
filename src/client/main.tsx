@@ -2415,7 +2415,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=>{const label=t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category]);return <AppTooltip key={category} content={label}><div className="weather-pack-preview-item" role="group"><WeatherIcon category={category} label={label} pack={settings.iconPack} animate={settings.animateIcons}/></div></AppTooltip>;})}
+              {previewCategories.map(category=>{const label=t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category]);return <AppTooltip key={category} content={label} placement="bottom"><div className="weather-pack-preview-tooltip"><div className="weather-pack-preview-item" role="group"><WeatherIcon category={category} label={label} pack={settings.iconPack} animate={settings.animateIcons}/></div></div></AppTooltip>;})}
             </div>
           </div>
         </section>
