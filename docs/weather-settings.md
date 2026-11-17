@@ -130,3 +130,20 @@ The Dutch and English locale files parse successfully and contain matching keys.
 
 - The two horizontal wind strokes in the standard windy icon are now twice as long. Their curved end details and vertical spacing are preserved, and the wider SVG viewBox keeps the extended lines within the existing icon area.
 - The independent flowing-stroke animation remains unchanged and continues to run only in the animated standard pack.
+
+
+## Icon-pack rendering investigation (17 November 2026)
+
+The settings preview and the dashboard call the same React `WeatherIcon` component. They do not have separate icon-rendering implementations. Both receive the selected pack and the animation setting; however, the preview renders a fixed sample list from the unsaved settings-page draft, while the dashboard renders the current live weather category using the last saved settings returned by `/api/dashboard/weather-values`. Therefore, before comparing the two, save the settings and compare the same weather category. A different live condition is not expected to look like the preview's unrelated sample conditions.
+
+The current alternate-pack implementation is incomplete:
+
+- `color3d` and `flat` render the shared Unicode emoji symbols and apply CSS filters/animation. They are not independent 3D or flat SVG icon sets.
+- `outline` has dedicated glyph substitutions for only sunny, cloudy, rain, snow, windy and unknown. Other categories fall back to the shared emoji symbols. This means live conditions such as mostly sunny, drizzle, thunderstorm, hail, fog and several snow/rain variants do not consistently use line icons.
+- The standard `animated` pack is the only pack that currently renders the custom weather SVG artwork and category-specific SVG animations.
+
+This explains why the preview can appear consistent for its representative samples while a live dashboard condition can fall back to a different-looking glyph. It also means the descriptions of the alternate packs currently promise more than their implementation provides.
+
+The standard pack is now labelled simply **Standard** in English and **Standaard** in Dutch. Animation remains a separate global `animateIcons` setting and is not implied by the pack name.
+
+**Follow-up decision required:** a complete visual correction needs a defined and implemented icon set for every supported weather category in each alternate pack. Do not treat CSS filters on emoji as a completed 3D, flat or outline icon set. Until that work is approved and implemented, document the current limitations accurately and keep the preview/dashboard comparison tied to the same saved settings and category.
