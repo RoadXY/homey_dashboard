@@ -323,12 +323,13 @@ The standard tooltip for the application is the reusable `AppTooltip` component 
 
 The shared tooltip contract is:
 
-- Desktop mouse: show on hover.
-- Keyboard: show when the trigger receives visible keyboard focus.
-- Touch: tap toggles the tooltip; tapping the same trigger again or tapping elsewhere closes it.
-- Accessibility: the trigger exposes the tooltip text as its accessible label (when no label exists) and `aria-description`.
-- Appearance: compact dark raised surface, blue border, light text and soft shadow, matching the current settings visual language.
-- The tooltip uses semantic `--settings-tooltip-*` CSS custom properties. A future theme may override these colors and shadows without changing geometry or interaction behavior.
+- Desktop mouse: show after a 500 ms hover-intent delay. Hide immediately when the pointer leaves.
+- Keyboard: show immediately when the trigger receives visible keyboard focus.
+- Touch: tap toggles the tooltip immediately; tapping the same trigger again or tapping elsewhere closes it.
+- Accessibility: the trigger exposes the tooltip text as its accessible label when no explicit label exists.
+- Settings tooltips use semantic `--settings-tooltip-*` CSS custom properties and follow the settings visual language.
+- Dashboard tooltips use `theme="dashboard"` and semantic `--dashboard-tooltip-*` tokens, which derive from the active dashboard surface, border, text and shadow tokens. When dashboard themes are implemented, they must override these dashboard tooltip tokens as part of the selected dashboard theme; settings styling must not leak into dashboard tooltips.
+- The hover delay is deliberately bypassed for keyboard focus and touch interaction.
 - User-facing tooltip content must come from the localization system or user-provided content. Do not hard-code translatable text in the component.
 
 **Blockly is the explicit exception.** Keep Blockly's own `setTooltip(...)` behavior and workspace styling; do not wrap Blockly blocks or fields in `AppTooltip`.
@@ -340,10 +341,9 @@ When adding a tooltip, wrap the actual trigger element in `AppTooltip` and pass 
 The shared tooltip is used for:
 
 - Weather icon preview samples (localized weather-category names).
-- Dashboard clock card (long-press settings hint).
-- Dashboard Quick Action cards.
-- Transient notification dismiss action.
-- Active notification severity indicator.
+- Dashboard clock card (long-press settings hint; dashboard theme).
+- Transient notification dismiss action (dashboard theme).
+- Active notification severity indicator (dashboard theme).
 - Quick Action icon picker choices.
 - Settings navigation items when the sidebar is collapsed.
 
@@ -353,3 +353,12 @@ Blockly tooltips remain separate by design. Keep this list current when adding o
 ### Tooltip placement and exceptions
 
 The shared `AppTooltip` supports an explicit `placement` of `top` (default) or `bottom`. Prefer `bottom` for dashboard controls near the top edge so the tooltip remains inside the visible dashboard. In scrollable icon grids, place first-row tooltips below their trigger because the scroll viewport clips content above its top edge. Flow selection controls and Flow result rows intentionally have no tooltip because their names are already displayed.
+
+
+### Tooltip delay and dashboard theme contract
+
+The application-wide desktop hover delay is **500 ms**. Keep this value consistent for all `AppTooltip` instances; do not add per-control delays without a documented UX reason. Keyboard focus and touch activation remain immediate, and tooltips close immediately when the pointer leaves.
+
+Dashboard surfaces must pass `theme="dashboard"` to `AppTooltip`. This selects the `--dashboard-tooltip-*` semantic tokens, currently derived from the dashboard's surface-card, border, text and shadow tokens. Future dashboard themes must supply/override those semantic tokens so tooltips visually follow the selected dashboard theme. Settings tooltips continue to use the separate `--settings-tooltip-*` tokens.
+
+Dashboard Quick Action cards intentionally have no tooltip because their labels are already visible on the cards.
