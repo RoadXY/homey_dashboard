@@ -1679,12 +1679,11 @@ body {
   transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
 }
 @media (hover:hover) and (pointer:fine) {
-   .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
+  .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
   .app-tooltip-trigger:hover::before { opacity:1;visibility:visible;transform:translate(-50%,0) rotate(45deg); }
 }
 .app-tooltip-trigger:focus-visible::after,
-.app-tooltip-trigger.is-tooltip-open::after,
-.app-tooltip-trigger:focus-visible::after {
+.app-tooltip-trigger.is-tooltip-open::after {
   opacity:1;
   visibility:visible;
   transform:translate(-50%,0);
@@ -1698,3 +1697,6 @@ body {
 @media (prefers-reduced-motion:reduce) {
   .app-tooltip-trigger::before,.app-tooltip-trigger::after { transition:none; }
 }
+
+.app-tooltip-trigger[data-tooltip=""]::before,
+.app-tooltip-trigger[data-tooltip=""]::after { display:none; }
