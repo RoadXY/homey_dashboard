@@ -419,7 +419,7 @@
   "weatherSettings.sourceTip": "You can select a Homey Logic variable as well as a Homey device. Start typing to search.",
   "weatherSettings.iconHeading": "Weather icons",
   "weatherSettings.iconDescription": "Choose the icon set used on the dashboard. This choice is independent of the dashboard theme.",
-  "weatherSettings.packAnimated": "Standard (animated)",
+  "weatherSettings.packAnimated": "Standard",
   "weatherSettings.packAnimatedDescription": "The current icons with subtle animations.",
   "weatherSettings.packColor3d": "Colourful (3D)",
   "weatherSettings.packColor3dDescription": "Colourful icons with more depth.",
