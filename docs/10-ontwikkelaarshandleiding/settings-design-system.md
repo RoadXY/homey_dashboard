@@ -315,3 +315,37 @@ De bewerkkaart is een directe grid-child van `.measurement-workspace`, na de lij
 De Meetwaardetegels-instellingen gebruiken een eigen `.measurement-settings-page` en `.measurement-layout`; hergebruik van de Quick Actions workspace-grid is bewust vermeden. De bovenste configuratie- en previewkaart verdelen de volledige beschikbare contentbreedte in twee gelijke kolommen. Bij maximaal 900px stapelen ze in één kolom. De editor is een normale derde gridrij over de volle breedte en mag geen vaste/absolute positie gebruiken.
 
 De preview gebruikt dezelfde `.temperature-grid`, `.temperature-tile` en `measurement-count-2/4/6`-klassen als het dashboard. Daarmee blijven de tegelverhoudingen, typografie en afmetingen gelijk aan de dashboardtegels. Het raster blijft twee kolommen breed en krijgt één, twee of drie rijen op basis van het gekozen aantal. Laat de previewkaart meegroeien; knip de derde rij nooit af. Bewaar alle bestaande Homey-, Logic-, selectie-, validatie-, opslag- en i18n-logica bij layoutwijzigingen.
+
+
+## Shared dashboard tooltips
+
+The standard tooltip for the application is the reusable `AppTooltip` component in `src/client/main.tsx`, styled by the `.app-tooltip-trigger` rules in `src/client/style.css`. Use it for non-Blockly UI tooltips instead of the browser-native `title` attribute.
+
+The shared tooltip contract is:
+
+- Desktop mouse: show on hover.
+- Keyboard: show when the trigger receives visible keyboard focus.
+- Touch: tap toggles the tooltip; tapping the same trigger again or tapping elsewhere closes it.
+- Accessibility: the trigger references a visually hidden element with `role="tooltip"` through `aria-describedby`.
+- Appearance: compact dark raised surface, blue border, light text and soft shadow, matching the current settings visual language.
+- The tooltip uses semantic `--settings-tooltip-*` CSS custom properties. A future theme may override these colors and shadows without changing geometry or interaction behavior.
+- User-facing tooltip content must come from the localization system or user-provided content. Do not hard-code translatable text in the component.
+
+**Blockly is the explicit exception.** Keep Blockly's own `setTooltip(...)` behavior and workspace styling; do not wrap Blockly blocks or fields in `AppTooltip`.
+
+When adding a tooltip, wrap the actual trigger element in `AppTooltip` and pass the localized or meaningful label as `content`. The component clones the trigger to add focus, touch and accessible description behavior. Do not add a competing native `title` attribute.
+
+### Current application coverage
+
+The shared tooltip is used for:
+
+- Weather icon preview samples (localized weather-category names).
+- Dashboard clock card (long-press settings hint).
+- Dashboard Quick Action cards.
+- Transient notification dismiss action.
+- Active notification severity indicator.
+- Quick Action icon picker choices.
+- Selected Flow name and Flow options in the Flow picker.
+- Settings navigation items when the sidebar is collapsed.
+
+Blockly tooltips remain separate by design. Keep this list current when adding or removing tooltip use cases.
