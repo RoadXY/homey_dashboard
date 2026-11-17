@@ -1369,18 +1369,102 @@ body {
 .weather-pack-animated.weather-windy .weather-wind-lines { color:#9bcde5; stroke:currentColor; }
 
 
-/* Each alternate pack has its own motion language; the shared switch gates it. */
-.weather-pack-color3d.is-animated span { display:inline-block; animation: weather-3d-float 3.2s ease-in-out infinite; }
-.weather-pack-outline.is-animated span { display:inline-block; transform-origin:center; animation: weather-outline-pulse 3.8s ease-in-out infinite; }
-.weather-pack-flat.is-animated span { display:inline-block; animation: weather-flat-bob 2.6s ease-in-out infinite; }
-@keyframes weather-3d-float { 0%,100% { transform:translateY(1px) scale(1); filter:drop-shadow(0 2px 2px rgba(0,0,0,.18)); } 50% { transform:translateY(-3px) scale(1.035); filter:drop-shadow(0 5px 5px rgba(0,0,0,.25)); } }
-@keyframes weather-outline-pulse { 0%,100% { transform:scale(1); opacity:.82; } 50% { transform:scale(1.08); opacity:1; } }
-@keyframes weather-flat-bob { 0%,100% { transform:translateY(0) rotate(-2deg); } 50% { transform:translateY(-4px) rotate(2deg); } }
-.weather-symbol.is-static svg, .weather-symbol.is-static span { animation:none!important; }
+/* Every weather pack uses the same scalable SVG artwork and complete category coverage. */
+.weather-symbol { width:clamp(76px,7vw,104px); height:clamp(68px,6vw,88px); overflow:visible; }
+.weather-symbol .weather-art { position:absolute; inset:0; width:100%; height:100%; overflow:visible; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.weather-art .weather-sun { transform-box:fill-box; transform-origin:center; }
+.weather-art .weather-sun-disc { fill:currentColor; stroke:none; }
+.weather-art .weather-sun-rays { fill:none; }
+.weather-art .weather-cloud { stroke:currentColor; }
+.weather-art .weather-cloud-front { fill:currentColor; fill-opacity:.13; }
+.weather-art .weather-cloud-back { fill:currentColor; fill-opacity:.5; }
+.weather-art .weather-cloud-highlight { fill:none; stroke:rgba(255,255,255,.48); stroke-width:2; }
+.weather-art .weather-precipitation { fill:none; stroke-linecap:round; }
+.weather-art .weather-lightning path { fill:#f4c64e; stroke:#e5a928; stroke-width:1.5; stroke-linejoin:round; }
+.weather-art .weather-lightning-secondary { opacity:.8; }
+.weather-art .weather-hailstones circle { fill:#b8e9ff; stroke:#fff; stroke-width:1.5; }
+.weather-art .weather-snowflakes { stroke:#8bdcff; stroke-width:2.6; }
+.weather-art .weather-fog-lines { stroke:#aab6c5; stroke-width:4; }
+.weather-art .weather-wind-lines { stroke:#9bcde5; stroke-width:3.5; fill:none; }
+.weather-art .weather-unknown-mark circle { fill:rgba(148,163,184,.12); stroke:#8992a0; }
+.weather-art .weather-unknown-mark path { stroke:#aab6c5; stroke-width:4; }
+.weather-symbol.is-animated .weather-sun { animation:sun-turn 36s linear infinite; }
+.weather-symbol.is-animated .weather-cloud { animation:cloud-drift 8s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-rain-drops { animation:rain-drift 2.8s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-snowflakes { animation:snow-drift 5s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-fog-lines { animation:fog-drift 6s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-wind-lines { animation:wind-flow 3.4s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-lightning { animation:lightning-flash-a 3.4s steps(1,end) infinite; }
+.weather-symbol.is-animated .weather-hailstone-0 { animation:hail-fall 1.55s ease-in infinite; }
+.weather-symbol.is-animated .weather-hailstone-1 { animation:hail-fall 1.55s ease-in .34s infinite; }
+.weather-symbol.is-animated .weather-hailstone-2 { animation:hail-fall 1.55s ease-in .7s infinite; }
 
-.weather-pack-color3d { filter:drop-shadow(0 3px 5px rgba(0,0,0,.28)); }
-.weather-pack-outline { filter:grayscale(1); -webkit-text-stroke:1px currentColor; }
-.weather-pack-flat { filter:saturate(1.2); }
+/* Standard: restrained, familiar weather colours and fine-line SVG details. */
+.weather-pack-animated { color:#c5ced9; }
+.weather-pack-animated .weather-sun { color:#f4c64e; }
+.weather-pack-animated .weather-sun-disc { fill:#f4c64e; fill-opacity:.18; }
+.weather-pack-animated .weather-cloud { color:#c5ced9; }
+.weather-pack-animated .weather-rain-drops { stroke:#69b9ed; }
+.weather-pack-animated .weather-snowflakes,
+.weather-pack-animated .weather-hailstones { stroke:#9bdcf5; }
+.weather-pack-animated .weather-fog-lines { stroke:#aab6c5; }
+.weather-pack-animated .weather-wind-lines { stroke:#9bcde5; }
+
+/* Colourful 3D: layered gradients, highlights and depth without emoji/font dependencies. */
+.weather-pack-color3d { color:#dce8f6; filter:drop-shadow(0 4px 5px rgba(0,0,0,.28)); }
+.weather-pack-color3d .weather-sun-disc { fill:url(#weather-sun-3d); stroke:#f7a928; stroke-width:1.5; }
+.weather-pack-color3d .weather-sun-rays { stroke:#ffbd36; stroke-width:4; }
+.weather-pack-color3d .weather-cloud-front { fill:url(#weather-cloud-3d); stroke:#8497ad; stroke-width:2; }
+.weather-pack-color3d .weather-cloud-back { fill:#aabbd0; stroke:#788da5; stroke-width:2; }
+.weather-pack-color3d .weather-cloud-highlight { stroke:#fff; stroke-width:3; }
+.weather-pack-color3d .weather-rain-drops { stroke:url(#weather-rain-3d); stroke-width:5; }
+.weather-pack-color3d .weather-snowflakes,
+.weather-pack-color3d .weather-hailstones { stroke:url(#weather-snow-3d); stroke-width:4; }
+.weather-pack-color3d .weather-lightning path { fill:#ffe45c; stroke:#ff9d22; stroke-width:2; }
+.weather-pack-color3d .weather-fog-lines,
+.weather-pack-color3d .weather-wind-lines { stroke:#72c8ef; stroke-width:5; }
+
+/* Minimal line: transparent interiors, consistent rounded strokes and no emoji fallback. */
+.weather-pack-outline { color:#c7d4e4; }
+.weather-pack-outline .weather-sun-disc,
+.weather-pack-outline .weather-cloud-front,
+.weather-pack-outline .weather-cloud-back { fill:none; stroke:currentColor; stroke-width:3.2; }
+.weather-pack-outline .weather-cloud-highlight { display:none; }
+.weather-pack-outline .weather-sun-rays,
+.weather-pack-outline .weather-rain-drops,
+.weather-pack-outline .weather-snowflakes,
+.weather-pack-outline .weather-hailstones,
+.weather-pack-outline .weather-fog-lines,
+.weather-pack-outline .weather-wind-lines { stroke:currentColor; stroke-width:3.2; }
+.weather-pack-outline .weather-lightning path { fill:none; stroke:#f4c64e; stroke-width:3; }
+.weather-pack-outline .weather-hailstones circle { fill:none; stroke:currentColor; }
+.weather-pack-outline .weather-unknown-mark circle { fill:none; }
+
+/* Flat: solid, high-contrast shapes with a compact palette. */
+.weather-pack-flat { color:#dce6f2; }
+.weather-pack-flat .weather-sun-disc { fill:#ffbf36; stroke:none; }
+.weather-pack-flat .weather-sun-rays { stroke:#ffbf36; stroke-width:5; }
+.weather-pack-flat .weather-cloud-front { fill:#b8c9dc; stroke:none; }
+.weather-pack-flat .weather-cloud-back { fill:#849bb6; stroke:none; }
+.weather-pack-flat .weather-cloud-highlight { display:none; }
+.weather-pack-flat .weather-rain-drops { stroke:#36a9ed; stroke-width:6; }
+.weather-pack-flat .weather-snowflakes,
+.weather-pack-flat .weather-hailstones { stroke:#58c8f5; stroke-width:4; }
+.weather-pack-flat .weather-hailstones circle { fill:#58c8f5; stroke:none; }
+.weather-pack-flat .weather-lightning path { fill:#ffd447; stroke:none; }
+.weather-pack-flat .weather-fog-lines,
+.weather-pack-flat .weather-wind-lines { stroke:#86c7e8; stroke-width:5; }
+
+.weather-symbol.is-static svg,
+.weather-symbol.is-static .weather-sun,
+.weather-symbol.is-static .weather-cloud,
+.weather-symbol.is-static .weather-precipitation,
+.weather-symbol.is-static .weather-wind-lines { animation:none!important; }
+@media(prefers-reduced-motion:reduce) {
+  .weather-symbol, .weather-symbol * { animation:none!important; }
+}
+@keyframes hail-fall { 0%,100% { transform:translateY(-2px); opacity:.5; } 50% { transform:translateY(4px); opacity:1; } }
+
 .weather-api-card p { color:var(--settings-text-secondary); line-height:1.5; }
 .weather-api-tip { padding:12px 14px; border-radius:10px; background:var(--settings-tab-background); border:1px solid var(--settings-tab-border); color:var(--settings-text-primary)!important; }
 .weather-api-link { margin-bottom:10px; }
