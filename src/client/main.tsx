@@ -2420,6 +2420,43 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
 }
 
 function WeatherIcon({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
+  const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
+  if (pack !== "animated") return <WeatherIconArtwork category={category} label={label} pack={pack} animate={animate} />;
+  return (
+    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate?" is-animated":" is-static"}`} role="img" aria-label={label}>
+      {(["sunny", "mostly_sunny", "partly_cloudy"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="11" />
+        <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
+      </svg>}
+      {(["mostly_sunny", "partly_cloudy", "cloudy", "overcast", "drizzle", "rain", "heavy_rain", "showers", "thunderstorm", "hail", "snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-cloud" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="M22 49h51a15 15 0 0 0 0-30 22 22 0 0 0-42-3A17 17 0 0 0 22 49Z" />
+      </svg>}
+      {(["drizzle", "rain", "heavy_rain", "showers"].includes(category)) && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="m30 39-5 12 M49 39l-5 12 M68 39l-5 12" />
+      </svg>}
+      {category === "thunderstorm" && <svg className="weather-precipitation" viewBox="0 0 96 64" aria-hidden="true">
+        <path className="weather-lightning weather-lightning-a" d="m42 35-11 14h9l-5 13 17-19h-10l7-8" /><path className="weather-lightning weather-lightning-b" d="m66 39-9 11h8l-4 11 14-16h-8l6-6" />
+      </svg>}
+      {(["snow", "snow_showers", "sleet"].includes(category)) && <svg className="weather-precipitation snowflakes" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="M29 42v13m-5-9 10 5m0-10-10 10 M49 42v13m-5-9 10 5m0-10-10 10 M69 42v13m-5-9 10 5m0-10-10 10" />
+      </svg>}
+      {category === "hail" && <svg className="weather-precipitation weather-hailstones" viewBox="0 0 96 64" aria-hidden="true">
+        <g className="weather-hailstone weather-hailstone-a"><path d="M29 39v5" /><circle cx="29" cy="50" r="4.2" /></g>
+        <g className="weather-hailstone weather-hailstone-b"><path d="M49 37v6" /><circle cx="49" cy="49" r="4.2" /></g>
+        <g className="weather-hailstone weather-hailstone-c"><path d="M69 40v5" /><circle cx="69" cy="51" r="4.2" /></g>
+      </svg>}
+      {category === "fog" && <svg className="weather-precipitation weather-fog-lines" viewBox="0 0 96 64" aria-hidden="true">
+        <path d="M21 31h54 M10 41h76 M16 51h64 M27 61h42" />
+      </svg>}
+      {category === "windy" && <svg className="weather-wind-lines" viewBox="0 0 176 64" preserveAspectRatio="none" aria-hidden="true">
+        <path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M10 23h114c12 0 12-15 2-15-5 0-7 3-7 6" /><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M5 39h146c13 0 13 16 2 16-5 0-7-3-7-6" />
+      </svg>}
+      {category === "unknown" && <span className="weather-unknown-mark">?</span>}
+    </div>
+  );
+}
+
+function WeatherIconArtwork({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
   const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
   const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
   const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
