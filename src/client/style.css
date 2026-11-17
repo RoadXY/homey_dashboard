@@ -1470,6 +1470,53 @@ body {
 /* Standard: restrained, familiar weather colours and fine-line SVG details. */
 .weather-pack-animated { color:#c5ced9; }
 .weather-pack-animated .weather-sun { color:#f4c64e; }
+
+/* Standard pack refinements: retain its established palette, animate only the weather details. */
+.weather-pack-animated.weather-overcast .weather-cloud-layer-back { opacity:.48; }
+.weather-pack-animated.weather-overcast .weather-cloud-layer-front { opacity:.96; }
+.weather-pack-animated.weather-cloudy .weather-cloud-layer-front { opacity:1; }
+
+/* Fog: each mist band drifts independently by only a few pixels. */
+.weather-pack-animated.weather-fog .weather-fog-lines { animation:none; }
+.weather-pack-animated.is-animated.weather-fog .weather-fog-line-a { animation:fog-line-a 6.8s ease-in-out infinite; }
+.weather-pack-animated.is-animated.weather-fog .weather-fog-line-b { animation:fog-line-b 7.6s ease-in-out -2.1s infinite; }
+.weather-pack-animated.is-animated.weather-fog .weather-fog-line-c { animation:fog-line-c 6.2s ease-in-out -3.4s infinite; }
+.weather-pack-animated.is-animated.weather-fog .weather-fog-line-d { animation:fog-line-d 8.1s ease-in-out -1.2s infinite; }
+@keyframes fog-line-a { 0%,100%{transform:translateX(-1px);opacity:.68} 50%{transform:translateX(1.5px);opacity:.9} }
+@keyframes fog-line-b { 0%,100%{transform:translateX(1.2px);opacity:.86} 50%{transform:translateX(-1.5px);opacity:.68} }
+@keyframes fog-line-c { 0%,100%{transform:translateX(-1.5px);opacity:.72} 50%{transform:translateX(1px);opacity:.92} }
+@keyframes fog-line-d { 0%,100%{transform:translateX(.8px);opacity:.82} 50%{transform:translateX(-1.2px);opacity:.68} }
+
+/* Rain intensity is communicated through droplet count, length and gentle fall speed. */
+.weather-pack-animated.weather-drizzle .weather-precipitation,
+.weather-pack-animated.weather-rain .weather-precipitation,
+.weather-pack-animated.weather-heavy_rain .weather-precipitation,
+.weather-pack-animated.weather-showers .weather-precipitation,
+.weather-pack-animated.weather-sleet .weather-precipitation { animation:none; }
+.weather-pack-animated.is-animated .weather-rain-drop { animation:weather-drop-fall 2s ease-in infinite; }
+.weather-pack-animated.is-animated.weather-drizzle .weather-rain-drop { animation-duration:3.2s; opacity:.68; }
+.weather-pack-animated.is-animated.weather-rain .weather-rain-drop { animation-duration:2.05s; }
+.weather-pack-animated.is-animated.weather-heavy_rain .weather-rain-drop { animation-duration:1.45s; }
+.weather-pack-animated.is-animated.weather-showers .weather-rain-drop { animation:weather-shower-burst 3.8s ease-in-out infinite; }
+.weather-pack-animated.is-animated.weather-sleet .weather-rain-drop { animation-duration:2.1s; }
+.weather-pack-animated.is-animated .weather-rain-drop-b { animation-delay:-.55s; }
+.weather-pack-animated.is-animated .weather-rain-drop-c { animation-delay:-1.05s; }
+.weather-pack-animated.is-animated .weather-rain-drop-d { animation-delay:-1.55s; }
+.weather-pack-animated.is-animated .weather-rain-drop-e { animation-delay:-.8s; }
+@keyframes weather-drop-fall { 0%{transform:translateY(-1px);opacity:.35} 22%{opacity:.9} 82%{opacity:.95} 100%{transform:translateY(5px);opacity:.2} }
+@keyframes weather-shower-burst { 0%,18%{transform:translateY(-1px);opacity:0} 30%{opacity:.9} 66%{transform:translateY(4px);opacity:.9} 78%,100%{transform:translateY(4px);opacity:0} }
+
+/* Snow drifts separately; snow showers add the existing warm sun, sleet mixes flakes and rain. */
+.weather-pack-animated.weather-snow .weather-precipitation,
+.weather-pack-animated.weather-snow_showers .weather-precipitation,
+.weather-pack-animated.weather-sleet .weather-precipitation { animation:none; }
+.weather-pack-animated.is-animated .weather-snowflake { animation:weather-snow-drift 4.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.weather-pack-animated.is-animated .weather-snowflake-b { animation-delay:-1.6s; }
+.weather-pack-animated.is-animated .weather-snowflake-c { animation-delay:-3.1s; }
+.weather-pack-animated.is-animated.weather-snow_showers .weather-snowflake { animation-duration:5.6s; }
+.weather-pack-animated.is-animated.weather-sleet .weather-snowflake { animation-duration:5.2s; }
+@keyframes weather-snow-drift { 0%,100%{transform:translate(0,-1px) rotate(-3deg);opacity:.72} 50%{transform:translate(1.5px,3px) rotate(3deg);opacity:1} }
+
 .weather-pack-animated .weather-sun-disc { fill:#f4c64e; fill-opacity:.18; }
 .weather-pack-animated .weather-cloud { color:#c5ced9; }
 .weather-pack-animated .weather-rain-drops { stroke:#69b9ed; }
