@@ -2227,7 +2227,8 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
         const routes = ["/settings/general","/settings/quick-actions","/settings/notifications","/settings/measurement-tiles","/settings/weather"] as const;
         const pages = ["general","quick-actions","notifications","measurement-tiles","weather"] as const;
         const icons = ["mdi-cog-outline","mdi-flash-outline","mdi-bell-outline","mdi-thermometer","mdi-weather-partly-cloudy"];
-        return <button key={name} className={"settings-nav settings-interactive "+(page===pages[index]?"active":"")} onClick={()=>navigateSettings(pages[index],routes[index])} aria-label={name} title={sidebarCollapsed ? name : undefined}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
+        const navButton = <button className={"settings-nav settings-interactive "+(page===pages[index]?"active":"")} onClick={()=>navigateSettings(pages[index],routes[index])} aria-label={name}><i className={"mdi "+icons[index]} aria-hidden="true" /><span className="settings-nav-label">{name}</span></button>;
+        return sidebarCollapsed ? <AppTooltip key={name} content={name}>{navButton}</AppTooltip> : React.cloneElement(navButton,{key:name});
       })}
       <div className="sidebar-product"><i className="mdi mdi-information-outline" aria-hidden="true" /><span>Homey Dashboard<br/>v{status?.version ?? "0.1.0"}</span></div>
     </aside>
