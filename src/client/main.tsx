@@ -563,7 +563,6 @@ const quickActionIconChoices: MdiIconChoice[] = [
 });
 function AppTooltip({ content, children }: { content: string; children: React.ReactElement }) {
   const [open,setOpen] = React.useState(false);
-  const tooltipId = React.useId();
   React.useEffect(() => {
     if (!open) return;
     const dismiss = (event: PointerEvent) => {
@@ -573,19 +572,19 @@ function AppTooltip({ content, children }: { content: string; children: React.Re
     document.addEventListener("pointerdown",dismiss);
     return () => document.removeEventListener("pointerdown",dismiss);
   },[open]);
-  const childProps = children.props as { className?: string; onClick?: (event: React.MouseEvent) => void; tabIndex?: number; "aria-describedby"?: string };
-  const describedBy = [childProps["aria-describedby"],tooltipId].filter(Boolean).join(" ");
+  const childProps = children.props as { className?: string; onClick?: (event: React.MouseEvent) => void; tabIndex?: number; "aria-label"?: string };
   const trigger = React.cloneElement(children,{
     className: [childProps.className,"app-tooltip-trigger",open?"is-tooltip-open":""].filter(Boolean).join(" "),
     "data-tooltip": content,
-    "aria-describedby": describedBy,
+    "aria-label": childProps["aria-label"] ?? content,
+    "aria-description": content,
     tabIndex: childProps.tabIndex ?? 0,
     onClick: (event: React.MouseEvent) => {
       childProps.onClick?.(event);
       if (window.matchMedia("(hover: none)").matches) setOpen(value => !value);
     }
   } as any);
-  return <>{trigger}<span className="app-tooltip-accessible" id={tooltipId} role="tooltip">{content}</span></>;
+  return trigger;
 }
 
 function MdiIcon({ name, className = "" }: { name: string; className?: string }) {
