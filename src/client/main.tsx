@@ -577,7 +577,6 @@ function AppTooltip({ content, children }: { content: string; children: React.Re
     className: [childProps.className,"app-tooltip-trigger",open?"is-tooltip-open":""].filter(Boolean).join(" "),
     "data-tooltip": content,
     "aria-label": childProps["aria-label"] ?? content,
-    "aria-description": content,
     tabIndex: childProps.tabIndex ?? 0,
     onClick: (event: React.MouseEvent) => {
       childProps.onClick?.(event);
@@ -2414,7 +2413,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=>{const label=t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category]);return <AppTooltip key={category} content={label}><div className="weather-pack-preview-item"><WeatherIcon category={category} label={label} pack={settings.iconPack} animate={settings.animateIcons}/></div></AppTooltip>;})}
+              {previewCategories.map(category=>{const label=t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category]);return <AppTooltip key={category} content={label}><div className="weather-pack-preview-item" role="group"><WeatherIcon category={category} label={label} pack={settings.iconPack} animate={settings.animateIcons}/></div></AppTooltip>;})}
             </div>
           </div>
         </section>
