@@ -1988,12 +1988,12 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
           <div className="quick-flow-picker settings-searchable-picker">
-            <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
+            <AppTooltip content={selectedFlow?.name ?? t("settings.selectFlow")}><button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
               <span className="quick-flow-trigger-name">{selectedFlow?.name ?? t("settings.selectFlow")}</span>
               <span className="quick-flow-chevron">▾</span>
-            </button>
+            </button></AppTooltip>
             {flowPickerOpen && <div className="quick-flow-menu settings-searchable-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
               <div className="quick-flow-search-wrap settings-searchable-search">
                 <span aria-hidden="true">⌕</span>
@@ -2002,13 +2002,13 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
                   placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
               </div>
               <div className="quick-flow-results settings-searchable-results">
-                {matchingFlows.map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
+                {matchingFlows.map(flow => <AppTooltip key={flow.type + flow.id} content={flow.name}><button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
                   className={"quick-flow-option settings-searchable-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name">{flow.name}</span>
                   {flow.type === "advanced" && <span className="quick-flow-type settings-status-info">Advanced</span>}
-                </button>)}
+                </button></AppTooltip>)}
                 {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
               </div>
               <div className="quick-flow-footer settings-searchable-footer"><span>{matchingFlows.length} {t("settings.flowResults")}</span><span className="quick-flow-tip">Tip: Gebruik <strong>Advanced</strong> om te filteren op Advanced flows</span></div>
