@@ -345,7 +345,6 @@ The shared tooltip is used for:
 - Transient notification dismiss action.
 - Active notification severity indicator.
 - Quick Action icon picker choices.
-- Selected Flow name and Flow options in the Flow picker.
 - Settings navigation items when the sidebar is collapsed.
 
 Blockly tooltips remain separate by design. Keep this list current when adding or removing tooltip use cases.
