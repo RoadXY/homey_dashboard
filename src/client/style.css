@@ -1462,6 +1462,11 @@ body {
 .weather-pack-animated .weather-fog-lines { stroke:#aab6c5; }
 .weather-pack-animated .weather-wind-lines { stroke:#9bcde5; }
 
+/* The alternate packs use their own artwork; keep the legacy standard SVG geometry untouched. */
+.weather-symbol.weather-pack-color3d .weather-art,
+.weather-symbol.weather-pack-outline .weather-art,
+.weather-symbol.weather-pack-flat .weather-art { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+
 /* Colourful 3D: layered gradients, highlights and depth without emoji/font dependencies. */
 .weather-pack-color3d { color:#dce8f6; filter:drop-shadow(0 4px 5px rgba(0,0,0,.28)); }
 .weather-pack-color3d .weather-sun-disc { fill:url(#weather-sun-3d); stroke:#f7a928; stroke-width:1.5; }
