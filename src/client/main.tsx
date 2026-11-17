@@ -2457,7 +2457,7 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
         {isStorm && <g className="weather-precipitation weather-lightning"><path d="m66 62-17 19h12l-5 15 27-29H68l8-13Z"/><path className="weather-lightning-secondary" d="m91 67-9 12h8l-3 10 16-17H93l5-7Z"/></g>}
         {isHail && <g className="weather-precipitation weather-hailstones">{[39,64,89].map((x,i)=><circle key={x} className={`weather-hailstone weather-hailstone-${i}`} cx={x} cy="78" r="5"/>)}</g>}
         {isFog && <g className="weather-precipitation weather-fog-lines"><path d="M20 36h88M10 51h105M21 66h87M34 81h61"/></g>}
-        {isWind && <g className="weather-wind-lines"><path d="M13 35h79c18 0 18-20 4-20-7 0-10 5-10 9M8 53h103c16 0 16 20 2 20-7 0-10-5-10-9M27 70h35"/></g>}
+        {isWind && <g className="weather-wind-lines"><path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M13 35h79c18 0 18-20 4-20-7 0-10 5-10 9"/><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M8 53h103c16 0 16 20 2 20-7 0-10-5-10-9"/><path className="weather-wind-stream" pathLength="100" d="M27 70h35"/></g>}
         {unknown && <g className="weather-unknown-mark"><circle cx="64" cy="48" r="32"/><path d="M53 38c1-13 23-15 25-1 1 9-12 12-13 21m0 9v1"/></g>}
       </svg>
     </div>
