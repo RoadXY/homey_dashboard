@@ -19,6 +19,7 @@ The single source of truth for the active project phase, implementation progress
 - [Realtime dashboard updates](../03-dashboard/realtime-updates.md)
 - [Quick Actions implementation](../../docs/quick-actions.md)
 - [Settings UI design system and theme tokens](settings-design-system.md)
+- [Weather icon rendering and pack coverage](weather-icons.md)
 
 ## Documentation lifecycle and final structure
 
