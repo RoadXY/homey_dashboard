@@ -1636,6 +1636,23 @@ body {
 
 /* Shared dashboard tooltip. Blockly keeps its native workspace tooltip styling. */
 .app-tooltip-trigger { position:relative; }
+.app-tooltip-trigger::before {
+  content:"";
+  position:absolute;
+  z-index:1201;
+  left:50%;
+  bottom:calc(100% + 4px);
+  width:8px;
+  height:8px;
+  transform:translate(-50%,4px) rotate(45deg);
+  border-right:1px solid var(--settings-tooltip-border);
+  border-bottom:1px solid var(--settings-tooltip-border);
+  background:var(--settings-tooltip-background);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
+}
 .app-tooltip-trigger::after {
   content:attr(data-tooltip);
   position:absolute;
@@ -1662,13 +1679,21 @@ body {
   transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
 }
 @media (hover:hover) and (pointer:fine) {
-  .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
+   .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
+  .app-tooltip-trigger:hover::before { opacity:1;visibility:visible;transform:translate(-50%,0) rotate(45deg); }
 }
 .app-tooltip-trigger:focus-visible::after,
-.app-tooltip-trigger.is-tooltip-open::after {
+.app-tooltip-trigger.is-tooltip-open::after,
+.app-tooltip-trigger:focus-visible::after {
   opacity:1;
   visibility:visible;
   transform:translate(-50%,0);
+}
+.app-tooltip-trigger.is-tooltip-open::before,
+.app-tooltip-trigger:focus-visible::before {
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0) rotate(45deg);
 }
 .app-tooltip-accessible {
   position:absolute!important;
@@ -1682,5 +1707,5 @@ body {
   border:0!important;
 }
 @media (prefers-reduced-motion:reduce) {
-  .app-tooltip-trigger::after { transition:none; }
+  .app-tooltip-trigger::before,.app-tooltip-trigger::after { transition:none; }
 }
