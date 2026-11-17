@@ -1451,18 +1451,6 @@ body {
 .weather-art .weather-wind-lines { stroke:#9bcde5; stroke-width:3.5; fill:none; }
 .weather-art .weather-unknown-mark circle { fill:rgba(148,163,184,.12); stroke:#8992a0; }
 .weather-art .weather-unknown-mark path { stroke:#aab6c5; stroke-width:4; }
-.weather-symbol.is-animated .weather-sun { animation:sun-turn 36s linear infinite; }
-.weather-symbol.is-animated .weather-cloud { animation:cloud-drift 8s ease-in-out infinite; }
-.weather-symbol.is-animated .weather-rain-drops { animation:rain-drift 2.8s ease-in-out infinite; }
-.weather-symbol.is-animated .weather-snowflakes { animation:snow-drift 5s ease-in-out infinite; }
-.weather-symbol.is-animated .weather-fog-lines { animation:fog-drift 6s ease-in-out infinite; }
-.weather-symbol.is-animated .weather-wind-stream { stroke-dasharray:24 76; stroke-dashoffset:100; animation:wind-flow 2.6s linear infinite; }
-.weather-symbol.is-animated .weather-wind-stream-b { animation-delay:-1.25s; }
-.weather-symbol.is-animated .weather-lightning { animation:lightning-flash-a 3.4s steps(1,end) infinite; }
-.weather-symbol.is-animated .weather-hailstone-0 { animation:hail-fall 1.55s ease-in infinite; }
-.weather-symbol.is-animated .weather-hailstone-1 { animation:hail-fall 1.55s ease-in .34s infinite; }
-.weather-symbol.is-animated .weather-hailstone-2 { animation:hail-fall 1.55s ease-in .7s infinite; }
-
 /* Standard: restrained, familiar weather colours and fine-line SVG details. */
 .weather-pack-animated { color:#c5ced9; }
 .weather-pack-animated .weather-sun { color:#f4c64e; }
@@ -1519,8 +1507,6 @@ body {
 .weather-pack-flat .weather-fog-lines,
 .weather-pack-flat .weather-wind-lines { stroke:#86c7e8; stroke-width:5; }
 
-}
-@keyframes hail-fall { 0%,100% { transform:translateY(-2px); opacity:.5; } 50% { transform:translateY(4px); opacity:1; } }
 
 .weather-api-card p { color:var(--settings-text-secondary); line-height:1.5; }
 .weather-api-tip { padding:12px 14px; border-radius:10px; background:var(--settings-tab-background); border:1px solid var(--settings-tab-border); color:var(--settings-text-primary)!important; }
