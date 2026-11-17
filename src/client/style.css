@@ -177,6 +177,11 @@
   --settings-source-menu-shadow: 0 12px 28px rgba(0,0,0,.38);
   --settings-blockly-text: #f4f6f9;
   --settings-blockly-tooltip: #9eb2c8;
+  /* Shared non-Blockly tooltip palette; themes may override these semantic tokens. */
+  --settings-tooltip-background: #14263b;
+  --settings-tooltip-border: #1684ff;
+  --settings-tooltip-text: #f2f6fc;
+  --settings-tooltip-shadow: 0 10px 26px rgba(0,0,0,.42),0 0 0 1px rgba(22,132,255,.08);
   --settings-description-text: #9fb1c7;
   /* Niet-kleurgebonden componenttokens: vaste geometrie en ritme. */
   --settings-radius-card: 15px;
@@ -1626,4 +1631,56 @@ body {
 @media (max-width:900px) {
   .measurement-layout { grid-template-columns:minmax(0,1fr); }
   .measurement-layout > .measurement-editor-card { grid-column:1; }
+}
+
+
+/* Shared dashboard tooltip. Blockly keeps its native workspace tooltip styling. */
+.app-tooltip-trigger { position:relative; }
+.app-tooltip-trigger::after {
+  content:attr(data-tooltip);
+  position:absolute;
+  z-index:1200;
+  left:50%;
+  bottom:calc(100% + 9px);
+  transform:translate(-50%,4px);
+  width:max-content;
+  max-width:min(280px,calc(100vw - 28px));
+  padding:8px 12px;
+  border:1px solid var(--settings-tooltip-border);
+  border-radius:var(--settings-radius-control,9px);
+  background:var(--settings-tooltip-background);
+  color:var(--settings-tooltip-text);
+  box-shadow:var(--settings-tooltip-shadow);
+  font:600 12px/1.4 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.01em;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .14s ease,transform .14s ease,visibility .14s ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .app-tooltip-trigger:hover::after { opacity:1;visibility:visible;transform:translate(-50%,0); }
+}
+.app-tooltip-trigger:focus-visible::after,
+.app-tooltip-trigger.is-tooltip-open::after {
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+.app-tooltip-accessible {
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+@media (prefers-reduced-motion:reduce) {
+  .app-tooltip-trigger::after { transition:none; }
 }
