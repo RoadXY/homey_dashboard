@@ -419,7 +419,7 @@
   "weatherSettings.sourceTip": "Je kunt naast Homey-apparaten ook een Homey Logic-variabele selecteren. Begin met typen om te zoeken.",
   "weatherSettings.iconHeading": "Weericonen",
   "weatherSettings.iconDescription": "Kies de iconenset die op het dashboard wordt gebruikt. De keuze staat los van het dashboardthema.",
-  "weatherSettings.packAnimated": "Standaard (bewegend)",
+  "weatherSettings.packAnimated": "Standaard",
   "weatherSettings.packAnimatedDescription": "De huidige iconen met subtiele animaties.",
   "weatherSettings.packColor3d": "Kleurrijk (3D)",
   "weatherSettings.packColor3dDescription": "Kleurrijke iconen met meer diepte.",
