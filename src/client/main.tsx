@@ -561,6 +561,33 @@ const quickActionIconChoices: MdiIconChoice[] = [
   const icon = mdiIconByName.get(name);
   return icon ? [{ name, keywords: [name, ...(Array.isArray(icon.aliases) ? icon.aliases : []), ...(dutchMdiSearchTerms[name] ?? [])] }] : [];
 });
+function AppTooltip({ content, children }: { content: string; children: React.ReactElement }) {
+  const [open,setOpen] = React.useState(false);
+  const tooltipId = React.useId();
+  React.useEffect(() => {
+    if (!open) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest(".app-tooltip-trigger")) setOpen(false);
+    };
+    document.addEventListener("pointerdown",dismiss);
+    return () => document.removeEventListener("pointerdown",dismiss);
+  },[open]);
+  const childProps = children.props as { className?: string; onClick?: (event: React.MouseEvent) => void; tabIndex?: number; "aria-describedby"?: string };
+  const describedBy = [childProps["aria-describedby"],tooltipId].filter(Boolean).join(" ");
+  const trigger = React.cloneElement(children,{
+    className: [childProps.className,"app-tooltip-trigger",open?"is-tooltip-open":""].filter(Boolean).join(" "),
+    "data-tooltip": content,
+    "aria-describedby": describedBy,
+    tabIndex: childProps.tabIndex ?? 0,
+    onClick: (event: React.MouseEvent) => {
+      childProps.onClick?.(event);
+      if (window.matchMedia("(hover: none)").matches) setOpen(value => !value);
+    }
+  } as any);
+  return <>{trigger}<span className="app-tooltip-accessible" id={tooltipId} role="tooltip">{content}</span></>;
+}
+
 function MdiIcon({ name, className = "" }: { name: string; className?: string }) {
   const iconName = name.startsWith("mdi:") ? name.slice(4) : name;
   return <span className={`mdi mdi-${iconName} ${className}`.trim()} aria-hidden="true" />;
@@ -2387,7 +2414,7 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
           <div className="weather-pack-preview-panel">
             <strong>{t("weatherSettings.preview")}</strong>
             <div className={"weather-pack-preview-grid pack-"+settings.iconPack}>
-              {previewCategories.map(category=><div className="weather-pack-preview-item" key={category}><WeatherIcon category={category} label={t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category])} pack={settings.iconPack} animate={settings.animateIcons}/></div>)}
+              {previewCategories.map(category=>{const label=t("weatherSettings.preview"+({sunny:"Sunny",mostly_sunny:"MostlySunny",partly_cloudy:"PartlyCloudy",cloudy:"Cloudy",overcast:"Overcast",fog:"Fog",drizzle:"Drizzle",rain:"Rain",heavy_rain:"HeavyRain",showers:"Showers",thunderstorm:"Thunderstorm",hail:"Hail",snow:"Snow",snow_showers:"SnowShowers",sleet:"Sleet",windy:"Wind",unknown:"Unknown"} as Record<string,string>)[category]);return <AppTooltip key={category} content={label}><div className="weather-pack-preview-item"><WeatherIcon category={category} label={label} pack={settings.iconPack} animate={settings.animateIcons}/></div></AppTooltip>;})}
             </div>
           </div>
         </section>
