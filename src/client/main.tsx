@@ -387,7 +387,7 @@ function App() {
   return (
     <main className="dashboard">
       <section className="left-column" aria-label={t("dashboard.aria")}>
-        <article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()} title={t("dashboard.holdSettings")}>
+        <AppTooltip content={t("dashboard.holdSettings")}><article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()}>
           <div className="clock-content">
             <div className="clock"><span className="clock-time">{timeText}</span>{dayPeriod && <small className="clock-period">{dayPeriod}</small>}</div>
             <div className="date">{dateText}</div>
@@ -397,7 +397,7 @@ function App() {
               {loadError ? t("dashboard.serverError") : t("dashboard.homeyError")}
             </div>
           )}
-        </article>
+        </article></AppTooltip>
         <article className="card weather-card">
           <div className="weather-main">
             <div>
@@ -429,7 +429,7 @@ function App() {
             return (
               <button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} key={action.id} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
-                aria-label={label} title={label}>
+                aria-label={label}>
                 <MdiIcon name={action.icon} className="action-mark" />
                 <span className="action-label">{label}</span>
               </button>
@@ -440,12 +440,12 @@ function App() {
           {transientNotifications.filter(notification => notification.status === "active").map(notification => (
             <div className="action-error" role="alert" key={notification.id}>
               <span>{notification.message}</span>
-              <button type="button" className="action-error-dismiss" aria-label={t("notifications.dismiss")} title={t("notifications.dismiss")} onClick={() => dismissTransientNotification(notification.id)}>×</button>
+              <AppTooltip content={t("notifications.dismiss")}><button type="button" className="action-error-dismiss" aria-label={t("notifications.dismiss")} onClick={() => dismissTransientNotification(notification.id)}>×</button></AppTooltip>
             </div>
           ))}
         </div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
-          <div className={notificationHeadingClass}><h1>{t("notifications.heading")}</h1>{notificationIndicatorSeverity && <span className={"notification-status-indicator is-" + notificationIndicatorSeverity} role="img" aria-label={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")} title={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")}>!</span>}</div>
+          <div className={notificationHeadingClass}><h1>{t("notifications.heading")}</h1>{notificationIndicatorSeverity && <AppTooltip content={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")}><span className={"notification-status-indicator is-" + notificationIndicatorSeverity} role="img" aria-label={t("notifications.severity." + notificationIndicatorSeverity)}>!</span></AppTooltip>}</div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
@@ -1971,7 +1971,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           <div className="mdi-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true" /><input className="settings-interactive settings-interactive--text" type="search" value={iconSearch} onChange={event => setIconSearch(event.target.value)} placeholder={t("quickActions.searchIcons")} aria-label={t("quickActions.searchIconsLabel")} /></div>
           <div className="quick-icon-picker">
             {visibleIcons.map(icon =>
-              <button type="button" key={icon.name} title={icon.name} aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={"settings-interactive " + (selected.icon === icon.name ? "active" : "")} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button>
+              <AppTooltip key={icon.name} content={icon.name}><button type="button" aria-label={icon.name} aria-pressed={selected.icon === icon.name} className={"settings-interactive " + (selected.icon === icon.name ? "active" : "")} onClick={() => updateSelected({ icon: icon.name })}><MdiIcon name={icon.name} /></button></AppTooltip>
             )}
             {matchingIcons.length === 0 && <div className="mdi-no-results">{t("quickActions.noIcons")}</div>}
           </div>
@@ -1991,7 +1991,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
             <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
-              <span className="quick-flow-trigger-name" title={selectedFlow?.name}>{selectedFlow?.name ?? t("settings.selectFlow")}</span>
+              <span className="quick-flow-trigger-name">{selectedFlow?.name ?? t("settings.selectFlow")}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
             {flowPickerOpen && <div className="quick-flow-menu settings-searchable-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
@@ -2006,7 +2006,7 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
                   className={"quick-flow-option settings-searchable-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
-                  <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
+                  <span className="quick-flow-option-name">{flow.name}</span>
                   {flow.type === "advanced" && <span className="quick-flow-type settings-status-info">Advanced</span>}
                 </button>)}
                 {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
