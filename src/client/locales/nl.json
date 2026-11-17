@@ -150,7 +150,6 @@
   "settings.turnOn": "Aanzetten",
   "settings.turnOff": "Uitzetten",
   "settings.deviceUnavailable": "Dit apparaat is momenteel niet beschikbaar.",
-  "settings.apply": "Toepassen",
   "settings.close": "Sluiten",
   "settings.quickActionsSaved": "Quick Actions opgeslagen.",
   "settings.quickActionsLoadError": "Quick Actions laden mislukt.",
@@ -452,5 +451,8 @@
   "weatherSettings.motionDescription": "Schakel animaties voor alle icon packs in of uit.",
   "weatherSettings.field.feelsLikeDashboard": "Gevoel",
   "settings.measurementTiles": "Meetwaardetegels",
-  "measurement.count": "Aantal meetwaardetegels"
+  "measurement.count": "Aantal meetwaardetegels",
+  "measurement.searchLogicVariables": "Zoek Logic-variabelen",
+  "measurement.noLogicVariablesFound": "Geen Logic-variabelen gevonden",
+  "measurement.logicVariableResults": "resultaten"
 }

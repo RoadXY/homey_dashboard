@@ -61,6 +61,40 @@ function temperature(value: unknown, locale: string = "nl"): string {
   return typeof value === "number" && Number.isFinite(value) ? `${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)}°` : "—";
 }
 function App() {
+  React.useEffect(() => {
+    const pickerSelector = ".settings-searchable-picker";
+    const menuSelector = ".settings-searchable-menu";
+    let frame = 0;
+    const updateOpenMenus = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        document.querySelectorAll<HTMLElement>(pickerSelector).forEach((picker) => {
+          const trigger = picker.querySelector<HTMLElement>(".settings-searchable-trigger, .quick-flow-trigger, .notification-rule-trigger");
+          const menu = picker.querySelector<HTMLElement>(menuSelector);
+          if (!trigger || !menu || !menu.isConnected) return;
+          const triggerRect = trigger.getBoundingClientRect();
+          const spaceBelow = Math.max(0, window.innerHeight - triggerRect.bottom - 8);
+          const spaceAbove = Math.max(0, triggerRect.top - 8);
+          const desiredHeight = Math.min(menu.scrollHeight, 440);
+          const shouldOpenUp = spaceBelow < Math.min(desiredHeight, 260) && spaceAbove > spaceBelow;
+          const availableSpace = shouldOpenUp ? spaceAbove : spaceBelow;
+          menu.classList.toggle("opens-up", shouldOpenUp);
+          menu.style.setProperty("--settings-searchable-max-height", Math.max(120, Math.min(440, availableSpace)) + "px");
+        });
+      });
+    };
+    const observer = new MutationObserver(updateOpenMenus);
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("resize", updateOpenMenus);
+    window.addEventListener("scroll", updateOpenMenus, true);
+    updateOpenMenus();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", updateOpenMenus);
+      window.removeEventListener("scroll", updateOpenMenus, true);
+    };
+  }, []);
   const [now, setNow] = React.useState(() => new Date());
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
@@ -546,8 +580,13 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const [catalog, setCatalog] = React.useState<MeasurementSourceCatalog>({ zones: [], devices: [], variables: [] });
   const [selectedId, setSelectedId] = React.useState("");
   const [editorOpen, setEditorOpen] = React.useState(false);
-  const [zoneId, setZoneId] = React.useState("");
   const [deviceId, setDeviceId] = React.useState("");
+  const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
+  const [deviceSearch, setDeviceSearch] = React.useState("");
+  const [logicPickerOpen, setLogicPickerOpen] = React.useState(false);
+  const [logicSearch, setLogicSearch] = React.useState("");
+  const [countPickerOpen, setCountPickerOpen] = React.useState(false);
+  const countPickerRef = React.useRef<HTMLDivElement>(null);
   const [sourceType, setSourceType] = React.useState<"device" | "logic">("device");
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
@@ -557,6 +596,14 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
   const dirty = count !== savedCount || JSON.stringify(tiles) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   const visibleTiles = tiles.slice(0, count);
+  React.useEffect(() => {
+    if (!countPickerOpen) return;
+    const onPointerDown = (event: PointerEvent) => { if (!countPickerRef.current?.contains(event.target as Node)) setCountPickerOpen(false); };
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setCountPickerOpen(false); };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => { document.removeEventListener("pointerdown", onPointerDown); document.removeEventListener("keydown", onKeyDown); };
+  }, [countPickerOpen]);
   const selected = visibleTiles.find(tile => tile.id === selectedId) ?? visibleTiles[0];
   React.useEffect(() => {
     let active = true;
@@ -586,19 +633,15 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
     } else {
       setSourceType("device");
       setDeviceId(source.deviceId);
-      const sourceDevice = catalog.devices.find(device => device.id === source.deviceId);
-      setZoneId(sourceDevice?.zone ?? "");
     }
   }, [selected?.id, selected?.source, catalog.devices]);
-  const zonePath = (id: string | null): string => {
-    if (!id) return "";
-    const zone = catalog.zones.find(item => item.id === id);
-    if (!zone) return "";
-    return [zonePath(zone.parent), zone.name].filter(Boolean).join(" / ");
-  };
   const update = (patch: Partial<MeasurementTile>) => setTiles(current => current.map(tile => tile.id === selected.id ? { ...tile, ...patch } : tile));
-  const devices = catalog.devices.filter(device => device.zone === zoneId);
+  const devices = catalog.devices;
+  const matchingDevices = devices.filter(device => device.name.toLocaleLowerCase().includes(deviceSearch.trim().toLocaleLowerCase()));
   const chosenDevice = catalog.devices.find(device => device.id === deviceId);
+  const matchingVariables = catalog.variables.filter(variable => variable.name.toLocaleLowerCase().includes(logicSearch.trim().toLocaleLowerCase()));
+  const selectedLogicVariableId = selected?.source?.type === "logic" ? selected.source.variableId : "";
+  const chosenVariable = selectedLogicVariableId ? catalog.variables.find(variable => variable.id === selectedLogicVariableId) : undefined;
   const sourceDescription = (tile: MeasurementTile) => {
     const source = tile.source;
     if (!source) return t("measurement.noSource");
@@ -617,24 +660,29 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
     } catch (error) { setMessage(error instanceof Error ? error.message : t("settings.saveError")); setIsError(true); }
     finally { setSaving(false); }
   };
-  return <div className="quick-settings-page">
+  return <div className="quick-settings-page measurement-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon">♙</div><div><h1>{t("settings.measurementTiles")}</h1><p>{t("measurement.configureIntro")}</p></div></div>
-    <div className="quick-workspace measurement-workspace">
+    <div className="measurement-layout">
       <section className="settings-card quick-list-card measurement-list-card">
         <h2><span>♙</span>{t("measurement.heading")}</h2>
         <p className="quick-card-description">{t("measurement.configureDescription")}</p>
-        <label className="measurement-count-setting">{t("measurement.count")}
-          <select className="settings-interactive" value={count} onChange={event => {
-            const nextCount = Number(event.target.value) as MeasurementTileCount;
-            setCount(nextCount);
-            if (tiles.findIndex(tile => tile.id === selectedId) >= nextCount) {
-              setSelectedId("measurement-1");
-              setEditorOpen(false);
-            }
-          }}>
-            <option value={2}>2</option><option value={4}>4</option><option value={6}>6</option>
-          </select>
-        </label>
+        <div className="measurement-count-setting"><span>{t("measurement.count")}</span>
+          <div className="measurement-count-picker" ref={countPickerRef}>
+            <button type="button" className="measurement-count-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={countPickerOpen} aria-controls="measurement-count-options" onClick={() => setCountPickerOpen(open => !open)}>
+              <span>{count}</span><span className="mdi mdi-chevron-down" aria-hidden="true"/>
+            </button>
+            {countPickerOpen && <div className="measurement-count-menu" id="measurement-count-options" role="listbox" aria-label={t("measurement.count")}>
+              {([2, 4, 6] as MeasurementTileCount[]).map(option => <button type="button" role="option" aria-selected={count === option} key={option} className={"measurement-count-option settings-interactive" + (count === option ? " selected" : "")} onClick={() => {
+                setCount(option);
+                if (tiles.findIndex(tile => tile.id === selectedId) >= option) {
+                  setSelectedId("measurement-1");
+                  setEditorOpen(false);
+                }
+                setCountPickerOpen(false);
+              }}>{option}{count === option && <span className="mdi mdi-check" aria-hidden="true"/>}</button>)}
+            </div>}
+          </div>
+        </div>
         <div className="quick-action-list measurement-tile-list">
           {visibleTiles.map((tile, index) => <button type="button" key={tile.id} className={"quick-action-row settings-interactive" + (tile.id === selectedId ? " selected" : "")} onClick={() => { setSelectedId(tile.id); setEditorOpen(true); }}>
             <span className="quick-action-number">{index + 1}</span><span className="quick-action-name">{tile.name || "Tegel"}</span><span className="quick-action-edit">✎</span>
@@ -645,33 +693,83 @@ function MeasurementTilesSettingsPage({ t, onNavigate, onDirtyChange }: { t: (ke
       <section className="settings-card quick-preview-card">
         <h2><span>◎</span>{t("settings.preview")}</h2>
         <p className="quick-card-description">{t("measurement.previewDescription")}</p>
-        <div className="quick-preview-grid measurement-preview-grid">
+        <div className={"temperature-grid measurement-preview-dashboard-grid measurement-count-" + count}>
           {visibleTiles.map(tile => {
             const reading = previewData?.values.find(item => item.id === tile.id);
             const formatted = formatMeasurementParts(reading);
-            return <div className="quick-preview-item measurement-preview-item" key={tile.id}>
-              <TemperatureTile label={tile.name || "Tegel"} value={formatted.value} units={formatted.units} className="measurement-preview-dashboard-tile"/>
-              <small>{sourceDescription(tile)}</small>
-            </div>;
+            return <TemperatureTile key={tile.id} label={tile.name || "Tegel"} value={formatted.value} units={formatted.units}/>;
           })}
         </div>
       </section>
-    </div>
-    {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
+      {editorOpen && selected && <section className="settings-card quick-editor-card measurement-editor-card">
         <button className="quick-editor-close settings-interactive" onClick={() => setEditorOpen(false)} aria-label={t("settings.close")}>×</button>
         <h2>{t("measurement.editTitle").replace("{number}", String(tiles.findIndex(tile => tile.id === selected.id) + 1))}</h2>
         <div className="measurement-inline-editor">
           <label>{t("measurement.name")}<input className="settings-interactive settings-interactive--text" maxLength={32} value={selected.name} onChange={event => update({ name: event.target.value })}/></label>
           <div className="measurement-source-types"><button type="button" className={"settings-interactive " + (sourceType === "device" ? "active" : "")} onClick={() => setSourceType("device")}>{t("measurement.device")}</button><button type="button" className={"settings-interactive " + (sourceType === "logic" ? "active" : "")} onClick={() => setSourceType("logic")}>{t("measurement.homeyLogic")}</button></div>
           {sourceType === "device" ? <>
-            <label>{t("measurement.room")}<select className="settings-interactive" value={zoneId} onChange={event => { setZoneId(event.target.value); setDeviceId(""); }}><option value="">{t("measurement.selectRoom")}</option>{catalog.zones.map(zone => <option key={zone.id} value={zone.id}>{zonePath(zone.id)}</option>)}</select></label>
-            <label>{t("measurement.device")}<select className="settings-interactive" value={deviceId} onChange={event => setDeviceId(event.target.value)}><option value="">{t("measurement.selectDevice")}</option>{devices.map(device => <option key={device.id} value={device.id}>{device.name}{device.available ? "" : " (offline)"}</option>)}</select></label>
+            <label>{t("measurement.device")}</label>
+            <div className="quick-device-picker settings-searchable-picker">
+              <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+                onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
+                <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
+                <span className="quick-flow-trigger-name">{chosenDevice?.name ?? t("measurement.selectDevice")}</span>
+                {!chosenDevice?.available && chosenDevice && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
+                <span className="quick-flow-chevron">▾</span>
+              </button>
+              {devicePickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("measurement.device")}>
+                <div className="quick-flow-search-wrap settings-searchable-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
+                    onChange={event => setDeviceSearch(event.target.value)} placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
+                </div>
+                <div className="quick-flow-results settings-searchable-results">
+                  {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === deviceId}
+                    className={"quick-flow-option settings-searchable-option settings-interactive" + (device.id === deviceId ? " selected" : "")}
+                    key={device.id} onClick={() => { setDeviceId(device.id); setDevicePickerOpen(false); setDeviceSearch(""); update({ source: null }); }}>
+                    <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
+                    <span className="quick-flow-option-name">{device.name}</span>
+                    {!device.available && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
+                  </button>)}
+                  {matchingDevices.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("quickActions.noDevices")}</div>}
+                </div>
+                <div className="quick-flow-footer settings-searchable-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
+              </div>}
+            </div>
             <label>{t("measurement.value")}<select className="settings-interactive" disabled={!chosenDevice} value={selected.source?.type === "device" && selected.source.deviceId === deviceId ? selected.source.capabilityId : ""} onChange={event => update({ source: event.target.value ? { type: "device", deviceId, capabilityId: event.target.value } : null })}><option value="">{t("measurement.selectNumericValue")}</option>{chosenDevice?.capabilities.map(cap => <option key={cap.id} value={cap.id}>{cap.title}{cap.units ? " (" + cap.units + ")" : ""}</option>)}</select></label>
-          </> : <label>{t("measurement.numericLogicVariable")}<select className="settings-interactive" value={selected.source?.type === "logic" ? selected.source.variableId : ""} onChange={event => update({ source: event.target.value ? { type: "logic", variableId: event.target.value } : null })}><option value="">{t("measurement.selectLogicVariable")}</option>{catalog.variables.map(variable => <option key={variable.id} value={variable.id}>{variable.name}</option>)}</select></label>}
+          </> : <div className="measurement-logic-picker">
+            <label>{t("measurement.numericLogicVariable")}</label>
+            <div className="quick-device-picker settings-searchable-picker">
+              <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={logicPickerOpen}
+                onClick={() => { setLogicPickerOpen(open => !open); setLogicSearch(""); }}>
+                <span className="quick-flow-trigger-icon"><MdiIcon name="variable" /></span>
+                <span className="quick-flow-trigger-name">{chosenVariable?.name ?? t("measurement.selectLogicVariable")}</span>
+                <span className="quick-flow-chevron">▾</span>
+              </button>
+              {logicPickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("measurement.numericLogicVariable")}>
+                <div className="quick-flow-search-wrap settings-searchable-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={logicSearch}
+                    onChange={event => setLogicSearch(event.target.value)} placeholder={t("measurement.searchLogicVariables")} aria-label={t("measurement.searchLogicVariables")} />
+                </div>
+                <div className="quick-flow-results settings-searchable-results">
+                  {matchingVariables.map(variable => <button type="button" role="option" aria-selected={variable.id === selectedLogicVariableId}
+                    className={"quick-flow-option settings-searchable-option settings-interactive" + (variable.id === selectedLogicVariableId ? " selected" : "")}
+                    key={variable.id} onClick={() => { update({ source: { type: "logic", variableId: variable.id } }); setLogicPickerOpen(false); setLogicSearch(""); }}>
+                    <span className="quick-flow-option-icon"><MdiIcon name="variable" /></span>
+                    <span className="quick-flow-option-name">{variable.name}</span>
+                  </button>)}
+                  {matchingVariables.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("measurement.noLogicVariablesFound")}</div>}
+                </div>
+                <div className="quick-flow-footer settings-searchable-footer">{matchingVariables.length} {t("measurement.logicVariableResults")}</div>
+              </div>}
+            </div>
+          </div>}
           <p className="measurement-source-note">{t("measurement.sourceNote")}</p>
         </div>
     </section>}
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : "▣  " + t("measurement.save")}</button></div>
+    </div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? t("measurement.loading") : message}</span><div className="settings-actions">{dirty && <button type="button" className="secondary-button settings-interactive" disabled={saving || busy} onClick={() => { setTiles(saved.map(tile => ({ ...tile, source: tile.source ? { ...tile.source } : null }))); setCount(savedCount); setSelectedId(""); setEditorOpen(false); setMessage(""); setIsError(false); }}>{t("settings.cancel")}</button>}<button className="primary-button settings-interactive" disabled={!dirty || saving || busy || tiles.some(tile => !tile.name.trim())} onClick={() => void save()}>{saving ? t("measurement.saving") : t("measurement.save")}</button></div></div>
   </div>;
 }
 
@@ -1501,6 +1599,14 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
   const [selectedId, setSelectedId] = React.useState("");
   const [notificationSearch, setNotificationSearch] = React.useState("");
   const [notificationPickerOpen, setNotificationPickerOpen] = React.useState(false);
+  const notificationPickerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!notificationPickerOpen) return;
+    const dismiss = (event: PointerEvent) => { if (notificationPickerRef.current && !notificationPickerRef.current.contains(event.target as Node)) setNotificationPickerOpen(false); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") setNotificationPickerOpen(false); };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [notificationPickerOpen]);
   const [busy, setBusy] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -1674,21 +1780,21 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
     <div className="settings-title"><p>{t("notifications.subtitle")}</p></div>
     <div className="notification-rule-selector">
       <label id="notification-rule-label">{t("notifications.ruleLabel")}</label>
-      <div className="notification-rule-picker">
-        <button type="button" className="notification-rule-trigger settings-interactive" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
+      <div className="notification-rule-picker settings-searchable-picker" ref={notificationPickerRef}>
+        <button type="button" className="notification-rule-trigger settings-searchable-trigger settings-interactive" aria-labelledby="notification-rule-label" aria-haspopup="listbox" aria-expanded={notificationPickerOpen} disabled={busy || !configs.length}
           onClick={() => { setNotificationPickerOpen(open => !open); setNotificationSearch(""); }}>
           <span className="notification-rule-trigger-name">{selected?.title ?? t("notifications.selectNotification")}</span>{selected && !selected.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{selected?.enabled && notificationWarningIds.has(selected.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}<span aria-hidden="true">▾</span>
         </button>
-        {notificationPickerOpen && <div className="notification-rule-menu">
-          <div className="notification-rule-search"><span aria-hidden="true">⌕</span><input className="settings-interactive settings-interactive--text" type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
-          <div className="notification-rule-options" role="listbox" aria-label={t("notifications.createdList")}>
+        {notificationPickerOpen && <div className="notification-rule-menu settings-searchable-menu">
+          <div className="notification-rule-search settings-searchable-search"><span aria-hidden="true">⌕</span><input className="settings-interactive settings-interactive--text" type="search" autoFocus value={notificationSearch} onChange={event => setNotificationSearch(event.target.value)} placeholder={t("notifications.search")} aria-label={t("notifications.searchLabel")}/></div>
+          <div className="notification-rule-options settings-searchable-results" role="listbox" aria-label={t("notifications.createdList")}>
             {matchingNotifications.map(item =>
-              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
+              <button type="button" role="option" aria-selected={item.id === selected?.id} key={item.id} className={"notification-rule-option settings-searchable-option settings-interactive" + (item.id === selected?.id ? " selected" : "")}
                 onClick={() => switchNotification(item.id)}><span className="notification-rule-option-name">{item.title}</span>{!item.enabled && <span className="notification-disabled-badge">{t("notifications.disabled")}</span>}{item.enabled && notificationWarningIds.has(item.id) && <span className="notification-warning-badge">{t("notifications.warning")}</span>}</button>
             )}
-            {matchingNotifications.length === 0 && <div className="notification-rule-empty">{t("notifications.noneFound")}</div>}
+            {matchingNotifications.length === 0 && <div className="notification-rule-empty settings-searchable-empty">{t("notifications.noneFound")}</div>}
           </div>
-          <div className="notification-rule-footer">{matchingNotifications.length} {t("notifications.results")}</div>
+          <div className="notification-rule-footer settings-searchable-footer">{matchingNotifications.length} {t("notifications.results")}</div>
         </div>}
       </div>
       <button type="button" className="notification-create-button settings-interactive" disabled={busy || saving} onClick={createNotification}><span aria-hidden="true">＋</span> {t("notifications.create")}</button>
@@ -1710,7 +1816,7 @@ function NotificationSettingsPage({ locale, onDirtyChange }: { locale: string; o
         </> : <p>{busy ? translate(locale, "notifications.loading") : t("notifications.noneAvailable")}</p>}
       </section>
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : "▣  " + translate(locale, "settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (isError ? " error" : "")} role={isError ? "alert" : "status"}>{busy ? translate(locale, "notifications.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy || configs.some(item => !item.title.trim())} onClick={() => void save()}>{saving ? translate(locale, "notifications.save") : translate(locale, "settings.save")}</button></div>
   </div>;
 }
 
@@ -1735,6 +1841,17 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
   const [flowPickerOpen, setFlowPickerOpen] = React.useState(false);
   const [deviceSearch, setDeviceSearch] = React.useState("");
   const [devicePickerOpen, setDevicePickerOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!flowPickerOpen && !devicePickerOpen) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest(".quick-flow-picker, .quick-device-picker")) return;
+      setFlowPickerOpen(false); setDevicePickerOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setFlowPickerOpen(false); setDevicePickerOpen(false); } };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [flowPickerOpen, devicePickerOpen]);
   const [iconSearch, setIconSearch] = React.useState("");
   const iconQuery = iconSearch.trim().toLocaleLowerCase();
   const matchingIcons = quickActionIconChoices.filter(icon => !iconQuery || (icon.name + " " + icon.keywords.join(" ")).toLocaleLowerCase().includes(iconQuery));
@@ -1833,68 +1950,70 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           </div>
           <div className="mdi-picker-count">{visibleIcons.length} van {matchingIcons.length} iconen{matchingIcons.length > 120 ? " · " + t("quickActions.refineSearch") : ""}</div>
         </div>
-        <label>{t("settings.actionType")}
-          <select className="settings-interactive" value={selected.type} onChange={event => updateSelected({ type: event.target.value as "flow" | "device" })}>
-            <option value="flow">{t("settings.flowAction")}</option><option value="device">{t("settings.deviceAction")}</option>
-          </select>
-        </label>
+        <div className="quick-action-type-setting">
+          <label>{t("settings.actionType")}</label>
+          <div className="quick-action-type-tabs measurement-source-types" role="group" aria-label={t("settings.actionType")}>
+            <button type="button" className={"settings-interactive" + (selected.type === "flow" ? " active" : "")} aria-pressed={selected.type === "flow"} onClick={() => updateSelected({ type: "flow" })}>{t("settings.flowAction")}</button>
+            <button type="button" className={"settings-interactive" + (selected.type === "device" ? " active" : "")} aria-pressed={selected.type === "device"} onClick={() => updateSelected({ type: "device" })}>{t("settings.deviceAction")}</button>
+          </div>
+        </div>
         {catalogWarning && <div className="quick-catalog-warning" role="status">{catalogWarning}</div>}
         {selected.type === "flow" ? <>
           <label>{t("settings.homeyFlow")}</label>
-          <div className="quick-flow-picker">
-            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
+          <div className="quick-flow-picker settings-searchable-picker">
+            <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={flowPickerOpen}
               onClick={() => { setFlowPickerOpen(open => !open); setFlowSearch(""); }}>
               <span className="quick-flow-trigger-icon">{selected.flowId ? (catalog.flows.find(flow => flow.id === selected.flowId && flow.type === selected.flowType)?.icon || (selected.flowType === "advanced" ? "✧" : "ϟ")) : "ϟ"}</span>
               <span className="quick-flow-trigger-name" title={selectedFlow?.name}>{selectedFlow?.name ?? t("settings.selectFlow")}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
-            {flowPickerOpen && <div className="quick-flow-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
-              <div className="quick-flow-search-wrap">
+            {flowPickerOpen && <div className="quick-flow-menu settings-searchable-menu" role="listbox" aria-label={t("settings.homeyFlow")}>
+              <div className="quick-flow-search-wrap settings-searchable-search">
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={flowSearch}
                   onChange={event => setFlowSearch(event.target.value)}
                   placeholder={t("settings.searchFlows")} aria-label={t("settings.searchFlows")} />
               </div>
-              <div className="quick-flow-results">
+              <div className="quick-flow-results settings-searchable-results">
                 {matchingFlows.map(flow => <button type="button" role="option" aria-selected={flow.id === selected.flowId && flow.type === selected.flowType}
-                  className={"quick-flow-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
+                  className={"quick-flow-option settings-searchable-option settings-interactive" + (flow.id === selected.flowId && flow.type === selected.flowType ? " selected" : "")}
                   key={flow.type + flow.id} onClick={() => { updateSelected({ flowType: flow.type, flowId: flow.id }); setFlowPickerOpen(false); setFlowSearch(""); }}>
                   <span className="quick-flow-option-icon">{flow.icon || (flow.type === "advanced" ? "✧" : "ϟ")}</span>
                   <span className="quick-flow-option-name" title={flow.name}>{flow.name}</span>
-                  {flow.type === "advanced" && <span className="quick-flow-type">Advanced</span>}
+                  {flow.type === "advanced" && <span className="quick-flow-type settings-status-info">Advanced</span>}
                 </button>)}
-                {matchingFlows.length === 0 && <div className="quick-flow-empty">{t("settings.noFlowResults")}</div>}
+                {matchingFlows.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("settings.noFlowResults")}</div>}
               </div>
-              <div className="quick-flow-footer">{matchingFlows.length} {t("settings.flowResults")}</div>
+              <div className="quick-flow-footer settings-searchable-footer"><span>{matchingFlows.length} {t("settings.flowResults")}</span><span className="quick-flow-tip">Tip: Gebruik <strong>Advanced</strong> om te filteren op Advanced flows</span></div>
             </div>}
           </div>
         </> : <>
           <label>{t("settings.device")}</label>
-          <div className="quick-device-picker">
-            <button type="button" className="quick-flow-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
+          <div className="quick-device-picker settings-searchable-picker">
+            <button type="button" className="quick-flow-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={devicePickerOpen}
               onClick={() => { setDevicePickerOpen(open => !open); setDeviceSearch(""); }}>
               <span className="quick-flow-trigger-icon"><MdiIcon name="devices" /></span>
               <span className="quick-flow-trigger-name">{selectedDeviceLabel}</span>
               <span className="quick-flow-chevron">▾</span>
             </button>
-            {devicePickerOpen && <div className="quick-flow-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
-              <div className="quick-flow-search-wrap">
+            {devicePickerOpen && <div className="quick-flow-menu settings-searchable-menu quick-device-menu" role="listbox" aria-label={t("settings.device")}>
+              <div className="quick-flow-search-wrap settings-searchable-search">
                 <span aria-hidden="true">⌕</span>
                 <input autoFocus type="search" className="quick-flow-search settings-interactive settings-interactive--text" value={deviceSearch}
                   onChange={event => setDeviceSearch(event.target.value)}
                   placeholder={t("quickActions.searchDevice")} aria-label={t("quickActions.searchHomeyDevice")} />
               </div>
-              <div className="quick-flow-results">
+              <div className="quick-flow-results settings-searchable-results">
                 {matchingDevices.map(device => <button type="button" role="option" aria-selected={device.id === selected.deviceId}
-                  className={"quick-flow-option settings-interactive" + (device.id === selected.deviceId ? " selected" : "")}
+                  className={"quick-flow-option settings-searchable-option settings-interactive" + (device.id === selected.deviceId ? " selected" : "")}
                   key={device.id} onClick={() => { selectDevice(device.id); setDevicePickerOpen(false); setDeviceSearch(""); }}>
                   <span className="quick-flow-option-icon"><MdiIcon name="devices" /></span>
                   <span className="quick-flow-option-name">{deviceDisplayName(device)}</span>
-                  {!device.available && <span className="quick-flow-type">{t("homey.offline")}</span>}
+                  {!device.available && <span className="quick-flow-type settings-status-warning">{t("homey.offline")}</span>}
                 </button>)}
-                {matchingDevices.length === 0 && <div className="quick-flow-empty">{t("quickActions.noDevices")}</div>}
+                {matchingDevices.length === 0 && <div className="quick-flow-empty settings-searchable-empty">{t("quickActions.noDevices")}</div>}
               </div>
-              <div className="quick-flow-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
+              <div className="quick-flow-footer settings-searchable-footer">{matchingDevices.length} {t("quickActions.devices")}</div>
             </div>}
           </div>
           <label>{t("settings.deviceActionLabel")}<select className="settings-interactive" value={selected.capabilityId} onChange={event => selectCapability(event.target.value)} disabled={!selectedDevice}><option value="">{t("settings.selectDeviceAction")}</option>{selectedDevice?.capabilities.map(capability => <option key={capability.id} value={capability.id}>{capability.title}</option>)}</select></label>
@@ -1904,10 +2023,10 @@ function QuickActionsSettingsPage({ locale, t, onNavigate, onDirtyChange }: { lo
           {selectedCapability?.type === "string" && <label>{t("settings.actionValue")}<input className="settings-interactive settings-interactive--text" value={String(selected.value ?? "")} onChange={event => updateSelected({ value: event.target.value })}/></label>}
           {selectedDevice && !selectedDevice.available && <p className="quick-warning">{t("settings.deviceUnavailable")}</p>}
         </>}
-        <div className="quick-editor-actions"><button className="secondary-button settings-interactive" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.apply")}</button></div>
+        <div className="quick-editor-actions"><button className="secondary-button settings-interactive" onClick={() => { const original = saved.find(item => item.id === selected.id); if (original) setItems(current => current.map(item => item.id === selected.id ? original : item)); setEditorOpen(false); }}>{t("settings.cancel")}</button><button className="primary-button settings-interactive" disabled={!selectedActionValid} aria-disabled={!selectedActionValid} onClick={() => { if (!selectedActionValid) return; setEditorOpen(false); }}>{t("settings.save")}</button></div>
       </section>}
     </div>
-    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+    <div className="settings-bottom"><span className={"save-message" + (messageIsError ? " error" : "")} role={messageIsError ? "alert" : "status"}>{busy ? t("settings.loading") : message}</span><button className="primary-button settings-interactive" disabled={!dirty || saving || busy} onClick={() => void save()}>{t("settings.save")}</button></div>
   </div>;
 }
 
@@ -2129,7 +2248,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
       </section>
-      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>▣ &nbsp;{t("settings.save")}</button></div>
+      <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>{t("settings.save")}</button></div>
       </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} onDirtyChange={page === "quick-actions" ? setQuickActionDirty : setMeasurementDirty} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
     </section>
     {showLeave && <div className="modal-backdrop"><section className="leave-modal"><h2>{t("settings.unsavedTitle")}</h2><p>{t("settings.unsavedPrompt")}</p><div><button className="secondary-button settings-interactive" onClick={()=>setShowLeave(false)}>{t("settings.stay")}</button><button className="secondary-button settings-interactive" onClick={onBack}>{t("settings.discard")}</button><button className="primary-button settings-interactive" onClick={async()=>{await save();setShowLeave(false);onBack();}}>{t("settings.save")}</button></div></section></div>}
@@ -2154,6 +2273,17 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
   const [searchId,setSearchId] = React.useState<WeatherSettingId|null>(null);
   const [pendingEnabledId,setPendingEnabledId] = React.useState<WeatherSettingId|null>(null);
   const [search,setSearch] = React.useState("");
+  React.useEffect(() => {
+    if (!searchId) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest(".weather-source-picker")) return;
+      setSearchId(null); setPendingEnabledId(null);
+    };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setSearchId(null); setPendingEnabledId(null); } };
+    document.addEventListener("pointerdown", dismiss); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
+  }, [searchId]);
   const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
   React.useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
   React.useEffect(() => {
@@ -2215,21 +2345,21 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
               <button type="button" role="switch" aria-checked={enabled} className={"weather-source-toggle settings-interactive"+(enabled?" active":"")} aria-label={t("weatherSettings.toggleField")} onClick={() => { if(enabled) { if(settings.sources[id]) updateSource(id,null); setPendingEnabledId(null); setSearchId(null); } else { setPendingEnabledId(id); setSearchId(id); setSearch(""); } }}>
                 <span/>
               </button>
-              <div className="weather-source-picker">
-                <button type="button" className="quick-flow-trigger weather-source-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
+              <div className="weather-source-picker settings-searchable-picker">
+                <button type="button" className="quick-flow-trigger weather-source-trigger settings-searchable-trigger settings-interactive" aria-haspopup="listbox" aria-expanded={isOpen} disabled={!enabled}
                   onClick={() => { setSearchId(isOpen?null:id); setSearch(""); }}>
                   <span className="mdi mdi-database-search-outline" aria-hidden="true"/>
                   <span className="quick-flow-trigger-name">{!enabled ? t("weatherSettings.disabled") : sourceLabel(settings.sources[id])}</span><span className="quick-flow-chevron">▾</span>
                 </button>
-                {isOpen && <div className="quick-flow-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
-                  <div className="quick-flow-search-wrap"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search settings-interactive settings-interactive--text" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
-                  <div className="quick-flow-results">
+                {isOpen && <div className="quick-flow-menu settings-searchable-menu weather-source-menu" role="listbox" aria-label={t("weatherSettings.selectSource")}>
+                  <div className="quick-flow-search-wrap settings-searchable-search"><span className="mdi mdi-magnify" aria-hidden="true"/><input className="quick-flow-search weather-source-search settings-interactive settings-interactive--text" autoFocus type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t("weatherSettings.searchSources")} aria-label={t("weatherSettings.searchSources")}/></div>
+                  <div className="quick-flow-results settings-searchable-results">
                     <div className="weather-source-group-label">{t("weatherSettings.devices")}</div>
-                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option settings-interactive" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small>{t("homey.offline")}</small>}</button>)}
-                    {matchingDevices.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noDeviceSources")}</div>}
+                    {matchingDevices.map(({device,capability})=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="device" && settings.sources[id]?.deviceId===device.id && settings.sources[id]?.capabilityId===capability.id} className="quick-flow-option settings-searchable-option settings-interactive" key={device.id+":"+capability.id} onClick={()=>{updateSource(id,{type:"device",deviceId:device.id,capabilityId:capability.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-devices" aria-hidden="true"/><span className="quick-flow-option-name">{device.name} · {capability.title}{capability.units?" ("+capability.units+")":""}</span>{!device.available&&<small className="settings-status-warning">{t("homey.offline")}</small>}</button>)}
+                    {matchingDevices.length===0&&<div className="quick-flow-empty settings-searchable-empty">{t("weatherSettings.noDeviceSources")}</div>}
                     <div className="weather-source-group-label">{t("weatherSettings.logicVariables")}</div>
-                    {matchingVariables.map(variable=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="logic"&&settings.sources[id]?.variableId===variable.id} className="quick-flow-option settings-interactive" key={variable.id} onClick={()=>{updateSource(id,{type:"logic",variableId:variable.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-variable" aria-hidden="true"/><span className="quick-flow-option-name">{variable.name}</span><small>{variable.type}</small></button>)}
-                    {matchingVariables.length===0&&<div className="quick-flow-empty">{t("weatherSettings.noLogicSources")}</div>}
+                    {matchingVariables.map(variable=><button type="button" role="option" aria-selected={settings.sources[id]?.type==="logic"&&settings.sources[id]?.variableId===variable.id} className="quick-flow-option settings-searchable-option settings-interactive" key={variable.id} onClick={()=>{updateSource(id,{type:"logic",variableId:variable.id});setPendingEnabledId(null);setSearchId(null);setSearch("");}}><span className="mdi mdi-variable" aria-hidden="true"/><span className="quick-flow-option-name">{variable.name}</span><small>{variable.type}</small></button>)}
+                    {matchingVariables.length===0&&<div className="quick-flow-empty settings-searchable-empty">{t("weatherSettings.noLogicSources")}</div>}
                   </div>
                 </div>}
               </div>

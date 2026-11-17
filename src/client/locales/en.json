@@ -150,7 +150,6 @@
   "settings.turnOn": "Turn on",
   "settings.turnOff": "Turn off",
   "settings.deviceUnavailable": "This device is currently unavailable.",
-  "settings.apply": "Apply",
   "settings.close": "Close",
   "settings.quickActionsSaved": "Quick actions saved.",
   "settings.quickActionsLoadError": "Failed to load quick actions.",
@@ -452,5 +451,8 @@
   "weatherSettings.motionDescription": "Turn animations on or off for all icon packs.",
   "weatherSettings.field.feelsLikeDashboard": "Feels like",
   "settings.measurementTiles": "Measurement tiles",
-  "measurement.count": "Number of measurement tiles"
+  "measurement.count": "Number of measurement tiles",
+  "measurement.searchLogicVariables": "Search Logic variables",
+  "measurement.noLogicVariablesFound": "No Logic variables found",
+  "measurement.logicVariableResults": "results"
 }
