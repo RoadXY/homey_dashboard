@@ -1,14 +1,14 @@
 # Weather icon rendering
 
-## Architecture and shared rendering
+## Rendering architecture
 
-The settings preview and dashboard use the same `WeatherIcon` component in `src/client/main.tsx`. The dashboard passes the live `WeatherConditionResponse.category` and saved `iconPack`/`animateIcons` settings. The settings preview passes the same component a fixed, complete list of weather categories and the current settings-page draft.
+The original **Standaard** weather icon pack is the legacy custom SVG implementation in `WeatherIcon` in `src/client/main.tsx`. Its original SVG geometry, CSS sizing, and category-specific animation rules must be preserved. It is the established visual identity of the dashboard.
 
-All packs are rendered as inline SVG artwork. No pack uses emoji or platform-dependent weather glyphs. The pack changes the artwork's visual treatment through CSS; category geometry and precipitation semantics remain shared so the preview and dashboard cannot drift into separate icon implementations.
+The three alternate packs use the separate `WeatherIconArtwork` renderer. This renderer must only be used when `pack !== "animated"`. Its CSS must be scoped to the alternate pack classes and must not override the standard renderer's selectors, SVG geometry, animation timings, or colors.
 
-## Supported categories
+The settings preview and dashboard both use `WeatherIcon`; only the preview supplies a fixed category matrix while the dashboard supplies the live weather category. The selected pack and global animation setting remain shared.
 
-The preview deliberately renders every supported category:
+## Supported categories in the preview
 
 - `sunny`, `mostly_sunny`, `partly_cloudy`
 - `cloudy`, `overcast`, `fog`, `windy`
@@ -16,44 +16,25 @@ The preview deliberately renders every supported category:
 - `thunderstorm`, `hail`, `snow`, `snow_showers`, `sleet`
 - `unknown` as the explicit fallback
 
-Sleet intentionally combines rain and snow artwork. The unknown category has a dedicated question-mark symbol rather than falling back to a font glyph.
+## Icon pack contracts
 
-## Icon pack visual contracts
-
-| Pack ID | Dutch / English name | Rendering |
+| Pack ID | Dutch / English name | Contract |
 |---|---|---|
-| `animated` | Standaard / Standard | Restrained weather colours, custom SVG outlines and subtle category-specific motion |
-| `color3d` | Kleurrijk (3D) / Colourful (3D) | Layered gradients, highlights, shaded clouds and depth shadows |
-| `outline` | Minimalistisch (lijn) / Minimal (line) | Transparent interiors and consistent rounded line work |
-| `flat` | Plat (modern) / Flat (modern) | Solid high-contrast shapes and a compact colour palette |
+| `animated` | Standaard / Standard | Preserve the existing custom SVG icons and their bespoke, category-specific animations exactly |
+| `color3d` | Kleurrijk (3D) / Colourful (3D) | Independent artwork with gradients, highlights, shading and depth |
+| `outline` | Minimalistisch (lijn) / Minimal (line) | Independent artwork with consistent clean line work |
+| `flat` | Plat (modern) / Flat (modern) | Independent artwork with clear solid shapes and bright colours |
 
-Animation remains controlled independently by the global `animateIcons` setting. Static mode and `prefers-reduced-motion` disable all icon animations.
+The global `animateIcons` preference controls animation for every pack. Reduced-motion preferences must be respected.
 
-## Implementation details
+## Important implementation rule
 
-- The `WeatherIcon` component builds the SVG from semantic layers: sun, cloud, rain, snow, lightning, hail, fog, wind and unknown marker.
-- The four pack styles are defined in `src/client/style.css` under the weather icon-pack section.
-- The settings preview uses all supported categories, not only the original eight sample categories.
-- Preview labels are localized in `src/client/locales/nl.json` and `src/client/locales/en.json`.
-- The pack selection is persisted by the existing weather settings API. The dashboard uses the saved setting; unsaved preview changes are intentionally draft-only.
+Do not replace or refactor the legacy `WeatherIcon` standard branch when improving alternate packs. Add or change alternate artwork in `WeatherIconArtwork` and scope related CSS to `.weather-pack-color3d`, `.weather-pack-outline`, and `.weather-pack-flat`. Avoid generic selectors that can change the standard pack.
 
-## Visual parity verification
+## Regression and correction — 17 November 2026
 
-When checking a live dashboard against the settings preview:
+An earlier implementation incorrectly replaced the shared legacy renderer with a new common SVG. This changed the custom standard icon illustrations and animations. That was not intended.
 
-1. Save the selected pack and animation preference.
-2. Compare the same weather category in both places. The preview shows the full category matrix, while the dashboard shows the current live category.
-3. Verify the pack with animation enabled and disabled.
-4. Verify all four packs against the full category matrix, including hail, sleet, overcast and unknown.
-5. Check a narrow/mobile viewport and a desktop viewport.
-6. Confirm reduced-motion behavior.
+The correction restores the exact original `WeatherIcon` implementation and its original weather CSS from commit `cbab44331bd39124dcf05c515cd62b843fff2239`. The new artwork is isolated in `WeatherIconArtwork` and is only selected for the three alternate packs. The CSS for the alternate artwork is scoped so it cannot change the standard icon appearance or animation.
 
-A different weather condition is not expected to produce the same silhouette; parity means that the same category and pack use the same shared SVG design language and category-specific layers.
-
-## Change record — 17 November 2026
-
-The initial investigation found that the old alternate packs used Unicode emoji plus CSS filters, and the outline pack only substituted a handful of categories. That implementation caused browser/font-dependent results and inconsistent fallback icons on the live dashboard.
-
-The renderer has now been replaced with shared, category-aware SVG artwork. All four packs have dedicated visual styling, and the preview covers every supported category. The standard pack label was also simplified to **Standaard** / **Standard**, with animation remaining a separate setting.
-
-The implementation has been committed directly to `phase_1_foundation`. Automated build/CI and browser-level visual verification must still be checked after the commits; do not describe the change as CI-verified until those checks are green.
+The standard pack label is **Standaard** in Dutch and **Standard** in English; animation remains a separate toggle.
