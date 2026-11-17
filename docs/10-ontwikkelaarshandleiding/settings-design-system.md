@@ -326,7 +326,7 @@ The shared tooltip contract is:
 - Desktop mouse: show on hover.
 - Keyboard: show when the trigger receives visible keyboard focus.
 - Touch: tap toggles the tooltip; tapping the same trigger again or tapping elsewhere closes it.
-- Accessibility: the trigger references a visually hidden element with `role="tooltip"` through `aria-describedby`.
+- Accessibility: the trigger exposes the tooltip text as its accessible label (when no label exists) and `aria-description`.
 - Appearance: compact dark raised surface, blue border, light text and soft shadow, matching the current settings visual language.
 - The tooltip uses semantic `--settings-tooltip-*` CSS custom properties. A future theme may override these colors and shadows without changing geometry or interaction behavior.
 - User-facing tooltip content must come from the localization system or user-provided content. Do not hard-code translatable text in the component.
