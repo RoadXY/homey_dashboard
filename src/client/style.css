@@ -1476,6 +1476,11 @@ body {
 .weather-pack-animated.weather-overcast .weather-cloud-layer-front { opacity:.96; }
 .weather-pack-animated.weather-cloudy .weather-cloud-layer-front { opacity:1; }
 
+/* SVG detail transforms stay local to each line/drop/flake, not the whole icon. */
+.weather-pack-animated .weather-fog-line,
+.weather-pack-animated .weather-rain-drop,
+.weather-pack-animated .weather-snowflake { transform-box:fill-box; transform-origin:center; }
+
 /* Fog: each mist band drifts independently by only a few pixels. */
 .weather-pack-animated.weather-fog .weather-fog-lines { animation:none; }
 .weather-pack-animated.is-animated.weather-fog .weather-fog-line-a { animation:fog-line-a 6.8s ease-in-out infinite; }
