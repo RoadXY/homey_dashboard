@@ -387,7 +387,7 @@ function App() {
   return (
     <main className="dashboard">
       <section className="left-column" aria-label={t("dashboard.aria")}>
-        <AppTooltip content={t("dashboard.holdSettings")} placement="bottom"><article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()}>
+        <AppTooltip content={t("dashboard.holdSettings")} placement="bottom" theme="dashboard"><article className="card clock-card" onPointerDown={beginSettingsHold} onPointerUp={cancelSettingsHold} onPointerLeave={cancelSettingsHold} onPointerCancel={cancelSettingsHold} onContextMenu={(event) => event.preventDefault()}>
           <div className="clock-content">
             <div className="clock"><span className="clock-time">{timeText}</span>{dayPeriod && <small className="clock-period">{dayPeriod}</small>}</div>
             <div className="date">{dateText}</div>
@@ -427,12 +427,12 @@ function App() {
           {quickActions.map((action) => {
             const label = action.name.trim();
             return (
-              <AppTooltip key={action.id} content={label} placement="bottom"><button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} type="button"
+              <button key={action.id} className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
                 aria-label={label}>
                 <MdiIcon name={action.icon} className="action-mark" />
                 <span className="action-label">{label}</span>
-              </button></AppTooltip>
+              </button>
             );
           })}
         </div>
@@ -440,12 +440,12 @@ function App() {
           {transientNotifications.filter(notification => notification.status === "active").map(notification => (
             <div className="action-error" role="alert" key={notification.id}>
               <span>{notification.message}</span>
-              <AppTooltip content={t("notifications.dismiss")} placement="bottom"><button type="button" className="action-error-dismiss" aria-label={t("notifications.dismiss")} onClick={() => dismissTransientNotification(notification.id)}>×</button></AppTooltip>
+              <AppTooltip content={t("notifications.dismiss")} placement="bottom" theme="dashboard"><button type="button" className="action-error-dismiss" aria-label={t("notifications.dismiss")} onClick={() => dismissTransientNotification(notification.id)}>×</button></AppTooltip>
             </div>
           ))}
         </div>}
         <section className="notifications-panel" aria-label={t("notifications.aria")}>
-          <div className={notificationHeadingClass}><h1>{t("notifications.heading")}</h1>{notificationIndicatorSeverity && <AppTooltip content={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")} placement="bottom"><span className={"notification-status-indicator is-" + notificationIndicatorSeverity} role="img" aria-label={t("notifications.severity." + notificationIndicatorSeverity)}>!</span></AppTooltip>}</div>
+          <div className={notificationHeadingClass}><h1>{t("notifications.heading")}</h1>{notificationIndicatorSeverity && <AppTooltip content={t("notifications.severity." + notificationIndicatorSeverity) + " — " + t("notifications.activeIndicator")} placement="bottom" theme="dashboard"><span className={"notification-status-indicator is-" + notificationIndicatorSeverity} role="img" aria-label={t("notifications.severity." + notificationIndicatorSeverity)}>!</span></AppTooltip>}</div>
           <div className="notifications-content">
             {notifications.some((item) => item.state === "active") ? (
               <div className="notification-list">
@@ -561,7 +561,7 @@ const quickActionIconChoices: MdiIconChoice[] = [
   const icon = mdiIconByName.get(name);
   return icon ? [{ name, keywords: [name, ...(Array.isArray(icon.aliases) ? icon.aliases : []), ...(dutchMdiSearchTerms[name] ?? [])] }] : [];
 });
-function AppTooltip({ content, children, placement = "top" }: { content: string; children: React.ReactElement; placement?: "top" | "bottom" }) {
+function AppTooltip({ content, children, placement = "top", theme = "settings" }: { content: string; children: React.ReactElement; placement?: "top" | "bottom"; theme?: "settings" | "dashboard" }) {
   const [open,setOpen] = React.useState(false);
   React.useEffect(() => {
     if (!open) return;
@@ -577,6 +577,7 @@ function AppTooltip({ content, children, placement = "top" }: { content: string;
     className: [childProps.className,"app-tooltip-trigger",open?"is-tooltip-open":""].filter(Boolean).join(" "),
     "data-tooltip": content,
     "data-tooltip-placement": placement,
+    "data-tooltip-theme": theme,
     "aria-label": childProps["aria-label"] ?? content,
     tabIndex: childProps.tabIndex ?? 0,
     onClick: (event: React.MouseEvent) => {
