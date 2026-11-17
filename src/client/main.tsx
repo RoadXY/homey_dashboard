@@ -427,12 +427,12 @@ function App() {
           {quickActions.map((action) => {
             const label = action.name.trim();
             return (
-              <button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} key={action.id} type="button"
+              <AppTooltip key={action.id} content={label}><button className={"action-card" + (action.type === "device" && quickActionStatuses[action.id] === true ? " is-active" : "")} type="button"
                 onClick={() => void executeAction(action.id)} disabled={Boolean(executingAction)}
                 aria-label={label}>
                 <MdiIcon name={action.icon} className="action-mark" />
                 <span className="action-label">{label}</span>
-              </button>
+              </button></AppTooltip>
             );
           })}
         </div>
