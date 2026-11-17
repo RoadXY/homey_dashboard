@@ -349,3 +349,8 @@ The shared tooltip is used for:
 - Settings navigation items when the sidebar is collapsed.
 
 Blockly tooltips remain separate by design. Keep this list current when adding or removing tooltip use cases.
+
+
+### Tooltip placement and exceptions
+
+The shared `AppTooltip` supports an explicit `placement` of `top` (default) or `bottom`. Prefer `bottom` for dashboard controls near the top edge so the tooltip remains inside the visible dashboard. In scrollable icon grids, place first-row tooltips below their trigger because the scroll viewport clips content above its top edge. Flow selection controls and Flow result rows intentionally have no tooltip because their names are already displayed.
