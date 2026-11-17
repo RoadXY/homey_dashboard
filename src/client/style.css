@@ -1361,7 +1361,10 @@ body {
 .weather-pack-option small { color:var(--settings-text-secondary); font-size:12px; line-height:1.4; }
 .weather-pack-preview-panel { margin-top:13px; padding:12px; border:1px solid var(--settings-panel-border); border-radius:10px; background:var(--settings-panel-background); }
 .weather-pack-preview-panel > strong { display:block; margin-bottom:10px; color:var(--settings-text-secondary); font-size:12px; font-weight:600; }
-.weather-pack-preview-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.weather-pack-preview-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; overflow:visible; }
+.weather-pack-preview-tooltip { position:relative; min-width:0; }
+.weather-pack-preview-tooltip:hover,
+.weather-pack-preview-tooltip:focus-within { z-index:10; }
 .weather-pack-preview-item { min-width:0; min-height:88px; display:grid; place-items:center; overflow:hidden; border:1px solid var(--settings-panel-border); border-radius:9px; background:var(--settings-panel-background); }
 .weather-pack-preview-item .weather-symbol { width:min(100%,92px); height:78px; min-height:0; display:block; flex:0 0 auto; margin:0 auto; font-size:40px; }
 .weather-pack-preview-item .weather-pack-symbol { font-size:42px; }
