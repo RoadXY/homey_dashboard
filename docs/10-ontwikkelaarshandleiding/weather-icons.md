@@ -38,3 +38,25 @@ An earlier implementation incorrectly replaced the shared legacy renderer with a
 The correction restores the exact original `WeatherIcon` implementation and its original weather CSS from commit `cbab44331bd39124dcf05c515cd62b843fff2239`. The new artwork is isolated in `WeatherIconArtwork` and is only selected for the three alternate packs. The CSS for the alternate artwork is scoped so it cannot change the standard icon appearance or animation.
 
 The standard pack label is **Standaard** in Dutch and **Standard** in English; animation remains a separate toggle.
+
+
+## Approved Standard pack refinement — 17 November 2026
+
+The user approved a refinement of the first pack (**Standaard / Standard**) only. Its established palette, line weight and overall visual identity must remain unchanged. The three alternate packs (`color3d`, `outline`, `flat`) must not be affected.
+
+The standard pack now distinguishes the following weather conditions:
+
+- `cloudy`: one clear cloud silhouette.
+- `overcast`: two overlapping cloud layers to communicate a fully covered sky.
+- `fog`: four separate mist lines drift independently with very small horizontal offsets; the whole group must not move as one.
+- `drizzle`: four short, fine droplets with the slowest fall.
+- `rain`: three medium-length droplets with a gentle staggered fall.
+- `heavy_rain`: five longer droplets with a slightly quicker fall.
+- `showers`: sun behind the cloud and a short, intermittent rain burst.
+- `snow`: three individually drifting snowflakes.
+- `snow_showers`: sun behind the cloud with individually drifting snowflakes.
+- `sleet`: a mixed precipitation symbol with one snowflake and two rain streaks.
+
+All new artwork and animation selectors are scoped to `.weather-pack-animated`. Do not move these rules to generic `.weather-symbol` selectors: the alternate icon packs share category class names but must retain their own appearance and motion. Existing color values for the Standard pack are unchanged.
+
+The global `animateIcons` setting still disables these animations, and the existing `prefers-reduced-motion` rule must continue to disable motion. Keep movement restrained: animate only the relevant precipitation/mist details, never the complete icon.
