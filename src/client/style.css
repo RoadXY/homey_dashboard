@@ -1393,7 +1393,8 @@ body {
 .weather-symbol.is-animated .weather-rain-drops { animation:rain-drift 2.8s ease-in-out infinite; }
 .weather-symbol.is-animated .weather-snowflakes { animation:snow-drift 5s ease-in-out infinite; }
 .weather-symbol.is-animated .weather-fog-lines { animation:fog-drift 6s ease-in-out infinite; }
-.weather-symbol.is-animated .weather-wind-lines { animation:wind-flow 3.4s ease-in-out infinite; }
+.weather-symbol.is-animated .weather-wind-stream { stroke-dasharray:24 76; stroke-dashoffset:100; animation:wind-flow 2.6s linear infinite; }
+.weather-symbol.is-animated .weather-wind-stream-b { animation-delay:-1.25s; }
 .weather-symbol.is-animated .weather-lightning { animation:lightning-flash-a 3.4s steps(1,end) infinite; }
 .weather-symbol.is-animated .weather-hailstone-0 { animation:hail-fall 1.55s ease-in infinite; }
 .weather-symbol.is-animated .weather-hailstone-1 { animation:hail-fall 1.55s ease-in .34s infinite; }
