@@ -362,3 +362,6 @@ The application-wide desktop hover delay is **500 ms**. Keep this value consiste
 Dashboard surfaces must pass `theme="dashboard"` to `AppTooltip`. This selects the `--dashboard-tooltip-*` semantic tokens, currently derived from the dashboard's surface-card, border, text and shadow tokens. Future dashboard themes must supply/override those semantic tokens so tooltips visually follow the selected dashboard theme. Settings tooltips continue to use the separate `--settings-tooltip-*` tokens.
 
 Dashboard Quick Action cards intentionally have no tooltip because their labels are already visible on the cards.
+
+
+Weather icon preview implementation note: keep `AppTooltip` on the outer `.weather-pack-preview-tooltip` wrapper, never directly on `.weather-pack-preview-item`. The inner tile uses `overflow:hidden` to clip icon artwork and would also clip tooltip pseudo-elements. The outer wrapper stays overflow-visible, receives the hover/focus stacking order, and uses bottom placement so the tooltip remains within the preview panel. Preserve this wrapper structure when changing the preview grid.
