@@ -1537,14 +1537,16 @@ body {
 
 /* Colourful 3D: layered gradients, highlights and depth without emoji/font dependencies. */
 .weather-pack-color3d { color:#dce8f6; filter:drop-shadow(0 4px 5px rgba(0,0,0,.28)); }
-.weather-pack-color3d .weather-sun-disc { fill:url(#weather-sun-3d); stroke:#f7a928; stroke-width:1.5; }
+/* Per-instance SVG gradient is applied inline by WeatherIconArtwork. */
+.weather-pack-color3d .weather-sun-disc { stroke:#f7a928; stroke-width:1.5; }
 .weather-pack-color3d .weather-sun-rays { stroke:#ffbd36; stroke-width:4; }
-.weather-pack-color3d .weather-cloud-front { fill:url(#weather-cloud-3d); stroke:#8497ad; stroke-width:2; }
-.weather-pack-color3d .weather-cloud-back { fill:#aabbd0; stroke:#788da5; stroke-width:2; }
+/* Cloud gradients are unique per rendered icon and applied inline. */
+.weather-pack-color3d .weather-cloud-front { stroke:#8497ad; stroke-width:2; }
+ .weather-pack-color3d .weather-cloud-back { stroke:#788da5; stroke-width:2; }
 .weather-pack-color3d .weather-cloud-highlight { stroke:#fff; stroke-width:3; }
-.weather-pack-color3d .weather-rain-drops { stroke:url(#weather-rain-3d); stroke-width:5; }
-.weather-pack-color3d .weather-snowflakes,
-.weather-pack-color3d .weather-hailstones { stroke:url(#weather-snow-3d); stroke-width:4; }
+ .weather-pack-color3d .weather-rain-drops { stroke:#32b7f4; stroke-width:5; }
+ .weather-pack-color3d .weather-snowflakes,
+.weather-pack-color3d .weather-hailstones { stroke:#91dfff; stroke-width:4; }
 .weather-pack-color3d .weather-lightning path { fill:#ffe45c; stroke:#ff9d22; stroke-width:2; }
 .weather-pack-color3d .weather-fog-lines,
 .weather-pack-color3d .weather-wind-lines { stroke:#72c8ef; stroke-width:5; }
