@@ -2565,7 +2565,6 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
 
         {hasCloud && <g className="weather-cloud weather-3d-cloud" filter={`url(#${gradientId}-shadow)`}>
           {category === "overcast" && <path className="weather-cloud-back" d="M14 56h68a16 16 0 0 0 0-32 24 24 0 0 0-46-4A19 19 0 0 0 14 56Z" style={{fill:`url(#${gradientId}-cloud-side)`}}/>}
-          {category === "mostly_sunny" && <path className="weather-cloud-back" d="M47 60h51a14 14 0 0 0 0-28 21 21 0 0 0-40-4A17 17 0 0 0 47 60Z" style={{fill:`url(#${gradientId}-cloud-side)`}}/>}
           <path className="weather-cloud-front" d={category === "overcast" ? "M35 63h68a16 16 0 0 0 0-32 24 24 0 0 0-46-4A19 19 0 0 0 35 63Z" : cloudPath} style={{fill:`url(#${gradientId}-cloud)`}}/>
           <path className="weather-cloud-highlight" d="M39 34c6-10 19-14 31-8"/>
           <path className="weather-cloud-lower-shade" d="M31 56c15 7 47 8 65-1"/>
