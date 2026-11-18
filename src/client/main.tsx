@@ -2611,7 +2611,7 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
           <path className="weather-3d-wind-ribbon weather-3d-wind-c" d="M27 73h35" style={{stroke:`url(#${gradientId}-fog)`}}/>
         </g>}
 
-        {unknown && <g className="weather-unknown-mark weather-3d-unknown"><circle cx="64" cy="48" r="29"/><path d="M53 39c1-13 22-15 24-1 1 9-11 12-13 21m0 9v1"/></g>}
+        {unknown && <g className="weather-unknown-mark weather-3d-unknown"><circle cx="64" cy="48" r="29" style={{fill:`url(#${gradientId}-cloud)`}}/><path d="M53 39c1-13 22-15 24-1 1 9-11 12-13 21m0 9v1"/></g>}
       </svg>
     </div>
   );
