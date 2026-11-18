@@ -1555,23 +1555,23 @@ body {
    scoped to this pack so the other icon sets and the legacy Standard pack stay intact. */
 .weather-pack-color3d .weather-art { overflow:visible; }
 .weather-pack-color3d .weather-3d-sun .weather-sun-rays { fill:none; stroke:#ffb21e; stroke-width:5.5; stroke-linecap:round; filter:drop-shadow(0 1px 1px rgba(255,174,27,.45)); }
-.weather-pack-color3d .weather-3d-sun .weather-sun-disc { fill:url(#weather-sun-3d); stroke:#ed941c; stroke-width:1.6; }
+.weather-pack-color3d .weather-3d-sun .weather-sun-disc { stroke:#ed941c; stroke-width:1.6; }
 .weather-pack-color3d .weather-3d-sun .weather-sun-glint { fill:#fff8ce; opacity:.82; stroke:none; }
-.weather-pack-color3d .weather-3d-cloud .weather-cloud-front { fill:url(#weather-cloud-3d); stroke:#839bb9; stroke-width:1.8; }
-.weather-pack-color3d .weather-3d-cloud .weather-cloud-back { fill:url(#weather-cloud-side); stroke:#758ca9; stroke-width:1.8; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-front { stroke:#839bb9; stroke-width:1.8; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-back { stroke:#758ca9; stroke-width:1.8; }
 .weather-pack-color3d .weather-3d-cloud .weather-cloud-highlight { fill:none; stroke:#fff; stroke-width:4; stroke-linecap:round; opacity:.9; }
 .weather-pack-color3d .weather-3d-cloud .weather-cloud-lower-shade { fill:none; stroke:#7085a2; stroke-width:3; stroke-linecap:round; opacity:.28; }
-.weather-pack-color3d .weather-3d-fog-line { fill:url(#weather-fog-3d); stroke:#8bc6e8; stroke-width:.8; filter:drop-shadow(0 2px 2px rgba(102,183,226,.32)); }
-.weather-pack-color3d .weather-3d-drop-shape { fill:url(#weather-rain-3d); stroke:#087ac9; stroke-width:.8; filter:drop-shadow(0 1px 1px rgba(0,58,130,.4)); }
+.weather-pack-color3d .weather-3d-fog-line { stroke:#8bc6e8; stroke-width:.8; filter:drop-shadow(0 2px 2px rgba(102,183,226,.32)); }
+.weather-pack-color3d .weather-3d-drop-shape { stroke:#087ac9; stroke-width:.8; filter:drop-shadow(0 1px 1px rgba(0,58,130,.4)); }
 .weather-pack-color3d .weather-3d-drop-glint { fill:none; stroke:#e5fbff; stroke-width:1.3; stroke-linecap:round; opacity:.9; }
-.weather-pack-color3d .weather-3d-flake-arms { fill:none; stroke:url(#weather-snow-3d); stroke-width:2.8; stroke-linecap:round; filter:drop-shadow(0 1px 1px rgba(36,121,190,.4)); }
+.weather-pack-color3d .weather-3d-flake-arms { fill:none; stroke-width:2.8; stroke-linecap:round; filter:drop-shadow(0 1px 1px rgba(36,121,190,.4)); }
 .weather-pack-color3d .weather-3d-flake-core { fill:#fff; stroke:#70c7f3; stroke-width:1; }
-.weather-pack-color3d .weather-3d-bolt { fill:url(#weather-bolt-3d); stroke:#ed851b; stroke-width:1.8; stroke-linejoin:round; filter:drop-shadow(0 2px 2px rgba(205,111,8,.45)); }
+.weather-pack-color3d .weather-3d-bolt { stroke:#ed851b; stroke-width:1.8; stroke-linejoin:round; filter:drop-shadow(0 2px 2px rgba(205,111,8,.45)); }
 .weather-pack-color3d .weather-3d-bolt-small { fill:#ffdf43; stroke:#ef941e; stroke-width:1.5; stroke-linejoin:round; }
 .weather-pack-color3d .weather-3d-hail-shadow { fill:#537fa8; opacity:.3; stroke:none; }
-.weather-pack-color3d .weather-3d-hail-ball { fill:url(#weather-ice-3d); stroke:#6aa6d0; stroke-width:1; }
+.weather-pack-color3d .weather-3d-hail-ball { stroke:#6aa6d0; stroke-width:1; }
 .weather-pack-color3d .weather-3d-hail-glint { fill:#fff; opacity:.92; stroke:none; }
-.weather-pack-color3d .weather-3d-wind-ribbon { fill:none; stroke:url(#weather-fog-3d); stroke-width:6; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(45,146,202,.35)); }
+.weather-pack-color3d .weather-3d-wind-ribbon { fill:none; stroke-width:6; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(45,146,202,.35)); }
 .weather-pack-color3d .weather-3d-unknown circle { fill:url(#weather-cloud-3d); stroke:#8197b3; stroke-width:2; }
 .weather-pack-color3d .weather-3d-unknown path { fill:none; stroke:#526b89; stroke-width:4; stroke-linecap:round; }
 
