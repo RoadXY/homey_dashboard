@@ -95,3 +95,12 @@ The first colour adjustment alone was insufficient. Follow-up inspection found a
 ## 3D sunny-cloud layering correction — 18 November 2026
 
 The sunny/cloudy combination icons must render one opaque foreground cloud over the sun. The shared base selector `.weather-art .weather-cloud-front` applied `fill-opacity:.13`; because the 3D rules only set the inline gradient fill and stroke, the cloud remained translucent and allowed the sun to show through. The 3D-specific selector `.weather-pack-color3d .weather-art .weather-cloud-front` now explicitly sets `fill-opacity:1` (and the same for any rear cloud). The extra rear cloud previously drawn for `mostly_sunny` has been removed, leaving one foreground cloud. The sun remains behind the cloud in SVG paint order. Keep these overrides scoped to `color3d`; other icon packs retain their existing appearance.
+
+
+## Explicit animation toggle and reduced-motion preference — 18 November 2026
+
+A report showed that no 3D animations were visible in either the settings preview or dashboard while the in-app "Bewegende iconen" switch was enabled. Both render paths pass `settings.animateIcons` to `WeatherIcon`, which adds `is-animated` when true. The 3D CSS also defines per-element keyframe animations.
+
+The 3D stylesheet previously included a `prefers-reduced-motion: reduce` rule that forcibly set every descendant animation to `none !important`. This could silently defeat the explicit in-app switch on systems/browsers configured to reduce motion. The rule has been removed for the 3D pack: the explicit dashboard switch now controls whether `is-animated` or `is-static` is applied. Other icon packs' existing reduced-motion behavior remains unchanged. Cloud drift has also been increased from 1.2px to 3px so the movement is easier to notice at preview and dashboard sizes.
+
+Accessibility decision: the explicit in-app animation switch is treated as the user's direct choice for this feature. Users who prefer no motion can turn it off; do not silently override an enabled switch based on the OS preference.
