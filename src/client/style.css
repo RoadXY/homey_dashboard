@@ -1621,7 +1621,7 @@ body {
 .weather-pack-color3d.is-animated.weather-sunny .weather-3d-sun { animation:color3d-sun-glow 7s ease-in-out infinite; }
 
 @keyframes color3d-sun-glow { 0%,100%{filter:drop-shadow(0 0 2px rgba(255,190,54,.24))} 50%{filter:drop-shadow(0 0 7px rgba(255,190,54,.48))} }
-@keyframes color3d-cloud-drift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(1.2px)} }
+@keyframes color3d-cloud-drift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
 @keyframes color3d-rain-fall { 0%{transform:translateY(-2px);opacity:.25} 25%{opacity:1} 100%{transform:translateY(7px);opacity:.18} }
 @keyframes color3d-shower-pulse { 0%,20%{transform:translateY(-1px);opacity:0} 32%,66%{opacity:1} 82%,100%{transform:translateY(6px);opacity:0} }
 @keyframes color3d-snow-drift { 0%,100%{transform:translate(0,-2px) rotate(-5deg)} 50%{transform:translate(2px,4px) rotate(5deg)} }
@@ -1630,11 +1630,8 @@ body {
 @keyframes color3d-fog-a { 0%,100%{transform:translateX(-2px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
 @keyframes color3d-fog-b { 0%,100%{transform:translateX(2px);opacity:.9} 50%{transform:translateX(-2px);opacity:.65} }
 @keyframes color3d-wind { 0%,100%{transform:translateX(-1px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
-@media (prefers-reduced-motion:reduce) {
-  .weather-pack-color3d.is-animated *,
-  .weather-pack-color3d.is-animated *::before,
-  .weather-pack-color3d.is-animated *::after { animation:none!important; transition:none!important; }
-}
+/* The in-app motion switch is an explicit user choice. When enabled it takes
+   precedence over the OS reduced-motion preference; turning it off adds is-static. */
 
 /* Minimal line: transparent interiors, consistent rounded strokes and no emoji fallback. */
 .weather-pack-outline { color:#c7d4e4; }
