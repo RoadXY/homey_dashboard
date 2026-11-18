@@ -2506,7 +2506,7 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
 }
 
 function WeatherIconArtwork({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
-  const hasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
+  const hasSun = ["sunny","mostly_sunny","partly_cloudy","showers","snow_showers"].includes(category);
   const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
   const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
   const hasSnow = ["snow","snow_showers","sleet"].includes(category);
@@ -2515,36 +2515,78 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
   const isFog = category === "fog";
   const isWind = category === "windy";
   const unknown = category === "unknown";
+  const gradientId = React.useId().replace(/:/g, "");
   const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   return (
     <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
-      <svg className="weather-art" viewBox="0 0 128 96" aria-hidden="true">
+      <svg className="weather-art" viewBox="0 0 128 104" aria-hidden="true">
         <defs>
-          <linearGradient id="weather-sun-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff5a6"/><stop offset=".55" stopColor="#ffbd36"/><stop offset="1" stopColor="#ed7624"/></linearGradient>
-          <linearGradient id="weather-cloud-3d" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#dce7f2"/><stop offset="1" stopColor="#8c9caf"/></linearGradient>
-          <linearGradient id="weather-rain-3d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8ce5ff"/><stop offset="1" stopColor="#1689e5"/></linearGradient>
-          <linearGradient id="weather-snow-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset="1" stopColor="#64c9ff"/></linearGradient>
+          <linearGradient id={`${gradientId}-sun`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fffbd0"/><stop offset=".34" stopColor="#ffe45a"/><stop offset=".72" stopColor="#ffad19"/><stop offset="1" stopColor="#ed6422"/></linearGradient>
+          <linearGradient id={`${gradientId}-cloud`} x1=".15" y1="0" x2=".75" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".32" stopColor="#eaf4ff"/><stop offset=".68" stopColor="#b8cbe2"/><stop offset="1" stopColor="#7187a6"/></linearGradient>
+          <linearGradient id={`${gradientId}-cloud-side`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d7e6f7"/><stop offset="1" stopColor="#7186a5"/></linearGradient>
+          <linearGradient id={`${gradientId}-rain`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#c7f7ff"/><stop offset=".4" stopColor="#32c5ff"/><stop offset="1" stopColor="#0873d5"/></linearGradient>
+          <linearGradient id={`${gradientId}-snow`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#b9f0ff"/><stop offset="1" stopColor="#48aeea"/></linearGradient>
+          <linearGradient id={`${gradientId}-fog`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" stopOpacity=".95"/><stop offset="1" stopColor="#8ecce9" stopOpacity=".35"/></linearGradient>
+          <radialGradient id={`${gradientId}-ice`} cx=".3" cy=".2" r=".8"><stop offset="0" stopColor="#ffffff"/><stop offset=".45" stopColor="#d9f7ff"/><stop offset="1" stopColor="#4c9fd4"/></radialGradient>
+          <linearGradient id={`${gradientId}-bolt`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fffda1"/><stop offset=".5" stopColor="#ffd52e"/><stop offset="1" stopColor="#ff7a12"/></linearGradient>
+          <filter id={`${gradientId}-shadow`} x="-30%" y="-30%" width="160%" height="180%"><feGaussianBlur in="SourceAlpha" stdDeviation="2.2"/><feOffset dy="3"/><feComponentTransfer><feFuncA type="linear" slope=".28"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
-        {hasSun && <g className="weather-sun">
+
+        {hasSun && <g className="weather-sun weather-3d-sun" filter={`url(#${gradientId}-shadow)`}>
+          <path className="weather-sun-rays" d="M43 4v9m0 42v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4" />
           <circle className="weather-sun-disc" cx="43" cy="34" r="17"/>
-          <path className="weather-sun-rays" d="M43 5v9m0 40v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4"/>
+          <ellipse className="weather-sun-glint" cx="37" cy="27" rx="6" ry="3.5"/>
         </g>}
-        {hasCloud && <g className="weather-cloud">
-          {category === "overcast" && <path className="weather-cloud-back" d="M17 54h66a15 15 0 0 0 0-30 23 23 0 0 0-44-4A18 18 0 0 0 17 54Z"/>}
-          <path className="weather-cloud-front" d={cloudPath}/>
-          <path className="weather-cloud-highlight" d="M39 34c5-9 17-12 27-7"/>
+
+        {hasCloud && <g className="weather-cloud weather-3d-cloud" filter={`url(#${gradientId}-shadow)`}>
+          {category === "overcast" && <path className="weather-cloud-back" d="M14 56h68a16 16 0 0 0 0-32 24 24 0 0 0-46-4A19 19 0 0 0 14 56Z"/>}
+          {category === "mostly_sunny" && <path className="weather-cloud-back" d="M47 60h51a14 14 0 0 0 0-28 21 21 0 0 0-40-4A17 17 0 0 0 47 60Z"/>}
+          <path className="weather-cloud-front" d={category === "overcast" ? "M35 63h68a16 16 0 0 0 0-32 24 24 0 0 0-46-4A19 19 0 0 0 35 63Z" : cloudPath}/>
+          <path className="weather-cloud-highlight" d="M39 34c6-10 19-14 31-8"/>
+          <path className="weather-cloud-lower-shade" d="M31 56c15 7 47 8 65-1"/>
         </g>}
-        {hasRain && <g className="weather-precipitation weather-rain-drops">
-          <path d={category === "drizzle" ? "m42 69-3 7m22-7-3 7m22-7-3 7" : category === "heavy_rain" ? "m34 68-7 16m25-16-7 16m25-16-7 16m25-16-7 16" : "m39 68-6 14m25-14-6 14m25-14-6 14"}/>
+
+        {isFog && <g className="weather-precipitation weather-fog-lines weather-3d-fog">
+          <rect className="weather-3d-fog-line weather-3d-fog-a" x="18" y="35" width="82" height="8" rx="4"/>
+          <rect className="weather-3d-fog-line weather-3d-fog-b" x="9" y="51" width="108" height="8" rx="4"/>
+          <rect className="weather-3d-fog-line weather-3d-fog-c" x="21" y="67" width="86" height="8" rx="4"/>
+          <rect className="weather-3d-fog-line weather-3d-fog-d" x="34" y="83" width="60" height="7" rx="3.5"/>
         </g>}
-        {hasSnow && <g className="weather-precipitation weather-snowflakes">
-          {[39,64,89].map(x=><g key={x} className="weather-snowflake" transform={`translate(${x} 76)`}><path d="M0-9V9M-7-4 7 4M7-4-7 4M0-9l-2 3m2-3 2 3M0 9l-2-3m2 3 2-3"/></g>)}
+
+        {hasRain && <g className="weather-precipitation weather-rain-drops weather-3d-rain">
+          {(category === "drizzle" ? [[39,72,2.8],[61,69,2.5],[83,73,2.8],[98,68,2.2]] : category === "heavy_rain" ? [[28,69,4.5],[48,74,4.2],[68,68,4.5],[88,74,4.2],[105,68,3.8]] : category === "showers" ? [[40,75,3.8],[65,78,3.8],[89,74,3.8]] : category === "sleet" ? [[52,73,3.6],[91,77,3.6]] : [[37,71,3.8],[64,75,3.8],[91,70,3.8]]).map(([x,y,r],i)=><g key={i} className={`weather-3d-drop weather-3d-drop-${i}`} transform={`translate(${x} ${y})`}>
+            <path className="weather-3d-drop-shape" d={`M0 ${-r*1.8} C${r*.8} ${-r*.4} ${r*1.4} ${r*.5} 0 ${r*1.3} C${-r*1.4} ${r*.5} ${-r*.8} ${-r*.4} 0 ${-r*1.8}Z`}/>
+            <path className="weather-3d-drop-glint" d={`M${-r*.35} 0q${r*.2} ${-r*.7} ${r*.65} ${-r*.9}`}/>
+          </g>)}
         </g>}
-        {isStorm && <g className="weather-precipitation weather-lightning"><path d="m66 62-17 19h12l-5 15 27-29H68l8-13Z"/><path className="weather-lightning-secondary" d="m91 67-9 12h8l-3 10 16-17H93l5-7Z"/></g>}
-        {isHail && <g className="weather-precipitation weather-hailstones">{[39,64,89].map((x,i)=><circle key={x} className={`weather-hailstone weather-hailstone-${i}`} cx={x} cy="78" r="5"/>)}</g>}
-        {isFog && <g className="weather-precipitation weather-fog-lines"><path d="M20 36h88M10 51h105M21 66h87M34 81h61"/></g>}
-        {isWind && <g className="weather-wind-lines"><path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M13 35h79c18 0 18-20 4-20-7 0-10 5-10 9"/><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M8 53h103c16 0 16 20 2 20-7 0-10-5-10-9"/><path className="weather-wind-stream" pathLength="100" d="M27 70h35"/></g>}
-        {unknown && <g className="weather-unknown-mark"><circle cx="64" cy="48" r="32"/><path d="M53 38c1-13 23-15 25-1 1 9-12 12-13 21m0 9v1"/></g>}
+
+        {hasSnow && <g className="weather-precipitation weather-snowflakes weather-3d-snow">
+          {(category === "sleet" ? [43,91] : [37,64,91]).map((x,i)=><g key={x} className={`weather-3d-flake weather-3d-flake-${i}`} transform={`translate(${x} 80)`}>
+            <circle className="weather-3d-flake-core" r="2.2"/>
+            <path className="weather-3d-flake-arms" d="M0-7V7M-6-3.5 6 3.5M6-3.5-6 3.5M0-7l-1.8 2.2M0-7l1.8 2.2M0 7l-1.8-2.2M0 7l1.8-2.2"/>
+          </g>)}
+        </g>}
+
+        {isStorm && <g className="weather-precipitation weather-lightning weather-3d-lightning">
+          <path className="weather-3d-bolt" d="m69 59-19 24h13l-6 18 29-33H70l9-16Z"/>
+          <path className="weather-3d-bolt-small" d="m96 68-10 13h8l-4 12 18-20H97l6-8Z"/>
+        </g>}
+
+        {isHail && <g className="weather-precipitation weather-hailstones weather-3d-hail">
+          {[{x:39,y:80,r:5.5},{x:64,y:84,r:6},{x:89,y:79,r:5}].map((p,i)=><g key={i} className={`weather-3d-hailstone weather-3d-hailstone-${i}`}>
+            <circle className="weather-3d-hail-shadow" cx={p.x} cy={p.y+2} r={p.r}/>
+            <circle className="weather-3d-hail-ball" cx={p.x} cy={p.y} r={p.r}/>
+            <ellipse className="weather-3d-hail-glint" cx={p.x-1.8} cy={p.y-2} rx="2.1" ry="1.2"/>
+          </g>)}
+        </g>}
+
+        {isWind && <g className="weather-wind-lines weather-3d-wind">
+          <path className="weather-3d-wind-ribbon weather-3d-wind-a" d="M13 36h78c18 0 18-20 4-20-7 0-10 5-10 9"/>
+          <path className="weather-3d-wind-ribbon weather-3d-wind-b" d="M8 55h103c16 0 16 20 2 20-7 0-10-5-10-9"/>
+          <path className="weather-3d-wind-ribbon weather-3d-wind-c" d="M27 73h35"/>
+        </g>}
+
+        {unknown && <g className="weather-unknown-mark weather-3d-unknown"><circle cx="64" cy="48" r="29"/><path d="M53 39c1-13 22-15 24-1 1 9-11 12-13 21m0 9v1"/></g>}
       </svg>
     </div>
   );
