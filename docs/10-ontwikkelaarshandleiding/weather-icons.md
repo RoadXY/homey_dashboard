@@ -83,3 +83,10 @@ Category artwork distinctions in the 3D pack:
 - `windy`: softly shaded flowing ribbons.
 
 All 3D styling and animation selectors must remain scoped to `.weather-pack-color3d`. The alternate packs and Standard must not inherit these gradients, shadows, or animations. Static and animated states are both controlled by the existing `animateIcons` setting; do not add a separate persisted setting for this pack.
+
+
+## Colourful 3D visual correction — 18 November 2026
+
+A visual review of the deployed dashboard found that the selected Colourful (3D) pack looked too muted: cloud materials read as grey/outline artwork, and the preview and dashboard did not communicate the intended colourful, dimensional treatment strongly enough.
+
+The correction keeps the shared `WeatherIcon` renderer and the existing `color3d` artwork architecture. It increases saturation and removes the inherited reduced opacity for this pack only, while strengthening the cloud and rain gradient palettes. The settings preview and live dashboard continue to render the same component, so they must remain visually consistent at their respective sizes. Do not alter the other packs as part of this refinement.
