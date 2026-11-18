@@ -1549,6 +1549,83 @@ body {
 .weather-pack-color3d .weather-fog-lines,
 .weather-pack-color3d .weather-wind-lines { stroke:#72c8ef; stroke-width:5; }
 
+/* Colourful 3D pack: glossy materials and dimensional lighting. Keep every rule
+   scoped to this pack so the other icon sets and the legacy Standard pack stay intact. */
+.weather-pack-color3d .weather-art { overflow:visible; }
+.weather-pack-color3d .weather-3d-sun .weather-sun-rays { fill:none; stroke:#ffb21e; stroke-width:5.5; stroke-linecap:round; filter:drop-shadow(0 1px 1px rgba(255,174,27,.45)); }
+.weather-pack-color3d .weather-3d-sun .weather-sun-disc { fill:url(#weather-sun-3d); stroke:#ed941c; stroke-width:1.6; }
+.weather-pack-color3d .weather-3d-sun .weather-sun-glint { fill:#fff8ce; opacity:.82; stroke:none; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-front { fill:url(#weather-cloud-3d); stroke:#839bb9; stroke-width:1.8; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-back { fill:url(#weather-cloud-side); stroke:#758ca9; stroke-width:1.8; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-highlight { fill:none; stroke:#fff; stroke-width:4; stroke-linecap:round; opacity:.9; }
+.weather-pack-color3d .weather-3d-cloud .weather-cloud-lower-shade { fill:none; stroke:#7085a2; stroke-width:3; stroke-linecap:round; opacity:.28; }
+.weather-pack-color3d .weather-3d-fog-line { fill:url(#weather-fog-3d); stroke:#8bc6e8; stroke-width:.8; filter:drop-shadow(0 2px 2px rgba(102,183,226,.32)); }
+.weather-pack-color3d .weather-3d-drop-shape { fill:url(#weather-rain-3d); stroke:#087ac9; stroke-width:.8; filter:drop-shadow(0 1px 1px rgba(0,58,130,.4)); }
+.weather-pack-color3d .weather-3d-drop-glint { fill:none; stroke:#e5fbff; stroke-width:1.3; stroke-linecap:round; opacity:.9; }
+.weather-pack-color3d .weather-3d-flake-arms { fill:none; stroke:url(#weather-snow-3d); stroke-width:2.8; stroke-linecap:round; filter:drop-shadow(0 1px 1px rgba(36,121,190,.4)); }
+.weather-pack-color3d .weather-3d-flake-core { fill:#fff; stroke:#70c7f3; stroke-width:1; }
+.weather-pack-color3d .weather-3d-bolt { fill:url(#weather-bolt-3d); stroke:#ed851b; stroke-width:1.8; stroke-linejoin:round; filter:drop-shadow(0 2px 2px rgba(205,111,8,.45)); }
+.weather-pack-color3d .weather-3d-bolt-small { fill:#ffdf43; stroke:#ef941e; stroke-width:1.5; stroke-linejoin:round; }
+.weather-pack-color3d .weather-3d-hail-shadow { fill:#537fa8; opacity:.3; stroke:none; }
+.weather-pack-color3d .weather-3d-hail-ball { fill:url(#weather-ice-3d); stroke:#6aa6d0; stroke-width:1; }
+.weather-pack-color3d .weather-3d-hail-glint { fill:#fff; opacity:.92; stroke:none; }
+.weather-pack-color3d .weather-3d-wind-ribbon { fill:none; stroke:url(#weather-fog-3d); stroke-width:6; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(45,146,202,.35)); }
+.weather-pack-color3d .weather-3d-unknown circle { fill:url(#weather-cloud-3d); stroke:#8197b3; stroke-width:2; }
+.weather-pack-color3d .weather-3d-unknown path { fill:none; stroke:#526b89; stroke-width:4; stroke-linecap:round; }
+
+/* Animated variant: motion is applied to individual weather details only.
+   The static variant uses identical artwork with all movement disabled. */
+.weather-pack-color3d.is-animated .weather-3d-sun { animation:color3d-sun-glow 7s ease-in-out infinite; }
+.weather-pack-color3d.is-animated .weather-3d-cloud { animation:color3d-cloud-drift 12s ease-in-out infinite; transform-origin:60% 50%; }
+.weather-pack-color3d.is-animated.weather-overcast .weather-3d-cloud { animation-duration:16s; }
+.weather-pack-color3d.is-animated .weather-3d-drop { animation:color3d-rain-fall 1.9s ease-in infinite; }
+.weather-pack-color3d.is-animated.weather-drizzle .weather-3d-drop { animation-duration:3.4s; }
+.weather-pack-color3d.is-animated.weather-heavy_rain .weather-3d-drop { animation-duration:1.35s; }
+.weather-pack-color3d.is-animated.weather-showers .weather-3d-drop { animation:color3d-shower-pulse 3.8s ease-in-out infinite; }
+.weather-pack-color3d.is-animated .weather-3d-drop-1 { animation-delay:-.55s; }
+.weather-pack-color3d.is-animated .weather-3d-drop-2 { animation-delay:-1.05s; }
+.weather-pack-color3d.is-animated .weather-3d-drop-3 { animation-delay:-1.55s; }
+.weather-pack-color3d.is-animated .weather-3d-drop-4 { animation-delay:-.8s; }
+.weather-pack-color3d.is-animated .weather-3d-flake { animation:color3d-snow-drift 5.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.weather-pack-color3d.is-animated .weather-3d-flake-1 { animation-delay:-1.8s; }
+.weather-pack-color3d.is-animated .weather-3d-flake-2 { animation-delay:-3.5s; }
+.weather-pack-color3d.is-animated .weather-3d-hailstone { animation:color3d-hail-bounce 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.weather-pack-color3d.is-animated .weather-3d-hailstone-1 { animation-delay:-.6s; }
+.weather-pack-color3d.is-animated .weather-3d-hailstone-2 { animation-delay:-1.2s; }
+.weather-pack-color3d.is-animated .weather-3d-bolt { animation:color3d-lightning 4.8s steps(1,end) infinite; }
+.weather-pack-color3d.is-animated .weather-3d-bolt-small { animation:color3d-lightning 4.8s steps(1,end) 0.18s infinite; }
+.weather-pack-color3d.is-animated .weather-3d-fog-a { animation:color3d-fog-a 7.2s ease-in-out infinite; }
+.weather-pack-color3d.is-animated .weather-3d-fog-b { animation:color3d-fog-b 8.4s ease-in-out -2s infinite; }
+.weather-pack-color3d.is-animated .weather-3d-fog-c { animation:color3d-fog-a 6.8s ease-in-out -3s infinite; }
+.weather-pack-color3d.is-animated .weather-3d-fog-d { animation:color3d-fog-b 9s ease-in-out -1s infinite; }
+.weather-pack-color3d.is-animated .weather-3d-wind-a { animation:color3d-wind 5.8s ease-in-out infinite; }
+.weather-pack-color3d.is-animated .weather-3d-wind-b { animation:color3d-wind 6.6s ease-in-out -2.4s infinite reverse; }
+.weather-pack-color3d.is-animated .weather-3d-wind-c { animation:color3d-wind 7.4s ease-in-out -1.2s infinite; }
+
+/* Override legacy category-level group animations for this independent pack. */
+.weather-pack-color3d.is-animated.weather-rain .weather-3d-rain,
+.weather-pack-color3d.is-animated.weather-drizzle .weather-3d-rain,
+.weather-pack-color3d.is-animated.weather-heavy_rain .weather-3d-rain,
+.weather-pack-color3d.is-animated.weather-showers .weather-3d-rain,
+.weather-pack-color3d.is-animated.weather-snow .weather-3d-snow { animation:none; }
+.weather-pack-color3d.is-animated.weather-sunny .weather-3d-sun { animation:color3d-sun-glow 7s ease-in-out infinite; }
+
+@keyframes color3d-sun-glow { 0%,100%{filter:drop-shadow(0 0 2px rgba(255,190,54,.24))} 50%{filter:drop-shadow(0 0 7px rgba(255,190,54,.48))} }
+@keyframes color3d-cloud-drift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(1.2px)} }
+@keyframes color3d-rain-fall { 0%{transform:translateY(-2px);opacity:.25} 25%{opacity:1} 100%{transform:translateY(7px);opacity:.18} }
+@keyframes color3d-shower-pulse { 0%,20%{transform:translateY(-1px);opacity:0} 32%,66%{opacity:1} 82%,100%{transform:translateY(6px);opacity:0} }
+@keyframes color3d-snow-drift { 0%,100%{transform:translate(0,-2px) rotate(-5deg)} 50%{transform:translate(2px,4px) rotate(5deg)} }
+@keyframes color3d-hail-bounce { 0%,100%{transform:translateY(-2px)} 48%{transform:translateY(4px)} 65%{transform:translateY(0)} }
+@keyframes color3d-lightning { 0%,8%,14%,100%{opacity:1;filter:brightness(1)} 9%,12%{opacity:.25;filter:brightness(1.8)} }
+@keyframes color3d-fog-a { 0%,100%{transform:translateX(-2px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
+@keyframes color3d-fog-b { 0%,100%{transform:translateX(2px);opacity:.9} 50%{transform:translateX(-2px);opacity:.65} }
+@keyframes color3d-wind { 0%,100%{transform:translateX(-1px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
+@media (prefers-reduced-motion:reduce) {
+  .weather-pack-color3d.is-animated *,
+  .weather-pack-color3d.is-animated *::before,
+  .weather-pack-color3d.is-animated *::after { animation:none!important; transition:none!important; }
+}
+
 /* Minimal line: transparent interiors, consistent rounded strokes and no emoji fallback. */
 .weather-pack-outline { color:#c7d4e4; }
 .weather-pack-outline .weather-sun-disc,
