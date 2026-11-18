@@ -2515,6 +2515,31 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
   const isFog = category === "fog";
   const isWind = category === "windy";
   const unknown = category === "unknown";
+  // Keep the pre-existing artwork for Minimalist and Flat byte-for-byte in appearance.
+  if (pack !== "color3d") {
+    const legacyHasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
+    return (
+      <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
+        <svg className="weather-art" viewBox="0 0 128 96" aria-hidden="true">
+          <defs>
+            <linearGradient id="weather-sun-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff5a6"/><stop offset=".55" stopColor="#ffbd36"/><stop offset="1" stopColor="#ed7624"/></linearGradient>
+            <linearGradient id="weather-cloud-3d" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#dce7f2"/><stop offset="1" stopColor="#8c9caf"/></linearGradient>
+            <linearGradient id="weather-rain-3d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8ce5ff"/><stop offset="1" stopColor="#1689e5"/></linearGradient>
+            <linearGradient id="weather-snow-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset="1" stopColor="#64c9ff"/></linearGradient>
+          </defs>
+          {legacyHasSun && <g className="weather-sun"><circle className="weather-sun-disc" cx="43" cy="34" r="17"/><path className="weather-sun-rays" d="M43 5v9m0 40v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4"/></g>}
+          {hasCloud && <g className="weather-cloud">{category === "overcast" && <path className="weather-cloud-back" d="M17 54h66a15 15 0 0 0 0-30 23 23 0 0 0-44-4A18 18 0 0 0 17 54Z"/>}<path className="weather-cloud-front" d={cloudPath}/><path className="weather-cloud-highlight" d="M39 34c5-9 17-12 27-7"/></g>}
+          {hasRain && <g className="weather-precipitation weather-rain-drops"><path d={category === "drizzle" ? "m42 69-3 7m22-7-3 7m22-7-3 7" : category === "heavy_rain" ? "m34 68-7 16m25-16-7 16m25-16-7 16m25-16-7 16" : "m39 68-6 14m25-14-6 14m25-14-6 14"}/></g>}
+          {hasSnow && <g className="weather-precipitation weather-snowflakes">{[39,64,89].map(x=><g key={x} className="weather-snowflake" transform={`translate(${x} 76)`}><path d="M0-9V9M-7-4 7 4M7-4-7 4M0-9l-2 3m2-3 2 3M0 9l-2-3m2 3 2-3"/></g>)}</g>}
+          {isStorm && <g className="weather-precipitation weather-lightning"><path d="m66 62-17 19h12l-5 15 27-29H68l8-13Z"/><path className="weather-lightning-secondary" d="m91 67-9 12h8l-3 10 16-17H93l5-7Z"/></g>}
+          {isHail && <g className="weather-precipitation weather-hailstones">{[39,64,89].map((x,i)=><circle key={x} className={`weather-hailstone weather-hailstone-${i}`} cx={x} cy="78" r="5"/>)}</g>}
+          {isFog && <g className="weather-precipitation weather-fog-lines"><path d="M20 36h88M10 51h105M21 66h87M34 81h61"/></g>}
+          {isWind && <g className="weather-wind-lines"><path className="weather-wind-stream weather-wind-stream-a" pathLength="100" d="M13 35h79c18 0 18-20 4-20-7 0-10 5-10 9"/><path className="weather-wind-stream weather-wind-stream-b" pathLength="100" d="M8 53h103c16 0 16 20 2 20-7 0-10-5-10-9"/><path className="weather-wind-stream" pathLength="100" d="M27 70h35"/></g>}
+          {unknown && <g className="weather-unknown-mark"><circle cx="64" cy="48" r="32"/><path d="M53 38c1-13 23-15 25-1 1 9-12 12-13 21m0 9v1"/></g>}
+        </svg>
+      </div>
+    );
+  }
   const gradientId = React.useId().replace(/:/g, "");
   const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   return (
