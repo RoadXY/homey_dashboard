@@ -2547,9 +2547,9 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
       <svg className="weather-art" viewBox="0 0 128 104" aria-hidden="true">
         <defs>
           <linearGradient id={`${gradientId}-sun`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fffbd0"/><stop offset=".34" stopColor="#ffe45a"/><stop offset=".72" stopColor="#ffad19"/><stop offset="1" stopColor="#ed6422"/></linearGradient>
-          <linearGradient id={`${gradientId}-cloud`} x1=".15" y1="0" x2=".75" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".32" stopColor="#eaf4ff"/><stop offset=".68" stopColor="#b8cbe2"/><stop offset="1" stopColor="#7187a6"/></linearGradient>
-          <linearGradient id={`${gradientId}-cloud-side`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d7e6f7"/><stop offset="1" stopColor="#7186a5"/></linearGradient>
-          <linearGradient id={`${gradientId}-rain`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#c7f7ff"/><stop offset=".4" stopColor="#32c5ff"/><stop offset="1" stopColor="#0873d5"/></linearGradient>
+          <linearGradient id={`${gradientId}-cloud`} x1=".15" y1="0" x2=".75" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".28" stopColor="#eff8ff"/><stop offset=".62" stopColor="#c4e1fa"/><stop offset="1" stopColor="#6f9ac8"/></linearGradient>
+          <linearGradient id={`${gradientId}-cloud-side`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d9edff"/><stop offset="1" stopColor="#638ab8"/></linearGradient>
+          <linearGradient id={`${gradientId}-rain`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#e0fcff"/><stop offset=".38" stopColor="#39caff"/><stop offset="1" stopColor="#0875dc"/></linearGradient>
           <linearGradient id={`${gradientId}-snow`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#b9f0ff"/><stop offset="1" stopColor="#48aeea"/></linearGradient>
           <linearGradient id={`${gradientId}-fog`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" stopOpacity=".95"/><stop offset="1" stopColor="#8ecce9" stopOpacity=".35"/></linearGradient>
           <radialGradient id={`${gradientId}-ice`} cx=".3" cy=".2" r=".8"><stop offset="0" stopColor="#ffffff"/><stop offset=".45" stopColor="#d9f7ff"/><stop offset="1" stopColor="#4c9fd4"/></radialGradient>
