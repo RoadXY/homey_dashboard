@@ -1536,7 +1536,7 @@ body {
 .weather-symbol.weather-pack-flat .weather-art { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
 
 /* Colourful 3D: layered gradients, highlights and depth without emoji/font dependencies. */
-.weather-pack-color3d { color:#dce8f6; filter:drop-shadow(0 4px 5px rgba(0,0,0,.28)); }
+.weather-pack-color3d { color:#eaf4ff; opacity:1; filter:saturate(1.18) drop-shadow(0 4px 5px rgba(0,0,0,.3)); }
 /* Per-instance SVG gradient is applied inline by WeatherIconArtwork. */
 .weather-pack-color3d .weather-sun-disc { stroke:#f7a928; stroke-width:1.5; }
 .weather-pack-color3d .weather-sun-rays { stroke:#ffbd36; stroke-width:4; }
