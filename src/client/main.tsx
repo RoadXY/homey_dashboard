@@ -2515,6 +2515,7 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
   const isFog = category === "fog";
   const isWind = category === "windy";
   const unknown = category === "unknown";
+  const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   // Keep the pre-existing artwork for Minimalist and Flat byte-for-byte in appearance.
   if (pack !== "color3d") {
     const legacyHasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
@@ -2541,7 +2542,6 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
     );
   }
   const gradientId = React.useId().replace(/:/g, "");
-  const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   return (
     <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
       <svg className="weather-art" viewBox="0 0 128 104" aria-hidden="true">
