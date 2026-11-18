@@ -60,3 +60,26 @@ The standard pack now distinguishes the following weather conditions:
 All new artwork and animation selectors are scoped to `.weather-pack-animated`. Do not move these rules to generic `.weather-symbol` selectors: the alternate icon packs share category class names but must retain their own appearance and motion. Existing color values for the Standard pack are unchanged.
 
 The global `animateIcons` setting still disables these animations, and the existing `prefers-reduced-motion` rule must continue to disable motion. Keep movement restrained: animate only the relevant precipitation/mist details, never the complete icon.
+
+
+## Colourful 3D pack implementation — 18 November 2026
+
+The user approved the Colourful (3D) mockup and requested implementation of this pack only. The implementation lives in `WeatherIconArtwork` and `.weather-pack-color3d` styles. Do not change the legacy Standard (`animated`) artwork or the `outline` / `flat` packs as part of this work.
+
+The 3D pack uses per-instance SVG gradient/filter IDs generated with React `useId`, glossy multi-stop materials, highlights, shaded cloud layers, dimensional precipitation, and soft drop shadows. Preserve unique IDs if adding new SVG definitions; do not introduce shared hard-coded gradient IDs in the rendered SVG.
+
+The global `animateIcons` preference selects the same 3D artwork in either state: `is-static` must remain visually identical but without motion, while `is-animated` adds restrained detail-level movement. Animation is limited to the relevant parts (sun glow, cloud drift, rain drops, fog bands, snowflakes, hailstones, lightning and wind ribbons); never move the entire icon. Respect `prefers-reduced-motion`.
+
+Category artwork distinctions in the 3D pack:
+
+- `sunny`: dimensional golden sun.
+- `mostly_sunny` / `partly_cloudy`: sun partially behind a cloud; `mostly_sunny` includes a secondary cloud layer.
+- `cloudy` / `overcast`: single cloud versus overlapping cloud layers.
+- `fog`: independent soft mist bands.
+- `drizzle`, `rain`, `heavy_rain`, `showers`: different droplet counts/sizes; showers includes sun and intermittent precipitation.
+- `thunderstorm`: layered warm lightning bolts.
+- `hail`: glossy ice spheres with highlights and restrained bouncing in animated mode.
+- `snow`, `snow_showers`, `sleet`: dimensional snowflakes; snow showers includes sun; sleet mixes rain drops and snowflakes.
+- `windy`: softly shaded flowing ribbons.
+
+All 3D styling and animation selectors must remain scoped to `.weather-pack-color3d`. The alternate packs and Standard must not inherit these gradients, shadows, or animations. Static and animated states are both controlled by the existing `animateIcons` setting; do not add a separate persisted setting for this pack.
