@@ -1572,7 +1572,7 @@ body {
 .weather-pack-color3d .weather-3d-hail-ball { stroke:#6aa6d0; stroke-width:1; }
 .weather-pack-color3d .weather-3d-hail-glint { fill:#fff; opacity:.92; stroke:none; }
 .weather-pack-color3d .weather-3d-wind-ribbon { fill:none; stroke-width:6; stroke-linecap:round; filter:drop-shadow(0 2px 2px rgba(45,146,202,.35)); }
-.weather-pack-color3d .weather-3d-unknown circle { fill:url(#weather-cloud-3d); stroke:#8197b3; stroke-width:2; }
+.weather-pack-color3d .weather-3d-unknown circle { stroke:#8197b3; stroke-width:2; }
 .weather-pack-color3d .weather-3d-unknown path { fill:none; stroke:#526b89; stroke-width:4; stroke-linecap:round; }
 
 /* Animated variant: motion is applied to individual weather details only.
