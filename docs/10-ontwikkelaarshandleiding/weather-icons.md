@@ -90,3 +90,8 @@ All 3D styling and animation selectors must remain scoped to `.weather-pack-colo
 A visual review of the deployed dashboard found that the selected Colourful (3D) pack looked too muted: cloud materials read as grey/outline artwork, and the preview and dashboard did not communicate the intended colourful, dimensional treatment strongly enough.
 
 The first colour adjustment alone was insufficient. Follow-up inspection found a CSS specificity issue: the base `.weather-symbol` opacity rule was stronger than the single-class `.weather-pack-color3d` rule, so the intended full opacity was not actually applied. The correction now uses `.weather-symbol.weather-pack-color3d` to ensure full opacity and stronger saturation for this pack only. The artwork itself still needs a visual comparison against the approved mockup; do not treat this CSS correction as completion of the mockup implementation. The settings preview and live dashboard share the same `WeatherIcon` renderer.
+
+
+## 3D sunny-cloud layering correction — 18 November 2026
+
+The sunny/cloudy combination icons must render one opaque foreground cloud over the sun. The shared base selector `.weather-art .weather-cloud-front` applied `fill-opacity:.13`; because the 3D rules only set the inline gradient fill and stroke, the cloud remained translucent and allowed the sun to show through. The 3D-specific selector `.weather-pack-color3d .weather-art .weather-cloud-front` now explicitly sets `fill-opacity:1` (and the same for any rear cloud). The extra rear cloud previously drawn for `mostly_sunny` has been removed, leaving one foreground cloud. The sun remains behind the cloud in SVG paint order. Keep these overrides scoped to `color3d`; other icon packs retain their existing appearance.
