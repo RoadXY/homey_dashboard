@@ -51,21 +51,21 @@ async function checkTcp(host: string, port: number): Promise<void> {
   });
 }
 
-export async function testHomeyConnection(input: unknown): Promise<{ status: "success" | "warning" | "failed"; error?: string }> {
-  if (!input || typeof input !== "object") return { status: "failed", error: "Vul een Homey-adres en API-token in." };
+export async function testHomeyConnection(input: unknown): Promise<{ status: "success" | "warning" | "failed"; errorKey?: string }> {
+  if (!input || typeof input !== "object") return { status: "failed", errorKey: "homeyConnection.fillFields" };
   const value = input as { address?: unknown; token?: unknown };
   if (typeof value.address !== "string" || !value.address.trim() || typeof value.token !== "string" || !value.token.trim()) {
     return { status: "failed", error: "Vul een Homey-adres en API-token in." };
   }
   const { host, port } = normalizeAddress(value.address);
   try { await checkTcp(host, port); }
-  catch { return { status: "failed", error: "Het Homey-netwerkendpoint is niet bereikbaar." }; }
+  catch { return { status: "failed", errorKey: "homeyConnection.networkFailed" }; }
   try {
     const api = await HomeyAPI.createLocalAPI({ address: value.address.trim(), token: value.token.trim(), debug: null });
     await api.devices.getDevices();
     return { status: "success" };
   } catch {
-    return { status: "warning", error: "Homey is bereikbaar, maar de API-token-authenticatie is mislukt." };
+    return { status: "warning", errorKey: "homeyConnection.authFailed" };
   }
 }
 
