@@ -1892,3 +1892,21 @@ body {
 
 .app-tooltip-trigger[data-tooltip=""]::before,
 .app-tooltip-trigger[data-tooltip=""]::after { display:none; }
+
+
+/* Homey connection card */
+.homey-connection-heading { width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:0; border:0; background:transparent; color:inherit; text-align:left; cursor:pointer; }
+.homey-connection-heading h2 { display:flex; align-items:center; gap:10px; margin:0; }
+.homey-connection-body { display:grid; gap:14px; margin-top:18px; }
+.homey-connection-body .setting-row { display:grid; grid-template-columns:minmax(150px, 220px) minmax(0,1fr); align-items:center; gap:16px; }
+.homey-connection-body input { min-width:0; width:100%; }
+.homey-connection-body .setting-description { margin:0; }
+.homey-connection-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.homey-discovery-list { display:grid; gap:6px; max-height:180px; overflow:auto; }
+.homey-discovery-list button { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--settings-border); border-radius:10px; background:var(--settings-surface); color:var(--settings-text); text-align:left; cursor:pointer; }
+.homey-discovery-list button span { color:var(--settings-muted); font-size:.9em; }
+.homey-test-status { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0; padding:10px 12px; border-radius:9px; }
+.homey-test-status.success { color:var(--settings-status-success-text, #237a46); background:var(--settings-status-success-bg, rgba(35,122,70,.10)); }
+.homey-test-status.warning { color:var(--settings-status-warning-text, #9a6900); background:var(--settings-status-warning-bg, rgba(201,145,0,.12)); }
+.homey-test-status.failed { color:var(--settings-status-error-text, #b33b36); background:var(--settings-status-error-bg, rgba(179,59,54,.10)); }
+@media (max-width:700px) { .homey-connection-body .setting-row { grid-template-columns:1fr; gap:7px; } }
