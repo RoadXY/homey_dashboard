@@ -30,14 +30,16 @@ export async function saveHomeyConnectionConfig(input: unknown): Promise<HomeyCo
   const token = typeof value.token === "string" && value.token.trim() ? value.token.trim() : current.token;
   if (address && !/^(https?:\/\/)?[a-zA-Z0-9.-]+(?::\d{1,5})?$/.test(address)) throw new Error("Vul een geldig IP-adres of hostnaam in.");
   await mkdir(dirname(configFile), { recursive: true });
-  await writeFile(configFile, JSON.stringify({ address, token }, null, 2) + "\n", { mode: 0o600 });\n  await chmod(configFile, 0o600);
+  await writeFile(configFile, JSON.stringify({ address, token }, null, 2) + "\n", { mode: 0o600 });
+  await chmod(configFile, 0o600);
   return { address, tokenConfigured: Boolean(token) };
 }
 
 function normalizeAddress(address: string): { host: string; port: number } {
+  const isHttps = address.trim().startsWith("https://");
   const stripped = address.trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
   const [host, portText] = stripped.split(":");
-  return { host, port: portText ? Number(portText) : 443 };
+  return { host, port: portText ? Number(portText) : isHttps ? 443 : 80 };
 }
 
 async function checkTcp(host: string, port: number): Promise<void> {
