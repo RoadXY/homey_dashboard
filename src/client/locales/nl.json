@@ -463,5 +463,18 @@
   "measurement.count": "Aantal meetwaardetegels",
   "measurement.searchLogicVariables": "Zoek Logic-variabelen",
   "measurement.noLogicVariablesFound": "Geen Logic-variabelen gevonden",
-  "measurement.logicVariableResults": "resultaten"
+  "measurement.logicVariableResults": "resultaten",
+  "homeyConnection.title": "Homey-verbinding",
+  "homeyConnection.address": "Homey IP-adres",
+  "homeyConnection.apiToken": "API-token",
+  "homeyConnection.tokenConfigured": "Er is al een token opgeslagen",
+  "homeyConnection.tokenPlaceholder": "Plak je Homey API-token",
+  "homeyConnection.tokenHelp": "Maak een API-token aan in de Homey Developer Tools. Het token wordt veilig op de server opgeslagen en nooit teruggestuurd naar deze pagina.",
+  "homeyConnection.discover": "Zoek Homey-apparaten",
+  "homeyConnection.test": "Verbinding testen",
+  "homeyConnection.success": "Succesvol",
+  "homeyConnection.warning": "Waarschuwing",
+  "homeyConnection.failed": "Mislukt",
+  "homeyConnection.testFailed": "De verbindingstest kon niet worden uitgevoerd.",
+  "homeyConnection.noDevices": "Geen Homey-apparaten gevonden."
 }
