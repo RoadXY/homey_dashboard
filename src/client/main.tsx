@@ -2138,10 +2138,13 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     let active = true;
     Promise.all([
       fetch("/api/settings/general").then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<GeneralSettings>; }),
-      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("settings.statusError"); return r.json() as Promise<SystemStatus>; })
-    ]).then(([prefs, system]) => {
+      fetch("/api/system/status").then(r => { if (!r.ok) throw new Error("settings.statusError"); return r.json() as Promise<SystemStatus>; }),
+      fetch("/api/settings/homey-connection").then(r => { if (!r.ok) throw new Error("settings.loadError"); return r.json() as Promise<{address:string;tokenConfigured:boolean}>; })
+    ]).then(([prefs, system, homey]) => {
       if (!active) return;
       setSettings(prefs); setSaved(prefs); setStatus(system);
+      setHomeyAddress(homey.address); setSavedHomeyAddress(homey.address); setHomeyTokenConfigured(homey.tokenConfigured);
+      setHomeyCardOpen(system.homey.state !== "online");
     }).catch(error => { if (active) setMessage(error instanceof Error ? translate(locale, error.message) : translate(locale, "settings.loadDataError")); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -2221,8 +2224,12 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     try {
       const response = await fetch("/api/settings/general", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(settings) });
       const result = await response.json() as GeneralSettings & { error?: string };
-      if (!response.ok) throw new Error(translate(locale, "settings.saveError"));
-      setSettings(result); setSaved(result); setMessage(translate(locale, "settings.saved"));
+      if (!response.ok) throw new Error(result.error ?? translate(locale, "settings.saveError"));
+      const homeyResponse = await fetch("/api/settings/homey-connection", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address: homeyAddress, ...(homeyToken.trim() ? { token: homeyToken } : {}) }) });
+      const homeyResult = await homeyResponse.json() as {address:string;tokenConfigured:boolean;error?:string};
+      if (!homeyResponse.ok) throw new Error(homeyResult.error ?? translate(locale, "settings.saveError"));
+      setSettings(result); setSaved(result); setSavedHomeyAddress(homeyResult.address); setHomeyAddress(homeyResult.address);
+      setHomeyToken(""); setHomeyTokenConfigured(homeyResult.tokenConfigured); setMessage(translate(locale, "settings.saved"));
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => {
