@@ -400,3 +400,17 @@ De kaart **Homey-verbinding** maakt deel uit van de pagina Algemene instellingen
 ### Lokalisatie en validatie
 
 Alle zichtbare teksten, foutmeldingen, statussen, lege resultaten en instructies zijn beschikbaar in Nederlands en Engels via de bestaande i18n-bestanden. Gebruik bestaande semantische statuskleuren en gedeelde settings-control/button-klassen; introduceer geen afwijkend kleur- of interactiesysteem.
+
+
+### Implementatiestatus Homey-verbinding (19 november 2026)
+
+De eerste implementatie staat op `phase_1_foundation`:
+
+- De Homey-configuratie staat los van de algemene voorkeuren in `data/homey-connection.json`. Het token wordt niet via de instellingen-API teruggestuurd; de GET-response bevat alleen `address` en `tokenConfigured`.
+- Opslaan bewaart het bestaande token wanneer het tokenveld leeg blijft. De configuratie wordt met bestandsmodus `0600` geschreven en de rechten worden ook bij vervolgwrites afgedwongen.
+- De nieuwe instellingenroutes zijn beschermd met de bestaande instellingen-sessie: GET/POST `/api/settings/homey-connection`, POST `/api/settings/homey-connection/test` en POST `/api/settings/homey-connection/discover`.
+- De test controleert eerst TCP-bereikbaarheid (HTTP standaardpoort 80, HTTPS 443 of een expliciet opgegeven poort) en probeert daarna via `homey-api` apparaten op te halen. Dit levert Success, Warning of Failed op zonder token of ruwe API-fout aan de browser te geven.
+- De General Settings-kaart ondersteunt adres/tokeninvoer, test, discovery-resultaten en automatische discovery wanneer nog geen adres is opgeslagen. Het openen van de kaart wordt niet door een succesvolle test teruggedraaid.
+- `src/server/homey.ts` leest de opgeslagen configuratie; de oude `HOMEY_ADDRESS`- en `HOMEY_API_KEY`-omgevingsvariabelen worden niet meer gebruikt.
+
+**Validatie / aandachtspunt:** de discovery-helper vraagt DNS-SRV-records op voor `_homey._tcp.local` via de DNS-resolver van het Ubuntu-systeem. Dit is afhankelijk van de lokale resolver en is nog niet bewezen als multicast mDNS-discovery op ieder netwerk. Controleer dit op de doelserver; als de resolver geen mDNS doorgeeft, moet de discovery worden vervangen door expliciete UDP-multicast DNS-SD. De repositorywijzigingen zijn nog niet lokaal gebouwd of door CI gevalideerd; beschouw de feature daarom als geïmplementeerd-in-afwachting-van-validatie.
