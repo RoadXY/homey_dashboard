@@ -2101,6 +2101,14 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   };
   const leaveSettings = () => { if (confirmLeaveCurrentPage()) onBack(); };
   const [settings, setSettings] = React.useState<GeneralSettings>(initialSettings);
+  const [homeyAddress, setHomeyAddress] = React.useState("");
+  const [savedHomeyAddress, setSavedHomeyAddress] = React.useState("");
+  const [homeyToken, setHomeyToken] = React.useState("");
+  const [homeyTokenConfigured, setHomeyTokenConfigured] = React.useState(false);
+  const [homeyCardOpen, setHomeyCardOpen] = React.useState(true);
+  const [homeyDiscovery, setHomeyDiscovery] = React.useState<Array<{name:string;address:string}>>([]);
+  const [homeyBusy, setHomeyBusy] = React.useState(false);
+  const [homeyTest, setHomeyTest] = React.useState<{status:"success"|"warning"|"failed";error?:string}|null>(null);
   const [saved, setSaved] = React.useState<GeneralSettings>(initialSettings);
   const [status, setStatus] = React.useState<SystemStatus | null>(null);
   const [busy, setBusy] = React.useState(true);
@@ -2112,7 +2120,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const [tokenBusy, setTokenBusy] = React.useState(false);
   const [tokenMessage, setTokenMessage] = React.useState("");
   const [tokenCopyStatus, setTokenCopyStatus] = React.useState<"success" | "error" | "">("");
-  const dirty = JSON.stringify(settings) !== JSON.stringify(saved);
+  const dirty = JSON.stringify(settings) !== JSON.stringify(saved) || homeyAddress !== savedHomeyAddress || Boolean(homeyToken.trim());
   React.useEffect(() => { setGeneralDirty(dirty); }, [dirty]);
   React.useEffect(() => { onDirtyChange(generalDirty || quickActionDirty || measurementDirty || notificationDirty || weatherDirty); }, [generalDirty, quickActionDirty, measurementDirty, notificationDirty, weatherDirty, onDirtyChange]);
   React.useEffect(() => {
@@ -2254,6 +2262,22 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <option value="60">1 min</option><option value="300">5 min</option><option value="900">15 min</option><option value="1800">30 min</option>
         </select></label>
         <p className="setting-description">{t("settings.notificationTimeoutDescription")}</p>
+      </section>
+      <section className="settings-card homey-connection-card">
+        <button type="button" className="homey-connection-heading settings-interactive" aria-expanded={homeyCardOpen} onClick={() => setHomeyCardOpen(open => !open)}>
+          <h2><span className="mdi mdi-home-network-outline" aria-hidden="true"/> {t("homeyConnection.title")}</h2><span className="mdi mdi-chevron-down" aria-hidden="true"/>
+        </button>
+        {homeyCardOpen && <div className="homey-connection-body">
+          <label className="setting-row"><span>{t("homeyConnection.address")}</span><input className="settings-interactive settings-interactive--text" value={homeyAddress} onChange={event => {setHomeyAddress(event.target.value);setHomeyTest(null);}} placeholder="192.168.1.100"/></label>
+          <label className="setting-row"><span>{t("homeyConnection.apiToken")}</span><input className="settings-interactive settings-interactive--text" type="password" autoComplete="new-password" value={homeyToken} onChange={event => {setHomeyToken(event.target.value);setHomeyTest(null);}} placeholder={homeyTokenConfigured ? t("homeyConnection.tokenConfigured") : t("homeyConnection.tokenPlaceholder")}/></label>
+          <p className="setting-description">{t("homeyConnection.tokenHelp")}</p>
+          <div className="homey-connection-actions">
+            <button type="button" className="secondary-button settings-interactive" disabled={homeyBusy} onClick={async()=>{setHomeyBusy(true);try{const response=await fetch("/api/settings/homey-connection/discover",{method:"POST"});const data=await response.json() as {devices?:Array<{name:string;address:string}>};setHomeyDiscovery(data.devices??[]);}catch{setHomeyDiscovery([]);}finally{setHomeyBusy(false);}}}>{t("homeyConnection.discover")}</button>
+            <button type="button" className="secondary-button settings-interactive" disabled={homeyBusy || !homeyAddress.trim() || (!homeyToken.trim() && !homeyTokenConfigured)} onClick={async()=>{setHomeyBusy(true);setHomeyTest(null);try{const response=await fetch("/api/settings/homey-connection/test",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address:homeyAddress,token:homeyToken})});setHomeyTest(await response.json() as {status:"success"|"warning"|"failed";error?:string});}catch{setHomeyTest({status:"failed",error:t("homeyConnection.testFailed")});}finally{setHomeyBusy(false);}}}>{t("homeyConnection.test")}</button>
+          </div>
+          {homeyDiscovery.length>0 && <div className="homey-discovery-list">{homeyDiscovery.map(device=><button type="button" key={device.address} className="settings-interactive" onClick={()=>{setHomeyAddress(device.address);setHomeyTest(null);}}><strong>{device.name || "Homey"}</strong><span>{device.address}</span></button>)}</div>}
+          {homeyTest && <p className={"homey-test-status " + homeyTest.status} role="status"><strong>{t("homeyConnection."+homeyTest.status)}</strong>{homeyTest.error && <span>{homeyTest.error}</span>}</p>}
+        </div>}
       </section>
       <section className="settings-card system-card weather-token-card">
         <h2><span>⌑</span>{t("settings.weatherTokens")}</h2>
