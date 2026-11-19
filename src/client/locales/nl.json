@@ -476,5 +476,8 @@
   "homeyConnection.warning": "Waarschuwing",
   "homeyConnection.failed": "Mislukt",
   "homeyConnection.testFailed": "De verbindingstest kon niet worden uitgevoerd.",
-  "homeyConnection.noDevices": "Geen Homey-apparaten gevonden."
+  "homeyConnection.noDevices": "Geen Homey-apparaten gevonden.",
+  "homeyConnection.fillFields": "Vul een Homey-adres en API-token in.",
+  "homeyConnection.networkFailed": "Het Homey-netwerkendpoint is niet bereikbaar.",
+  "homeyConnection.authFailed": "Homey is bereikbaar, maar de API-token-authenticatie is mislukt."
 }
