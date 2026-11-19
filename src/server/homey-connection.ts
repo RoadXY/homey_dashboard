@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createConnection } from "node:net";
 import { HomeyAPI } from "homey-api";
@@ -30,7 +30,7 @@ export async function saveHomeyConnectionConfig(input: unknown): Promise<HomeyCo
   const token = typeof value.token === "string" && value.token.trim() ? value.token.trim() : current.token;
   if (address && !/^(https?:\/\/)?[a-zA-Z0-9.-]+(?::\d{1,5})?$/.test(address)) throw new Error("Vul een geldig IP-adres of hostnaam in.");
   await mkdir(dirname(configFile), { recursive: true });
-  await writeFile(configFile, JSON.stringify({ address, token }, null, 2) + "\n", { mode: 0o600 });
+  await writeFile(configFile, JSON.stringify({ address, token }, null, 2) + "\n", { mode: 0o600 });\n  await chmod(configFile, 0o600);
   return { address, tokenConfigured: Boolean(token) };
 }
 
