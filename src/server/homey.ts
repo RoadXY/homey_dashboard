@@ -1,5 +1,6 @@
 import { HomeyAPI } from "homey-api";
 import { EventEmitter } from "node:events";
+import { readHomeyConnectionConfig } from "./homey-connection.js";
 
 type HomeyConnectionState = "not-connected" | "connecting" | "online" | "offline";
 
@@ -110,23 +111,12 @@ async function setupRealtimeSubscriptions(): Promise<void> {
   homeyRealtime.emit("connected", { subscriptions, changedAt: new Date().toISOString() });
 }
 
-function getConfig() {
-  return {
-    address: process.env.HOMEY_ADDRESS?.trim(),
-    token: process.env.HOMEY_API_KEY?.trim(),
-  };
-}
-
 export function getHomeyStatus(): HomeySnapshot {
-  const { address, token } = getConfig();
-  if (!address || !token) {
-    return { ...snapshot, state: "not-connected" };
-  }
   return { ...snapshot };
 }
 
 async function connectHomeyInternal(): Promise<HomeySnapshot> {
-  const { address, token } = getConfig();
+  const { address, token } = await readHomeyConnectionConfig();
 
   if (!address || !token) {
     snapshot = {
