@@ -365,3 +365,38 @@ Dashboard Quick Action cards intentionally have no tooltip because their labels 
 
 
 Weather icon preview implementation note: keep `AppTooltip` on the outer `.weather-pack-preview-tooltip` wrapper, never directly on `.weather-pack-preview-item`. The inner tile uses `overflow:hidden` to clip icon artwork and would also clip tooltip pseudo-elements. The outer wrapper stays overflow-visible, receives the hover/focus stacking order, and uses bottom placement so the tooltip remains within the preview panel. Preserve this wrapper structure when changing the preview grid.
+
+
+## Homey-verbinding in Algemene instellingen
+
+De kaart **Homey-verbinding** maakt deel uit van de pagina Algemene instellingen en volgt de bestaande instellingenactievoet en het bestaande Settings Design System.
+
+### Gedrag en interactie
+
+- De kaart bevat een Homey-IP-adres, een API-tokenveld, een mDNS-zoekactie voor `_homey._tcp`, een testactie en instructies om een Homey API-token aan te maken.
+- Als nog geen Homey-configuratie is opgeslagen, start de applicatie automatisch mDNS-discovery.
+- De gebruiker kan een gevonden Homey selecteren; de selectie vult het IP-adresveld, maar wordt pas actief na Opslaan.
+- IP-adres en API-token worden samen met de overige algemene instellingen via dezelfde Opslaan-/Annuleren-actie beheerd.
+- Testen gebruikt de actuele invoervelden, verandert geen opgeslagen configuratie en toont een statusbadge met de bestaande semantische kleuren: groen **Succesvol**, geel **Warning** of rood **Failed**.
+- **Warning** betekent dat het IP-adres/netwerkendpoint bereikbaar is, maar de API-token-authenticatie niet slaagt. **Failed** betekent dat het IP-adres/endpoint niet bereikbaar is of dat de verbinding anderszins niet tot stand komt.
+- De kaart mag bij het opnieuw openen van Algemene instellingen standaard inklappen als de laatst opgeslagen verbinding succesvol is. Een expliciete handmatige keuze van de gebruiker heeft daarna voorrang: wanneer de gebruiker de kaart opent, blijft deze open totdat de gebruiker haar zelf sluit. Een mislukte of onvolledige verbinding laat de kaart standaard open.
+- De algemene statusmelding “Niet opgeslagen wijzigingen” wordt niet getoond. De bestaande Opslaan- en Annuleren-knoppen blijven staan.
+
+### Persistente configuratie en geheimen
+
+- `HOMEY_ADDRESS` en `HOMEY_API_KEY` zijn geen configuratiebron meer en worden genegeerd.
+- Homey-adres en API-token worden als eigen persistente configuratie opgeslagen onder de bestaande data-directory. Het bestand en het token moeten alleen leesbaar zijn voor de applicatiegebruiker (mode `0600`).
+- Het API-token is een geheim: geef het nooit terug in API-responses, logs, foutmeldingen of client-side statusobjecten. De instellingen-API retourneert hoogstens een boolean die aangeeft of een token is geconfigureerd.
+- Een leeg tokenveld bij het wijzigen van andere instellingen mag een reeds opgeslagen token niet wissen. Het token wordt alleen vervangen wanneer de gebruiker een nieuw token invult; een expliciete verwijderactie moet apart worden aangeboden indien verwijderen later gewenst is.
+- De verbindings-test valideert eerst netwerkbereikbaarheid en daarna API-authenticatie, zodat een bereikbaar IP-adres met een onjuist token als Warning kan worden weergegeven.
+
+### mDNS-discovery
+
+- Gebruik DNS-SD service type `_homey._tcp.local` voor lokale discovery.
+- Toon gevonden apparaten als selecteerbare resultaten met ten minste apparaatnaam en IPv4-adres. Toon geen verzonnen resultaten; een lege lijst krijgt een duidelijke lege-status.
+- Discovery is een expliciete actie na de eerste automatische zoekactie; een zoekactie mag geen reeds ingevoerd adres overschrijven totdat de gebruiker een resultaat selecteert.
+- Houd rekening met meerdere Homey-apparaten op hetzelfde netwerk en met discovery-timeouts.
+
+### Lokalisatie en validatie
+
+Alle zichtbare teksten, foutmeldingen, statussen, lege resultaten en instructies zijn beschikbaar in Nederlands en Engels via de bestaande i18n-bestanden. Gebruik bestaande semantische statuskleuren en gedeelde settings-control/button-klassen; introduceer geen afwijkend kleur- of interactiesysteem.
