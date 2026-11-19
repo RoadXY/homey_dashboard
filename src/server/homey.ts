@@ -152,7 +152,7 @@ async function connectHomeyInternal(): Promise<HomeySnapshot> {
     snapshot = {
       state: "offline",
       checkedAt: new Date().toISOString(),
-      error: error instanceof Error ? error.message : "Onbekende verbindingsfout",
+      error: "Homey-verbinding mislukt. Controleer adres, API-token en netwerktoegang.",
       deviceCount: null,
       zoneCount: null,
     };
@@ -190,7 +190,7 @@ function startRealtimeWatchdog(): void {
           ...snapshot,
           state: "offline",
           checkedAt: new Date().toISOString(),
-          error: error instanceof Error ? error.message : "Realtimeverbinding met Homey verbroken",
+          error: "De realtimeverbinding met Homey is verbroken.",
         };
         homeyRealtime.emit("disconnected", { changedAt: new Date().toISOString() });
       }
