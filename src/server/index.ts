@@ -7,6 +7,7 @@ import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotif
 import { createApiNotification, deleteApiNotification, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, ApiNotificationValidationError, type ApiNotificationInput } from "./notifications-api.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
 import { readDashboardSettings, saveDashboardSettings } from "./settings.js";
+import { discoverHomeys, readHomeyConnectionConfig, readHomeyConnectionPublic, saveHomeyConnectionConfig, testHomeyConnection } from "./homey-connection.js";
 import { createWeatherToken, isValidWeatherToken, listWeatherTokens, revokeWeatherToken } from "./weather-tokens.js";
 import { readQuickActions, saveQuickActions } from "./quick-actions.js";
 import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.js";
@@ -218,6 +219,35 @@ app.post("/api/settings/general", async (request, reply) => {
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Instellingen opslaan mislukt." });
   }
+});
+
+app.get("/api/settings/homey-connection", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return readHomeyConnectionPublic();
+});
+
+app.post("/api/settings/homey-connection", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const saved = await saveHomeyConnectionConfig(request.body);
+    broadcastSettingsUpdated("general");
+    const connection = await connectHomey();
+    return { ...saved, connection };
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Homey-configuratie opslaan mislukt." });
+  }
+});
+
+app.post("/api/settings/homey-connection/test", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  const body = request.body as { address?: unknown; token?: unknown } | undefined;
+  const stored = await readHomeyConnectionConfig();
+  return testHomeyConnection({ address: body?.address, token: typeof body?.token === "string" && body.token.trim() ? body.token : stored.token });
+});
+
+app.post("/api/settings/homey-connection/discover", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  return { devices: await discoverHomeys() };
 });
 
 app.get("/api/dashboard/quick-actions", async () => ({ actions: await readQuickActions() }));
