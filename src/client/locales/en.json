@@ -463,5 +463,18 @@
   "measurement.count": "Number of measurement tiles",
   "measurement.searchLogicVariables": "Search Logic variables",
   "measurement.noLogicVariablesFound": "No Logic variables found",
-  "measurement.logicVariableResults": "results"
+  "measurement.logicVariableResults": "results",
+  "homeyConnection.title": "Homey connection",
+  "homeyConnection.address": "Homey IP address",
+  "homeyConnection.apiToken": "API token",
+  "homeyConnection.tokenConfigured": "A token is already stored",
+  "homeyConnection.tokenPlaceholder": "Paste your Homey API token",
+  "homeyConnection.tokenHelp": "Create an API token in Homey Developer Tools. The token is stored securely on the server and is never sent back to this page.",
+  "homeyConnection.discover": "Discover Homey devices",
+  "homeyConnection.test": "Test connection",
+  "homeyConnection.success": "Success",
+  "homeyConnection.warning": "Warning",
+  "homeyConnection.failed": "Failed",
+  "homeyConnection.testFailed": "The connection test could not be completed.",
+  "homeyConnection.noDevices": "No Homey devices found."
 }
