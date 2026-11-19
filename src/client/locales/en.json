@@ -476,5 +476,8 @@
   "homeyConnection.warning": "Warning",
   "homeyConnection.failed": "Failed",
   "homeyConnection.testFailed": "The connection test could not be completed.",
-  "homeyConnection.noDevices": "No Homey devices found."
+  "homeyConnection.noDevices": "No Homey devices found.",
+  "homeyConnection.fillFields": "Enter a Homey address and API token.",
+  "homeyConnection.networkFailed": "The Homey network endpoint is not reachable.",
+  "homeyConnection.authFailed": "Homey is reachable, but API token authentication failed."
 }
