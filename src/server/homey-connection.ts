@@ -55,7 +55,7 @@ export async function testHomeyConnection(input: unknown): Promise<{ status: "su
   if (!input || typeof input !== "object") return { status: "failed", errorKey: "homeyConnection.fillFields" };
   const value = input as { address?: unknown; token?: unknown };
   if (typeof value.address !== "string" || !value.address.trim() || typeof value.token !== "string" || !value.token.trim()) {
-    return { status: "failed", error: "Vul een Homey-adres en API-token in." };
+    return { status: "failed", errorKey: "homeyConnection.fillFields" };
   }
   const { host, port } = normalizeAddress(value.address);
   try { await checkTcp(host, port); }
