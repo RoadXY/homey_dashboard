@@ -2153,6 +2153,15 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     setWeatherTokens(data.tokens);
   };
   React.useEffect(() => { void loadWeatherTokens().catch(error => setTokenMessage(error instanceof Error ? error.message : t("settings.tokensLoadError"))); }, []);
+  React.useEffect(() => {
+    if (busy || homeyAddress) return;
+    let active = true;
+    fetch("/api/settings/homey-connection/discover", { method: "POST" })
+      .then(response => response.ok ? response.json() as Promise<{devices?:Array<{name:string;address:string}>}> : Promise.resolve({devices:[]}))
+      .then(result => { if (active) setHomeyDiscovery(result.devices ?? []); })
+      .catch(() => { if (active) setHomeyDiscovery([]); });
+    return () => { active = false; };
+  }, [busy, homeyAddress]);
   const createToken = async () => {
     setTokenBusy(true); setTokenMessage(""); setTokenCopyStatus(""); setNewToken("");
     try {
@@ -2275,7 +2284,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
             <button type="button" className="secondary-button settings-interactive" disabled={homeyBusy} onClick={async()=>{setHomeyBusy(true);try{const response=await fetch("/api/settings/homey-connection/discover",{method:"POST"});const data=await response.json() as {devices?:Array<{name:string;address:string}>};setHomeyDiscovery(data.devices??[]);}catch{setHomeyDiscovery([]);}finally{setHomeyBusy(false);}}}>{t("homeyConnection.discover")}</button>
             <button type="button" className="secondary-button settings-interactive" disabled={homeyBusy || !homeyAddress.trim() || (!homeyToken.trim() && !homeyTokenConfigured)} onClick={async()=>{setHomeyBusy(true);setHomeyTest(null);try{const response=await fetch("/api/settings/homey-connection/test",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address:homeyAddress,token:homeyToken})});setHomeyTest(await response.json() as {status:"success"|"warning"|"failed";error?:string});}catch{setHomeyTest({status:"failed",error:t("homeyConnection.testFailed")});}finally{setHomeyBusy(false);}}}>{t("homeyConnection.test")}</button>
           </div>
-          {homeyDiscovery.length>0 && <div className="homey-discovery-list">{homeyDiscovery.map(device=><button type="button" key={device.address} className="settings-interactive" onClick={()=>{setHomeyAddress(device.address);setHomeyTest(null);}}><strong>{device.name || "Homey"}</strong><span>{device.address}</span></button>)}</div>}
+          {(homeyDiscovery.length>0 || (!homeyAddress && !busy)) && <div className="homey-discovery-list">{homeyDiscovery.length>0 ? homeyDiscovery.map(device=><button type="button" key={device.address} className="settings-interactive" onClick={()=>{setHomeyAddress(device.address);setHomeyTest(null);}}><strong>{device.name || "Homey"}</strong><span>{device.address}</span></button>) : <p className="setting-description">{t("homeyConnection.noDevices")}</p>}</div>}
           {homeyTest && <p className={"homey-test-status " + homeyTest.status} role="status"><strong>{t("homeyConnection."+homeyTest.status)}</strong>{homeyTest.error && <span>{homeyTest.error}</span>}</p>}
         </div>}
       </section>
