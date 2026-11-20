@@ -115,6 +115,11 @@ export function getHomeyStatus(): HomeySnapshot {
   return { ...snapshot };
 }
 
+function normalizeHomeyApiAddress(address: string): string {
+  const value = address.trim();
+  return /^https?:\\/\\//i.test(value) ? value : `http://${value}`;
+}
+
 async function connectHomeyInternal(): Promise<HomeySnapshot> {
   const { address, token } = await readHomeyConnectionConfig();
 
@@ -132,7 +137,7 @@ async function connectHomeyInternal(): Promise<HomeySnapshot> {
   snapshot = { ...snapshot, state: "connecting", error: null };
 
   try {
-    api = await HomeyAPI.createLocalAPI({ address, token, debug: null });
+    api = await HomeyAPI.createLocalAPI({ address: normalizeHomeyApiAddress(address), token, debug: null });
     const [devices, zones] = await Promise.all([
       api.devices.getDevices(),
       api.zones.getZones(),
