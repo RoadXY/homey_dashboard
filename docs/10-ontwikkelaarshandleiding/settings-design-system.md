@@ -423,3 +423,11 @@ Homey discovery now sends a DNS-SD PTR query for `_homey._tcp.local` directly ov
 The default production Compose file uses host networking so the process can join the host's mDNS multicast network. The advanced bridge Compose file is supported for dashboard/API use, but mDNS multicast discovery is not guaranteed to cross Docker bridge networks. A user choosing bridge mode should configure the Homey address manually if discovery does not work.
 
 The discovery implementation has a bounded three-second scan and returns only instances for which PTR, SRV and IPv4 A records were received. Live discovery against the target Homey and Ubuntu host remains a required deployment verification; a green CI build alone does not prove multicast reception.
+
+
+### Homey-discovery: voortgang en herkenbare resultaten (20 november 2026)
+
+- Tijdens automatische en handmatige mDNS-discovery gebruikt de interface dezelfde gele status-tag **Zoeken… / Searching…**. De tag heeft een statusrol en een subtiel pulserend indicatiepunt.
+- Na een scan worden gevonden apparaten onder een expliciete kop weergegeven. Elke selecteerbare resultaatregel toont de servicenaam duidelijk als primaire tekst, het IP-adres met een herkenbaar label en een expliciete actie **Selecteren / Select**.
+- De scanindicator verdwijnt zodra de discovery-aanroep is afgerond; bij nul resultaten verschijnt daarna de bestaande lege-status.
+- Alle nieuwe zichtbare teksten zijn opgenomen in zowel de Nederlandse als Engelse locale.
