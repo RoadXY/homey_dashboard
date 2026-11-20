@@ -2229,10 +2229,22 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
       const result = await response.json() as GeneralSettings & { error?: string };
       if (!response.ok) throw new Error(result.error ?? translate(locale, "settings.saveError"));
       const homeyResponse = await fetch("/api/settings/homey-connection", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address: homeyAddress, ...(homeyToken.trim() ? { token: homeyToken } : {}) }) });
-      const homeyResult = await homeyResponse.json() as {address:string;tokenConfigured:boolean;error?:string};
+      const homeyResult = await homeyResponse.json() as {address:string;tokenConfigured:boolean;connection?:HomeyStatus;error?:string};
       if (!homeyResponse.ok) throw new Error(homeyResult.error ?? translate(locale, "settings.saveError"));
       setSettings(result); setSaved(result); setSavedHomeyAddress(homeyResult.address); setHomeyAddress(homeyResult.address);
-      setHomeyToken(""); setHomeyTokenConfigured(homeyResult.tokenConfigured); setMessage(translate(locale, "settings.saved"));
+      setHomeyToken(""); setHomeyTokenConfigured(homeyResult.tokenConfigured);
+      if (homeyResult.connection) {
+        setStatus(current => current ? { ...current, homey: homeyResult.connection! , updatedAt: new Date().toISOString() } : current);
+        if (homeyResult.connection.state === "online") {
+          setHomeyTest({status:"success"});
+          setMessage(translate(locale, "settings.saved"));
+        } else {
+          setHomeyTest({status:"failed",errorKey:"homeyConnection.connectAfterSaveFailed"});
+          setMessage(translate(locale, "homeyConnection.connectAfterSaveFailed"));
+        }
+      } else {
+        setMessage(translate(locale, "settings.saved"));
+      }
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
   const leave = () => {
