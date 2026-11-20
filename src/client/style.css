@@ -1921,3 +1921,7 @@ body {
 .homey-discovery-device strong { font-size:.98rem; color:var(--settings-text); }
 .homey-discovery-device small { color:var(--settings-muted); font-size:.85rem; }
 .homey-discovery-select { flex:0 0 auto; color:var(--settings-accent); font-size:.82rem; font-weight:600; }
+
+.settings-nav.homey-unavailable-nav { opacity:.58; cursor:not-allowed; pointer-events:auto; }
+.settings-nav.homey-unavailable-nav:hover { background:transparent; border-color:transparent; box-shadow:none; }
+.settings-nav-lock { margin-left:auto; flex:0 0 auto; font-size:17px; opacity:.85; }
