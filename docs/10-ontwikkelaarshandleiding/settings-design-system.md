@@ -446,3 +446,8 @@ Wanneer `status.homey.state` niet `online` is, blijft alleen **Algemeen** beschi
 ### Homey-discoveryresultaten als afzonderlijke kaart (20 november 2026)
 
 Gevonden Homey-apparaten worden niet langer als losse lijst onder de knoppen getoond. De resultaten staan in een visueel zelfstandige kaart met de duidelijke kop **Gevonden Homey's / Discovered Homeys**. De individuele Homey-resultaten blijven selecteerbare regels met apparaatnaam, IP-adres en de actie Selecteren. De kaart wordt alleen getoond wanneer er resultaten zijn; de lege status blijft een gewone beschrijving.
+
+
+### Verbindingsstatus direct na opslaan bijwerken (20 november 2026)
+
+De `POST /api/settings/homey-connection`-response bevat naast de publieke configuratie ook het resultaat van `connectHomey()`. De General Settings-pagina verwerkt dit resultaat direct in de lokale `SystemStatus`-state. Hierdoor wordt de statuskaart onmiddellijk bijgewerkt na Save, zonder herladen. Bij een niet-online resultaat blijft de configuratie opgeslagen, maar toont de pagina expliciet dat de daadwerkelijke verbinding is mislukt; de serverstatus wordt niet als succesvol voorgesteld.
