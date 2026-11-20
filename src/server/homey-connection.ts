@@ -2,7 +2,7 @@ import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { createConnection } from "node:net";
 import { HomeyAPI } from "homey-api";
-import { resolveSrv, resolve4 } from "node:dns/promises";
+import dgram from "node:dgram";
 
 export type HomeyConnectionConfig = { address: string; token: string };
 export type HomeyConnectionPublic = { address: string; tokenConfigured: boolean };
@@ -69,13 +69,118 @@ export async function testHomeyConnection(input: unknown): Promise<{ status: "su
   }
 }
 
+type MdnsRecord = { name: string; type: number; data: Buffer };
+
+function readDnsName(packet: Buffer, offset: number): { name: string; nextOffset: number } {
+  const labels: string[] = [];
+  let cursor = offset;
+  let nextOffset = -1;
+  let jumps = 0;
+  while (cursor < packet.length && jumps++ < 32) {
+    const length = packet[cursor];
+    if (length === 0) {
+      cursor += 1;
+      if (nextOffset < 0) nextOffset = cursor;
+      break;
+    }
+    if ((length & 0xc0) === 0xc0) {
+      if (cursor + 1 >= packet.length) throw new Error("Invalid DNS compression pointer");
+      const pointer = ((length & 0x3f) << 8) | packet[cursor + 1];
+      if (nextOffset < 0) nextOffset = cursor + 2;
+      cursor = pointer;
+      continue;
+    }
+    if ((length & 0xc0) !== 0 || cursor + 1 + length > packet.length) throw new Error("Invalid DNS label");
+    labels.push(packet.toString("utf8", cursor + 1, cursor + 1 + length));
+    cursor += length + 1;
+  }
+  if (nextOffset < 0) throw new Error("Incomplete DNS name");
+  return { name: labels.join("."), nextOffset };
+}
+
+function parseMdnsRecords(packet: Buffer): MdnsRecord[] {
+  if (packet.length < 12) return [];
+  const questions = packet.readUInt16BE(4);
+  const total = packet.readUInt16BE(6) + packet.readUInt16BE(8) + packet.readUInt16BE(10);
+  let offset = 12;
+  for (let i = 0; i < questions; i++) {
+    const name = readDnsName(packet, offset);
+    offset = name.nextOffset + 4;
+  }
+  const records: MdnsRecord[] = [];
+  for (let i = 0; i < total && offset + 10 <= packet.length; i++) {
+    const owner = readDnsName(packet, offset);
+    offset = owner.nextOffset;
+    const type = packet.readUInt16BE(offset);
+    const dataLength = packet.readUInt16BE(offset + 8);
+    offset += 10;
+    if (offset + dataLength > packet.length) break;
+    records.push({ name: owner.name.toLowerCase(), type, data: packet.subarray(offset, offset + dataLength) });
+    offset += dataLength;
+  }
+  return records;
+}
+
+function encodeMdnsQuery(serviceType: string): Buffer {
+  const labels = serviceType.split(".");
+  const question = Buffer.concat([
+    ...labels.map(label => Buffer.concat([Buffer.from([Buffer.byteLength(label)]), Buffer.from(label)])),
+    Buffer.from([0, 0, 12, 0, 1]),
+  ]);
+  const header = Buffer.alloc(12);
+  header.writeUInt16BE(1, 4);
+  return Buffer.concat([header, question]);
+}
+
 export async function discoverHomeys(): Promise<Array<{ name: string; address: string }>> {
-  try {
-    const services = await resolveSrv("_homey._tcp.local");
-    const results = await Promise.all(services.map(async service => {
-      const addresses = await resolve4(service.name).catch(() => [] as string[]);
-      return addresses.map(address => ({ name: service.name.replace(/\._homey\._tcp\.local\.?$/i, ""), address }));
-    }));
-    return results.flat();
-  } catch { return []; }
+  const serviceType = "_homey._tcp.local";
+  return new Promise(resolve => {
+    const socket = dgram.createSocket({ type: "udp4", reuseAddr: true });
+    const ptrTargets = new Set<string>();
+    const services = new Map<string, { host: string; port: number }>();
+    const addresses = new Map<string, string>();
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      try { socket.close(); } catch { /* socket may already be closed */ }
+      const results: Array<{ name: string; address: string }> = [];
+      for (const instance of ptrTargets) {
+        const service = services.get(instance);
+        if (!service) continue;
+        const address = addresses.get(service.host);
+        if (!address) continue;
+        results.push({
+          name: instance.replace(new RegExp("\\._homey\\._tcp\\.local\\.?$", "i"), ""),
+          address,
+        });
+      }
+      resolve(results);
+    };
+    const timer = setTimeout(finish, 3000);
+    socket.on("error", finish);
+    socket.on("message", packet => {
+      try {
+        for (const record of parseMdnsRecords(packet)) {
+          if (record.type === 12) {
+            const target = readDnsName(record.data, 0).name.toLowerCase();
+            if (record.name === serviceType) ptrTargets.add(target);
+          } else if (record.type === 33 && record.data.length >= 7) {
+            const target = readDnsName(record.data, 6).name.toLowerCase();
+            services.set(record.name, { host: target, port: record.data.readUInt16BE(4) });
+          } else if (record.type === 1 && record.data.length === 4) {
+            addresses.set(record.name, [...record.data].join("."));
+          }
+        }
+      } catch { /* Ignore malformed or unrelated multicast packets. */ }
+    });
+    socket.bind(5353, "0.0.0.0", () => {
+      try {
+        socket.addMembership("224.0.0.251");
+        socket.setMulticastTTL(255);
+        socket.send(encodeMdnsQuery(serviceType), 5353, "224.0.0.251");
+      } catch { finish(); }
+    });
+  });
 }
