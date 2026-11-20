@@ -8,9 +8,8 @@ services:
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
-      PORT: 3000
-    ports:
-      - "5173:3000"
+      PORT: ${DASHBOARD_PORT:-5173}
+    network_mode: host
     volumes:
       - dashboard_data:/app/data
     restart: unless-stopped
