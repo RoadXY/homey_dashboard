@@ -483,5 +483,6 @@
   "homeyConnection.searching": "Zoeken…",
   "homeyConnection.foundDevices": "Gevonden Homey-apparaten",
   "homeyConnection.ipAddress": "IP-adres",
-  "homeyConnection.select": "Selecteren"
+  "homeyConnection.select": "Selecteren",
+  "settings.homeyRequired": "Beschikbaar zodra Homey verbonden is"
 }
