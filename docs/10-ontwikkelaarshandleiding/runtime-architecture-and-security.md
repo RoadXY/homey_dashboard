@@ -56,7 +56,8 @@ The development Compose file is different: it runs the development scripts, moun
 | `SETTINGS_PIN` | PIN protecting Settings access | Configure a unique value outside Git. |
 | `DATA_DIR` | Persistent application data directory | Defaults to `./data`; production uses `/app/data`. |
 | `HOST` | Backend bind address | Defaults to `0.0.0.0`. |
-| `PORT` | Backend port | Defaults to `3000`. |
+| `PORT` | Backend listen port | Defaults to `3000`; production Compose sets `5173`. Usually managed by the selected production Compose file. |
+| `DASHBOARD_PORT` | Host-facing production port | Defaults to `5173`; set to another free port such as `5180` when needed. |
 | `WEATHER_API_TOKEN` | Legacy static token compatibility | Keep secret; managed tokens are preferred. |
 
 Use `.env.example` only as a template. Never put real credentials, tokens, session keys or personal data in repository configuration files.
