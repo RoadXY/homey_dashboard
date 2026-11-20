@@ -481,7 +481,7 @@
   "homeyConnection.networkFailed": "Het Homey-netwerkendpoint is niet bereikbaar.",
   "homeyConnection.authFailed": "Homey is bereikbaar, maar de API-token-authenticatie is mislukt.",
   "homeyConnection.searching": "Zoeken…",
-  "homeyConnection.foundDevices": "Gevonden Homey-apparaten",
+  "homeyConnection.foundDevices": "Gevonden Homey's",
   "homeyConnection.ipAddress": "IP-adres",
   "homeyConnection.select": "Selecteren",
   "settings.homeyRequired": "Beschikbaar zodra Homey verbonden is"
