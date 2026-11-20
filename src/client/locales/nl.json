@@ -484,5 +484,6 @@
   "homeyConnection.foundDevices": "Gevonden Homey's",
   "homeyConnection.ipAddress": "IP-adres",
   "homeyConnection.select": "Selecteren",
-  "settings.homeyRequired": "Beschikbaar zodra Homey verbonden is"
+  "settings.homeyRequired": "Beschikbaar zodra Homey verbonden is",
+  "homeyConnection.connectAfterSaveFailed": "Instellingen zijn opgeslagen, maar de daadwerkelijke Homey-verbinding is mislukt. Controleer de status hieronder."
 }
