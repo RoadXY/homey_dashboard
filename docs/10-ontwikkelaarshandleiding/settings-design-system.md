@@ -431,3 +431,8 @@ The discovery implementation has a bounded three-second scan and returns only in
 - Na een scan worden gevonden apparaten onder een expliciete kop weergegeven. Elke selecteerbare resultaatregel toont de servicenaam duidelijk als primaire tekst, het IP-adres met een herkenbaar label en een expliciete actie **Selecteren / Select**.
 - De scanindicator verdwijnt zodra de discovery-aanroep is afgerond; bij nul resultaten verschijnt daarna de bestaande lege-status.
 - Alle nieuwe zichtbare teksten zijn opgenomen in zowel de Nederlandse als Engelse locale.
+
+
+### Homey API-adresnormalisatie (20 november 2026)
+
+De discovery-service levert Homey-adressen als kale IPv4-adressen. Voor `HomeyAPI.createLocalAPI()` normaliseren zowel de verbindingstest als de centrale Homey-client een adres zonder schema naar `http://<adres>`. Een expliciet `http://`- of `https://`-schema blijft behouden. Hiermee gebruiken de test en de daadwerkelijke Homey-verbinding dezelfde URL-vorm.
