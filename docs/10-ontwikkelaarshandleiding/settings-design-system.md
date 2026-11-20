@@ -436,3 +436,8 @@ The discovery implementation has a bounded three-second scan and returns only in
 ### Homey API-adresnormalisatie (20 november 2026)
 
 De discovery-service levert Homey-adressen als kale IPv4-adressen. Voor `HomeyAPI.createLocalAPI()` normaliseren zowel de verbindingstest als de centrale Homey-client een adres zonder schema naar `http://<adres>`. Een expliciet `http://`- of `https://`-schema blijft behouden. Hiermee gebruiken de test en de daadwerkelijke Homey-verbinding dezelfde URL-vorm.
+
+
+### Settings-navigatie bij ontbrekende Homey-verbinding (20 november 2026)
+
+Wanneer `status.homey.state` niet `online` is, blijft alleen **Algemeen** beschikbaar in het instellingenmenu. Quick actions, Meldingen, Meetwaardetegels en Weer worden disabled weergegeven, krijgen een sloticoon en tonen bij aanwijzen de toelichting dat Homey verbonden moet zijn. De knoppen zijn ook via toetsenbord als disabled herkenbaar. Zodra de Homey-status online is, worden de navigatie-items weer actief.
