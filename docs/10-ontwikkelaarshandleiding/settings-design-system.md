@@ -451,3 +451,8 @@ Gevonden Homey-apparaten worden niet langer als losse lijst onder de knoppen get
 ### Verbindingsstatus direct na opslaan bijwerken (20 november 2026)
 
 De `POST /api/settings/homey-connection`-response bevat naast de publieke configuratie ook het resultaat van `connectHomey()`. De General Settings-pagina verwerkt dit resultaat direct in de lokale `SystemStatus`-state. Hierdoor wordt de statuskaart onmiddellijk bijgewerkt na Save, zonder herladen. Bij een niet-online resultaat blijft de configuratie opgeslagen, maar toont de pagina expliciet dat de daadwerkelijke verbinding is mislukt; de serverstatus wordt niet als succesvol voorgesteld.
+
+
+### Systeemstatus bovenaan Algemene instellingen (20 november 2026)
+
+De volledige kaart **Systeemstatus** staat direct onder de paginabeschrijving bovenaan de pagina Algemene instellingen. Zo is de Homey-verbindingsstatus, dashboardservice en systeemgezondheid meteen zichtbaar zonder naar het einde van de pagina te scrollen. De kaart behoudt de bestaande statusindicatoren en vertalingen.
