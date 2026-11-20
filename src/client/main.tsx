@@ -2275,6 +2275,13 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
     <section className="settings-content">
       {page === "general" ? <>
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
+      <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
+        <div className="status-table">
+          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
+          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
+        </div>
+      </section>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
           <label className="setting-row"><span>{t("settings.dashboardLanguage")}</span><select className="settings-interactive" value={settings.language} onChange={e=>update("language",e.target.value)}><option value="automatic">{t("settings.automaticHomeyLanguage")}</option>{availableLanguages.map(language => <option key={language.id} value={language.id}>{language.label}</option>)}</select></label>
@@ -2327,13 +2334,6 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           {weatherTokens.length === 0 ? <p>{t("settings.tokensEmpty")}</p> : weatherTokens.map(token => <div className="token-list-row" key={token.id}><div><strong>{token.name}</strong><small>•••• {token.lastFour} · {new Date(token.createdAt).toLocaleString(locale)}</small></div><button className="secondary-button settings-interactive" disabled={tokenBusy} onClick={() => void revokeToken(token.id)}>{t("settings.tokenRevoke")}</button></div>)}
         </div>
         <p className="save-message" role="status">{tokenMessage}</p>
-      </section>
-      <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
-        <div className="status-table">
-          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
-          <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
-        </div>
       </section>
       <div className="settings-bottom"><span className="save-message" role="status">{busy?t("settings.loading"):message}</span><button className="primary-button settings-interactive" disabled={!dirty || busy} onClick={()=>void save()}>{t("settings.save")}</button></div>
       </> : page === "quick-actions" || page === "measurement-tiles" ? <DashboardSettingsPage page={page} locale={locale} t={t} onDirtyChange={page === "quick-actions" ? setQuickActionDirty : setMeasurementDirty} /> : page === "notifications" ? <NotificationSettingsPage locale={locale} onDirtyChange={setNotificationDirty} /> : page === "weather" ? <WeatherSettingsPage locale={locale} t={t} onDirtyChange={setWeatherDirty} onNavigate={() => navigateSettings("general","/settings/general")} /> : null}
