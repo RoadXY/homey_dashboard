@@ -441,3 +441,8 @@ De discovery-service levert Homey-adressen als kale IPv4-adressen. Voor `HomeyAP
 ### Settings-navigatie bij ontbrekende Homey-verbinding (20 november 2026)
 
 Wanneer `status.homey.state` niet `online` is, blijft alleen **Algemeen** beschikbaar in het instellingenmenu. Quick actions, Meldingen, Meetwaardetegels en Weer worden disabled weergegeven, krijgen een sloticoon en tonen bij aanwijzen de toelichting dat Homey verbonden moet zijn. De knoppen zijn ook via toetsenbord als disabled herkenbaar. Zodra de Homey-status online is, worden de navigatie-items weer actief.
+
+
+### Homey-discoveryresultaten als afzonderlijke kaart (20 november 2026)
+
+Gevonden Homey-apparaten worden niet langer als losse lijst onder de knoppen getoond. De resultaten staan in een visueel zelfstandige kaart met de duidelijke kop **Gevonden Homey's / Discovered Homeys**. De individuele Homey-resultaten blijven selecteerbare regels met apparaatnaam, IP-adres en de actie Selecteren. De kaart wordt alleen getoond wanneer er resultaten zijn; de lege status blijft een gewone beschrijving.
