@@ -483,5 +483,6 @@
   "homeyConnection.searching": "Searching…",
   "homeyConnection.foundDevices": "Discovered Homey devices",
   "homeyConnection.ipAddress": "IP address",
-  "homeyConnection.select": "Select"
+  "homeyConnection.select": "Select",
+  "settings.homeyRequired": "Available when Homey is connected"
 }
