@@ -481,7 +481,7 @@
   "homeyConnection.networkFailed": "The Homey network endpoint is not reachable.",
   "homeyConnection.authFailed": "Homey is reachable, but API token authentication failed.",
   "homeyConnection.searching": "Searching…",
-  "homeyConnection.foundDevices": "Discovered Homey devices",
+  "homeyConnection.foundDevices": "Discovered Homeys",
   "homeyConnection.ipAddress": "IP address",
   "homeyConnection.select": "Select",
   "settings.homeyRequired": "Available when Homey is connected"
