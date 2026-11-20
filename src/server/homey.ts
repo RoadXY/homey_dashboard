@@ -117,7 +117,7 @@ export function getHomeyStatus(): HomeySnapshot {
 
 function normalizeHomeyApiAddress(address: string): string {
   const value = address.trim();
-  return /^https?:\\/\\//i.test(value) ? value : `http://${value}`;
+  return value.toLowerCase().startsWith("http://") || value.toLowerCase().startsWith("https://") ? value : `http://${value}`;
 }
 
 async function connectHomeyInternal(): Promise<HomeySnapshot> {
