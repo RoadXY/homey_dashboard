@@ -37,7 +37,7 @@ export async function saveHomeyConnectionConfig(input: unknown): Promise<HomeyCo
 
 function normalizeHomeyApiAddress(address: string): string {
   const value = address.trim();
-  return /^https?:\\/\\//i.test(value) ? value : `http://${value}`;
+  return value.toLowerCase().startsWith("http://") || value.toLowerCase().startsWith("https://") ? value : `http://${value}`;
 }
 
 function normalizeAddress(address: string): { host: string; port: number } {
