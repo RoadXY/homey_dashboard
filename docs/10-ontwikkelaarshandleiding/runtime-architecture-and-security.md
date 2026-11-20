@@ -36,16 +36,16 @@ The production Dockerfile uses two stages:
 1. **Build stage:** installs dependencies and runs `npm run build`.
 2. **Runtime stage:** installs production dependencies only and copies the compiled output, notification configuration and default locale files.
 
-The runtime process runs as the unprivileged `node` user. The application listens on `HOST` (default `0.0.0.0`) and `PORT` (default `3000`).
+The runtime process runs as the unprivileged `node` user. The application listens on `HOST` (default `0.0.0.0`) and `PORT` (default `3000` for development; production Compose sets it to `5173`). The Docker health check follows the runtime `PORT` value.
 
-The production Compose configuration:
+Production has two mutually exclusive Compose files:
 
-- builds the `runtime` target;
-- maps host port `5173` to container port `3000`;
-- mounts the named `dashboard_data` volume at `/app/data`;
-- restarts the service unless it is stopped.
+- `compose.prod.yaml` is the recommended default and uses `network_mode: host`. It listens directly on the Ubuntu host at `DASHBOARD_PORT` (default `5173`). There is no Docker port mapping in host mode.
+- `compose.prod.bridge.yaml` is the advanced alternative. It uses a dedicated bridge network, listens on container port `5173`, and publishes `${DASHBOARD_PORT:-5173}:5173`.
 
-The development Compose file is different: it runs the development scripts, mounts the source tree and exposes Vite on port `5173`. Do not treat its volume and port configuration as the production deployment model.
+Both files mount the same named `dashboard_data` volume at `/app/data` and restart the service unless it is stopped. Do not combine the two production files: host mode and bridge mode are alternatives. To use bridge mode, change the Compose file used by the deployment/update command to `compose.prod.bridge.yaml`. If using an externally managed Docker network, replace the declared `dashboard_network` with the desired network and set `external: true`.
+
+Set `DASHBOARD_PORT` in the local `.env` file to change the host-facing port. For host mode it is also the application listen port; for bridge mode it is the published host port while the container continues listening on `5173`. Example: `DASHBOARD_PORT=5180`.
 
 ## 3. Environment variables
 
