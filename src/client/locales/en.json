@@ -479,5 +479,9 @@
   "homeyConnection.noDevices": "No Homey devices found.",
   "homeyConnection.fillFields": "Enter a Homey address and API token.",
   "homeyConnection.networkFailed": "The Homey network endpoint is not reachable.",
-  "homeyConnection.authFailed": "Homey is reachable, but API token authentication failed."
+  "homeyConnection.authFailed": "Homey is reachable, but API token authentication failed.",
+  "homeyConnection.searching": "Searching…",
+  "homeyConnection.foundDevices": "Discovered Homey devices",
+  "homeyConnection.ipAddress": "IP address",
+  "homeyConnection.select": "Select"
 }
