@@ -35,6 +35,11 @@ export async function saveHomeyConnectionConfig(input: unknown): Promise<HomeyCo
   return { address, tokenConfigured: Boolean(token) };
 }
 
+function normalizeHomeyApiAddress(address: string): string {
+  const value = address.trim();
+  return /^https?:\\/\\//i.test(value) ? value : `http://${value}`;
+}
+
 function normalizeAddress(address: string): { host: string; port: number } {
   const isHttps = address.trim().startsWith("https://");
   const stripped = address.trim().replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -61,7 +66,7 @@ export async function testHomeyConnection(input: unknown): Promise<{ status: "su
   try { await checkTcp(host, port); }
   catch { return { status: "failed", errorKey: "homeyConnection.networkFailed" }; }
   try {
-    const api = await HomeyAPI.createLocalAPI({ address: value.address.trim(), token: value.token.trim(), debug: null });
+    const api = await HomeyAPI.createLocalAPI({ address: normalizeHomeyApiAddress(value.address), token: value.token.trim(), debug: null });
     await api.devices.getDevices();
     return { status: "success" };
   } catch {
