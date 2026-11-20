@@ -414,3 +414,12 @@ De eerste implementatie staat op `phase_1_foundation`:
 - `src/server/homey.ts` leest de opgeslagen configuratie; de oude `HOMEY_ADDRESS`- en `HOMEY_API_KEY`-omgevingsvariabelen worden niet meer gebruikt.
 
 **Validatie / aandachtspunt:** de discovery-helper vraagt DNS-SRV-records op voor `_homey._tcp.local` via de DNS-resolver van het Ubuntu-systeem. Dit is afhankelijk van de lokale resolver en is nog niet bewezen als multicast mDNS-discovery op ieder netwerk. Controleer dit op de doelserver; als de resolver geen mDNS doorgeeft, moet de discovery worden vervangen door expliciete UDP-multicast DNS-SD. De repositorywijzigingen zijn nog niet lokaal gebouwd of door CI gevalideerd; beschouw de feature daarom als geïmplementeerd-in-afwachting-van-validatie.
+
+
+## Homey mDNS-SD discovery implementation (20 November 2026)
+
+Homey discovery now sends a DNS-SD PTR query for `_homey._tcp.local` directly over IPv4 multicast DNS (UDP port 5353, multicast address `224.0.0.251`). The response parser collects PTR, SRV and A records and maps discovered service instances to IPv4 addresses. This replaces the earlier DNS-resolver `resolveSrv()` lookup; it no longer depends on the Ubuntu unicast DNS resolver forwarding `.local` queries.
+
+The default production Compose file uses host networking so the process can join the host's mDNS multicast network. The advanced bridge Compose file is supported for dashboard/API use, but mDNS multicast discovery is not guaranteed to cross Docker bridge networks. A user choosing bridge mode should configure the Homey address manually if discovery does not work.
+
+The discovery implementation has a bounded three-second scan and returns only instances for which PTR, SRV and IPv4 A records were received. Live discovery against the target Homey and Ubuntu host remains a required deployment verification; a green CI build alone does not prove multicast reception.
