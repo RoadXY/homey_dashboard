@@ -69,7 +69,7 @@ export async function testHomeyConnection(input: unknown): Promise<{ status: "su
   }
 }
 
-type MdnsRecord = { name: string; type: number; data: Buffer };
+type MdnsRecord = { name: string; type: number; packet: Buffer; dataOffset: number; dataLength: number };
 
 function readDnsName(packet: Buffer, offset: number): { name: string; nextOffset: number } {
   const labels: string[] = [];
@@ -115,7 +115,7 @@ function parseMdnsRecords(packet: Buffer): MdnsRecord[] {
     const dataLength = packet.readUInt16BE(offset + 8);
     offset += 10;
     if (offset + dataLength > packet.length) break;
-    records.push({ name: owner.name.toLowerCase(), type, data: packet.subarray(offset, offset + dataLength) });
+    records.push({ name: owner.name.toLowerCase(), type, packet, dataOffset: offset, dataLength });
     offset += dataLength;
   }
   return records;
@@ -164,13 +164,13 @@ export async function discoverHomeys(): Promise<Array<{ name: string; address: s
       try {
         for (const record of parseMdnsRecords(packet)) {
           if (record.type === 12) {
-            const target = readDnsName(record.data, 0).name.toLowerCase();
+            const target = readDnsName(record.packet, record.dataOffset).name.toLowerCase();
             if (record.name === serviceType) ptrTargets.add(target);
-          } else if (record.type === 33 && record.data.length >= 7) {
-            const target = readDnsName(record.data, 6).name.toLowerCase();
-            services.set(record.name, { host: target, port: record.data.readUInt16BE(4) });
-          } else if (record.type === 1 && record.data.length === 4) {
-            addresses.set(record.name, [...record.data].join("."));
+          } else if (record.type === 33 && record.dataLength >= 7) {
+            const target = readDnsName(record.packet, record.dataOffset + 6).name.toLowerCase();
+            services.set(record.name, { host: target, port: record.packet.readUInt16BE(record.dataOffset + 4) });
+          } else if (record.type === 1 && record.dataLength === 4) {
+            addresses.set(record.name, [...record.packet.subarray(record.dataOffset, record.dataOffset + 4)].join("."));
           }
         }
       } catch { /* Ignore malformed or unrelated multicast packets. */ }
