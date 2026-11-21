@@ -456,3 +456,8 @@ De `POST /api/settings/homey-connection`-response bevat naast de publieke config
 ### Systeemstatus bovenaan Algemene instellingen (20 november 2026)
 
 De volledige kaart **Systeemstatus** staat direct onder de paginabeschrijving bovenaan de pagina Algemene instellingen. Zo is de Homey-verbindingsstatus, dashboardservice en systeemgezondheid meteen zichtbaar zonder naar het einde van de pagina te scrollen. De kaart behoudt de bestaande statusindicatoren en vertalingen.
+
+
+### Homey-verbinding: invoervelden en configuratiestatus (21 november 2026)
+
+De Homey IP-adres- en API-tokenvelden gebruiken dezelfde hoogte, padding, rand, afronding, achtergrond, tekstkleur en typografie als de invoer voor Weather API-tokens (`.token-create-row > input`). De Homey-status gebruikt de gele semantische waarschuwingskleuren (`--settings-warning-background`, `--settings-warning-border`, `--settings-warning-text`) wanneer het adres ontbreekt of geen API-token is geconfigureerd. De status toont dan **Niet (volledig) geconfigureerd / Not (fully) configured**. Een volledig geconfigureerde maar niet verbonden Homey behoudt de bestaande rode foutstatus; een online Homey blijft groen.
