@@ -150,7 +150,14 @@ async function connectHomeyInternal(): Promise<HomeySnapshot> {
       deviceCount: Object.keys(devices).length,
       zoneCount: Object.keys(zones).length,
     };
-    await setupRealtimeSubscriptions();
+    // The REST API connection is the source of truth for Homey availability.
+    // Realtime subscriptions are optional and must not turn a working API
+    // connection into an offline state when their WebSocket setup fails.
+    try {
+      await setupRealtimeSubscriptions();
+    } catch (error) {
+      console.warn("Homey connected, but realtime subscriptions could not be initialized", error);
+    }
     startRealtimeWatchdog();
   } catch (error) {
     api = null;
@@ -191,13 +198,9 @@ function startRealtimeWatchdog(): void {
       try {
         await setupRealtimeSubscriptions();
       } catch (error) {
-        snapshot = {
-          ...snapshot,
-          state: "offline",
-          checkedAt: new Date().toISOString(),
-          error: "De realtimeverbinding met Homey is verbroken.",
-        };
-        homeyRealtime.emit("disconnected", { changedAt: new Date().toISOString() });
+        // Keep the REST/API connection online; the watchdog will retry the
+        // realtime subscriptions on its next pass.
+        console.warn("Homey realtime subscription retry failed", error);
       }
     }
   }, 15_000);
