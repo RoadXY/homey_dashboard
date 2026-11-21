@@ -485,5 +485,6 @@
   "homeyConnection.ipAddress": "IP address",
   "homeyConnection.select": "Select",
   "settings.homeyRequired": "Available when Homey is connected",
-  "homeyConnection.connectAfterSaveFailed": "Settings were saved, but the actual Homey connection failed. Check the status below."
+  "homeyConnection.connectAfterSaveFailed": "Settings were saved, but the actual Homey connection failed. Check the status below.",
+  "settings.homeyNotFullyConfigured": "Not (fully) configured"
 }
