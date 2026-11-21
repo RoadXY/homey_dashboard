@@ -2254,6 +2254,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
   const uptime = (seconds?: number) => { if (seconds == null) return "—"; const d=Math.floor(seconds/86400), h=Math.floor(seconds%86400/3600), m=Math.floor(seconds%3600/60); return [d ? d+"d" : "", String(h).padStart(2,"0")+(locale.toLowerCase().startsWith("nl") ? "u" : "h"), String(m).padStart(2,"0")+"m"].filter(Boolean).join(" "); };
   const datePreview = settings.dateFormat === "iso" ? "2025-01-27" : settings.dateFormat === "long" ? (locale.toLowerCase().startsWith("en") ? "Monday 27 January 2025" : "maandag 27 januari 2025") : "27-01-2025";
   const homeyConnected = status?.homey.state === "online";
+  const homeyConfigured = Boolean(homeyAddress.trim() && homeyTokenConfigured);
   const languageName = (code: string) => availableLanguages.find(language => language.homeyCodes.some(homeyCode => homeyCode.toLowerCase() === code.toLowerCase()))?.label ?? homeyLanguageName(code, locale);
   return <main className={"settings-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
     <header className="settings-topbar">
@@ -2277,7 +2278,7 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
       <div className="settings-title"><p>{t("settings.subtitle")}</p></div>
       <section className="settings-card system-card"><h2><span>▤</span>{t("settings.systemStatus")}</h2>
         <div className="status-table">
-          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":"bad")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":"bad")}>{homeyConnected?t("settings.connected"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
+          <div className="status-row"><span className={"status-check "+(homeyConnected?"ok":homeyConfigured?"bad":"warning")}>{homeyConnected?"✓":"!"}</span><span>{t("settings.homeyConnection")}</span><strong className={"status-pill "+(homeyConnected?"ok":homeyConfigured?"bad":"warning")}>{homeyConnected?t("settings.connected"):!homeyConfigured?t("settings.homeyNotFullyConfigured"):status?.homey.state === "offline" ? t("homey.offline") : status?.homey.state === "connecting" ? t("homey.connecting") : status?.homey.state === "not-connected" ? t("homey.notConnected") : t("homey.unknown")}</strong><span className="status-detail">{status?.platform ?? "Homey Pro 2023"}</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
