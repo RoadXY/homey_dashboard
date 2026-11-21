@@ -461,3 +461,8 @@ De volledige kaart **Systeemstatus** staat direct onder de paginabeschrijving bo
 ### Homey-verbinding: invoervelden en configuratiestatus (21 november 2026)
 
 De Homey IP-adres- en API-tokenvelden gebruiken dezelfde hoogte, padding, rand, afronding, achtergrond, tekstkleur en typografie als de invoer voor Weather API-tokens (`.token-create-row > input`). De Homey-status gebruikt de gele semantische waarschuwingskleuren (`--settings-warning-background`, `--settings-warning-border`, `--settings-warning-text`) wanneer het adres ontbreekt of geen API-token is geconfigureerd. De status toont dan **Niet (volledig) geconfigureerd / Not (fully) configured**. Een volledig geconfigureerde maar niet verbonden Homey behoudt de bestaande rode foutstatus; een online Homey blijft groen.
+
+
+### Homey REST-status gescheiden van realtime-subscriptions (21 november 2026)
+
+De Homey-systeemstatus wordt bepaald door de basisverbinding via `HomeyAPI.createLocalAPI()` en succesvolle REST/API-opvragingen van apparaten en zones. Het initialiseren van WebSocket/realtime-subscriptions is aanvullend en mag een werkende API-verbinding niet naar `offline` terugzetten. Een fout bij de initiële subscription-setup wordt gelogd als waarschuwing; de verbinding blijft `online`. De realtime-watchdog probeert ontbrekende subscriptions periodiek opnieuw. Ook een mislukte retry verandert de basisstatus niet. Zo komt de groene verbindingstest overeen met de systeemstatus wanneer de REST API bereikbaar is, ook als realtime-events tijdelijk niet beschikbaar zijn.
