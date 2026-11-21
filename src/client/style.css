@@ -1930,3 +1930,20 @@ body {
 .homey-discovery-card h3 { margin:0; padding-bottom:9px; border-bottom:1px solid var(--settings-border); color:var(--settings-text); font-size:1rem; font-weight:700; }
 .homey-discovery-card .homey-discovery-list { max-height:220px; }
 .homey-discovery-card .homey-discovery-list button { background:var(--settings-card-background, rgba(0,0,0,.10)); }
+
+/* Homey connection fields use the same control treatment as Weather API token inputs. */
+.homey-connection-body .setting-row input {
+  display:block;
+  width:100%;
+  min-width:0;
+  height:48px;
+  padding:0 14px;
+  border:1px solid var(--settings-control-border);
+  border-radius:9px;
+  background:var(--settings-control-background);
+  color:var(--settings-control-text);
+  font:inherit;
+  font-size:16px;
+}
+.status-check.warning { background:var(--settings-warning-background); color:var(--settings-warning-text); border:1px solid var(--settings-warning-border); }
+.status-pill.warning { background:var(--settings-warning-background); color:var(--settings-warning-text); border:1px solid var(--settings-warning-border); }
