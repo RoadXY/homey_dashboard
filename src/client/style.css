@@ -1666,9 +1666,9 @@ body {
 .weather-pack-outline.weather-heavy_rain .weather-precipitation,
 .weather-pack-outline.weather-showers .weather-precipitation,
 .weather-pack-outline.weather-sleet .weather-rain-drops,
-.weather-pack-outline.weather-snow .weather-precipitation,
-.weather-pack-outline.weather-snow_showers .weather-snowflakes,
-.weather-pack-outline.weather-sleet .weather-snowflakes { animation:none; }
+.weather-pack-outline.is-animated.weather-snow .weather-precipitation,
+.weather-pack-outline.is-animated.weather-snow_showers .weather-snowflakes,
+.weather-pack-outline.is-animated.weather-sleet .weather-snowflakes { animation:none; }
 .weather-pack-outline.is-animated.weather-drizzle .weather-rain-drops { animation:outline-rain-fall 3s ease-in-out infinite; }
 .weather-pack-outline.is-animated.weather-rain .weather-rain-drops { animation:outline-rain-fall 2.2s ease-in-out infinite; }
 .weather-pack-outline.is-animated.weather-heavy_rain .weather-rain-drops { animation:outline-rain-fall 1.45s ease-in infinite; }
