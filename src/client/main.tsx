@@ -406,13 +406,13 @@ function App() {
             </div>
             <WeatherIcon category={weatherCondition?.category ?? "unknown"} label={formatWeatherCondition(weatherCondition, t)} pack={weatherValues?.settings.iconPack ?? "animated"} animate={weatherValues?.settings.animateIcons ?? true} />
           </div>
-          <div className="weather-details">
+          {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).some(id => weatherValues?.settings.sources[id]) && <div className="weather-details">
             {(["feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"] as WeatherSettingId[]).map(id => {
               const reading = weatherValues?.values[id];
               if (!weatherValues?.settings.sources[id]) return null;
               return <div key={id} className={reading?.available ? "" : "is-unavailable"}><span>{t(id === "feelsLike" ? "weatherSettings.field.feelsLikeDashboard" : "weatherSettings.field."+id)}</span><strong>{reading?.available ? formatWeatherValue(reading.value,reading.units,locale) : "—"}</strong></div>;
             })}
-          </div>
+          </div>}
         </article>
         <section className={"temperature-grid measurement-count-" + (measurementTileData?.count ?? 4)} aria-label={t("measurement.heading")}>
           {(measurementTileData?.tiles ?? []).map(tile => {
