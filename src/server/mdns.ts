@@ -179,7 +179,7 @@ function readQuestions(packet: Buffer): Array<{ name: string; type: number }> {
   return questions;
 }
 
-export export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
+export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
   const displayName = INSTANCE_PREFIX + identity.name;
   // A short stable ID suffix makes the DNS-SD instance label collision-resistant;
   // clients should show the clean TXT name to users.
