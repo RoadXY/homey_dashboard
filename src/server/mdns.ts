@@ -33,7 +33,7 @@ export function isValidInstallationName(value: unknown): value is string {
   if (typeof value !== "string") return false;
   const normalized = value.trim().replace(/\\s+/g, " ");
   return normalized.length > 0
-    && Buffer.byteLength(INSTANCE_PREFIX + normalized, "utf8") <= 63
+    && Buffer.byteLength(INSTANCE_PREFIX + normalized + " [12345678]", "utf8") <= 63
     && /^[\p{L}\p{N}][\p{L}\p{N} _-]*$/u.test(normalized);
 }
 
@@ -179,7 +179,10 @@ function readQuestions(packet: Buffer): Array<{ name: string; type: number }> {
 }
 
 export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
-  const instanceName = INSTANCE_PREFIX + identity.name;
+  const displayName = INSTANCE_PREFIX + identity.name;
+  // A short stable ID suffix makes the DNS-SD instance label collision-resistant;
+  // clients should show the clean TXT name to users.
+  const instanceName = displayName + " [" + identity.id.slice(0, 8) + "]";
   const instanceFqdn = instanceName + "." + MDNS_SERVICE_TYPE;
   const hostLabel = hostname().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/^-+|-+$/g, "").slice(0, 63) || "homey-dashboard";
   const hostName = hostLabel + ".local.";
@@ -198,7 +201,7 @@ export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
         "version=1",
         "api=/api",
         `id=${identity.id}`,
-        `name=${instanceName}`,
+        `name=${displayName}`,
       ]),
     } satisfies DnsRecord,
     addresses: addresses.map((address) => ({

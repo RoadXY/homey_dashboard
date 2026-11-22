@@ -15,14 +15,15 @@ Each installation advertises:
 |---|---|
 | Service type | `_homey-dashboard._tcp.local.` |
 | Transport | TCP |
-| Instance name | `Homey Dashboard - <friendly name>` |
+| DNS-SD instance label | `Homey Dashboard - <friendly name> [<8-char ID prefix>]` |
+| TXT `name` | Clean display name: `Homey Dashboard - <friendly name>` |
 | SRV port | The running dashboard HTTP/API port |
 | TXT `version` | `1` |
 | TXT `api` | `/api` |
 | TXT `id` | Persistent installation UUID |
 | TXT `name` | Friendly instance name |
 
-The service instance name is intended for display. The UUID is the stable identity for client-side configuration and must not be replaced by the friendly name.
+The DNS-SD instance label includes the first eight characters of the persistent UUID to make collisions highly unlikely. The Homey app should display the clean TXT `name` value, without the suffix. The full UUID is the stable identity for client-side configuration and must not be replaced by the friendly name.
 
 ## Name generation and configuration
 
@@ -36,7 +37,7 @@ DASHBOARD_INSTANCE_NAME=Woonkamer
 
 The resulting advertised instance is `Homey Dashboard - Woonkamer`. Recreate the container after changing the environment value. The UUID is retained. If the variable is later cleared, the last persisted name remains in use.
 
-The friendly name is limited so the complete service instance fits the DNS 63-byte label limit. The value is configuration and is not an authentication credential.
+The friendly name is limited so the complete service instance label, including its short UUID suffix, fits the DNS 63-byte label limit. The value is configuration and is not an authentication credential.
 
 ## Network deployment
 

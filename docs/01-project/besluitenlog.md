@@ -675,7 +675,7 @@ Bij categorieën met zon én wolken wordt de zon in pack `outline` nu met een SV
 
 ## mDNS-SD discovery and per-installation identity (22 November 2026)
 
-The user approved automatic discovery of every Homey Dashboard Docker installation by the future Homey app. The service type is `_homey-dashboard._tcp` over IPv4 mDNS/DNS-SD. Each installation advertises an instance name in the form `Homey Dashboard - <friendly name>`.
+The user approved automatic discovery of every Homey Dashboard Docker installation by the future Homey app. The service type is `_homey-dashboard._tcp` over IPv4 mDNS/DNS-SD. Each installation advertises a DNS-SD instance label in the form `Homey Dashboard - <friendly name> [<8-char ID prefix>]`. The TXT `name` field carries the clean display name without the suffix so the Homey app can show a friendly label while the DNS-SD record remains collision-resistant.
 
 A new installation generates a friendly Dutch two-word name (adjective + animal) when no name is configured. The name and a generated UUID are stored in the persistent `DATA_DIR/installation.json` file. The UUID remains stable if the name changes. Operators can override the friendly name through `DASHBOARD_INSTANCE_NAME`; the container must be recreated for the new value to be advertised. The DNS-SD TXT record exposes protocol version, API base path, installation UUID and display name; the SRV record exposes the actual application port.
 
