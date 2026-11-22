@@ -141,3 +141,12 @@ De neerslagelementen van het pack Kleurrijk (3D) zijn opnieuw uitgelijnd op de o
 De stilstaande en bewegende variant blijven exact dezelfde SVG-artwork en posities gebruiken. Alleen CSS-beweging verschilt: regen valt, buien pulseren in intensiteit, sneeuwvlokken dwarrelen duidelijker en natte sneeuw combineert vallende druppels met dwarrelende vlokken. Sneeuwbuien en natte sneeuw hebben een eigen iets afwijkend vloktempo. De bestaande 3D-kleuren, wolk, zon en overige weersymbolen blijven behouden.
 
 Praktijktest na uitrollen blijft nodig voor alle condities met de animatieschakelaar aan en uit; CI/build kan het daadwerkelijke visuele resultaat op het tablet-scherm niet bevestigen.
+
+
+## SVG-animatie behoudt de artwork-positie (22 november 2026)
+
+Bij de praktijktest bleek dat de bewegende 3D-variant neerslagelementen linksboven bij de wolk liet verschijnen, terwijl de statische variant correct was. Oorzaak: CSS-keyframes animeerden de `transform`-property op SVG-groepen die hun oorspronkelijke positie via een SVG `transform="translate(...)"` attribuut kregen. De CSS-transform overschreef daarmee de positionering.
+
+De regen-, buien-, sneeuw- en hagelanimaties gebruiken nu de afzonderlijke CSS-properties `translate` (en voor sneeuw `rotate`) in plaats van `transform`. Zo blijft de oorspronkelijke SVG-plaatsing intact en wordt alleen de lokale beweging geanimeerd. De statische en bewegende variant delen nog steeds dezelfde artwork en basisposities.
+
+Na uitrollen moet de preview opnieuw worden gecontroleerd op regen, buien, sneeuw, sneeuwbuien en natte sneeuw, met de animatieschakelaar zowel aan als uit.
