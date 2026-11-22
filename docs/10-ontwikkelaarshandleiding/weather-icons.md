@@ -25,7 +25,7 @@ The settings preview and dashboard both use `WeatherIcon`; only the preview supp
 | `outline` | Minimalistisch (lijn) / Minimal (line) | Independent artwork with consistent clean line work |
 | `flat` | Plat (modern) / Flat (modern) | Independent artwork with clear solid shapes and bright colours |
 
-The global `animateIcons` preference controls animation for every pack. Reduced-motion preferences must be respected.
+The global `animateIcons` preference controls animation for every pack. The explicit in-app switch is authoritative: when enabled, OS-level `prefers-reduced-motion` must not silently suppress the requested icon motion. When disabled, the renderer emits `is-static` and no pack animation selectors apply.
 
 ## Important implementation rule
 
@@ -104,3 +104,31 @@ A report showed that no 3D animations were visible in either the settings previe
 The 3D stylesheet previously included a `prefers-reduced-motion: reduce` rule that forcibly set every descendant animation to `none !important`. This could silently defeat the explicit in-app switch on systems/browsers configured to reduce motion. The rule has been removed for the 3D pack: the explicit dashboard switch now controls whether `is-animated` or `is-static` is applied. Other icon packs' existing reduced-motion behavior remains unchanged. Cloud drift has also been increased from 1.2px to 3px so the movement is easier to notice at preview and dashboard sizes.
 
 Accessibility decision: the explicit in-app animation switch is treated as the user's direct choice for this feature. Users who prefer no motion can turn it off; do not silently override an enabled switch based on the OS preference.
+
+
+## Weather icon system consolidation — 22 November 2026
+
+The icon-pack contract is centralized in `src/shared/weather-icons.ts`. This module is the single source of truth for:
+
+- the canonical weather category list used by the settings preview and client weather types;
+- the ordered icon-pack registry, including each pack's translation keys;
+- the default pack (`animated`, displayed as **Standaard** in Dutch and **Standard** in English);
+- the default animation preference (enabled);
+- runtime normalization of unknown pack values; and
+- construction of renderer class names from category, pack and motion state.
+
+Both the client settings preview and dashboard continue to use the same `WeatherIcon` component. That component normalizes the pack before dispatching to the preserved Standard renderer or the alternate artwork renderer. Do not create a second preview renderer or duplicate pack/category lists in the UI.
+
+The backend weather-settings normalizer imports the same shared pack contract. Invalid or missing persisted pack IDs therefore fall back to the same Standard pack that the client uses. The saved `animateIcons` preference remains independent from the selected pack.
+
+### Animation authority
+
+The in-app **Bewegende iconen** setting is the sole authority for weather-icon motion. The renderer emits exactly one of `is-animated` or `is-static`; CSS animation selectors are only active for `is-animated`. A blanket `prefers-reduced-motion` rule previously applied `animation:none !important` to every weather SVG/span, which overrode the explicit in-app switch on devices configured for reduced motion. That blanket override has been removed. Do not reintroduce an OS-level rule that silently defeats an enabled in-app setting.
+
+### Artwork and layout preservation
+
+This consolidation changes configuration ownership and renderer class resolution only. The existing SVG artwork, icon geometry, category-specific animation definitions, pack colors, component dimensions, preview grid, dashboard layout and spacing are intentionally unchanged.
+
+### Regression coverage
+
+`src/shared/weather-icons.test.ts` verifies the canonical categories, ordered pack IDs, Standard fallback behavior, and the exact class contract for animated and static render states. Keep these tests in place when extending the pack registry.

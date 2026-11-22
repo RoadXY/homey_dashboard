@@ -602,3 +602,14 @@ De gebruiker heeft de actuele status van de openstaande fase-1- en fase-2-onderd
 - **Meldingen vanuit Homey Flows:** gedeeltelijk gerealiseerd/getest. Een rechtstreekse API-call naar de externe Notifications API is uitgevoerd en werkt. De integratie waarbij een Homey Flow via een eigen Homey-app de API aanroept, wordt bewust uitgesteld naar de toekomstige fase waarin de Homey-app wordt ontwikkeld. Dit is geen openstaande acceptatietest voor de bestaande Notifications API of Blockly-editor.
 
 Deze bevestiging is de gebruikersacceptatie voor de genoemde live functionaliteit. De repository/code en CI blijven afzonderlijke technische bewijsvormen; deze gebruikersbevestiging vervangt geen code-review of CI-controle. De centrale fasevoortgang staat in [Projectfasering en actuele voortgang](../06-fases/README.md).
+
+
+## Weericonen – centrale configuratie en animatie-eigenaarschap (22 november 2026)
+
+- De icon pack-definities, ondersteunde weercondities, standaardselectie en renderer-classnames worden centraal beheerd in `src/shared/weather-icons.ts`. Instellingenpreview, dashboardrenderer en backend-normalisatie gebruiken dezelfde pack-ID's en standaardwaarden.
+- Het eerste icon pack heet **Standaard** (Engels: **Standard**) en blijft de standaardselectie. De bestaande iconen en hun SVG-artwork worden niet vervangen of opnieuw ontworpen.
+- De instellingenpreview en het dashboard gebruiken dezelfde `WeatherIcon`-component. Er komt geen aparte preview-renderer of tweede lijst met pack-ID's/weercondities.
+- De schakelaar **Bewegende iconen** is leidend voor alle icon packs. Aan betekent dat de renderer `is-animated` gebruikt; uit betekent `is-static`. Een OS-instelling voor reduced motion mag een expliciet ingeschakelde dashboardanimatie niet stilzwijgend uitschakelen.
+- De eerder aanwezige algemene CSS-regel voor `prefers-reduced-motion` schakelde alle SVG/span-animaties uit, ook wanneer de dashboardinstelling aan stond. Deze conflicterende override is verwijderd.
+- De consolidatie wijzigt geen SVG-artwork, icoonvormen, kleuren, animatieontwerpen, afmetingen, preview-layout of dashboard-layout.
+- Geautomatiseerde tests bewaken de canonieke categorieën, pack-volgorde, Standard-fallback en animated/static class-contracten.

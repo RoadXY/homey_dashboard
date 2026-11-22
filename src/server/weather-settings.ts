@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { DEFAULT_WEATHER_ICON_ANIMATION, DEFAULT_WEATHER_ICON_PACK, normalizeWeatherIconPack, type WeatherIconPackId } from "../shared/weather-icons";
 
 export type WeatherSource =
   | { type: "device"; deviceId: string; capabilityId: string }
@@ -12,7 +13,7 @@ export type WeatherSettingId =
 
 export type WeatherSettings = {
   sources: Record<WeatherSettingId, WeatherSource>;
-  iconPack: "animated" | "color3d" | "outline" | "flat";
+  iconPack: WeatherIconPackId;
   animateIcons: boolean;
 };
 
@@ -22,7 +23,7 @@ export const WEATHER_SETTING_IDS: WeatherSettingId[] = [
 ];
 
 const emptySources = Object.fromEntries(WEATHER_SETTING_IDS.map(id => [id, null])) as WeatherSettings["sources"];
-const defaults: WeatherSettings = { sources: emptySources, iconPack: "animated", animateIcons: true };
+const defaults: WeatherSettings = { sources: emptySources, iconPack: DEFAULT_WEATHER_ICON_PACK, animateIcons: DEFAULT_WEATHER_ICON_ANIMATION };
 const file = join(process.env.DATA_DIR ?? join(process.cwd(), "data"), "weather-settings.json");
 
 function normalizeSource(value: unknown): WeatherSource {
@@ -44,9 +45,7 @@ export function normalizeWeatherSettings(value: unknown): WeatherSettings {
   const incomingSources = input.sources && typeof input.sources === "object" && !Array.isArray(input.sources)
     ? input.sources as Record<string, unknown> : {};
   const sources = Object.fromEntries(WEATHER_SETTING_IDS.map(id => [id, normalizeSource(incomingSources[id])])) as WeatherSettings["sources"];
-  const allowedPacks: WeatherSettings["iconPack"][] = ["animated", "color3d", "outline", "flat"];
-  const iconPack = allowedPacks.includes(input.iconPack as WeatherSettings["iconPack"])
-    ? input.iconPack as WeatherSettings["iconPack"] : "animated";
+  const iconPack = normalizeWeatherIconPack(input.iconPack);
   return { sources, iconPack, animateIcons: input.animateIcons !== false };
 }
 

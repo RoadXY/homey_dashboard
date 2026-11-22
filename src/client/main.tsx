@@ -1,4 +1,5 @@
 import React from "react";
+import { DEFAULT_WEATHER_ICON_ANIMATION, DEFAULT_WEATHER_ICON_PACK, WEATHER_ICON_CATEGORIES, WEATHER_ICON_PACKS, normalizeWeatherIconPack, weatherIconClassName, type WeatherIconCategory, type WeatherIconPackId } from "../shared/weather-icons";
 import ReactDOM from "react-dom/client";
 import "./style.css";
 import * as BlocklyLibrary from "blockly/core";
@@ -17,7 +18,7 @@ type LogicResponse = { retrievedAt: string; variables: { name: string; value: un
 type HomeyStatus = { state: string; checkedAt: string | null; error: string | null; deviceCount?: number; zoneCount?: number };
 type DashboardNotification = { id: string; title: string; notificationTitle: string; message: string; severity: "critical" | "warning" | "info"; testOnly: boolean; state: "active" | "inactive" | "unknown"; reason?: string };
 type NotificationsResponse = { retrievedAt: string; notifications: DashboardNotification[]; nextEvaluationAt?: number };
-type WeatherCategory = "sunny" | "mostly_sunny" | "partly_cloudy" | "cloudy" | "overcast" | "fog" | "drizzle" | "rain" | "heavy_rain" | "showers" | "thunderstorm" | "hail" | "snow" | "snow_showers" | "sleet" | "windy" | "unknown";
+type WeatherCategory = WeatherIconCategory;
 type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory; conditionText: string | null; source: "api"; receivedAt?: string; reason?: string };
 type DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
@@ -2359,10 +2360,10 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
 
 type WeatherSettingId = "outdoorTemperature" | "feelsLike" | "humidity" | "pressure" | "windSpeed" | "windDirection" | "precipitation" | "sunrise" | "sunset";
 type WeatherSource = { type: "device"; deviceId: string; capabilityId: string } | { type: "logic"; variableId: string } | null;
-type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: "animated" | "color3d" | "outline" | "flat"; animateIcons: boolean };
+type WeatherSettingsModel = { sources: Record<WeatherSettingId, WeatherSource>; iconPack: WeatherIconPackId; animateIcons: boolean };
 type WeatherSourceCatalog = { devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: string; units: string }[] }[]; variables: { id: string; name: string; type: string }[] };
 const weatherSettingIds: WeatherSettingId[] = ["outdoorTemperature","feelsLike","humidity","pressure","windSpeed","windDirection","precipitation","sunrise","sunset"];
-const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:"animated", animateIcons:true };
+const emptyWeatherSettings: WeatherSettingsModel = { sources: { outdoorTemperature:null, feelsLike:null, humidity:null, pressure:null, windSpeed:null, windDirection:null, precipitation:null, sunrise:null, sunset:null }, iconPack:DEFAULT_WEATHER_ICON_PACK, animateIcons:DEFAULT_WEATHER_ICON_ANIMATION };
 
 function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale: string; t: (key: string) => string; onNavigate: () => void; onDirtyChange: (dirty: boolean) => void }) {
   const [settings,setSettings] = React.useState<WeatherSettingsModel>(emptyWeatherSettings);
@@ -2419,13 +2420,10 @@ function WeatherSettingsPage({ locale, t, onNavigate, onDirtyChange }: { locale:
     finally { setSaving(false); }
   };
   const query = search.trim().toLocaleLowerCase(locale);
-  const packs = [
-    {id:"animated",title:t("weatherSettings.packAnimated"),description:t("weatherSettings.packAnimatedDescription")},
-    {id:"color3d",title:t("weatherSettings.packColor3d"),description:t("weatherSettings.packColor3dDescription")},
-    {id:"outline",title:t("weatherSettings.packOutline"),description:t("weatherSettings.packOutlineDescription")},
-    {id:"flat",title:t("weatherSettings.packFlat"),description:t("weatherSettings.packFlatDescription")}
-  ] as const;
-  const previewCategories: WeatherCategory[] = ["sunny","mostly_sunny","partly_cloudy","cloudy","overcast","fog","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet","windy","unknown"];
+  const packs = WEATHER_ICON_PACKS.map(({id,labelKey,descriptionKey}) => ({
+    id, title:t(labelKey), description:t(descriptionKey),
+  }));
+  const previewCategories = WEATHER_ICON_CATEGORIES;
 
   return <div className="quick-settings-page weather-settings-page">
     <div className="settings-title"><div className="quick-settings-title-icon"><i className="mdi mdi-weather-partly-cloudy" aria-hidden="true"/></div><div><h1>{t("settings.weatherPlaceholderTitle")}</h1><p>{t("weatherSettings.intro")}</p></div></div>
@@ -2520,11 +2518,11 @@ function formatWeatherValue(value: string | number | boolean | null, units: stri
   return formatted + (units ? " " + units : "");
 }
 
-function WeatherIcon({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
-  const symbols: Record<WeatherCategory,string> = { sunny:"☀️", mostly_sunny:"🌤️", partly_cloudy:"⛅", cloudy:"☁️", overcast:"🌥️", fog:"🌫️", drizzle:"🌦️", rain:"🌧️", heavy_rain:"🌧️", showers:"🌦️", thunderstorm:"⛈️", hail:"🌨️", snow:"❄️", snow_showers:"🌨️", sleet:"🌨️", windy:"💨", unknown:"?" };
-  if (pack !== "animated") return <WeatherIconArtwork category={category} label={label} pack={pack} animate={animate} />;
+function WeatherIcon({ category, label, pack = DEFAULT_WEATHER_ICON_PACK, animate = DEFAULT_WEATHER_ICON_ANIMATION }: { category: WeatherCategory; label: string; pack?: WeatherIconPackId; animate?: boolean }) {
+  const resolvedPack = normalizeWeatherIconPack(pack);
+  if (resolvedPack !== DEFAULT_WEATHER_ICON_PACK) return <WeatherIconArtwork category={category} label={label} pack={resolvedPack} animate={animate} />;
   return (
-    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate?" is-animated":" is-static"}`} role="img" aria-label={label}>
+    <div className={weatherIconClassName(category, resolvedPack, animate)} role="img" aria-label={label}>
       {(["sunny", "mostly_sunny", "partly_cloudy", "showers", "snow_showers"].includes(category)) && <svg className="weather-sun" viewBox="0 0 64 64" aria-hidden="true">
         <circle cx="32" cy="32" r="11" />
         <path d="M32 4v8 M32 52v8 M4 32h8 M52 32h8 M12.2 12.2l5.7 5.7 M46.1 46.1l5.7 5.7 M51.8 12.2l-5.7 5.7 M17.9 46.1l-5.7 5.7" />
@@ -2578,7 +2576,8 @@ function WeatherIcon({ category, label, pack = "animated", animate = true }: { c
   );
 }
 
-function WeatherIconArtwork({ category, label, pack = "animated", animate = true }: { category: WeatherCategory; label: string; pack?: WeatherSettingsModel["iconPack"]; animate?: boolean }) {
+function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK, animate = DEFAULT_WEATHER_ICON_ANIMATION }: { category: WeatherCategory; label: string; pack?: WeatherIconPackId; animate?: boolean }) {
+  const resolvedPack = normalizeWeatherIconPack(pack);
   const hasSun = ["sunny","mostly_sunny","partly_cloudy","showers","snow_showers"].includes(category);
   const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
   const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
@@ -2590,10 +2589,10 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
   const unknown = category === "unknown";
   const cloudPath = "M27 58h67a17 17 0 0 0 0-34 25 25 0 0 0-48-4A20 20 0 0 0 27 58Z";
   // Keep the pre-existing artwork for Minimalist and Flat byte-for-byte in appearance.
-  if (pack !== "color3d") {
+  if (resolvedPack !== "color3d") {
     const legacyHasSun = ["sunny","mostly_sunny","partly_cloudy"].includes(category);
     return (
-      <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
+      <div className={weatherIconClassName(category, resolvedPack, animate)} role="img" aria-label={label}>
         <svg className="weather-art" viewBox="0 0 128 96" aria-hidden="true">
           <defs>
             <linearGradient id="weather-sun-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff5a6"/><stop offset=".55" stopColor="#ffbd36"/><stop offset="1" stopColor="#ed7624"/></linearGradient>
@@ -2616,7 +2615,7 @@ function WeatherIconArtwork({ category, label, pack = "animated", animate = true
   }
   const gradientId = React.useId().replace(/:/g, "");
   return (
-    <div className={`weather-symbol weather-${category} weather-pack-${pack}${animate ? " is-animated" : " is-static"}`} role="img" aria-label={label}>
+    <div className={weatherIconClassName(category, resolvedPack, animate)} role="img" aria-label={label}>
       <svg className="weather-art" viewBox="0 0 128 104" aria-hidden="true">
         <defs>
           <linearGradient id={`${gradientId}-sun`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fffbd0"/><stop offset=".34" stopColor="#ffe45a"/><stop offset=".72" stopColor="#ffad19"/><stop offset="1" stopColor="#ed6422"/></linearGradient>
