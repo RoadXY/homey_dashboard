@@ -132,3 +132,12 @@ This consolidation changes configuration ownership and renderer class resolution
 ### Regression coverage
 
 `src/shared/weather-icons.test.ts` verifies the canonical categories, ordered pack IDs, Standard fallback behavior, and the exact class contract for animated and static render states. Keep these tests in place when extending the pack registry.
+
+
+## Kleurrijk (3D) – neerslagcompositie en animatiecorrectie (22 november 2026)
+
+De neerslagelementen van het pack Kleurrijk (3D) zijn opnieuw uitgelijnd op de onderzijde van de wolk. Regendruppels beginnen direct onder de wolkrand in plaats van zichtbaar los eronder te hangen. Sneeuwvlokken zijn eveneens omhoog geplaatst, zodat sneeuw, sneeuwbuien en natte sneeuw visueel uit dezelfde wolk afkomstig lijken.
+
+De stilstaande en bewegende variant blijven exact dezelfde SVG-artwork en posities gebruiken. Alleen CSS-beweging verschilt: regen valt, buien pulseren in intensiteit, sneeuwvlokken dwarrelen duidelijker en natte sneeuw combineert vallende druppels met dwarrelende vlokken. Sneeuwbuien en natte sneeuw hebben een eigen iets afwijkend vloktempo. De bestaande 3D-kleuren, wolk, zon en overige weersymbolen blijven behouden.
+
+Praktijktest na uitrollen blijft nodig voor alle condities met de animatieschakelaar aan en uit; CI/build kan het daadwerkelijke visuele resultaat op het tablet-scherm niet bevestigen.
