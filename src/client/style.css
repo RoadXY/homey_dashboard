@@ -425,7 +425,7 @@ body {
 .temperature-grid.measurement-count-6 { grid-template-rows: repeat(3,minmax(auto,1fr)); }
 .temperature-tile { min-height: clamp(132px,calc(11cqi + 60px),190px); padding: clamp(14px,1.45vw,22px); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; container-type: inline-size; }
 .temperature-label { color: #aab1bc; font-size: clamp(15px, 1.1vw, 19px); }
-.temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(38px, 22cqi, 104px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.temperature-tile .temperature-reading { display: flex; align-items: baseline; justify-content: center; gap: .12em; width: 100%; max-width: 100%; min-width: 0; margin: auto 0; white-space: nowrap; font-size: clamp(32px, 27cqi, 78px); line-height: 1; font-weight: 520; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
 .temperature-reading-value { min-width: 0; white-space: nowrap; }
 .temperature-reading-unit { flex: 0 0 auto; font-size: .34em; line-height: 1; font-weight: 500; letter-spacing: 0; white-space: nowrap; }
 .right-column { position: relative; }
