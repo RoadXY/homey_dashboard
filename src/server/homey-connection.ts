@@ -67,7 +67,7 @@ export async function testHomeyConnection(input: unknown): Promise<{ status: "su
   catch { return { status: "failed", errorKey: "homeyConnection.networkFailed" }; }
   try {
     const api = await HomeyAPI.createLocalAPI({ address: normalizeHomeyApiAddress(value.address), token: value.token.trim(), debug: null });
-    await api.devices.getDevices();
+    await Promise.all([api.devices.getDevices(), api.zones.getZones()]);
     return { status: "success" };
   } catch {
     return { status: "warning", errorKey: "homeyConnection.authFailed" };
