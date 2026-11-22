@@ -702,3 +702,8 @@ De SRV-target-hostnaam mag niet afhankelijk zijn van de Docker-container-hostnaa
 ## mDNS-hernoemen en DNS-cache (22 november 2026)
 
 Bij een wijziging van de vriendelijke naam worden uitsluitend de oude PTR-, SRV- en TXT-records met TTL 0 ingetrokken. Het A-record van de stabiele installatiehostnaam blijft geldig en mag niet als goodbye worden gepubliceerd: dit record wordt gedeeld door de oude en nieuwe service-instance. Het intrekken ervan kan ertoe leiden dat discovery de nieuwe service wel ziet, maar de SRV-target na een cache-refresh niet meer naar een IP-adres kan oplossen.
+
+
+## mDNS-query-antwoorden (22 november 2026)
+
+Normale mDNS-vragen zonder QU-bit worden via multicast beantwoord op UDP 5353 per geschikte IPv4-interface. Alleen wanneer de vraag expliciet de QU-bit (unicast-response) in de question class zet, wordt unicast geantwoord aan de aanvrager. Onvoorwaardelijk unicast antwoorden is niet conform het verwachte Bonjour/mDNS-gedrag en kan browse-/refresh-clients inconsistent laten werken.

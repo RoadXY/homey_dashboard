@@ -82,3 +82,8 @@ The SRV record target must not depend on `os.hostname()` inside the Docker conta
 ### Rename cache behavior
 
 A friendly-name change withdraws only the old service-instance PTR, SRV and TXT records with TTL 0. It must **not** withdraw the A record for the stable installation-specific host target: that A record is shared by the old and new service instance and remains valid across a rename. Sending an A-record goodbye during rename can make a discovery browser find the new instance but fail to resolve its SRV target after a cache refresh.
+
+
+### mDNS response delivery
+
+For ordinary multicast mDNS questions, responses are multicast to `224.0.0.251:5353` on each eligible local IPv4 interface. A unicast response is sent only when the question's class has the QU (unicast-response) bit set. Do not unconditionally send mDNS responses as unicast: Bonjour browsers rely on multicast answers for normal service browsing and refresh operations. The question parser therefore preserves the QU bit from the question class.
