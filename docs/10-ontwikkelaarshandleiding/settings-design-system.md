@@ -466,3 +466,8 @@ De Homey IP-adres- en API-tokenvelden gebruiken dezelfde hoogte, padding, rand, 
 ### Homey REST-status gescheiden van realtime-subscriptions (21 november 2026)
 
 De Homey-systeemstatus wordt bepaald door de basisverbinding via `HomeyAPI.createLocalAPI()` en succesvolle REST/API-opvragingen van apparaten en zones. Het initialiseren van WebSocket/realtime-subscriptions is aanvullend en mag een werkende API-verbinding niet naar `offline` terugzetten. Een fout bij de initiële subscription-setup wordt gelogd als waarschuwing; de verbinding blijft `online`. De realtime-watchdog probeert ontbrekende subscriptions periodiek opnieuw. Ook een mislukte retry verandert de basisstatus niet. Zo komt de groene verbindingstest overeen met de systeemstatus wanneer de REST API bereikbaar is, ook als realtime-events tijdelijk niet beschikbaar zijn.
+
+
+### Systeemstatus opnieuw ophalen na Homey-configuratie opslaan (22 november 2026)
+
+Na `POST /api/settings/homey-connection` haalt de General Settings-client de volledige actuele snapshot opnieuw op via `GET /api/system/status`. De response wordt rechtstreeks in de statusstate gezet, ook als de initiële state nog `null` was. Dit voorkomt dat een succesvolle serververbinding niet zichtbaar wordt doordat een conditionele state-update geen waarde kon instellen, en voorkomt dat de oude pre-save snapshot blijft staan. De Homey-status en succes-/foutmelding worden afgeleid van deze actuele snapshot (met de connectieresponse als fallback wanneer de status-endpoint tijdelijk niet beschikbaar is).
