@@ -77,3 +77,8 @@ The advertiser joins the mDNS multicast group on each eligible non-loopback IPv4
 ### Stable SRV target hostname
 
 The SRV record target must not depend on `os.hostname()` inside the Docker container. Container hostnames may change when Portainer recreates a container and may not be resolvable by other LAN clients. The target is therefore `homey-dashboard-<8-char-installation-ID>.local.`; matching A records are advertised for the eligible host-network IPv4 addresses. The target remains stable when the friendly dashboard name changes and across container recreation as long as `DATA_DIR` is persisted.
+
+
+### Rename cache behavior
+
+A friendly-name change withdraws only the old service-instance PTR, SRV and TXT records with TTL 0. It must **not** withdraw the A record for the stable installation-specific host target: that A record is shared by the old and new service instance and remains valid across a rename. Sending an A-record goodbye during rename can make a discovery browser find the new instance but fail to resolve its SRV target after a cache refresh.

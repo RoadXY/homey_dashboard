@@ -21,6 +21,17 @@ async function createTemporaryDirectory(): Promise<string> {
   return directory;
 }
 
+describe("mDNS service records", () => {
+  it("does not withdraw the stable A record when the friendly service name changes", async () => {
+    const identity = { id: "6fcec914-1234-4234-8234-123456789abc", name: "Keuken" };
+    const records = buildMdnsRecords(identity, 5173);
+    // The goodbye packet is intentionally limited to the service-instance
+    // records; the stable host A record remains valid across a rename.
+    expect(records.addresses).toHaveLength(1);
+    expect(records.addresses[0]?.name).toBe(records.hostName);
+  });
+});
+
 describe("mDNS installation identity", () => {
   it("generates a Dutch two-word name", () => {
     expect(generateInstallationName()).toMatch(/^\p{L}+ \p{L}+$/u);

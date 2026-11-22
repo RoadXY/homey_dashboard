@@ -697,3 +697,8 @@ Na uitrol van de instelling voor de installatienaam bleken beide locale JSON-bes
 ## mDNS SRV-hostnaam (22 november 2026)
 
 De SRV-target-hostnaam mag niet afhankelijk zijn van de Docker-container-hostnaam. Deze kan bij containerrecreatie wijzigen en is niet noodzakelijk via mDNS resolveerbaar. Gebruik daarom een stabiele hostnaam op basis van de persistente installatie-ID (`homey-dashboard-<8 tekens>.local`) en publiceer de bijbehorende A-records op de geschikte hostnetwerkinterfaces. Een wijziging van de zichtbare dashboardnaam wijzigt deze target-hostnaam niet.
+
+
+## mDNS-hernoemen en DNS-cache (22 november 2026)
+
+Bij een wijziging van de vriendelijke naam worden uitsluitend de oude PTR-, SRV- en TXT-records met TTL 0 ingetrokken. Het A-record van de stabiele installatiehostnaam blijft geldig en mag niet als goodbye worden gepubliceerd: dit record wordt gedeeld door de oude en nieuwe service-instance. Het intrekken ervan kan ertoe leiden dat discovery de nieuwe service wel ziet, maar de SRV-target na een cache-refresh niet meer naar een IP-adres kan oplossen.

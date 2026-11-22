@@ -218,6 +218,17 @@ export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
   };
 }
 
+function buildGoodbyeRecords(records: ReturnType<typeof buildMdnsRecords>): DnsRecord[] {
+  // The A record belongs to the stable installation hostname, not to the
+  // friendly DNS-SD service instance. A rename must never flush that shared
+  // address record from client caches.
+  return [
+    { ...records.ptr, ttl: 0 },
+    { ...records.srv, ttl: 0 },
+    { ...records.txt, ttl: 0 },
+  ];
+}
+
 function buildResponse(answers: DnsRecord[], additionals: DnsRecord[]): Buffer {
   const header = Buffer.alloc(12);
   header.writeUInt16BE(0, 0);
@@ -359,13 +370,7 @@ export async function startMdnsDiscovery(options: {
 
     // Withdraw the old instance before releasing UDP/5353 so browsers discard
     // cached PTR/SRV/TXT/A records before the renamed service is announced.
-    const goodbyeRecords: DnsRecord[] = [
-      { ...records.ptr, ttl: 0 },
-      { ...records.srv, ttl: 0 },
-      { ...records.txt, ttl: 0 },
-      ...records.addresses.map(record => ({ ...record, ttl: 0 })),
-    ];
-    const goodbye = buildResponse(goodbyeRecords, []);
+    const goodbye = buildResponse(buildGoodbyeRecords(records), []);
     const addresses = getAdvertisedAddresses();
     let pending = addresses.length;
     let finished = false;
