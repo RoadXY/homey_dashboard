@@ -2233,17 +2233,30 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
       if (!homeyResponse.ok) throw new Error(homeyResult.error ?? translate(locale, "settings.saveError"));
       setSettings(result); setSaved(result); setSavedHomeyAddress(homeyResult.address); setHomeyAddress(homeyResult.address);
       setHomeyToken(""); setHomeyTokenConfigured(homeyResult.tokenConfigured);
-      if (homeyResult.connection) {
-        setStatus(current => current ? { ...current, homey: homeyResult.connection! , updatedAt: new Date().toISOString() } : current);
-        if (homeyResult.connection.state === "online") {
-          setHomeyTest({status:"success"});
-          setMessage(translate(locale, "settings.saved"));
-        } else {
-          setHomeyTest({status:"failed",errorKey:"homeyConnection.connectAfterSaveFailed"});
-          setMessage(translate(locale, "homeyConnection.connectAfterSaveFailed"));
+      let savedConnection = homeyResult.connection;
+      // Read the authoritative system snapshot after the server has attempted
+      // the connection. This also initializes status when the page state is
+      // still null and avoids showing a stale pre-save snapshot.
+      try {
+        const statusResponse = await fetch("/api/system/status");
+        if (statusResponse.ok) {
+          const latestStatus = await statusResponse.json() as SystemStatus;
+          setStatus(latestStatus);
+          savedConnection = latestStatus.homey;
+        } else if (savedConnection) {
+          setStatus(current => current ? { ...current, homey: savedConnection!, updatedAt: new Date().toISOString() } : current);
         }
-      } else {
+      } catch {
+        if (savedConnection) {
+          setStatus(current => current ? { ...current, homey: savedConnection!, updatedAt: new Date().toISOString() } : current);
+        }
+      }
+      if (savedConnection?.state === "online") {
+        setHomeyTest({status:"success"});
         setMessage(translate(locale, "settings.saved"));
+      } else {
+        setHomeyTest({status:"failed",errorKey:"homeyConnection.connectAfterSaveFailed"});
+        setMessage(translate(locale, "homeyConnection.connectAfterSaveFailed"));
       }
     } catch (error) { setMessage(error instanceof Error ? error.message : translate(locale, "settings.saveError")); }
   };
