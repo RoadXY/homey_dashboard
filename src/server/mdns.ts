@@ -100,7 +100,7 @@ function uint32(value: number): Buffer {
   return result;
 }
 
-type DnsRecord = { name: string; type: number; data: Buffer; cacheFlush?: boolean; ttl?: number };
+export type DnsRecord = { name: string; type: number; data: Buffer; cacheFlush?: boolean; ttl?: number };
 
 function encodeRecord(record: DnsRecord): Buffer {
   const recordClass = record.cacheFlush === false ? 1 : 0x8001;
@@ -218,7 +218,7 @@ export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
   };
 }
 
-function buildGoodbyeRecords(records: ReturnType<typeof buildMdnsRecords>): DnsRecord[] {
+export function buildGoodbyeRecords(records: ReturnType<typeof buildMdnsRecords>): DnsRecord[] {
   // The A record belongs to the stable installation hostname, not to the
   // friendly DNS-SD service instance. A rename must never flush that shared
   // address record from client caches.

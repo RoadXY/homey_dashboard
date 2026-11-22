@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   buildMdnsRecords,
+  buildGoodbyeRecords,
   createOrLoadInstallationIdentity,
   generateInstallationName,
   isValidInstallationName,
@@ -25,10 +26,12 @@ describe("mDNS service records", () => {
   it("does not withdraw the stable A record when the friendly service name changes", async () => {
     const identity = { id: "6fcec914-1234-4234-8234-123456789abc", name: "Keuken" };
     const records = buildMdnsRecords(identity, 5173);
-    // The goodbye packet is intentionally limited to the service-instance
-    // records; the stable host A record remains valid across a rename.
-    expect(records.addresses).toHaveLength(1);
-    expect(records.addresses[0]?.name).toBe(records.hostName);
+    // Only service-instance records are withdrawn. The stable host A record
+    // remains cached and resolvable across a friendly-name change.
+    const goodbye = buildGoodbyeRecords(records);
+    expect(goodbye.map(record => record.type)).toEqual([12, 33, 16]);
+    expect(goodbye.every(record => record.ttl === 0)).toBe(true);
+    expect(goodbye.some(record => record.name === records.hostName && record.type === 1)).toBe(false);
   });
 });
 
