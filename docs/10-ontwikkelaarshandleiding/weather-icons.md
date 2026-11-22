@@ -169,3 +169,20 @@ De oorspronkelijke pack-ID `animated` blijft ongewijzigd voor opgeslagen instell
 ## Klassiek (standaard): sneeuw valt en fade-out (22 november 2026)
 
 Op verzoek is uitsluitend de animatie van de bestaande sneeuwvlokken in pack `animated` aangepast. De SVG-vormen, aantallen, posities, kleuren en overige artwork blijven ongewijzigd. De eerdere zijwaartse/roterende op-en-neer beweging is vervangen door een verticale valbeweging met geleidelijk uitfaden en opnieuw verschijnen. Sneeuwbuien en natte sneeuw gebruiken dezelfde valstijl; hun bestaande eigen tempo-instellingen zijn behouden als kortere cycli.
+
+## Minimalistisch (lijn): weerspecifieke animaties (22 november 2026)
+
+De pack `outline` gebruikte tot deze correctie hoofdzakelijk de generieke animaties op de buitenste weersymbolen. Daardoor werden categorieën als motregen, zware regen en buien niet allemaal geraakt door de selector die alleen `weather-rain` selecteerde. Sneeuw bewoog als één groep met een generieke beweging en onweer had geen passende flitsanimatie voor de lijn-artwork.
+
+Pack-specifieke CSS is toegevoegd, zonder de SVG-artwork te wijzigen:
+- Motregen, regen, zware regen en natte sneeuw: verticale valbeweging met fade; zware regen sneller en buien in pulserende buiencycli
+- Sneeuw, sneeuwbuien en natte sneeuw: afzonderlijke sneeuwvlokken vallen verticaal en faden uit, met onderlinge faseverschillen
+- Onweer: bliksem flitst in korte, onregelmatige ogende pulsen
+- Hagel: de hagelgroep valt en fade-out
+- Mist: de mistlijnen bewegen subtiel horizontaal
+- Wind: de windlijnen gebruiken de stromende dash-offset beweging van het klassieke pack
+- Zon en wolken behouden hun bestaande generieke subtiele beweging
+
+De regels zijn volledig gescopeerd op `.weather-pack-outline.is-animated`. Zonder de animatieklasse blijven dezelfde SVG-vormen, kleuren, aantallen en posities zichtbaar; alleen de beweging ontbreekt. Het icon pack gebruikt dus dezelfde basisillustratie voor bewegend en stilstaand.
+
+Praktijktest blijft vereist voor alle categorieën, met name de vier regenvarianten, onweer en sneeuw, zowel met animaties aan als uit. De CI-build valideert CSS/TypeScript-integratie maar vervangt geen visuele controle op het dashboard.
