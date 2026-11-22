@@ -613,3 +613,12 @@ Deze bevestiging is de gebruikersacceptatie voor de genoemde live functionalitei
 - De eerder aanwezige algemene CSS-regel voor `prefers-reduced-motion` schakelde alle SVG/span-animaties uit, ook wanneer de dashboardinstelling aan stond. Deze conflicterende override is verwijderd.
 - De consolidatie wijzigt geen SVG-artwork, icoonvormen, kleuren, animatieontwerpen, afmetingen, preview-layout of dashboard-layout.
 - Geautomatiseerde tests bewaken de canonieke categorieën, pack-volgorde, Standard-fallback en animated/static class-contracten.
+
+
+## Kleurrijk (3D) – neerslagcompositie en animatiecorrectie (22 november 2026)
+
+De neerslagelementen van het pack Kleurrijk (3D) zijn opnieuw uitgelijnd op de onderzijde van de wolk. Regendruppels beginnen direct onder de wolkrand in plaats van zichtbaar los eronder te hangen. Sneeuwvlokken zijn eveneens omhoog geplaatst, zodat sneeuw, sneeuwbuien en natte sneeuw visueel uit dezelfde wolk afkomstig lijken.
+
+De stilstaande en bewegende variant blijven exact dezelfde SVG-artwork en posities gebruiken. Alleen CSS-beweging verschilt: regen valt, buien pulseren in intensiteit, sneeuwvlokken dwarrelen duidelijker en natte sneeuw combineert vallende druppels met dwarrelende vlokken. Sneeuwbuien en natte sneeuw hebben een eigen iets afwijkend vloktempo. De bestaande 3D-kleuren, wolk, zon en overige weersymbolen blijven behouden.
+
+Praktijktest na uitrollen blijft nodig voor alle condities met de animatieschakelaar aan en uit; CI/build kan het daadwerkelijke visuele resultaat op het tablet-scherm niet bevestigen.
