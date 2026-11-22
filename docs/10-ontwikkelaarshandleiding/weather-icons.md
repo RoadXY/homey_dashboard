@@ -20,7 +20,7 @@ The settings preview and dashboard both use `WeatherIcon`; only the preview supp
 
 | Pack ID | Dutch / English name | Contract |
 |---|---|---|
-| `animated` | Standaard / Standard | Preserve the existing custom SVG icons and their bespoke, category-specific animations exactly |
+| `animated` | Klassiek (standaard) / Classic (standard) | Preserve the existing custom SVG icons and their bespoke, category-specific animations exactly |
 | `color3d` | Kleurrijk (3D) / Colourful (3D) | Independent artwork with gradients, highlights, shading and depth |
 | `outline` | Minimalistisch (lijn) / Minimal (line) | Independent artwork with consistent clean line work |
 | `flat` | Plat (modern) / Flat (modern) | Independent artwork with clear solid shapes and bright colours |
@@ -155,3 +155,12 @@ Na uitrollen moet de preview opnieuw worden gecontroleerd op regen, buien, sneeu
 ## Neerslaganimatie: vallend en uitfaden (22 november 2026)
 
 Op verzoek is de beweging van sneeuwvlokken en hagel in Kleurrijk (3D) gelijkgetrokken met het gedrag van regen: de deeltjes bewegen verticaal omlaag, worden zichtbaar tijdens de val en faden aan het einde uit. De eerdere zijwaartse dwarrel/rotatie voor sneeuw en de stuiterbeweging voor hagel zijn verwijderd. Dit geldt voor sneeuw, sneeuwbuien, natte sneeuw en hagel. De animatieschakelaar blijft leidend; zonder animatie blijven dezelfde deeltjes statisch op hun vaste posities staan.
+
+
+## Kleurrijk (3D): natte-sneeuwlaag en windanimatie; packnaam (22 november 2026)
+
+Bij natte sneeuw wordt de SVG-schildervolgorde zo toegepast dat de sneeuwvlokken eerst worden getekend en de regendruppels daaroverheen. De druppels zijn daardoor zichtbaar vóór de vlokken.
+
+De windanimatie van Kleurrijk (3D) volgt nu het bewegingsprincipe van het oorspronkelijke pack: een korte zichtbare lijnstreep stroomt langs de windpaden, met verschillende startvertragingen per lijn. De bestaande 3D-windribbons en kleurverloop blijven behouden; de zwakke horizontale verschuiving is vervangen door dash-offset beweging.
+
+De oorspronkelijke pack-ID `animated` blijft ongewijzigd voor opgeslagen instellingen en compatibiliteit. Alleen de zichtbare naam is gewijzigd naar **Klassiek (standaard)** (Engels: **Classic (standard)**). De naam maakt duidelijk dat dit de oorspronkelijke standaardstijl is, zonder de indruk te wekken dat andere packs niet kunnen animeren.
