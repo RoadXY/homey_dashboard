@@ -1592,7 +1592,7 @@ body {
 .weather-pack-color3d.is-animated .weather-3d-sun { animation:color3d-sun-glow 7s ease-in-out infinite; }
 .weather-pack-color3d.is-animated .weather-3d-cloud { animation:color3d-cloud-drift 12s ease-in-out infinite; transform-origin:60% 50%; }
 .weather-pack-color3d.is-animated.weather-overcast .weather-3d-cloud { animation-duration:16s; }
-.weather-pack-color3d.is-animated .weather-3d-drop { animation:color3d-rain-fall 1.9s ease-in infinite; }
+.weather-pack-color3d.is-animated .weather-3d-drop { animation:color3d-rain-fall 1.9s ease-in infinite; transform-box:fill-box; transform-origin:center; }
 .weather-pack-color3d.is-animated.weather-drizzle .weather-3d-drop { animation-duration:3.4s; }
 .weather-pack-color3d.is-animated.weather-heavy_rain .weather-3d-drop { animation-duration:1.35s; }
 .weather-pack-color3d.is-animated.weather-showers .weather-3d-drop { animation:color3d-shower-pulse 3.8s ease-in-out infinite; }
@@ -1628,10 +1628,10 @@ body {
 
 @keyframes color3d-sun-glow { 0%,100%{filter:drop-shadow(0 0 2px rgba(255,190,54,.24))} 50%{filter:drop-shadow(0 0 7px rgba(255,190,54,.48))} }
 @keyframes color3d-cloud-drift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
-@keyframes color3d-rain-fall { 0%{transform:translateY(-2px);opacity:.25} 25%{opacity:1} 100%{transform:translateY(7px);opacity:.18} }
-@keyframes color3d-shower-pulse { 0%,20%{transform:translateY(-1px);opacity:0} 32%,66%{opacity:1} 82%,100%{transform:translateY(6px);opacity:0} }
-@keyframes color3d-snow-drift { 0%,100%{transform:translate(-1px,-2px) rotate(-8deg)} 50%{transform:translate(3px,6px) rotate(8deg)} }
-@keyframes color3d-hail-bounce { 0%,100%{transform:translateY(-2px)} 48%{transform:translateY(4px)} 65%{transform:translateY(0)} }
+@keyframes color3d-rain-fall { 0%{translate:0 -2px;opacity:.25} 25%{opacity:1} 100%{translate:0 7px;opacity:.18} }
+@keyframes color3d-shower-pulse { 0%,20%{translate:0 -1px;opacity:0} 32%,66%{opacity:1} 82%,100%{translate:0 6px;opacity:0} }
+@keyframes color3d-snow-drift { 0%,100%{translate:-1px -2px;rotate:-8deg} 50%{translate:3px 6px;rotate:8deg} }
+@keyframes color3d-hail-bounce { 0%,100%{translate:0 -2px} 48%{translate:0 4px} 65%{translate:0 0} }
 @keyframes color3d-lightning { 0%,8%,14%,100%{opacity:1;filter:brightness(1)} 9%,12%{opacity:.25;filter:brightness(1.8)} }
 @keyframes color3d-fog-a { 0%,100%{transform:translateX(-2px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
 @keyframes color3d-fog-b { 0%,100%{transform:translateX(2px);opacity:.9} 50%{transform:translateX(-2px);opacity:.65} }
