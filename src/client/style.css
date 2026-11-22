@@ -1988,3 +1988,22 @@ body {
 }
 .status-check.warning { background:var(--settings-warning-background); color:var(--settings-warning-text); border:1px solid var(--settings-warning-border); }
 .status-pill.warning { background:var(--settings-warning-background); color:var(--settings-warning-text); border:1px solid var(--settings-warning-border); }
+
+/* Installation identity uses the same text-field treatment as Homey connection settings. */
+.installation-name-card .setting-row input {
+  display:block;
+  width:100%;
+  min-width:0;
+  height:48px;
+  padding:0 14px;
+  border:1px solid var(--settings-control-border);
+  border-radius:9px;
+  background:var(--settings-control-background);
+  color:var(--settings-control-text);
+  font:inherit;
+  font-size:16px;
+}
+.installation-name-card .setting-row input:focus-visible {
+  outline:2px solid var(--settings-control-focus);
+  outline-offset:2px;
+}

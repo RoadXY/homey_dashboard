@@ -6,6 +6,7 @@ import { join } from "node:path";
 import dgram, { type RemoteInfo, type Socket } from "node:dgram";
 
 export const MDNS_SERVICE_TYPE = "_homey-dashboard._tcp.local.";
+export const MDNS_ENUMERATION_TYPE = "_services._dns-sd._udp.local.";
 export const MDNS_MULTICAST_ADDRESS = "224.0.0.251";
 export const MDNS_PORT = 5353;
 const INSTANCE_PREFIX = "Homey Dashboard - ";
@@ -192,6 +193,7 @@ export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
     instanceName,
     instanceFqdn,
     hostName,
+    enumeration: { name: MDNS_ENUMERATION_TYPE, type: 12, data: encodeName(MDNS_SERVICE_TYPE), cacheFlush: false } satisfies DnsRecord,
     ptr: { name: MDNS_SERVICE_TYPE, type: 12, data: encodeName(instanceFqdn), cacheFlush: false } satisfies DnsRecord,
     srv: { name: instanceFqdn, type: 33, data: srvData } satisfies DnsRecord,
     txt: {
@@ -238,7 +240,9 @@ function responseForQuestions(
   };
 
   for (const question of questions) {
-    if (question.name === MDNS_SERVICE_TYPE && (question.type === 12 || question.type === 255)) {
+    if (question.name === MDNS_ENUMERATION_TYPE && (question.type === 12 || question.type === 255)) {
+      add(answers, records.enumeration);
+    } else if (question.name === MDNS_SERVICE_TYPE && (question.type === 12 || question.type === 255)) {
       add(answers, records.ptr);
       add(additionals, records.srv);
       add(additionals, records.txt);
@@ -286,19 +290,25 @@ export async function startMdnsDiscovery(options: {
     socket = dgram.createSocket({ type: "udp4", reuseAddr: true });
     socket.on("error", (error) => {
       options.logger?.warn?.({ err: error }, "mDNS discovery socket error.");
-      socket.close();
+      try { socket.close(); } catch { /* Socket may already be closed. */ }
     });
     socket.on("message", (packet, remote: RemoteInfo) => {
       if (packet.length < 12 || (packet.readUInt16BE(2) & 0x8000) !== 0) return;
       const response = responseForQuestions(readQuestions(packet), records);
-      if (response) socket.send(response, remote.port === MDNS_PORT ? MDNS_PORT : remote.port, remote.port === MDNS_PORT ? MDNS_MULTICAST_ADDRESS : remote.address);
+      if (response) {
+        // Answer directly to the requester; this also avoids sending a response
+        // through an unrelated default route on multi-interface Ubuntu hosts.
+        socket.send(response, remote.port, remote.address);
+      }
     });
     await new Promise<void>((resolve, reject) => {
       socket.once("error", reject);
       socket.bind(MDNS_PORT, "0.0.0.0", () => {
         socket.removeListener("error", reject);
         try {
-          socket.addMembership(MDNS_MULTICAST_ADDRESS);
+          const interfaces = getAdvertisedAddresses();
+          if (interfaces.length === 0) throw new Error("No suitable IPv4 interface is available for mDNS.");
+          for (const address of interfaces) socket.addMembership(MDNS_MULTICAST_ADDRESS, address);
           socket.setMulticastTTL(255);
           socket.setMulticastLoopback(true);
           resolve();
@@ -312,8 +322,17 @@ export async function startMdnsDiscovery(options: {
     return { identity, close: () => undefined };
   }
 
-  const announcement = buildResponse([records.ptr], [records.srv, records.txt, ...records.addresses]);
-  const announce = () => socket.send(announcement, MDNS_PORT, MDNS_MULTICAST_ADDRESS);
+  const announcement = buildResponse([records.enumeration, records.ptr], [records.srv, records.txt, ...records.addresses]);
+  const announce = () => {
+    for (const address of getAdvertisedAddresses()) {
+      try {
+        socket.setMulticastInterface(address);
+        socket.send(announcement, MDNS_PORT, MDNS_MULTICAST_ADDRESS);
+      } catch (error) {
+        options.logger?.warn?.({ err: error, interfaceAddress: address }, "mDNS announcement failed on network interface.");
+      }
+    }
+  };
   announce();
   const secondAnnouncement = setTimeout(announce, 1000);
   const refreshAnnouncement = setInterval(announce, 60_000);

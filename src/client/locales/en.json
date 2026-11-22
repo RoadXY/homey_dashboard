@@ -47,7 +47,7 @@
   "settings.installationIdentity": "Dashboard identity",
   "settings.installationName": "Name of this installation",
   "settings.installationNamePlaceholder": "For example Living room",
-  "settings.installationNameDescription": "This name identifies this dashboard on the local network in the Homey app. The installation ID remains unchanged when you rename it."
+  "settings.installationNameDescription": "This name identifies this dashboard on the local network in the Homey app. The installation ID remains unchanged when you rename it.",
   "settings.notificationTimeout": "Automatically hide after",
   "settings.notificationTimeoutDescription": "Applies to temporary action errors, such as a device not responding. Active Homey notifications remain visible while their conditions are active.",
   "settings.timeoutNever": "Never",

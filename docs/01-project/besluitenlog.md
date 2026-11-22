@@ -687,3 +687,8 @@ The implementation is committed to `phase_1_foundation`. Automated tests cover n
 ## Gebruikersbesluit – naam van dashboardinstallatie via Algemene instellingen (22 november 2026)
 
 De gebruiker wil de herkenbare naam van een Homey Dashboard-installatie niet via een `.env`-variabele instellen. De naam hoort in de algemene instellingen, vormgegeven volgens het bestaande Settings Design System. De naam wordt opgeslagen met de algemene instellingen en een wijziging werkt de mDNS/DNS-SD-advertentie direct bij, zonder containerherstart. De persistente installatie-UUID blijft bij een naamswijziging ongewijzigd. De automatisch gegenereerde Nederlandse standaardnaam blijft beschikbaar voor bestaande en nieuwe installaties.
+
+
+## Herstel mDNS-advertentie en instellingenweergave (22 november 2026)
+
+Na uitrol van de instelling voor de installatienaam bleken beide locale JSON-bestanden ongeldig door een ontbrekende komma; hierdoor werden vertaalsleutels letterlijk getoond. Dit wordt hersteld en het tekstveld krijgt dezelfde control-styling als de Homey-verbindingsvelden. De mDNS-advertentie wordt uitgebreid met de standaard DNS-SD service-enumeration PTR en expliciete multicast-joins/announcements op alle geschikte IPv4-interfaces, zodat browsers die eerst services enumereren en Ubuntu-servers met meerdere netwerkinterfaces ondersteund worden.

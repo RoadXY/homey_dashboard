@@ -45,7 +45,7 @@ If UDP 5353 cannot be bound or no suitable IPv4 interface is available, the back
 
 ## Homey app discovery flow
 
-1. Browse for `_homey-dashboard._tcp.local.`.
+1. Browse for `_homey-dashboard._tcp.local.` (or enumerate services through `_services._dns-sd._udp.local.`).
 2. Resolve the SRV record to obtain the target host and TCP port.
 3. Resolve the target host's A record.
 4. Read TXT metadata and display the `name` value to the user.
@@ -69,3 +69,6 @@ Automated tests cover name generation, input validation, persistence across rest
 - discovery by the Homey app;
 - persistence after container recreation and image updates;
 - custom-name changes without changing the installation UUID.
+
+
+The advertiser joins the mDNS multicast group on each eligible non-loopback IPv4 interface and sends announcements on each interface. It also publishes the standard DNS-SD service-enumeration PTR record for clients that first enumerate available service types. Query responses are sent directly to the requesting host, avoiding reliance on the host's default multicast route.

@@ -249,3 +249,6 @@ The backend advertises the dashboard on the local network using the DNS-SD servi
 The name is configuration, not an authentication mechanism. The installation UUID is a stable identifier, not a secret. Clients must still use the dashboard's normal API security controls. mDNS discovery is limited to the local multicast network and does not provide internet discovery.
 
 Verification still required on the target Ubuntu host: confirm that UDP 5353 can coexist with the host's Avahi/mDNS service, inspect the advertised PTR/SRV/TXT/A records, discover the instance from a Homey app on the same LAN, and verify that the identity survives container recreation with the persistent `dashboard_data` volume.
+
+
+The mDNS advertiser joins the multicast group per eligible IPv4 interface, sends announcements on each interface, and responds directly to the requesting host. It also publishes the standard `_services._dns-sd._udp.local.` service-enumeration record for broader browser compatibility.
