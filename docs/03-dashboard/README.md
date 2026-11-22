@@ -505,3 +505,8 @@ De huidige waarden vormen het donkere standaardthema. De tokenstructuur en `--ui
 De weerkaart gebruikt geen schermbreedte-afhankelijke minimale hoogte meer. De kaart groeit op basis van de daadwerkelijke inhoud: de temperatuur/conditie en het weericoon, plus uitsluitend de ingeschakelde optionele waarden (0–8). De inhoud wordt bovenaan aaneengesloten weergegeven; er wordt geen resterende verticale ruimte tussen de hoofdweergave en de meetwaarden verdeeld.
 
 Wanneer geen optionele waarden zijn ingeschakeld, wordt het detailgedeelte volledig weggelaten, inclusief de scheidingslijn. Hiermee blijft de kaart ook in die situatie compact. De aanpassing geldt voor desktop en mobiele weergaven en verandert de configuratiemogelijkheid van de acht waarden niet.
+
+
+## Meetwaardetegels: grotere meetwaarden (22 november 2026)
+
+De numerieke waarde in de meetwaardetegels is vergroot van `clamp(38px, 22cqi, 104px)` naar `clamp(32px, 27cqi, 78px)`. De grootte schaalt mee met de beschikbare tegelbreedte, met een maximum dat aansluit bij de buitentemperatuurweergave. De ondergrens is op kleinere tegels verlaagd om de inhoud binnen de kaart te houden. Eenheid, label, tegelindeling en instelbaar aantal tegels blijven ongewijzigd.
