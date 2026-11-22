@@ -100,7 +100,7 @@ function uint32(value: number): Buffer {
   return result;
 }
 
-type DnsRecord = { name: string; type: number; data: Buffer; cacheFlush?: boolean };
+type DnsRecord = { name: string; type: number; data: Buffer; cacheFlush?: boolean; ttl?: number };
 
 function encodeRecord(record: DnsRecord): Buffer {
   const recordClass = record.cacheFlush === false ? 1 : 0x8001;
@@ -108,7 +108,7 @@ function encodeRecord(record: DnsRecord): Buffer {
     encodeName(record.name),
     uint16(record.type),
     uint16(recordClass),
-    uint32(RECORD_TTL_SECONDS),
+    uint32(record.ttl ?? RECORD_TTL_SECONDS),
     uint16(record.data.length),
     record.data,
   ]);
@@ -272,17 +272,17 @@ export async function startMdnsDiscovery(options: {
   configuredName?: string;
   enabled?: boolean;
   logger?: MdnsLogger;
-}): Promise<{ identity: InstallationIdentity; close: () => void }> {
+}): Promise<{ identity: InstallationIdentity; close: () => Promise<void> }> {
   const identity = await createOrLoadInstallationIdentity(options.dataDirectory, options.configuredName);
   if (options.enabled === false) {
     options.logger?.info?.({ instanceName: INSTANCE_PREFIX + identity.name }, "mDNS discovery is disabled.");
-    return { identity, close: () => undefined };
+    return { identity, close: async () => undefined };
   }
 
   const records = buildMdnsRecords(identity, options.port);
   if (records.addresses.length === 0) {
     options.logger?.warn?.({}, "mDNS discovery could not start: no suitable IPv4 address was found.");
-    return { identity, close: () => undefined };
+    return { identity, close: async () => undefined };
   }
 
   let socket: Socket;
@@ -319,7 +319,8 @@ export async function startMdnsDiscovery(options: {
     });
   } catch (error) {
     options.logger?.warn?.({ err: error }, "mDNS discovery could not bind UDP port 5353; dashboard will continue without discovery.");
-    return { identity, close: () => undefined };
+    try { socket.close(); } catch { /* Socket may not have bound. */ }
+    return { identity, close: async () => undefined };
   }
 
   const announcement = buildResponse([records.enumeration, records.ptr], [records.srv, records.txt, ...records.addresses]);
@@ -350,19 +351,48 @@ export async function startMdnsDiscovery(options: {
       return;
     }
     socketClosed = true;
-    try {
-      socket.close(() => resolve());
-    } catch {
-      resolve();
+    clearTimeout(secondAnnouncement);
+    clearInterval(refreshAnnouncement);
+
+    // Withdraw the old instance before releasing UDP/5353 so browsers discard
+    // cached PTR/SRV/TXT/A records before the renamed service is announced.
+    const goodbyeRecords: DnsRecord[] = [
+      { ...records.ptr, ttl: 0 },
+      { ...records.srv, ttl: 0 },
+      { ...records.txt, ttl: 0 },
+      ...records.addresses.map(record => ({ ...record, ttl: 0 })),
+    ];
+    const goodbye = buildResponse(goodbyeRecords, []);
+    const addresses = getAdvertisedAddresses();
+    let pending = addresses.length;
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(fallback);
+      try { socket.close(() => resolve()); } catch { resolve(); }
+    };
+    const fallback = setTimeout(finish, 250);
+    if (pending === 0) {
+      finish();
+      return;
+    }
+    for (const address of addresses) {
+      try {
+        socket.setMulticastInterface(address);
+        socket.send(goodbye, MDNS_PORT, MDNS_MULTICAST_ADDRESS, () => {
+          pending -= 1;
+          if (pending === 0) finish();
+        });
+      } catch {
+        pending -= 1;
+        if (pending === 0) finish();
+      }
     }
   });
 
   return {
     identity,
-    close: () => {
-      clearTimeout(secondAnnouncement);
-      clearInterval(refreshAnnouncement);
-      return closeSocket();
-    },
+    close: closeSocket,
   };
 }
