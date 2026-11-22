@@ -72,3 +72,8 @@ Automated tests cover name generation, input validation, persistence across rest
 
 
 The advertiser joins the mDNS multicast group on each eligible non-loopback IPv4 interface and sends announcements on each interface. It also publishes the standard DNS-SD service-enumeration PTR record for clients that first enumerate available service types. Query responses are sent directly to the requesting host, avoiding reliance on the host's default multicast route.
+
+
+### Stable SRV target hostname
+
+The SRV record target must not depend on `os.hostname()` inside the Docker container. Container hostnames may change when Portainer recreates a container and may not be resolvable by other LAN clients. The target is therefore `homey-dashboard-<8-char-installation-ID>.local.`; matching A records are advertised for the eligible host-network IPv4 addresses. The target remains stable when the friendly dashboard name changes and across container recreation as long as `DATA_DIR` is persisted.

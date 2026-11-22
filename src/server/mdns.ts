@@ -1,7 +1,7 @@
 import { randomInt, randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { networkInterfaces, hostname } from "node:os";
+import { networkInterfaces } from "node:os";
 import { join } from "node:path";
 import dgram, { type RemoteInfo, type Socket } from "node:dgram";
 
@@ -179,13 +179,17 @@ function readQuestions(packet: Buffer): Array<{ name: string; type: number }> {
   return questions;
 }
 
-export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
+export export function buildMdnsRecords(identity: InstallationIdentity, port: number) {
   const displayName = INSTANCE_PREFIX + identity.name;
   // A short stable ID suffix makes the DNS-SD instance label collision-resistant;
   // clients should show the clean TXT name to users.
   const instanceName = displayName + " [" + identity.id.slice(0, 8) + "]";
   const instanceFqdn = instanceName + "." + MDNS_SERVICE_TYPE;
-  const hostLabel = hostname().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/^-+|-+$/g, "").slice(0, 63) || "homey-dashboard";
+  // Use a stable, installation-specific target instead of the Docker hostname.
+  // Container hostnames can change on recreation and are not guaranteed to be
+  // resolvable through mDNS. The matching A records below publish this target
+  // directly on every eligible host-network IPv4 interface.
+  const hostLabel = "homey-dashboard-" + identity.id.slice(0, 8);
   const hostName = hostLabel + ".local.";
   const srvData = Buffer.concat([uint16(0), uint16(0), uint16(port), encodeName(hostName)]);
   const addresses = getAdvertisedAddresses();

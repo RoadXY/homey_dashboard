@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  buildMdnsRecords,
   createOrLoadInstallationIdentity,
   generateInstallationName,
   isValidInstallationName,
@@ -47,6 +48,14 @@ describe("mDNS installation identity", () => {
     expect(first.name).toBe("Woonkamer");
     expect(renamed.name).toBe("Slaapkamer");
     expect(renamed.id).toBe(first.id);
+  });
+
+  it("uses a stable installation-specific mDNS host target, independent of Docker hostname", () => {
+    const identity = { id: "6fcec914-1234-4234-8234-123456789abc", name: "Keuken" };
+    const records = buildMdnsRecords(identity, 5173);
+    expect(records.hostName).toBe("homey-dashboard-6fcec914.local.");
+    expect(records.addresses.length).toBeGreaterThan(0);
+    expect(records.addresses.every(record => record.name === records.hostName)).toBe(true);
   });
 
   it("uses the documented DNS-SD service type", () => {

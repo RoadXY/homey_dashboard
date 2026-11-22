@@ -692,3 +692,8 @@ De gebruiker wil de herkenbare naam van een Homey Dashboard-installatie niet via
 ## Herstel mDNS-advertentie en instellingenweergave (22 november 2026)
 
 Na uitrol van de instelling voor de installatienaam bleken beide locale JSON-bestanden ongeldig door een ontbrekende komma; hierdoor werden vertaalsleutels letterlijk getoond. Dit wordt hersteld en het tekstveld krijgt dezelfde control-styling als de Homey-verbindingsvelden. De mDNS-advertentie wordt uitgebreid met de standaard DNS-SD service-enumeration PTR en expliciete multicast-joins/announcements op alle geschikte IPv4-interfaces, zodat browsers die eerst services enumereren en Ubuntu-servers met meerdere netwerkinterfaces ondersteund worden.
+
+
+## mDNS SRV-hostnaam (22 november 2026)
+
+De SRV-target-hostnaam mag niet afhankelijk zijn van de Docker-container-hostnaam. Deze kan bij containerrecreatie wijzigen en is niet noodzakelijk via mDNS resolveerbaar. Gebruik daarom een stabiele hostnaam op basis van de persistente installatie-ID (`homey-dashboard-<8 tekens>.local`) en publiceer de bijbehorende A-records op de geschikte hostnetwerkinterfaces. Een wijziging van de zichtbare dashboardnaam wijzigt deze target-hostnaam niet.

@@ -127,3 +127,6 @@ The advertisement publishes the API port and TXT metadata (`version=1`, `api=/ap
 
 
 The mDNS advertiser joins UDP multicast on each eligible IPv4 LAN interface and publishes both the service PTR and standard DNS-SD service-enumeration PTR records. This supports clients that enumerate service types before browsing for the dashboard service.
+
+
+The DNS-SD SRV target uses a stable installation-specific `homey-dashboard-<ID-prefix>.local` hostname rather than the Docker container hostname. Its A records are published from the host-network IPv4 interfaces, avoiding dependencies on container hostname resolution after recreation.
