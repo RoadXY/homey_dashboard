@@ -2,7 +2,7 @@ import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { connectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
+import { connectHomey, reconnectHomey, getHomeyInventory, getHomeyStatus, getHomeyDeviceReadings, getHomeyLogicVariables, getHomeyLanguage, homeyRealtime } from "./homey.js";
 import { getDashboardNotifications, getNotificationConfigsForSettings, saveNotificationConfigsForSettings } from "./notifications.js";
 import { createApiNotification, deleteApiNotification, getPublicApiNotifications, initializeApiNotificationExpiryMonitor, patchApiNotification, ApiNotificationValidationError, type ApiNotificationInput } from "./notifications-api.js";
 import { getDashboardWeather, setWeatherCondition, WEATHER_CONDITIONS } from "./weather.js";
