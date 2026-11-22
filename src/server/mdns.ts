@@ -164,16 +164,17 @@ function readDnsName(packet: Buffer, start: number): { name: string; nextOffset:
   return undefined;
 }
 
-function readQuestions(packet: Buffer): Array<{ name: string; type: number }> {
+export function readQuestions(packet: Buffer): Array<{ name: string; type: number; unicastResponse: boolean }> {
   if (packet.length < 12) return [];
   const count = packet.readUInt16BE(4);
-  const questions: Array<{ name: string; type: number }> = [];
+  const questions: Array<{ name: string; type: number; unicastResponse: boolean }> = [];
   let offset = 12;
   for (let index = 0; index < count; index++) {
     const parsed = readDnsName(packet, offset);
     if (!parsed || parsed.nextOffset + 4 > packet.length) return [];
     const type = packet.readUInt16BE(parsed.nextOffset);
-    questions.push({ name: parsed.name, type });
+    const questionClass = packet.readUInt16BE(parsed.nextOffset + 2);
+    questions.push({ name: parsed.name, type, unicastResponse: (questionClass & 0x8000) !== 0 });
     offset = parsed.nextOffset + 4;
   }
   return questions;
@@ -245,7 +246,7 @@ function buildResponse(answers: DnsRecord[], additionals: DnsRecord[]): Buffer {
 }
 
 function responseForQuestions(
-  questions: Array<{ name: string; type: number }>,
+  questions: Array<{ name: string; type: number; unicastResponse: boolean }>,
   records: ReturnType<typeof buildMdnsRecords>,
 ): Buffer | undefined {
   const answers: DnsRecord[] = [];
@@ -311,9 +312,23 @@ export async function startMdnsDiscovery(options: {
       if (packet.length < 12 || (packet.readUInt16BE(2) & 0x8000) !== 0) return;
       const response = responseForQuestions(readQuestions(packet), records);
       if (response) {
-        // Answer directly to the requester; this also avoids sending a response
-        // through an unrelated default route on multi-interface Ubuntu hosts.
-        socket.send(response, remote.port, remote.address);
+        const unicastRequested = readQuestions(packet).some(question => question.unicastResponse);
+        if (unicastRequested) {
+          // The QU bit in the question class explicitly requests a unicast reply.
+          socket.send(response, remote.port, remote.address);
+        } else {
+          // Normal mDNS questions expect multicast responses on the local link.
+          // Answer on each eligible interface so Bonjour browsers can refresh
+          // PTR/SRV/TXT/A records consistently after their cache expires.
+          for (const address of getAdvertisedAddresses()) {
+            try {
+              socket.setMulticastInterface(address);
+              socket.send(response, MDNS_PORT, MDNS_MULTICAST_ADDRESS);
+            } catch (error) {
+              options.logger?.warn?.({ err: error, interfaceAddress: address }, "mDNS query response failed on network interface.");
+            }
+          }
+        }
       }
     });
     await new Promise<void>((resolve, reject) => {

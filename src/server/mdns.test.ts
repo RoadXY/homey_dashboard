@@ -5,6 +5,7 @@ import { join } from "node:path";
 import {
   buildMdnsRecords,
   buildGoodbyeRecords,
+  readQuestions,
   createOrLoadInstallationIdentity,
   generateInstallationName,
   isValidInstallationName,
@@ -23,6 +24,22 @@ async function createTemporaryDirectory(): Promise<string> {
 }
 
 describe("mDNS service records", () => {
+  it("detects the mDNS QU bit for unicast-response questions", () => {
+    const question = Buffer.from([
+      0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+      7, 95, 104, 111, 109, 101, 121, 0,
+      0, 12,
+      0x80, 1,
+    ]);
+    expect(readQuestions(question)).toEqual([
+      { name: "_homey.", type: 12, unicastResponse: true },
+    ]);
+    question[question.length - 2] = 0;
+    question[question.length - 1] = 1;
+    expect(readQuestions(question)[0]?.unicastResponse).toBe(false);
+  });
+
+
   it("does not withdraw the stable A record when the friendly service name changes", async () => {
     const identity = { id: "6fcec914-1234-4234-8234-123456789abc", name: "Keuken" };
     const records = buildMdnsRecords(identity, 5173);
