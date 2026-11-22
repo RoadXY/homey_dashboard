@@ -2649,17 +2649,17 @@ function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK,
           <rect className="weather-3d-fog-line weather-3d-fog-d" x="34" y="83" width="60" height="7" rx="3.5" style={{fill:`url(#${gradientId}-fog)`}}/>
         </g>}
 
-        {hasRain && <g className="weather-precipitation weather-rain-drops weather-3d-rain">
-          {(category === "drizzle" ? [[39,64,2.5],[61,62,2.3],[83,65,2.5],[98,62,2.1]] : category === "heavy_rain" ? [[28,63,4.1],[48,68,3.9],[68,62,4.1],[88,68,3.9],[105,63,3.6]] : category === "showers" ? [[40,66,3.5],[65,69,3.5],[89,65,3.5]] : category === "sleet" ? [[52,65,3.2],[91,68,3.2]] : [[37,64,3.5],[64,68,3.5],[91,63,3.5]]).map(([x,y,r],i)=><g key={i} className={`weather-3d-drop weather-3d-drop-${i}`} transform={`translate(${x} ${y})`}>
-            <path className="weather-3d-drop-shape" d={`M0 ${-r*1.8} C${r*.8} ${-r*.4} ${r*1.4} ${r*.5} 0 ${r*1.3} C${-r*1.4} ${r*.5} ${-r*.8} ${-r*.4} 0 ${-r*1.8}Z`} style={{fill:`url(#${gradientId}-rain)`}}/>
-            <path className="weather-3d-drop-glint" d={`M${-r*.35} 0q${r*.2} ${-r*.7} ${r*.65} ${-r*.9}`}/>
-          </g>)}
-        </g>}
-
         {hasSnow && <g className="weather-precipitation weather-snowflakes weather-3d-snow">
           {(category === "sleet" ? [48,88] : [37,64,91]).map((x,i)=><g key={x} className={`weather-3d-flake weather-3d-flake-${i}`} transform={`translate(${x} ${category === "sleet" ? 70 : 71})`}>
             <circle className="weather-3d-flake-core" r="2.2"/>
             <path className="weather-3d-flake-arms" d="M0-7V7M-6-3.5 6 3.5M6-3.5-6 3.5M0-7l-1.8 2.2M0-7l1.8 2.2M0 7l-1.8-2.2M0 7l1.8-2.2" style={{stroke:`url(#${gradientId}-snow)`}}/>
+          </g>)}
+        </g>}
+
+        {hasRain && <g className="weather-precipitation weather-rain-drops weather-3d-rain">
+          {(category === "drizzle" ? [[39,64,2.5],[61,62,2.3],[83,65,2.5],[98,62,2.1]] : category === "heavy_rain" ? [[28,63,4.1],[48,68,3.9],[68,62,4.1],[88,68,3.9],[105,63,3.6]] : category === "showers" ? [[40,66,3.5],[65,69,3.5],[89,65,3.5]] : category === "sleet" ? [[52,65,3.2],[91,68,3.2]] : [[37,64,3.5],[64,68,3.5],[91,63,3.5]]).map(([x,y,r],i)=><g key={i} className={`weather-3d-drop weather-3d-drop-${i}`} transform={`translate(${x} ${y})`}>
+            <path className="weather-3d-drop-shape" d={`M0 ${-r*1.8} C${r*.8} ${-r*.4} ${r*1.4} ${r*.5} 0 ${r*1.3} C${-r*1.4} ${r*.5} ${-r*.8} ${-r*.4} 0 ${-r*1.8}Z`} style={{fill:`url(#${gradientId}-rain)`}}/>
+            <path className="weather-3d-drop-glint" d={`M${-r*.35} 0q${r*.2} ${-r*.7} ${r*.65} ${-r*.9}`}/>
           </g>)}
         </g>}
 
@@ -2677,9 +2677,9 @@ function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK,
         </g>}
 
         {isWind && <g className="weather-wind-lines weather-3d-wind">
-          <path className="weather-3d-wind-ribbon weather-3d-wind-a" d="M13 36h78c18 0 18-20 4-20-7 0-10 5-10 9" style={{stroke:`url(#${gradientId}-fog)`}}/>
-          <path className="weather-3d-wind-ribbon weather-3d-wind-b" d="M8 55h103c16 0 16 20 2 20-7 0-10-5-10-9" style={{stroke:`url(#${gradientId}-fog)`}}/>
-          <path className="weather-3d-wind-ribbon weather-3d-wind-c" d="M27 73h35" style={{stroke:`url(#${gradientId}-fog)`}}/>
+          <path className="weather-3d-wind-ribbon weather-3d-wind-a" pathLength="100" d="M13 36h78c18 0 18-20 4-20-7 0-10 5-10 9" style={{stroke:`url(#${gradientId}-fog)`}}/>
+          <path className="weather-3d-wind-ribbon weather-3d-wind-b" pathLength="100" d="M8 55h103c16 0 16 20 2 20-7 0-10-5-10-9" style={{stroke:`url(#${gradientId}-fog)`}}/>
+          <path className="weather-3d-wind-ribbon weather-3d-wind-c" pathLength="100" d="M27 73h35" style={{stroke:`url(#${gradientId}-fog)`}}/>
         </g>}
 
         {unknown && <g className="weather-unknown-mark weather-3d-unknown"><circle cx="64" cy="48" r="29" style={{fill:`url(#${gradientId}-cloud)`}}/><path d="M53 39c1-13 22-15 24-1 1 9-11 12-13 21m0 9v1"/></g>}
