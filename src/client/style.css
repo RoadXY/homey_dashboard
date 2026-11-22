@@ -1614,9 +1614,10 @@ body {
 .weather-pack-color3d.is-animated .weather-3d-fog-b { animation:color3d-fog-b 8.4s ease-in-out -2s infinite; }
 .weather-pack-color3d.is-animated .weather-3d-fog-c { animation:color3d-fog-a 6.8s ease-in-out -3s infinite; }
 .weather-pack-color3d.is-animated .weather-3d-fog-d { animation:color3d-fog-b 9s ease-in-out -1s infinite; }
-.weather-pack-color3d.is-animated .weather-3d-wind-a { animation:color3d-wind 5.8s ease-in-out infinite; }
-.weather-pack-color3d.is-animated .weather-3d-wind-b { animation:color3d-wind 6.6s ease-in-out -2.4s infinite reverse; }
-.weather-pack-color3d.is-animated .weather-3d-wind-c { animation:color3d-wind 7.4s ease-in-out -1.2s infinite; }
+.weather-pack-color3d .weather-3d-wind-ribbon { stroke-dasharray:24 76; stroke-dashoffset:100; }
+.weather-pack-color3d.is-animated .weather-3d-wind-a { animation:color3d-wind-flow 2.6s linear infinite; }
+.weather-pack-color3d.is-animated .weather-3d-wind-b { animation:color3d-wind-flow 2.6s linear -1.25s infinite; }
+.weather-pack-color3d.is-animated .weather-3d-wind-c { animation:color3d-wind-flow 2.6s linear -.7s infinite; }
 
 /* Override legacy category-level group animations for this independent pack. */
 .weather-pack-color3d.is-animated.weather-rain .weather-3d-rain,
@@ -1634,7 +1635,7 @@ body {
 @keyframes color3d-lightning { 0%,8%,14%,100%{opacity:1;filter:brightness(1)} 9%,12%{opacity:.25;filter:brightness(1.8)} }
 @keyframes color3d-fog-a { 0%,100%{transform:translateX(-2px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
 @keyframes color3d-fog-b { 0%,100%{transform:translateX(2px);opacity:.9} 50%{transform:translateX(-2px);opacity:.65} }
-@keyframes color3d-wind { 0%,100%{transform:translateX(-1px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
+@keyframes color3d-wind-flow { 0%{stroke-dashoffset:100;opacity:.15} 12%{opacity:.95} 72%{opacity:.9} 100%{stroke-dashoffset:0;opacity:.12} }
 /* The in-app motion switch is an explicit user choice. When enabled it takes
    precedence over the OS reduced-motion preference; turning it off adds is-static. */
 
