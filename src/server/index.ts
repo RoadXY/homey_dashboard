@@ -231,7 +231,7 @@ app.post("/api/settings/homey-connection", async (request, reply) => {
   try {
     const saved = await saveHomeyConnectionConfig(request.body);
     broadcastSettingsUpdated("general");
-    const connection = await connectHomey();
+    const connection = await reconnectHomey();
     return { ...saved, connection };
   } catch (error) {
     return reply.code(400).send({ error: error instanceof Error ? error.message : "Homey-configuratie opslaan mislukt." });
