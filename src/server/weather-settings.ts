@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { DEFAULT_WEATHER_ICON_ANIMATION, DEFAULT_WEATHER_ICON_PACK, normalizeWeatherIconPack, type WeatherIconPackId } from "../shared/weather-icons";
+import { DEFAULT_WEATHER_ICON_ANIMATION, DEFAULT_WEATHER_ICON_PACK, normalizeWeatherIconPack, type WeatherIconPackId } from "../shared/weather-icons.js";
 
 export type WeatherSource =
   | { type: "device"; deviceId: string; capabilityId: string }

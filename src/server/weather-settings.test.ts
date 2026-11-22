@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeWeatherSettings } from "./weather-settings";
+import { normalizeWeatherSettings } from "./weather-settings.js";
 
 describe("weather settings normalization", () => {
   it("uses Standard when the stored icon pack is missing or invalid", () => {
