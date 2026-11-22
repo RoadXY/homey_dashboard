@@ -324,12 +324,26 @@ export async function startMdnsDiscovery(options: {
     installationId: identity.id,
   }, "mDNS service discovery is active.");
 
+  let socketClosed = false;
+  const closeSocket = () => new Promise<void>((resolve) => {
+    if (socketClosed) {
+      resolve();
+      return;
+    }
+    socketClosed = true;
+    try {
+      socket.close(() => resolve());
+    } catch {
+      resolve();
+    }
+  });
+
   return {
     identity,
     close: () => {
       clearTimeout(secondAnnouncement);
       clearInterval(refreshAnnouncement);
-      socket.close();
+      return closeSocket();
     },
   };
 }

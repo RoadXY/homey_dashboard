@@ -239,7 +239,7 @@ The backend advertises the dashboard on the local network using the DNS-SD servi
 - `DATA_DIR/installation.json` stores a stable UUID and friendly installation name.
 - On first start, the friendly name is generated from two Dutch words (adjective + animal), for example `Vrolijke Panda`.
 - The DNS-SD instance label is `Homey Dashboard - <friendly name> [<8-char ID prefix>]` to make collisions highly unlikely. The TXT `name` value contains the clean display name without the suffix; Homey app clients should display that value.
-- `DASHBOARD_INSTANCE_NAME` optionally overrides the friendly part. Set it to e.g. `Woonkamer`, then recreate the container; the stored UUID is retained.
+- The friendly name is managed in the **Dashboard-identiteit** card on the General settings page and stored in `data/settings.json`. Saving applies the new name to the running mDNS advertisement immediately; no container restart is required. The persistent UUID in `data/installation.json` is retained.
 - The SRV record advertises the configured application port. TXT records expose `version=1`, `api=/api`, `id=<UUID>` and `name=<instance name>`.
 - `MDNS_ENABLED` controls publication. It defaults to enabled in the production host-network Compose file and disabled in development and bridge-mode Compose.
 - UDP multicast uses IPv4 group `224.0.0.251:5353`. If the port is unavailable or no suitable IPv4 address exists, discovery is logged as unavailable and the HTTP dashboard remains running.

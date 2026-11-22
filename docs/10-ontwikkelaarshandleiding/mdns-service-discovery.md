@@ -27,17 +27,11 @@ The DNS-SD instance label includes the first eight characters of the persistent 
 
 ## Name generation and configuration
 
-On first startup, if `DASHBOARD_INSTANCE_NAME` is empty and no identity file exists, the backend selects two words from built-in Dutch word lists: an adjective and an animal (for example, `Vrolijke Panda`). It stores the generated name and UUID in `DATA_DIR/installation.json`.
+On first startup, if no identity file exists, the backend selects two words from built-in Dutch word lists: an adjective and an animal (for example, `Vrolijke Panda`). It stores the generated name and UUID in `DATA_DIR/installation.json`.
 
-To give an installation a custom name, set `DASHBOARD_INSTANCE_NAME` in the private `.env` file, for example:
+The friendly name is editable on the **General settings** page in the **Dashboard identity** card. It is part of the normal general-settings save operation and is persisted in `DATA_DIR/settings.json`; the matching identity is updated in `DATA_DIR/installation.json`. The backend restarts the mDNS advertisement immediately after a successful save, without requiring a container restart. Existing installations keep their previously generated or configured name when upgrading. The installation UUID is retained when the friendly name changes.
 
-```dotenv
-DASHBOARD_INSTANCE_NAME=Woonkamer
-```
-
-The resulting advertised instance is `Homey Dashboard - Woonkamer`. Recreate the container after changing the environment value. The UUID is retained. If the variable is later cleared, the last persisted name remains in use.
-
-The friendly name is limited so the complete service instance label, including its short UUID suffix, fits the DNS 63-byte label limit. The value is configuration and is not an authentication credential.
+The friendly name is validated so the complete service instance label, including its short UUID suffix, fits the DNS 63-byte label limit. Only letters, numbers, spaces, underscores and hyphens are accepted. The value is configuration and is not an authentication credential. The legacy `DASHBOARD_INSTANCE_NAME` environment variable is no longer supported; manage the name in General settings.
 
 ## Network deployment
 

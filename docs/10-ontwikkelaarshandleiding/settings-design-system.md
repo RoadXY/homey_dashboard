@@ -78,7 +78,7 @@ Do not add a second component-specific hover rule unless the interaction is inte
 
 | Area | Shared styling coverage |
 |---|---|
-| General | Language/date/time/timeout selects, Weather API token name, token creation, token actions, status and save controls |
+| General | Dashboard identity name, language/date/time/timeout controls, Homey connection, Weather API token name/creation/actions, status and save controls |
 | Navigation | Sidebar items, collapse control, brand action and return action |
 | Quick Actions | Action rows, editor controls, device/Flow selectors, selectable Flow options, icon picker, search fields and save/cancel actions |
 | Notifications | Notification selector and options, create/delete/enable actions, severity select, title/search fields, source pickers and Blockly workspace surfaces |
@@ -485,3 +485,10 @@ De flow voor een gewijzigd Homey-IP-adres is als volgt gecontroleerd en aangesch
 6. De response bevat het resultaat van die verse poging; de frontend haalt daarna `/api/system/status` opnieuw op en toont die actuele status.
 
 De discovery- en testacties wijzigen de opgeslagen configuratie of de actuele live-verbinding niet. Alleen Save past de configuratie toe. De API-token wordt nooit teruggestuurd naar de browser.
+
+
+## Dashboard identity in General settings
+
+The **Dashboard-identiteit** card is part of General settings and uses the existing `.settings-card`, `.setting-row`, `.setting-description` and `.settings-interactive settings-interactive--text` primitives. The installation name is an ordinary general preference: it participates in the shared Save/Cancel and dirty-state behavior, is localized in Dutch and English, and is validated by the backend before persistence. Do not add a separate save action or expose the name as a Docker environment variable.
+
+When the name is saved, the backend updates the persisted installation identity and restarts the mDNS advertisement. The installation UUID and DNS-SD collision-resistant suffix remain unchanged. Keep the field visually consistent with the other General settings inputs; do not introduce a one-off visual style.

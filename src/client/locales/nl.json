@@ -44,6 +44,10 @@
   "settings.fallback": "Terugval",
   "settings.dateTime": "Datum en tijd",
   "settings.notificationBehavior": "Meldingen",
+  "settings.installationIdentity": "Dashboard-identiteit",
+  "settings.installationName": "Naam van deze installatie",
+  "settings.installationNamePlaceholder": "Bijvoorbeeld Woonkamer",
+  "settings.installationNameDescription": "Deze naam wordt gebruikt om dit dashboard op het lokale netwerk te herkennen in de Homey-app. De installatie-ID blijft behouden wanneer je de naam wijzigt."
   "settings.notificationTimeout": "Timeout automatisch verbergen",
   "settings.notificationTimeoutDescription": "Geldt voor tijdelijke foutmeldingen na acties, zoals een apparaat dat niet reageert. Actieve Homey-meldingen blijven zichtbaar zolang hun voorwaarde actief is.",
   "settings.timeoutNever": "Nooit",

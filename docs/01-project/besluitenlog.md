@@ -682,3 +682,8 @@ A new installation generates a friendly Dutch two-word name (adjective + animal)
 The production host-network Compose deployment enables discovery by default. The bridge-mode Compose deployment disables it by default because a normal Docker bridge does not forward mDNS multicast to the physical LAN. Discovery failure must not prevent the HTTP dashboard from starting.
 
 The implementation is committed to `phase_1_foundation`. Automated tests cover name generation, validation and persistent identity. Live multicast/Avahi coexistence and Homey-app discovery still require verification on the Ubuntu host and target LAN.
+
+
+## Gebruikersbesluit – naam van dashboardinstallatie via Algemene instellingen (22 november 2026)
+
+De gebruiker wil de herkenbare naam van een Homey Dashboard-installatie niet via een `.env`-variabele instellen. De naam hoort in de algemene instellingen, vormgegeven volgens het bestaande Settings Design System. De naam wordt opgeslagen met de algemene instellingen en een wijziging werkt de mDNS/DNS-SD-advertentie direct bij, zonder containerherstart. De persistente installatie-UUID blijft bij een naamswijziging ongewijzigd. De automatisch gegenereerde Nederlandse standaardnaam blijft beschikbaar voor bestaande en nieuwe installaties.

@@ -32,6 +32,21 @@ const SETTINGS_SESSION_IDLE_MS = 30 * 60 * 1000;
 let settingsSessionSecret: Buffer;
 const settingsRealtime = new EventEmitter();
 const notificationsRealtime = new EventEmitter();
+let mdnsDiscovery: Awaited<ReturnType<typeof startMdnsDiscovery>> | null = null;
+const mdnsLogger = {
+  info: (data: unknown, message?: string) => app.log.info(data, message),
+  warn: (data: unknown, message?: string) => app.log.warn(data, message),
+};
+async function applyMdnsInstallationName(name: string): Promise<void> {
+  await mdnsDiscovery?.close();
+  mdnsDiscovery = await startMdnsDiscovery({
+    dataDirectory,
+    port,
+    configuredName: name,
+    enabled: process.env.MDNS_ENABLED !== "false",
+    logger: mdnsLogger,
+  });
+}
 function broadcastSettingsUpdated(section: "general" | "quick-actions" | "notifications" | "weather"): void {
   settingsRealtime.emit("updated", { section, updatedAt: new Date().toISOString() });
 }
@@ -214,7 +229,11 @@ app.get("/api/settings/general", async (request, reply) => {
 app.post("/api/settings/general", async (request, reply) => {
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
+    const previousSettings = await readDashboardSettings();
     const settings = await saveDashboardSettings(request.body);
+    if (settings.installationName !== previousSettings.installationName) {
+      await applyMdnsInstallationName(settings.installationName);
+    }
     broadcastSettingsUpdated("general");
     return settings;
   } catch (error) {
@@ -673,7 +692,8 @@ try {
   await initializeSettingsSessionSecret();
   await initializeApiNotificationExpiryMonitor(broadcastNotificationsUpdated);
   await app.listen({ port, host });
-  await startMdnsDiscovery({ dataDirectory, port, configuredName: process.env.DASHBOARD_INSTANCE_NAME, enabled: process.env.MDNS_ENABLED !== "false", logger: { info: (data, message) => app.log.info(data, message), warn: (data, message) => app.log.warn(data, message) } });
+  const settings = await readDashboardSettings();
+  await applyMdnsInstallationName(settings.installationName);
 } catch (error) {
   app.log.error(error);
   process.exit(1);

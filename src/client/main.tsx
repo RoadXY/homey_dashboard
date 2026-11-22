@@ -23,7 +23,7 @@ type WeatherConditionResponse = { retrievedAt: string; category: WeatherCategory
 type DashboardWeatherValues = { settings: WeatherSettingsModel; values: Record<WeatherSettingId, { value: string | number | boolean | null; units: string; available: boolean }> };
 type NotificationTimeout = "never" | "1" | "2" | "5" | "10" | "30" | "60" | "300" | "900" | "1800";
 type TransientNotification = { id: string; message: string; source: "system"; status: "active" | "dismissed" | "expired"; createdAt: number };
-type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout };
+type GeneralSettings = { language: string; dateFormat: string; timeFormat: "24h" | "12h"; firstDayOfWeek: "monday" | "sunday"; notificationTimeout: NotificationTimeout; installationName: string };
 type NotificationConfigEditor = { schemaVersion: 1; id: string; title: string; notificationTitle?: string; message: string; severity: "critical" | "warning" | "info"; enabled: boolean; testOnly?: boolean; timeoutMs?: number; condition: any };
 type ScheduleEditorValue = { type: "schedule"; configured: false; weekdays: [] } | { type: "schedule"; weekdays: number[]; startTime: string; endTime: string; timeZone?: string };
 type NotificationSourceCatalog = { retrievedAt: string; zones: { id: string; name: string; parent: string | null }[]; devices: { id: string; name: string; zone: string | null; available: boolean; capabilities: { id: string; title: string; type: "number" | "boolean" | "string"; units: string }[] }[]; variables: { id: string; name: string; type: "number" | "boolean" | "string" }[] };
@@ -487,7 +487,7 @@ function SettingsPinGate({ locale, pin, setPin, error, onCancel, onUnlock }: { l
   </form></main>;
 }
 
-const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday", notificationTimeout: "never" };
+const initialSettings: GeneralSettings = { language: "automatic", dateFormat: "short", timeFormat: "24h", firstDayOfWeek: "monday", notificationTimeout: "never", installationName: "Homey Dashboard" };
 function homeyLanguageName(language: string, locale: string): string { try { return new Intl.DisplayNames([locale], { type: "language" }).of(language.toLowerCase().split("-")[0]) ?? language.toUpperCase(); } catch { return language.toUpperCase(); } }
 
 const quickActionDefaults: QuickAction[] = [
@@ -2296,6 +2296,11 @@ function GeneralSettingsPage({ onBack, initialPage, onNavigate, onDirtyChange }:
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.dashboardService")}</span><strong className="status-pill ok">{t("settings.running")}</strong><span className="status-detail">v{status?.version ?? "—"} (Docker)</span></div>
           <div className="status-row"><span className="status-check ok">✓</span><span>{t("settings.system")}</span><strong className="status-pill ok">{t("settings.healthy")}</strong><span className="status-detail">{t("settings.uptime")} {uptime(status?.uptimeSeconds)}</span></div>
         </div>
+      </section>
+      <section className="settings-card installation-name-card">
+        <h2><span className="mdi mdi-identifier" aria-hidden="true"/> {t("settings.installationIdentity")}</h2>
+        <label className="setting-row"><span>{t("settings.installationName")}</span><input className="settings-interactive settings-interactive--text" value={settings.installationName} maxLength={32} onChange={event => update("installationName", event.target.value)} placeholder={t("settings.installationNamePlaceholder")}/></label>
+        <p className="setting-description">{t("settings.installationNameDescription")}</p>
       </section>
       <div className="settings-top-cards">
         <section className="settings-card language-card"><h2><span>◎</span>{t("settings.language")}</h2>
