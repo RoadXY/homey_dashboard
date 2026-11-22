@@ -498,3 +498,10 @@ Alle instellingenpagina's gebruiken één gedeeld ontwerpsysteem: Algemeen, Snel
 - Uitgeschakelde elementen krijgen geen hover- of touch-actiestijl.
 
 De huidige waarden vormen het donkere standaardthema. De tokenstructuur en `--ui-color-scheme` bereiden de instellingen voor op toekomstige thema's. Een themawisselaar, opslag van de themakeuze en een licht thema zijn nog niet geïmplementeerd. Zie de [Developer Guide – Settings UI design system](../10-ontwikkelaarshandleiding/settings-design-system.md) voor de volledige tokenindeling en uitbreidingsregels.
+
+
+## Weerkaart: hoogte volgt aantal optionele waarden (22 november 2026)
+
+De weerkaart gebruikt geen schermbreedte-afhankelijke minimale hoogte meer. De kaart groeit op basis van de daadwerkelijke inhoud: de temperatuur/conditie en het weericoon, plus uitsluitend de ingeschakelde optionele waarden (0–8). De inhoud wordt bovenaan aaneengesloten weergegeven; er wordt geen resterende verticale ruimte tussen de hoofdweergave en de meetwaarden verdeeld.
+
+Wanneer geen optionele waarden zijn ingeschakeld, wordt het detailgedeelte volledig weggelaten, inclusief de scheidingslijn. Hiermee blijft de kaart ook in die situatie compact. De aanpassing geldt voor desktop en mobiele weergaven en verandert de configuratiemogelijkheid van de acht waarden niet.
