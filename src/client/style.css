@@ -1519,12 +1519,12 @@ body {
 .weather-pack-animated.weather-snow .weather-precipitation,
 .weather-pack-animated.weather-snow_showers .weather-precipitation,
 .weather-pack-animated.weather-sleet .weather-precipitation { animation:none; }
-.weather-pack-animated.is-animated .weather-snowflake { animation:weather-snow-drift 4.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.weather-pack-animated.is-animated .weather-snowflake { animation:weather-snow-fall 3.2s ease-in infinite; transform-box:fill-box; transform-origin:center; }
 .weather-pack-animated.is-animated .weather-snowflake-b { animation-delay:-1.6s; }
 .weather-pack-animated.is-animated .weather-snowflake-c { animation-delay:-3.1s; }
-.weather-pack-animated.is-animated.weather-snow_showers .weather-snowflake { animation-duration:5.6s; }
-.weather-pack-animated.is-animated.weather-sleet .weather-snowflake { animation-duration:5.2s; }
-@keyframes weather-snow-drift { 0%,100%{transform:translate(0,-1px) rotate(-3deg);opacity:.72} 50%{transform:translate(1.5px,3px) rotate(3deg);opacity:1} }
+.weather-pack-animated.is-animated.weather-snow_showers .weather-snowflake { animation-duration:2.7s; }
+.weather-pack-animated.is-animated.weather-sleet .weather-snowflake { animation-duration:3s; }
+@keyframes weather-snow-fall { 0%{translate:0 -2px;opacity:0} 18%{opacity:1} 78%{opacity:1} 100%{translate:0 9px;opacity:0} }
 
 .weather-pack-animated .weather-sun-disc { fill:#f4c64e; fill-opacity:.18; }
 .weather-pack-animated .weather-cloud { color:#c5ced9; }
