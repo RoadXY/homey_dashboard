@@ -31,7 +31,7 @@ export function generateInstallationName(): string {
 
 export function isValidInstallationName(value: unknown): value is string {
   if (typeof value !== "string") return false;
-  const normalized = value.trim().replace(/\\s+/g, " ");
+  const normalized = value.trim().replace(/\s+/g, " ");
   return normalized.length > 0
     && Buffer.byteLength(INSTANCE_PREFIX + normalized + " [12345678]", "utf8") <= 63
     && /^[\p{L}\p{N}][\p{L}\p{N} _-]*$/u.test(normalized);
@@ -50,7 +50,7 @@ export async function createOrLoadInstallationIdentity(
       const parsed = JSON.parse(await readFile(identityPath, "utf8")) as Partial<InstallationIdentity>;
       if (typeof parsed.id === "string" && /^[0-9a-f-]{36}$/i.test(parsed.id)
         && isValidInstallationName(parsed.name)) {
-        identity = { id: parsed.id, name: parsed.name.trim().replace(/\\s+/g, " ") };
+        identity = { id: parsed.id, name: parsed.name.trim().replace(/\s+/g, " ") };
       }
     } catch {
       // A missing or invalid identity is initialized below.
@@ -64,19 +64,19 @@ export async function createOrLoadInstallationIdentity(
 
   const next: InstallationIdentity = {
     id: identity?.id ?? randomUUID(),
-    name: requestedName ? requestedName.replace(/\\s+/g, " ") : identity?.name ?? generateInstallationName(),
+    name: requestedName ? requestedName.replace(/\s+/g, " ") : identity?.name ?? generateInstallationName(),
   };
 
   if (!identity || identity.id !== next.id || identity.name !== next.name) {
     const temporaryPath = `${identityPath}.tmp`;
-    await writeFile(temporaryPath, JSON.stringify(next, null, 2) + "\\n", { mode: 0o600 });
+    await writeFile(temporaryPath, JSON.stringify(next, null, 2) + "\n", { mode: 0o600 });
     await rename(temporaryPath, identityPath);
   }
   return next;
 }
 
 function encodeName(name: string): Buffer {
-  const labels = name.replace(/\\.$/, "").split(".");
+  const labels = name.replace(/\.$/, "").split(".");
   const chunks: Buffer[] = [];
   for (const label of labels) {
     const bytes = Buffer.from(label, "utf8");
