@@ -59,7 +59,7 @@ export async function createOrLoadInstallationIdentity(
 
   const requestedName = configuredName?.trim();
   if (requestedName && !isValidInstallationName(requestedName)) {
-    throw new Error("DASHBOARD_INSTANCE_NAME must contain a valid name of at most 63 UTF-8 bytes including the Homey Dashboard prefix.");
+    throw new Error("Installation name must be valid and fit the Homey Dashboard DNS-SD label limit.");
   }
 
   const next: InstallationIdentity = {
