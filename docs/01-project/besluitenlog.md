@@ -645,3 +645,8 @@ Bij natte sneeuw wordt de SVG-schildervolgorde zo toegepast dat de sneeuwvlokken
 De windanimatie van Kleurrijk (3D) volgt nu het bewegingsprincipe van het oorspronkelijke pack: een korte zichtbare lijnstreep stroomt langs de windpaden, met verschillende startvertragingen per lijn. De bestaande 3D-windribbons en kleurverloop blijven behouden; de zwakke horizontale verschuiving is vervangen door dash-offset beweging.
 
 De oorspronkelijke pack-ID `animated` blijft ongewijzigd voor opgeslagen instellingen en compatibiliteit. Alleen de zichtbare naam is gewijzigd naar **Klassiek (standaard)** (Engels: **Classic (standard)**). De naam maakt duidelijk dat dit de oorspronkelijke standaardstijl is, zonder de indruk te wekken dat andere packs niet kunnen animeren.
+
+
+## Klassiek (standaard): sneeuw valt en fade-out (22 november 2026)
+
+Op verzoek is uitsluitend de animatie van de bestaande sneeuwvlokken in pack `animated` aangepast. De SVG-vormen, aantallen, posities, kleuren en overige artwork blijven ongewijzigd. De eerdere zijwaartse/roterende op-en-neer beweging is vervangen door een verticale valbeweging met geleidelijk uitfaden en opnieuw verschijnen. Sneeuwbuien en natte sneeuw gebruiken dezelfde valstijl; hun bestaande eigen tempo-instellingen zijn behouden als kortere cycli.
