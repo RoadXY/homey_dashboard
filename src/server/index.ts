@@ -19,6 +19,7 @@ import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
 import { readFile, mkdir, readdir, copyFile, writeFile } from "node:fs/promises";
 import { randomUUID, randomBytes, createHmac, createHash, timingSafeEqual } from "node:crypto";
+import { startMdnsDiscovery } from "./mdns.js";
 
 const app = Fastify({ logger: true });
 const port = Number(process.env.PORT ?? 3000);
@@ -672,6 +673,7 @@ try {
   await initializeSettingsSessionSecret();
   await initializeApiNotificationExpiryMonitor(broadcastNotificationsUpdated);
   await app.listen({ port, host });
+  await startMdnsDiscovery({ dataDirectory, port, configuredName: process.env.DASHBOARD_INSTANCE_NAME, enabled: process.env.MDNS_ENABLED !== "false", logger: { info: (data, message) => app.log.info(data, message), warn: (data, message) => app.log.warn(data, message) } });
 } catch (error) {
   app.log.error(error);
   process.exit(1);

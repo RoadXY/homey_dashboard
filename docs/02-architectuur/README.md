@@ -117,3 +117,10 @@ Het definitieve ontwerp voor het extern publiceren, wijzigen en verwijderen van 
 ## Notifications and Blockly developer guide
 
 The ownership boundaries, condition model, Blockly data flow, and approved notification visibility-timeout behavior are documented in the [Notifications and Blockly – Developer Guide](meldingen-blockly-developer-guide.md). The guide explicitly separates Blockly lifecycle behavior from the externally owned Notifications API.
+
+
+## mDNS-SD service discovery
+
+The production host-network deployment advertises the dashboard as `_homey-dashboard._tcp.local.`. Each installation has a persistent UUID and a friendly instance name in the form `Homey Dashboard - <name>`. A new installation generates a Dutch adjective+noun name once and stores it in `DATA_DIR/installation.json`. Operators can override the friendly part with `DASHBOARD_INSTANCE_NAME`; changing this environment value and recreating the container updates the advertisement without changing the installation UUID.
+
+The advertisement publishes the API port and TXT metadata (`version=1`, `api=/api`, `id`, and `name`). The default `compose.prod.yaml` uses host networking, which is required for LAN multicast discovery. The bridge deployment disables mDNS by default; a normal Docker bridge does not forward multicast discovery to the physical LAN. See the [mDNS-SD developer reference](../10-ontwikkelaarshandleiding/mdns-service-discovery.md).

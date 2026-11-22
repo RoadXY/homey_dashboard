@@ -230,3 +230,22 @@ After changes to backend, configuration, persistence or realtime behavior:
 - Inspect logs and confirm that no credentials or tokens are exposed.
 
 Record which checks were actually run. Do not report a live Homey or Docker test as successful if only static code review was performed.
+
+
+## 13. mDNS-SD service discovery
+
+The backend advertises the dashboard on the local network using the DNS-SD service type `_homey-dashboard._tcp.local.`. The implementation is in `src/server/mdns.ts` and uses Node's UDP socket APIs; it does not add a runtime npm dependency.
+
+- `DATA_DIR/installation.json` stores a stable UUID and friendly installation name.
+- On first start, the friendly name is generated from two Dutch words (adjective + animal), for example `Vrolijke Panda`.
+- The advertised instance name is `Homey Dashboard - <friendly name>`.
+- `DASHBOARD_INSTANCE_NAME` optionally overrides the friendly part. Set it to e.g. `Woonkamer`, then recreate the container; the stored UUID is retained.
+- The SRV record advertises the configured application port. TXT records expose `version=1`, `api=/api`, `id=<UUID>` and `name=<instance name>`.
+- `MDNS_ENABLED` controls publication. It defaults to enabled in the production host-network Compose file and disabled in development and bridge-mode Compose.
+- UDP multicast uses IPv4 group `224.0.0.251:5353`. If the port is unavailable or no suitable IPv4 address exists, discovery is logged as unavailable and the HTTP dashboard remains running.
+
+**Networking requirement:** use `compose.prod.yaml` (host network) for normal LAN discovery. A standard Docker bridge does not forward mDNS multicast to the physical LAN; `compose.prod.bridge.yaml` therefore disables discovery by default. Enabling the flag in bridge mode alone is not sufficient; a multicast reflector/proxy or host-network deployment would be required.
+
+The name is configuration, not an authentication mechanism. The installation UUID is a stable identifier, not a secret. Clients must still use the dashboard's normal API security controls. mDNS discovery is limited to the local multicast network and does not provide internet discovery.
+
+Verification still required on the target Ubuntu host: confirm that UDP 5353 can coexist with the host's Avahi/mDNS service, inspect the advertised PTR/SRV/TXT/A records, discover the instance from a Homey app on the same LAN, and verify that the identity survives container recreation with the persistent `dashboard_data` volume.

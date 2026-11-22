@@ -13,6 +13,7 @@ The single source of truth for the active project phase, implementation progress
 - [Central project phase and status overview](../06-fases/README.md)
 - [Central dashboard error area](dashboard-error-messages.md)
 - [Runtime architecture, configuration and security](runtime-architecture-and-security.md)
+- [mDNS-SD service discovery](mdns-service-discovery.md)
 - [Detailed inventory of Homey and dashboard errors](../03-dashboard/homey-foutmeldingen.md)
 - [Notifications and Blockly developer guide](../02-architectuur/meldingen-blockly-developer-guide.md)
 - [Notifications API architecture](../02-architectuur/meldingen-api.md)

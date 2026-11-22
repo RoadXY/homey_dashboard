@@ -1,0 +1,76 @@
+# mDNS-SD Service Discovery
+
+**Status:** implemented on `phase_1_foundation`; live LAN verification pending  
+**Service type:** `_homey-dashboard._tcp.local.`
+
+## Purpose
+
+Allow a Homey app to discover multiple Homey Dashboard installations on the same local network without asking users to enter host addresses or ports manually.
+
+## Service identity
+
+Each installation advertises:
+
+| Field | Value |
+|---|---|
+| Service type | `_homey-dashboard._tcp.local.` |
+| Transport | TCP |
+| Instance name | `Homey Dashboard - <friendly name>` |
+| SRV port | The running dashboard HTTP/API port |
+| TXT `version` | `1` |
+| TXT `api` | `/api` |
+| TXT `id` | Persistent installation UUID |
+| TXT `name` | Friendly instance name |
+
+The service instance name is intended for display. The UUID is the stable identity for client-side configuration and must not be replaced by the friendly name.
+
+## Name generation and configuration
+
+On first startup, if `DASHBOARD_INSTANCE_NAME` is empty and no identity file exists, the backend selects two words from built-in Dutch word lists: an adjective and an animal (for example, `Vrolijke Panda`). It stores the generated name and UUID in `DATA_DIR/installation.json`.
+
+To give an installation a custom name, set `DASHBOARD_INSTANCE_NAME` in the private `.env` file, for example:
+
+```dotenv
+DASHBOARD_INSTANCE_NAME=Woonkamer
+```
+
+The resulting advertised instance is `Homey Dashboard - Woonkamer`. Recreate the container after changing the environment value. The UUID is retained. If the variable is later cleared, the last persisted name remains in use.
+
+The friendly name is limited so the complete service instance fits the DNS 63-byte label limit. The value is configuration and is not an authentication credential.
+
+## Network deployment
+
+The default production deployment (`compose.prod.yaml`) uses host networking and enables mDNS. The dashboard advertises via UDP multicast on `224.0.0.251:5353`.
+
+The optional `compose.prod.bridge.yaml` deployment disables mDNS by default. A standard Docker bridge does not transparently forward link-local mDNS multicast between the container and the physical LAN. Setting `MDNS_ENABLED=true` in bridge mode alone does not solve that network boundary; use host networking or provide a separately configured multicast reflector/proxy.
+
+The development Compose file disables mDNS to avoid advertising development instances.
+
+If UDP 5353 cannot be bound or no suitable IPv4 interface is available, the backend logs a warning and continues serving HTTP. Check for host-level Avahi/mDNS socket coexistence during deployment validation.
+
+## Homey app discovery flow
+
+1. Browse for `_homey-dashboard._tcp.local.`.
+2. Resolve the SRV record to obtain the target host and TCP port.
+3. Resolve the target host's A record.
+4. Read TXT metadata and display the `name` value to the user.
+5. Store/use the `id` value as the stable installation identifier.
+6. Call the discovered HTTP API at the advertised port, using the TXT `api` base path.
+
+Discovery does not authenticate the client. API endpoints must continue to enforce their existing authentication and authorization rules.
+
+## Implementation and verification
+
+- Implementation: `src/server/mdns.ts`
+- Startup integration: `src/server/index.ts`
+- Automated tests: `src/server/mdns.test.ts`
+- Persistent identity: `DATA_DIR/installation.json`
+
+Automated tests cover name generation, input validation, persistence across restarts and stable UUID behavior when a configured name changes. Before treating LAN discovery as fully verified, test on the target Ubuntu host:
+
+- mDNS advertisement and browsing from a second device on the same LAN;
+- PTR, SRV, TXT and A record contents;
+- coexistence with the host's Avahi service, if installed;
+- discovery by the Homey app;
+- persistence after container recreation and image updates;
+- custom-name changes without changing the installation UUID.

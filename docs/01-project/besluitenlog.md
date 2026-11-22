@@ -671,3 +671,14 @@ Praktijktest blijft vereist voor alle categorieën, met name de vier regenvarian
 ## Minimalistisch (lijn): zon achter wolken (22 november 2026)
 
 Bij categorieën met zon én wolken wordt de zon in pack `outline` nu met een SVG-masker achter de wolkvorm geplaatst. Het masker verbergt de zonneschijf en zonnestralen binnen de wolksilhouet, terwijl de wolkcontour erboven zichtbaar blijft. Dezelfde maskerlogica geldt voor de statische en bewegende variant; alleen de animatieklasse verschilt. De mask-ID is per icooninstantie uniek. Andere icon packs en categorieën zonder wolken blijven ongewijzigd.
+
+
+## mDNS-SD discovery and per-installation identity (22 November 2026)
+
+The user approved automatic discovery of every Homey Dashboard Docker installation by the future Homey app. The service type is `_homey-dashboard._tcp` over IPv4 mDNS/DNS-SD. Each installation advertises an instance name in the form `Homey Dashboard - <friendly name>`.
+
+A new installation generates a friendly Dutch two-word name (adjective + animal) when no name is configured. The name and a generated UUID are stored in the persistent `DATA_DIR/installation.json` file. The UUID remains stable if the name changes. Operators can override the friendly name through `DASHBOARD_INSTANCE_NAME`; the container must be recreated for the new value to be advertised. The DNS-SD TXT record exposes protocol version, API base path, installation UUID and display name; the SRV record exposes the actual application port.
+
+The production host-network Compose deployment enables discovery by default. The bridge-mode Compose deployment disables it by default because a normal Docker bridge does not forward mDNS multicast to the physical LAN. Discovery failure must not prevent the HTTP dashboard from starting.
+
+The implementation is committed to `phase_1_foundation`. Automated tests cover name generation, validation and persistent identity. Live multicast/Avahi coexistence and Homey-app discovery still require verification on the Ubuntu host and target LAN.
