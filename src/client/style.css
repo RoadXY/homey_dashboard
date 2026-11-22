@@ -478,12 +478,16 @@ body {
   .clock-card { min-height: 230px; }
   /* Tablet portrait: compact first row; make measurement and quick-action rows equal. */
   @media (min-width: 621px) {
-    .left-column > .clock-card,
-    .left-column > .weather-card {
+    .left-column > .clock-card {
       height: calc(1.5 * clamp(132px,16vh,176px) + clamp(10px,1vw,16px));
       min-height: 0;
       flex: 0 0 auto;
       align-self: stretch;
+    }
+    .left-column > .weather-card {
+      height: auto;
+      min-height: 0;
+      align-self: start;
     }
   }
   .weather-card { align-self: start; width: 100%; height: auto; }
