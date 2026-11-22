@@ -1655,6 +1655,41 @@ body {
 .weather-pack-outline .weather-hailstones circle { fill:none; stroke:currentColor; }
 .weather-pack-outline .weather-unknown-mark circle { fill:none; }
 
+/* Minimal line: category-specific motion while preserving the exact same SVG artwork when static. */
+.weather-pack-outline .weather-rain-drops,
+.weather-pack-outline .weather-snowflakes,
+.weather-pack-outline .weather-lightning,
+.weather-pack-outline .weather-hailstones,
+.weather-pack-outline .weather-fog-lines { transform-box:fill-box; transform-origin:center; }
+.weather-pack-outline.weather-drizzle .weather-precipitation,
+.weather-pack-outline.weather-rain .weather-precipitation,
+.weather-pack-outline.weather-heavy_rain .weather-precipitation,
+.weather-pack-outline.weather-showers .weather-precipitation,
+.weather-pack-outline.weather-sleet .weather-rain-drops,
+.weather-pack-outline.weather-snow .weather-precipitation,
+.weather-pack-outline.weather-snow_showers .weather-snowflakes,
+.weather-pack-outline.weather-sleet .weather-snowflakes { animation:none; }
+.weather-pack-outline.is-animated.weather-drizzle .weather-rain-drops { animation:outline-rain-fall 3s ease-in-out infinite; }
+.weather-pack-outline.is-animated.weather-rain .weather-rain-drops { animation:outline-rain-fall 2.2s ease-in-out infinite; }
+.weather-pack-outline.is-animated.weather-heavy_rain .weather-rain-drops { animation:outline-rain-fall 1.45s ease-in infinite; }
+.weather-pack-outline.is-animated.weather-showers .weather-rain-drops { animation:outline-shower-burst 3.5s ease-in-out infinite; }
+.weather-pack-outline.is-animated.weather-sleet .weather-rain-drops { animation:outline-rain-fall 2.2s ease-in-out infinite; }
+@keyframes outline-rain-fall { 0%{translate:0 -2px;opacity:.18} 18%{opacity:1} 78%{opacity:.95} 100%{translate:0 7px;opacity:.12} }
+@keyframes outline-shower-burst { 0%,18%{translate:0 -1px;opacity:0} 30%{opacity:1} 68%{translate:0 6px;opacity:.95} 82%,100%{translate:0 6px;opacity:0} }
+.weather-pack-outline.is-animated .weather-snowflake { animation:outline-snow-fall 3.4s ease-in infinite; transform-box:fill-box; transform-origin:center; }
+.weather-pack-outline.is-animated .weather-snowflake-b { animation-delay:-1.1s; }
+.weather-pack-outline.is-animated .weather-snowflake-c { animation-delay:-2.25s; }
+.weather-pack-outline.is-animated.weather-snow_showers .weather-snowflake { animation-duration:2.7s; }
+.weather-pack-outline.is-animated.weather-sleet .weather-snowflake { animation-duration:3.1s; }
+@keyframes outline-snow-fall { 0%{translate:0 -2px;opacity:0} 18%{opacity:1} 78%{opacity:1} 100%{translate:0 9px;opacity:0} }
+.weather-pack-outline.is-animated.weather-thunderstorm .weather-lightning { animation:outline-lightning-flash 3.2s steps(1,end) infinite; }
+@keyframes outline-lightning-flash { 0%,12%,24%,58%,66%{opacity:1} 13%,23%,25%,57%,67%,100%{opacity:0} }
+.weather-pack-outline.is-animated.weather-hail .weather-hailstones { animation:outline-hail-fall 1.8s ease-in infinite; }
+@keyframes outline-hail-fall { 0%{translate:0 -2px;opacity:0} 18%{opacity:1} 76%{opacity:1} 100%{translate:0 7px;opacity:0} }
+.weather-pack-outline.is-animated.weather-fog .weather-fog-lines { animation:outline-fog-drift 5.5s ease-in-out infinite; }
+@keyframes outline-fog-drift { 0%,100%{translate:-2px 0;opacity:.7} 50%{translate:2px 0;opacity:1} }
+.weather-pack-outline.is-animated.weather-windy .weather-wind-stream { stroke-dasharray:24 76; stroke-dashoffset:100; animation:wind-flow 2.6s linear infinite; }
+.weather-pack-outline.is-animated.weather-windy .weather-wind-stream-b { animation-delay:-1.25s; }
 /* Flat: solid, high-contrast shapes with a compact palette. */
 .weather-pack-flat { color:#dce6f2; }
 .weather-pack-flat .weather-sun-disc { fill:#ffbf36; stroke:none; }
