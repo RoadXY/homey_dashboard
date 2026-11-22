@@ -1603,6 +1603,8 @@ body {
 .weather-pack-color3d.is-animated .weather-3d-flake { animation:color3d-snow-drift 5.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
 .weather-pack-color3d.is-animated .weather-3d-flake-1 { animation-delay:-1.8s; }
 .weather-pack-color3d.is-animated .weather-3d-flake-2 { animation-delay:-3.5s; }
+.weather-pack-color3d.is-animated.weather-snow_showers .weather-3d-flake { animation-duration:4.2s; }
+.weather-pack-color3d.is-animated.weather-sleet .weather-3d-flake { animation-duration:4.8s; }
 .weather-pack-color3d.is-animated .weather-3d-hailstone { animation:color3d-hail-bounce 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
 .weather-pack-color3d.is-animated .weather-3d-hailstone-1 { animation-delay:-.6s; }
 .weather-pack-color3d.is-animated .weather-3d-hailstone-2 { animation-delay:-1.2s; }
@@ -1628,7 +1630,7 @@ body {
 @keyframes color3d-cloud-drift { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
 @keyframes color3d-rain-fall { 0%{transform:translateY(-2px);opacity:.25} 25%{opacity:1} 100%{transform:translateY(7px);opacity:.18} }
 @keyframes color3d-shower-pulse { 0%,20%{transform:translateY(-1px);opacity:0} 32%,66%{opacity:1} 82%,100%{transform:translateY(6px);opacity:0} }
-@keyframes color3d-snow-drift { 0%,100%{transform:translate(0,-2px) rotate(-5deg)} 50%{transform:translate(2px,4px) rotate(5deg)} }
+@keyframes color3d-snow-drift { 0%,100%{transform:translate(-1px,-2px) rotate(-8deg)} 50%{transform:translate(3px,6px) rotate(8deg)} }
 @keyframes color3d-hail-bounce { 0%,100%{transform:translateY(-2px)} 48%{transform:translateY(4px)} 65%{transform:translateY(0)} }
 @keyframes color3d-lightning { 0%,8%,14%,100%{opacity:1;filter:brightness(1)} 9%,12%{opacity:.25;filter:brightness(1.8)} }
 @keyframes color3d-fog-a { 0%,100%{transform:translateX(-2px);opacity:.72} 50%{transform:translateX(2px);opacity:1} }
