@@ -319,7 +319,6 @@ export async function startMdnsDiscovery(options: {
     });
   } catch (error) {
     options.logger?.warn?.({ err: error }, "mDNS discovery could not bind UDP port 5353; dashboard will continue without discovery.");
-    try { socket.close(); } catch { /* Socket may not have bound. */ }
     return { identity, close: async () => undefined };
   }
 
