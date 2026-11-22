@@ -181,6 +181,17 @@ export function connectHomey(): Promise<HomeySnapshot> {
   return connectPromise;
 }
 
+/**
+ * Force a fresh connection using the configuration currently persisted on disk.
+ * Wait for any startup/watchdog attempt to finish first so it cannot cause this
+ * request to reuse a stale connection attempt for the previous Homey address.
+ */
+export async function reconnectHomey(): Promise<HomeySnapshot> {
+  const pending = connectPromise;
+  if (pending) await pending.catch(() => undefined);
+  return connectHomey();
+}
+
 function startRealtimeWatchdog(): void {
   if (realtimeWatchdogStarted) return;
   realtimeWatchdogStarted = true;
