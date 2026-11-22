@@ -2578,6 +2578,7 @@ function WeatherIcon({ category, label, pack = DEFAULT_WEATHER_ICON_PACK, animat
 
 function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK, animate = DEFAULT_WEATHER_ICON_ANIMATION }: { category: WeatherCategory; label: string; pack?: WeatherIconPackId; animate?: boolean }) {
   const resolvedPack = normalizeWeatherIconPack(pack);
+  const iconId = React.useId().replace(/:/g, "");
   const hasSun = ["sunny","mostly_sunny","partly_cloudy","showers","snow_showers"].includes(category);
   const hasCloud = ["mostly_sunny","partly_cloudy","cloudy","overcast","drizzle","rain","heavy_rain","showers","thunderstorm","hail","snow","snow_showers","sleet"].includes(category);
   const hasRain = ["drizzle","rain","heavy_rain","showers","sleet"].includes(category);
@@ -2595,12 +2596,16 @@ function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK,
       <div className={weatherIconClassName(category, resolvedPack, animate)} role="img" aria-label={label}>
         <svg className="weather-art" viewBox="0 0 128 96" aria-hidden="true">
           <defs>
+            {resolvedPack === "outline" && hasSun && hasCloud && <mask id={iconId + "-sun-behind-cloud"} maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="96">
+              <rect x="0" y="0" width="128" height="96" fill="white"/>
+              <path d={cloudPath} fill="black"/>
+            </mask>}
             <linearGradient id="weather-sun-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff5a6"/><stop offset=".55" stopColor="#ffbd36"/><stop offset="1" stopColor="#ed7624"/></linearGradient>
             <linearGradient id="weather-cloud-3d" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset=".55" stopColor="#dce7f2"/><stop offset="1" stopColor="#8c9caf"/></linearGradient>
             <linearGradient id="weather-rain-3d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8ce5ff"/><stop offset="1" stopColor="#1689e5"/></linearGradient>
             <linearGradient id="weather-snow-3d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff"/><stop offset="1" stopColor="#64c9ff"/></linearGradient>
           </defs>
-          {legacyHasSun && <g className="weather-sun"><circle className="weather-sun-disc" cx="43" cy="34" r="17"/><path className="weather-sun-rays" d="M43 5v9m0 40v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4"/></g>}
+          {legacyHasSun && <g className="weather-sun" mask={resolvedPack === "outline" && hasCloud ? "url(#" + iconId + "-sun-behind-cloud)" : undefined}><circle className="weather-sun-disc" cx="43" cy="34" r="17"/><path className="weather-sun-rays" d="M43 5v9m0 40v9M14 34h9m40 0h9M22.5 13.5l6.4 6.4m28.2 28.2 6.4 6.4m0-41-6.4 6.4M28.9 48.1l-6.4 6.4"/></g>}
           {hasCloud && <g className="weather-cloud">{category === "overcast" && <path className="weather-cloud-back" d="M17 54h66a15 15 0 0 0 0-30 23 23 0 0 0-44-4A18 18 0 0 0 17 54Z"/>}<path className="weather-cloud-front" d={cloudPath}/><path className="weather-cloud-highlight" d="M39 34c5-9 17-12 27-7"/></g>}
           {hasRain && <g className="weather-precipitation weather-rain-drops"><path d={category === "drizzle" ? "m42 69-3 7m22-7-3 7m22-7-3 7" : category === "heavy_rain" ? "m34 68-7 16m25-16-7 16m25-16-7 16m25-16-7 16" : "m39 68-6 14m25-14-6 14m25-14-6 14"}/></g>}
           {hasSnow && <g className="weather-precipitation weather-snowflakes">{[39,64,89].map(x=><g key={x} className="weather-snowflake" transform={`translate(${x} 76)`}><path d="M0-9V9M-7-4 7 4M7-4-7 4M0-9l-2 3m2-3 2 3M0 9l-2-3m2 3 2-3"/></g>)}</g>}
@@ -2613,7 +2618,7 @@ function WeatherIconArtwork({ category, label, pack = DEFAULT_WEATHER_ICON_PACK,
       </div>
     );
   }
-  const gradientId = React.useId().replace(/:/g, "");
+  const gradientId = iconId;
   return (
     <div className={weatherIconClassName(category, resolvedPack, animate)} role="img" aria-label={label}>
       <svg className="weather-art" viewBox="0 0 128 104" aria-hidden="true">
