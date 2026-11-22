@@ -186,3 +186,7 @@ Pack-specifieke CSS is toegevoegd, zonder de SVG-artwork te wijzigen:
 De regels zijn volledig gescopeerd op `.weather-pack-outline.is-animated`. Zonder de animatieklasse blijven dezelfde SVG-vormen, kleuren, aantallen en posities zichtbaar; alleen de beweging ontbreekt. Het icon pack gebruikt dus dezelfde basisillustratie voor bewegend en stilstaand.
 
 Praktijktest blijft vereist voor alle categorieën, met name de vier regenvarianten, onweer en sneeuw, zowel met animaties aan als uit. De CI-build valideert CSS/TypeScript-integratie maar vervangt geen visuele controle op het dashboard.
+
+## Minimalistisch (lijn): zon achter wolken (22 november 2026)
+
+Bij categorieën met zon én wolken wordt de zon in pack `outline` nu met een SVG-masker achter de wolkvorm geplaatst. Het masker verbergt de zonneschijf en zonnestralen binnen de wolksilhouet, terwijl de wolkcontour erboven zichtbaar blijft. Dezelfde maskerlogica geldt voor de statische en bewegende variant; alleen de animatieklasse verschilt. De mask-ID is per icooninstantie uniek. Andere icon packs en categorieën zonder wolken blijven ongewijzigd.
