@@ -631,3 +631,8 @@ Bij de praktijktest bleek dat de bewegende 3D-variant neerslagelementen linksbov
 De regen-, buien-, sneeuw- en hagelanimaties gebruiken nu de afzonderlijke CSS-properties `translate` (en voor sneeuw `rotate`) in plaats van `transform`. Zo blijft de oorspronkelijke SVG-plaatsing intact en wordt alleen de lokale beweging geanimeerd. De statische en bewegende variant delen nog steeds dezelfde artwork en basisposities.
 
 Na uitrollen moet de preview opnieuw worden gecontroleerd op regen, buien, sneeuw, sneeuwbuien en natte sneeuw, met de animatieschakelaar zowel aan als uit.
+
+
+## Neerslaganimatie: vallend en uitfaden (22 november 2026)
+
+Op verzoek is de beweging van sneeuwvlokken en hagel in Kleurrijk (3D) gelijkgetrokken met het gedrag van regen: de deeltjes bewegen verticaal omlaag, worden zichtbaar tijdens de val en faden aan het einde uit. De eerdere zijwaartse dwarrel/rotatie voor sneeuw en de stuiterbeweging voor hagel zijn verwijderd. Dit geldt voor sneeuw, sneeuwbuien, natte sneeuw en hagel. De animatieschakelaar blijft leidend; zonder animatie blijven dezelfde deeltjes statisch op hun vaste posities staan.
