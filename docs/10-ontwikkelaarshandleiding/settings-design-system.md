@@ -471,3 +471,17 @@ De Homey-systeemstatus wordt bepaald door de basisverbinding via `HomeyAPI.creat
 ### Systeemstatus opnieuw ophalen na Homey-configuratie opslaan (22 november 2026)
 
 Na `POST /api/settings/homey-connection` haalt de General Settings-client de volledige actuele snapshot opnieuw op via `GET /api/system/status`. De response wordt rechtstreeks in de statusstate gezet, ook als de initiële state nog `null` was. Dit voorkomt dat een succesvolle serververbinding niet zichtbaar wordt doordat een conditionele state-update geen waarde kon instellen, en voorkomt dat de oude pre-save snapshot blijft staan. De Homey-status en succes-/foutmelding worden afgeleid van deze actuele snapshot (met de connectieresponse als fallback wanneer de status-endpoint tijdelijk niet beschikbaar is).
+
+
+### Homey-IP-wijziging en herverbinden na discovery (22 november 2026)
+
+De flow voor een gewijzigd Homey-IP-adres is als volgt gecontroleerd en aangescherpt:
+
+1. Discovery retourneert gevonden Homey-instanties met naam en IP-adres. Selecteren vult alleen het adresveld; de opgeslagen configuratie verandert pas bij Save.
+2. Het selecteren of handmatig wijzigen van het adres wist het eerdere testresultaat. De gebruiker moet testen met het actuele adres.
+3. De test gebruikt het ingevoerde adres en de nieuw ingevoerde token, of bij een leeg token de veilig opgeslagen token. Een succesvolle test vereist nu zowel het ophalen van apparaten als zones, gelijk aan de basiscontrole van de daadwerkelijke verbinding.
+4. Save schrijft eerst het nieuwe adres en behoudt een bestaande token als er geen nieuwe token is ingevoerd.
+5. De save-route voert daarna `reconnectHomey()` uit. Deze wacht een eventueel nog lopende startup/watchdog-verbinding af en start vervolgens een verse verbinding op basis van de zojuist opgeslagen configuratie. Daardoor kan een oudere poging met het vorige IP-adres niet als resultaat van Save worden teruggegeven.
+6. De response bevat het resultaat van die verse poging; de frontend haalt daarna `/api/system/status` opnieuw op en toont die actuele status.
+
+De discovery- en testacties wijzigen de opgeslagen configuratie of de actuele live-verbinding niet. Alleen Save past de configuratie toe. De API-token wordt nooit teruggestuurd naar de browser.
