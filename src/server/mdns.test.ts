@@ -27,7 +27,7 @@ describe("mDNS service records", () => {
   it("detects the mDNS QU bit for unicast-response questions", () => {
     const question = Buffer.from([
       0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-      7, 95, 104, 111, 109, 101, 121, 0,
+      6, 95, 104, 111, 109, 101, 121, 0,
       0, 12,
       0x80, 1,
     ]);
