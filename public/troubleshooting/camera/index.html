@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Camera &amp; H.265 video – Troubleshooting</title>
+  <link rel="stylesheet" href="/troubleshooting/troubleshooting.css">
+</head>
+<body>
+<main>
+  <nav class="crumbs"><a href="/">Dashboard</a> / <a href="/troubleshooting/">Troubleshooting</a> / Camera</nav>
+  <h1>Camera &amp; H.265 video</h1>
+  <p class="lead">
+    Homey Pro converts camera streams to WebRTC without transcoding. The browser must therefore
+    decode the camera's own codec. Many cameras (for example UniFi Protect with Enhanced encoding)
+    deliver H.265/HEVC.
+  </p>
+
+  <section class="panel">
+    <h2>1. Browser codec support</h2>
+    <p class="muted">Runs locally in this browser; no Homey connection or PIN is needed.</p>
+    <table class="kv" id="capabilities"></table>
+    <div id="capability-verdict" class="verdict hidden"></div>
+  </section>
+
+  <section class="panel">
+    <h2>2. Live Homey camera test</h2>
+    <form id="pin-form" class="row hidden" autocomplete="off">
+      <label for="pin">Settings PIN required for camera access</label>
+      <input id="pin" type="password" inputmode="numeric" required>
+      <button type="submit">Unlock</button>
+      <span id="pin-error" class="badge fail hidden"></span>
+    </form>
+
+    <div id="camera-controls" class="hidden">
+      <div class="row">
+        <label for="camera">Camera</label>
+        <select id="camera"></select>
+        <label for="codec">Codec</label>
+        <select id="codec">
+          <option value="auto">Automatic (prefer H.265)</option>
+          <option value="H265">H.265 only</option>
+          <option value="H264">H.264 only</option>
+        </select>
+        <button id="start" type="button">Start live test</button>
+        <button id="stop" type="button" class="secondary" disabled>Stop</button>
+        <button id="snapshot-button" type="button" class="secondary">Load snapshot</button>
+      </div>
+      <div class="media">
+        <figure><video id="video" autoplay muted playsinline controls></video><figcaption>Live WebRTC stream (muted; use the controls to unmute)</figcaption></figure>
+        <figure><img id="snapshot" alt=""><figcaption id="snapshot-caption">Snapshot via Homey ManagerImages</figcaption></figure>
+      </div>
+      <table class="kv" id="live-stats"></table>
+      <div id="live-verdict" class="verdict hidden"></div>
+    </div>
+    <p id="camera-message" class="muted"></p>
+  </section>
+
+  <section class="panel">
+    <h2>3. Report</h2>
+    <p class="muted">Copy this report when asking for help. It contains no API keys or stream secrets.</p>
+    <textarea id="report" readonly></textarea>
+    <div class="row" style="margin-top:10px">
+      <button id="copy" type="button" class="secondary">Copy report</button>
+      <span id="copy-result" class="muted"></span>
+    </div>
+  </section>
+</main>
+<script src="/troubleshooting/camera/camera.js"></script>
+</body>
+</html>

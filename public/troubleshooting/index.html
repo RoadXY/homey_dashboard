@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Troubleshooting – Homey Dashboard</title>
+  <link rel="stylesheet" href="/troubleshooting/troubleshooting.css">
+</head>
+<body>
+<main>
+  <nav class="crumbs"><a href="/">Dashboard</a> / Troubleshooting</nav>
+  <h1>Troubleshooting</h1>
+  <p class="lead">Diagnostic tools for the Homey Dashboard. Open this page in the browser you want to test, for example Fully Kiosk on the wall tablet.</p>
+
+  <section class="panel">
+    <h2>Tools</h2>
+    <div class="tools">
+      <a class="tool" href="/troubleshooting/camera/">
+        <strong>Camera &amp; H.265 video</strong>
+        Checks which video codecs this browser supports for WebRTC and plays a live Homey camera stream.
+      </a>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Status</h2>
+    <table class="kv" id="status">
+      <tr><th>Dashboard server</th><td id="server">Checking…</td></tr>
+      <tr><th>Homey connection</th><td id="homey">Checking…</td></tr>
+      <tr><th>Browser</th><td id="browser"></td></tr>
+      <tr><th>Page origin</th><td id="origin"></td></tr>
+    </table>
+  </section>
+</main>
+<script>
+  (function () {
+    function badge(kind, text) {
+      return '<span class="badge ' + kind + '">' + text + '</span>';
+    }
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    document.getElementById("browser").textContent = navigator.userAgent;
+    document.getElementById("origin").innerHTML = escapeHtml(location.origin) +
+      (window.isSecureContext ? " " + badge("info", "secure context") : " " + badge("info", "not a secure context"));
+
+    fetch("/api/health", { cache: "no-store" }).then(function (response) {
+      return response.json().then(function (body) { return { ok: response.ok, body: body }; });
+    }).then(function (result) {
+      document.getElementById("server").innerHTML = result.ok
+        ? badge("ok", "online") + " uptime " + Math.round(result.body.uptimeSeconds / 60) + " min"
+        : badge("fail", "error");
+    }).catch(function (error) {
+      document.getElementById("server").innerHTML = badge("fail", "unreachable") + " " + escapeHtml(error.message);
+    });
+
+    fetch("/api/homey/status", { cache: "no-store" }).then(function (response) { return response.json(); }).then(function (status) {
+      var kind = status.state === "online" ? "ok" : status.state === "connecting" ? "warn" : "fail";
+      var details = status.state === "online"
+        ? status.deviceCount + " devices, " + status.zoneCount + " zones"
+        : (status.error || "");
+      document.getElementById("homey").innerHTML = badge(kind, escapeHtml(status.state)) + " " + escapeHtml(details);
+    }).catch(function (error) {
+      document.getElementById("homey").innerHTML = badge("fail", "unknown") + " " + escapeHtml(error.message);
+    });
+  })();
+</script>
+</body>
+</html>

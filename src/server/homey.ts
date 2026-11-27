@@ -120,6 +120,19 @@ function normalizeHomeyApiAddress(address: string): string {
   return value.toLowerCase().startsWith("http://") || value.toLowerCase().startsWith("https://") ? value : `http://${value}`;
 }
 
+/** Local Homey API base URL and token from the stored connection settings (server-side only). */
+export async function getHomeyConnectionConfig(): Promise<{ address: string | undefined; token: string | undefined }> {
+  const { address, token } = await readHomeyConnectionConfig();
+  return { address: address ? normalizeHomeyApiAddress(address) : undefined, token: token || undefined };
+}
+
+/** Returns the connected Homey API client, connecting first when necessary. */
+export async function requireHomeyApi(): Promise<NonNullable<typeof api>> {
+  if (!api || snapshot.state !== "online") await connectHomey();
+  if (!api || snapshot.state !== "online") throw new Error("Homey is niet verbonden.");
+  return api;
+}
+
 async function connectHomeyInternal(): Promise<HomeySnapshot> {
   const { address, token } = await readHomeyConnectionConfig();
 

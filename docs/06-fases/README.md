@@ -23,7 +23,7 @@ Tegelijkertijd zijn verschillende fase-2-onderdelen en een afgebakend onderdeel 
 | **2 – Beheer en uitbreidingen** | Meldingenbeheer, visuele editor, dynamische voorwaarden en AND/OR-combinaties, uitbreidingen op configuratie/presentatie | Meldingenbeheer, Blockly, condition-model, tijdschema's en time-outs zijn door de gebruiker volledig getest en geaccepteerd. Pushmeldingen vanuit een Homey Flow via de toekomstige Homey-app zijn bewust uitgesteld naar de fase waarin die app wordt ontwikkeld. | **Grotendeels gerealiseerd; Homey-app-integratie uitgesteld** |
 | **3 – Thema's en meertaligheid** | Vooraf ontworpen thema's en verdere taalondersteuning | i18n-infrastructuur en Nederlandse/Engelse vertaalbestanden zijn aanwezig. Semantische thematokens zijn voorbereid; themawisselaar en meerdere complete thema's ontbreken nog. | **Gedeeltelijk voorbereid/gerealiseerd** |
 | **4 – Externe integratie en events** | Externe API voor dashboardmeldingen en aanvullende presentatie-/geluidsacties vanuit externe systemen | De externe Notifications API v1 is in code aanwezig, inclusief opslag, validatie, Bearer-authenticatie, endpoints, tests en OpenAPI-documentatie. Geluid-/presentatieopdrachten en overige event-ingangen zijn niet aangetoond. | **Gedeeltelijk gerealiseerd** |
-| **5 – Camera en deurbel** | Live camerastreams en deurbel-popup via Homey | Onderzoek en architectuurdocumentatie zijn aanwezig. Er is geen fase-5-implementatie of Homey-configuratiewijziging vastgelegd. | **Niet gestart – onderzoek/documentatie aanwezig** |
+| **5 – Camera en deurbel** | Live camerastreams en deurbel-popup via Homey | De Homey-route voor snapshots en live WebRTC-video is op 27 november 2026 tegen de echte Homey Pro aangetoond. Er is een diagnosepagina `/troubleshooting/camera/` met PIN-beveiligde camera-endpoints om browser- en H.265-ondersteuning te testen. Camera-tegels, de deurbel-popup en de deurbediening zijn nog niet gebouwd. | **Voorbereid – technische route aangetoond** |
 
 ## 2. Status en resterend werk van fase 1
 
@@ -183,7 +183,16 @@ Voorlopige scope:
 - eventuele deuropenactie uitsluitend na expliciete gebruikersactie;
 - beveiliging, streamlevensduur, netwerkgedrag en tabletweergave testen.
 
-De technische haalbaarheid en de officiële Homey-route voor consumptie van een camerastream door de eigen dashboardwebsite moeten eerst worden bevestigd. Tot die tijd blijft dit onderzoek, geen implementatiebelofte.
+**Stand per 27 november 2026:** de technische route is tegen de echte Homey Pro aangetoond. Snapshots komen via `ManagerImages` (publiek). Live video loopt via `ManagerVideos.videoOffer` (private API): Homey zet de camerastream met de ingebouwde go2rtc om naar WebRTC, zonder transcodering. Al gerealiseerd als voorbereiding:
+- backendmodule `src/server/cameras.ts` met PIN-beveiligde endpoints onder `/api/troubleshooting/`;
+- diagnosepagina `/troubleshooting/camera/` voor codec-detectie en een live cameratest in de browser.
+
+Nog open voordat de gebruikersfunctionaliteit wordt gebouwd:
+- bevestigen dat Fully Kiosk op de SM-T515 H.265 via WebRTC kan afspelen (beide UniFi-camera's leveren alleen H.265), of de camera's op H.264 zetten;
+- netwerktoegang van de tablet naar Homey-poort 8555 controleren;
+- de deurbel-trigger, de popup en de deurbediening ontwerpen en bouwen.
+
+Details staan in [fase 5 – camerastreams en deurbel-popup](../02-architectuur/fase-5-camera-streams-en-deurbel-popup.md) en [Troubleshooting pages and Homey camera access](../10-ontwikkelaarshandleiding/troubleshooting-pages.md).
 
 ## 5. Statusdefinities
 

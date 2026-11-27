@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { type FastifyReply } from "fastify";
 import fastifyStatic from "@fastify/static";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -14,6 +14,7 @@ import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.
 import { readWeatherSettings, saveWeatherSettings } from "./weather-settings.js";
 import { getMeasurementSourceCatalog, getNotificationSourceCatalog, getMeasurementTileValues, getWeatherSourceCatalog, getWeatherSourceValues } from "./homey.js";
 import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
+import { CameraRequestError, createCameraWebRtcSession, getCameraSnapshot, getHomeyCameras, keepCameraWebRtcSessionAlive } from "./cameras.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
@@ -667,8 +668,72 @@ app.get("/api/homey/inventory", async (_request, reply) => {
   }
 });
 
+// Troubleshooting tools. Camera data is privacy-sensitive, so every camera
+// endpoint requires the PIN-protected settings session.
+function sendCameraError(reply: FastifyReply, error: unknown, fallback: string) {
+  if (error instanceof CameraRequestError) return reply.code(error.statusCode).send({ error: error.message });
+  return reply.code(503).send({ error: error instanceof Error ? error.message : fallback });
+}
+
+app.get("/api/troubleshooting/cameras", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    return await getHomeyCameras();
+  } catch (error) {
+    return sendCameraError(reply, error, "Homey cameras could not be retrieved.");
+  }
+});
+
+app.get<{ Params: { deviceId: string } }>("/api/troubleshooting/cameras/:deviceId/snapshot", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    const snapshot = await getCameraSnapshot(request.params.deviceId);
+    return reply.type(snapshot.contentType).header("Cache-Control", "no-store").send(snapshot.body);
+  } catch (error) {
+    return sendCameraError(reply, error, "Snapshot could not be retrieved.");
+  }
+});
+
+app.post<{ Params: { videoId: string } }>("/api/troubleshooting/videos/:videoId/offer", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    return await createCameraWebRtcSession(request.params.videoId, (request.body as { offer?: unknown } | undefined)?.offer);
+  } catch (error) {
+    return sendCameraError(reply, error, "WebRTC session could not be created.");
+  }
+});
+
+app.post<{ Params: { videoId: string } }>("/api/troubleshooting/videos/:videoId/keep-alive", async (request, reply) => {
+  if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
+  try {
+    await keepCameraWebRtcSessionAlive(request.params.videoId, (request.body as { streamId?: unknown } | undefined)?.streamId);
+    return { kept: true };
+  } catch (error) {
+    return sendCameraError(reply, error, "WebRTC keep-alive failed.");
+  }
+});
+
 const clientPath = join(process.cwd(), "dist/client");
 if (existsSync(clientPath)) {
+  // Standalone troubleshooting pages (public/troubleshooting). They are plain
+  // HTML so they keep working when the React dashboard itself is broken.
+  // Register each page explicitly; otherwise the SPA fallback serves index.html.
+  const troubleshootingPages: Record<string, string> = {
+    "/troubleshooting": "troubleshooting/index.html",
+    "/troubleshooting/camera": "troubleshooting/camera/index.html",
+  };
+  for (const [route, file] of Object.entries(troubleshootingPages)) {
+    app.get(route, async (_request, reply) => reply.redirect(route + "/"));
+    app.get(route + "/", async (_request, reply) => {
+      try {
+        const html = await readFile(join(clientPath, file), "utf8");
+        return reply.type("text/html; charset=utf-8").header("Cache-Control", "no-store").send(html);
+      } catch {
+        return reply.code(404).send({ error: "Troubleshooting page not found. Rebuild the dashboard image." });
+      }
+    });
+  }
+
   // Serve Swagger UI explicitly before the SPA fallback. Without these routes,
   // /api-docs (especially without a trailing slash) falls through to index.html.
   app.get("/api-docs", async (_request, reply) => reply.redirect("/api-docs/"));

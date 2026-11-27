@@ -7,6 +7,7 @@ This folder explains how to use the dashboard. The instructions are written in c
 ## Topics
 
 - [Dashboard error messages](dashboard-error-messages.md)
+- [Troubleshooting page and camera video test](troubleshooting.md)
 
 This guide explains what users can see and what it means. Technical details are documented in the [Developer Guide](../10-ontwikkelaarshandleiding/README.md).
 

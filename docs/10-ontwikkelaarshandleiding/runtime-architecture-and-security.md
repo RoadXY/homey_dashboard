@@ -165,6 +165,8 @@ The current cookie construction does not add the `Secure` attribute. Before expo
 
 The PIN is currently compared with the configured environment value. Do not log submitted PINs or include them in error responses.
 
+The same settings session also protects the camera endpoints under `/api/troubleshooting/` (camera list, snapshots and WebRTC signalling), because camera media is privacy-sensitive. See [Troubleshooting pages and Homey camera access](troubleshooting-pages.md).
+
 ## 9. Managed Bearer tokens
 
 Managed tokens are implemented in `src/server/weather-tokens.ts` and are used by the external API authentication helper.
