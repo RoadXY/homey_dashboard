@@ -794,3 +794,12 @@ De eerste fysieke repositorymigratie is uitgevoerd op `phase_1_foundation` in co
 - De repositoryroot README en ontwikkelstructuurdocumentatie beschrijven de nieuwe monorepo-indeling. De runtime- en mDNS-ontwikkelaarsdocumentatie verwijst nu naar de verplaatste broncode onder `docker/src/`.
 
 **Nog niet als afgerond beschouwd:** CI-resultaat voor deze commit moet worden afgewacht/gecontroleerd. De Ubuntu-updateprocedure is nog niet aangepast of uitgevoerd. Pas na een groene CI en expliciete servercontrole van `docker compose -f docker/compose.prod.yaml config` mag het update-script worden aangepast van `compose.prod.yaml` naar `docker/compose.prod.yaml` en mag de productiecontainer met de nieuwe indeling worden bijgewerkt. De bestaande volume-inhoud mag niet worden verwijderd of opnieuw aangemaakt.
+
+
+## CI-groen en update-script aangepast na monorepo-migratie (27 november 2026)
+
+De GitHub Actions-workflow voor de monorepo-migratie is volledig afgerond met conclusie `success` op commit `db0f42c10e4d6df9bc5670b3147a1a6972141c95`. De daaropvolgende documentatiecommit `4e70c5dfbf8bbd3f5cbe0dab2743dea9d7fb1d72` heeft eveneens een succesvolle CI-run.
+
+De gebruiker heeft bevestigd dat alle CI-controles groen zijn en dat het Ubuntu-update-script is aangepast naar de nieuwe productie-Compose-locatie `docker/compose.prod.yaml`.
+
+**Status:** repositoryherindeling is CI-gevalideerd; update-script is door de gebruiker aangepast. De daadwerkelijke productie-update en runtime-controles op Ubuntu zijn op dit moment nog niet bevestigd. Voer de update uit met het bestaande script en controleer daarna de containerstatus, health endpoint, Swagger/OpenAPI, Homey-status en behoud van het bestaande volume `homey_dashboard_dashboard_data`. Rapporteer pas na die controles dat de productie-uitrol is geslaagd.
