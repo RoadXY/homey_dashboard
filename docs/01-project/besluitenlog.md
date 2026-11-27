@@ -757,3 +757,17 @@ De repositoryherindeling moet de volgende operationele eigenschappen behouden:
 Voor uitvoering moet op de Ubuntu-server aanvullend de effectieve Compose-projectnaam, het volume en de locatie van `.env` worden gecontroleerd (bijvoorbeeld met `docker compose -f compose.prod.yaml config`, `docker compose -f compose.prod.yaml ls`/projectmetadata en `docker volume ls`/inspect). De gebruiker heeft de inhoud van het update-script gedeeld, maar niet de serverstatus of de huidige Compose-volume-identiteit; deze mogen niet worden verondersteld.
 
 De updateprocedure wordt pas aangepast en de bestanden pas verplaatst nadat bovenstaande compatibiliteit in het migratieplan is verwerkt. Na migratie moet het bestaande update-script met uitsluitend de noodzakelijke Compose-padwijziging alle bestaande controles succesvol doorlopen.
+
+
+## Serververificatie – Compose-projectnaam en persistent volume (27 november 2026)
+
+De gebruiker heeft de actuele Docker-status op de Ubuntu-productieserver gecontroleerd vanuit `/opt/homey_dashboard`. De uitvoer bevestigt:
+
+- Compose-projectnaam: `homey_dashboard`.
+- Actieve configuratie: `/opt/homey_dashboard/compose.prod.yaml`.
+- Bestaand named volume: `homey_dashboard_dashboard_data`.
+- Het volume is gemount op `/app/data` in de dashboardcontainer; de Docker-volumeopslag staat onder `/var/lib/docker/volumes/homey_dashboard_dashboard_data/_data`.
+
+**Migratiebesluit:** de productie-Compose-configuratie onder `docker/compose.prod.yaml` moet expliciet de Compose-projectnaam `homey_dashboard` behouden (top-level `name: homey_dashboard`). Daarmee blijft de bestaande volume-identiteit `homey_dashboard_dashboard_data` behouden wanneer de Compose-file naar de map `docker/` verhuist. De volume-inhoud blijft op de Ubuntu-server staan en wordt niet verplaatst, verwijderd of opnieuw aangemaakt.
+
+Voor de daadwerkelijke migratie moet na wijziging eerst `docker compose -f docker/compose.prod.yaml config` worden gecontroleerd en moet worden geverifieerd dat Compose nog steeds naar het bestaande volume `homey_dashboard_dashboard_data` verwijst. Pas daarna mag de container met de nieuwe Compose-file worden bijgewerkt. De gebruiker heeft met deze controle de eerdere onzekerheid over de huidige projectnaam en volumenaam opgehelderd.
