@@ -2052,10 +2052,10 @@ body {
 .camera-popup-dot.is-live {
   background:var(--camera-popup-live,var(--settings-success-text,#22c55e));
   box-shadow:0 0 10px var(--camera-popup-live,var(--settings-success-text,#22c55e));
-  animation:camera-popup-blink 1.4s ease-in-out infinite;
+  animation:camera-popup-pulse 2.6s ease-in-out infinite;
 }
 .camera-popup-countdown { flex:0 0 auto; font-variant-numeric:tabular-nums; }
-@keyframes camera-popup-blink { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+@keyframes camera-popup-pulse { 0%,100% { opacity:.55; transform:scale(.88); } 50% { opacity:1; transform:scale(1.12); } }
 @media (prefers-reduced-motion: reduce) {
   .camera-popup-dot.is-live { animation:none; }
 }

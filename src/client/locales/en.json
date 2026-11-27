@@ -497,5 +497,8 @@
   "cameraPopup.reconnecting": "Connection lost, reconnecting…",
   "cameraPopup.unavailable": "Live video is not available",
   "cameraPopup.liveAria": "Live connection active",
-  "cameraPopup.closesIn": "Closes in {seconds} s"
+  "cameraPopup.closesIn": "Closes in {time}",
+  "cameraPopup.unitHours": "{n} h",
+  "cameraPopup.unitMinutes": "{n} min",
+  "cameraPopup.unitSeconds": "{n} s"
 }

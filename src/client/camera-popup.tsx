@@ -205,12 +205,24 @@ function ActiveCameraPopup({ popup, locale, t, onClose }: ActiveProps) {
             {popup.cameraName}
           </span>
           {remaining !== null && (
-            <span className="camera-popup-countdown">{t("cameraPopup.closesIn").replace("{seconds}", String(remaining))}</span>
+            <span className="camera-popup-countdown">{t("cameraPopup.closesIn").replace("{time}", formatCountdown(remaining, t))}</span>
           )}
         </footer>
       </section>
     </div>
   );
+}
+
+/** Formats seconds as "2 min 43 s" or "1 h 02 min 03 s", using the translated unit labels. */
+function formatCountdown(totalSeconds: number, t: (key: string) => string): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const parts: string[] = [];
+  if (hours > 0) parts.push(t("cameraPopup.unitHours").replace("{n}", String(hours)));
+  if (hours > 0 || minutes > 0) parts.push(t("cameraPopup.unitMinutes").replace("{n}", String(hours > 0 ? String(minutes).padStart(2, "0") : String(minutes))));
+  parts.push(t("cameraPopup.unitSeconds").replace("{n}", String(hours > 0 || minutes > 0 ? String(seconds).padStart(2, "0") : String(seconds))));
+  return parts.join(" ");
 }
 
 function waitForIceGathering(pc: RTCPeerConnection): Promise<void> {

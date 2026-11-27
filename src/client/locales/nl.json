@@ -497,5 +497,8 @@
   "cameraPopup.reconnecting": "Verbinding verloren, opnieuw verbinden…",
   "cameraPopup.unavailable": "Live beeld is niet beschikbaar",
   "cameraPopup.liveAria": "Live verbinding actief",
-  "cameraPopup.closesIn": "Sluit over {seconds} s"
+  "cameraPopup.closesIn": "Sluit over {time}",
+  "cameraPopup.unitHours": "{n} u",
+  "cameraPopup.unitMinutes": "{n} min",
+  "cameraPopup.unitSeconds": "{n} s"
 }
