@@ -816,3 +816,31 @@ Herstel rechtstreeks op `phase_1_foundation`:
 - Build-context `.` blijft bewust ongewijzigd: deze is relatief aan de Compose-bestandsmap en verwijst dus naar `docker/`.
 
 De foutieve updatepoging is afgebroken bij de configuratiecontrole; er is op basis van de getoonde uitvoer geen container-update uitgevoerd. De gebruiker moet het update-script opnieuw uitvoeren. Pas na een geslaagde configuratiecontrole en runtime-healthchecks is de productie-uitrol gevalideerd. Controleer ook expliciet dat de container het bestaande volume `homey_dashboard_dashboard_data` gebruikt.
+
+
+## Eerste succesvolle productie-uitrol na monorepo-migratie (27 november 2026)
+
+Na herstel van de Compose-env-bestandspaden heeft de gebruiker het Ubuntu-update-script opnieuw uitgevoerd. De update vanaf `phase_1_foundation` is volledig geslaagd:
+
+- Git-werkkopie was schoon en is fast-forward bijgewerkt tot de actuele branch-head.
+- `docker compose -f docker/compose.prod.yaml config` is geslaagd.
+- Docker-image is succesvol gebouwd en de dashboardcontainer is gestart.
+- Containerstatus: running.
+- Dashboard API healthcheck: HTTP 200.
+- Swagger UI: HTTP 200.
+- OpenAPI-specificatie: HTTP 200.
+- Homey-statusendpoint bevestigt: online.
+- Update-script rapporteert `UPDATE VOLTOOID`.
+
+Dit is de eerste succesvolle productie-uitrol na de repositoryverplaatsing naar de monorepo-indeling. De Compose-projectnaam is expliciet `homey_dashboard` gehouden en de bestaande volume-key `dashboard_data` is behouden. De exacte mount van de draaiende container is in deze update-uitvoer niet getoond; controle van de feitelijke volume-mount blijft daarom een afzonderlijke verificatie, voordat expliciet wordt verklaard dat de volumecontinuïteit op containerniveau is geïnspecteerd.
+
+## Deploymentbeleid monorepo – Ubuntu haalt volledige repository op (27 november 2026)
+
+De gebruiker vraagt of het wenselijk is dat de Ubuntu-server bij `git pull` ook de toekomstige Homey-appcode ophaalt. Besluit: de bestaande volledige Git-checkout op Ubuntu blijft voorlopig gehandhaafd. Dit is passend bij de gekozen monorepo en vormt geen runtime- of imagevervuiling:
+
+- De Docker Compose-buildcontext is `docker/`; de map `homey-app/` valt buiten deze context en wordt niet in de dashboardimage opgenomen.
+- De Ubuntu-server bouwt en draait uitsluitend de dashboardcontainer.
+- De Homey Pro-app wordt afzonderlijk ontwikkeld, gebouwd en via het Homey-appontwikkel-/releaseproces op Homey Pro geïnstalleerd; Ubuntu is daarvoor geen deploymenttussenstation.
+- Een sparse checkout, aparte repository of afzonderlijke code-synchronisatie wordt nu niet ingevoerd. Dat zou extra beheercomplexiteit toevoegen zonder operationeel voordeel voor de huidige opzet.
+
+Heropen dit besluit alleen wanneer de Homey-appcode, toegangsrechten of deploymentbeveiliging een aantoonbare reden geven om de servercheckout te beperken.
