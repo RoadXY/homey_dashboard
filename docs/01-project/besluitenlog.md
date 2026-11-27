@@ -707,3 +707,34 @@ Bij een wijziging van de vriendelijke naam worden uitsluitend de oude PTR-, SRV-
 ## mDNS-query-antwoorden (22 november 2026)
 
 Normale mDNS-vragen zonder QU-bit worden via multicast beantwoord op UDP 5353 per geschikte IPv4-interface. Alleen wanneer de vraag expliciet de QU-bit (unicast-response) in de question class zet, wordt unicast geantwoord aan de aanvrager. Onvoorwaardelijk unicast antwoorden is niet conform het verwachte Bonjour/mDNS-gedrag en kan browse-/refresh-clients inconsistent laten werken.
+
+
+## Architectuurbesluit – monorepository voor Docker-dashboard en Homey-app (27 november 2026)
+
+De repository `RoadXY/homey_dashboard` blijft één centrale Git-repository voor alle onderdelen van het Homey Dashboard-product. De documentatie blijft centraal onder `docs/`. De twee zelfstandig ontwikkelbare en bouwbare applicatieonderdelen krijgen ieder een eigen projectmap:
+
+- `docker/`: de bestaande dashboardcontainer, inclusief frontend, backend, configuratievoorbeelden, Dockerfile en Compose-bestanden.
+- `homey-app/`: de Homey Pro-app, inclusief drivers, Flow-kaarten, assets, appmanifest en eigen build-/testconfiguratie.
+- `docs/`: centrale architectuur-, API-, ontwikkelaars- en gebruikersdocumentatie.
+- `.github/`: repositorybrede CI-workflows voor beide projecten.
+
+De Homey-app is een client/integratie voor de publieke API van de Docker-container en bevat geen tweede dashboardfrontend. De Docker-container blijft de enige runtime die de dashboardwebsite aanbiedt. De Homey-app en Docker-app mogen onafhankelijk worden gebouwd en gevalideerd, maar delen één versiebeheer- en documentatiebasis.
+
+De huidige bestanden worden niet blind verplaatst. Voorafgaand aan de migratie worden build-contexten, Dockerfile COPY-paden, Compose-volume-/build-instellingen, CI-workflows, npm-scripts, ignore-bestanden en documentatiereferenties geïnventariseerd en aangepast. Bestaande productievolumes en gegevens op de Ubuntu-server blijven buiten Git en worden niet door de broncodemigratie verplaatst of verwijderd.
+
+**Operationele randvoorwaarde:** het bestaande Ubuntu-update-script gebruikt branch `phase_1_foundation`. Deze branch blijft de integratie-/deploymentbranch; wijzigingen worden rechtstreeks daarop vastgelegd. De productie-updateprocedure moet na de herindeling dezelfde functionele werking behouden. De daadwerkelijke inhoud en exacte aannames van het serverscript moeten vóór de definitieve migratie apart worden gecontroleerd; deze zijn niet uit de repository af te leiden.
+
+De voorgestelde doelindeling is:
+
+```text
+homey_dashboard/
+├── docker/
+├── homey-app/
+├── docs/
+├── .github/
+├── .gitignore
+├── README.md
+└── LICENSE
+```
+
+Dit besluit legt de gewenste repositoryarchitectuur vast. De fysieke verplaatsing en aanpassing van build-/deploymentbestanden zijn afzonderlijke uitvoeringsstappen en gelden pas als afgerond na CI- en deploymentvalidatie.
