@@ -175,7 +175,14 @@
         select.appendChild(option);
       });
       report.cameras = data.cameras.map(function (camera) {
-        return { name: camera.name, available: camera.available, videoTypes: camera.videos.map(function (v) { return v.type; }), snapshot: Boolean(camera.snapshot) };
+        return {
+          name: camera.name,
+          deviceId: camera.deviceId,
+          available: camera.available,
+          videoTypes: camera.videos.map(function (v) { return v.type; }),
+          videoId: camera.videos.length ? camera.videos[0].id : null,
+          snapshot: Boolean(camera.snapshot)
+        };
       });
       updateReport();
       if (!data.cameras.length) {
