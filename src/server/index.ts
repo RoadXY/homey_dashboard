@@ -14,7 +14,8 @@ import { readMeasurementTiles, saveMeasurementTiles } from "./measurement-tiles.
 import { readWeatherSettings, saveWeatherSettings } from "./weather-settings.js";
 import { getMeasurementSourceCatalog, getNotificationSourceCatalog, getMeasurementTileValues, getWeatherSourceCatalog, getWeatherSourceValues } from "./homey.js";
 import { executeQuickAction, getQuickActionCatalog, getQuickActionStatuses } from "./homey.js";
-import { CameraRequestError, createCameraWebRtcSession, getCameraSnapshot, getHomeyCameras, keepCameraWebRtcSessionAlive } from "./cameras.js";
+import { CameraRequestError, createCameraWebRtcSession, getCameraSnapshot, getHomeyCameraByDeviceId, getHomeyCameras, keepCameraWebRtcSessionAlive } from "./cameras.js";
+import { cameraPopupRealtime, closeCameraPopup, getActiveCameraPopup, getActiveCameraPopupVideoId, showCameraPopup, validateCameraPopupInput, type CameraPopupInput } from "./camera-popup.js";
 import os from "node:os";
 import { EventEmitter } from "node:events";
 import { statfs } from "node:fs/promises";
@@ -456,7 +457,16 @@ app.get("/api/events", async (_request, reply) => {
     "X-Accel-Buffering": "no",
   });
   reply.raw.write(`event: ready\ndata: ${JSON.stringify({ homey: getHomeyStatus(), connectedAt: new Date().toISOString() })}\n\n`);
+  // A client that connects or reloads while a popup is active receives it immediately.
+  const activeCameraPopup = getActiveCameraPopup();
+  if (activeCameraPopup) reply.raw.write(`event: camera-popup\ndata: ${JSON.stringify(activeCameraPopup)}\n\n`);
 
+  const onCameraPopup = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: camera-popup\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
+  const onCameraPopupClosed = (payload: unknown) => {
+    if (!reply.raw.destroyed) reply.raw.write(`event: camera-popup-closed\ndata: ${JSON.stringify(payload)}\n\n`);
+  };
   const onUpdate = (payload: unknown) => {
     if (!reply.raw.destroyed) reply.raw.write(`event: homey-update\ndata: ${JSON.stringify(payload)}\n\n`);
   };
@@ -481,6 +491,8 @@ app.get("/api/events", async (_request, reply) => {
   homeyRealtime.on("disconnected", onDisconnected);
   settingsRealtime.on("updated", onSettingsUpdated);
   notificationsRealtime.on("updated", onNotificationsUpdated);
+  cameraPopupRealtime.on("show", onCameraPopup);
+  cameraPopupRealtime.on("closed", onCameraPopupClosed);
   reply.raw.on("close", () => {
     clearInterval(heartbeat);
     homeyRealtime.off("update", onUpdate);
@@ -488,6 +500,8 @@ app.get("/api/events", async (_request, reply) => {
     homeyRealtime.off("disconnected", onDisconnected);
     settingsRealtime.off("updated", onSettingsUpdated);
     notificationsRealtime.off("updated", onNotificationsUpdated);
+    cameraPopupRealtime.off("show", onCameraPopup);
+    cameraPopupRealtime.off("closed", onCameraPopupClosed);
   });
 });
 
@@ -707,6 +721,60 @@ app.post<{ Params: { videoId: string } }>("/api/troubleshooting/videos/:videoId/
   if (!hasSettingsSession(request, reply)) return reply.code(401).send({ error: "Instellingen-sessie verlopen." });
   try {
     await keepCameraWebRtcSessionAlive(request.params.videoId, (request.body as { streamId?: unknown } | undefined)?.streamId);
+    return { kept: true };
+  } catch (error) {
+    return sendCameraError(reply, error, "WebRTC keep-alive failed.");
+  }
+});
+
+// Camera popup. The external trigger uses the same managed Bearer tokens as the
+// Notifications API. The dashboard display endpoints do not need the PIN, but they
+// only reach the camera of the currently active popup. See src/server/camera-popup.ts.
+app.post("/api/v1/camera-popup", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  let input: CameraPopupInput;
+  try {
+    input = validateCameraPopupInput(request.body);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Invalid camera popup." });
+  }
+  try {
+    const camera = await getHomeyCameraByDeviceId(input.deviceId);
+    if (!camera.available) return reply.code(409).send({ error: "The camera is currently unavailable in Homey." });
+    const video = camera.videos[0];
+    if (!video) return reply.code(400).send({ error: "This device has no live video; only cameras with live video can show a popup." });
+    return reply.code(201).send(showCameraPopup(input, { cameraName: camera.name, videoId: video.id }));
+  } catch (error) {
+    return sendCameraError(reply, error, "Camera popup could not be shown.");
+  }
+});
+
+app.delete("/api/v1/camera-popup", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  return { closed: closeCameraPopup("api") };
+});
+
+app.post("/api/camera-popup/dismiss", async (request, reply) => {
+  const id = (request.body as { id?: unknown } | undefined)?.id;
+  if (typeof id !== "string" || !id) return reply.code(400).send({ error: "id is required." });
+  return { closed: closeCameraPopup("dismissed", id) };
+});
+
+app.post("/api/camera-popup/offer", async (request, reply) => {
+  const videoId = getActiveCameraPopupVideoId();
+  if (!videoId) return reply.code(409).send({ error: "No active camera popup." });
+  try {
+    return await createCameraWebRtcSession(videoId, (request.body as { offer?: unknown } | undefined)?.offer);
+  } catch (error) {
+    return sendCameraError(reply, error, "WebRTC session could not be created.");
+  }
+});
+
+app.post("/api/camera-popup/keep-alive", async (request, reply) => {
+  const videoId = getActiveCameraPopupVideoId();
+  if (!videoId) return reply.code(409).send({ error: "No active camera popup." });
+  try {
+    await keepCameraWebRtcSessionAlive(videoId, (request.body as { streamId?: unknown } | undefined)?.streamId);
     return { kept: true };
   } catch (error) {
     return sendCameraError(reply, error, "WebRTC keep-alive failed.");

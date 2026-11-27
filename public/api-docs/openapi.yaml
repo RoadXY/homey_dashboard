@@ -27,6 +27,10 @@ tags:
     description: Server-Sent Events
   - name: Troubleshooting (internal)
     description: PIN-protected diagnostics, including Homey camera snapshots and WebRTC signalling
+  - name: Camera popup
+    description: External trigger for a live camera popup on the dashboard; managed Bearer token
+  - name: Camera popup (internal)
+    description: Dashboard screen endpoints for the active camera popup
   - name: Weather
     description: Weather display and canonical condition input
   - name: Notifications (internal)
@@ -768,6 +772,161 @@ paths:
         '401': {description: Settings session required}
         '502': {description: Homey rejected the keep-alive}
         '503': {description: Homey is unavailable}
+  /api/v1/camera-popup:
+    post:
+      tags: [Camera popup]
+      operationId: showCameraPopup
+      summary: Show a live camera popup on the dashboard
+      description: |
+        Shows the live feed of one Homey camera with a title. Only one popup is active:
+        a new call replaces the current popup. The camera name comes from the Homey device
+        name. The device must have live video; snapshot-only devices are rejected.
+        Without `expiresAt` the popup stays open until it is closed, replaced or dismissed.
+      security:
+        - ApiBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [title, deviceId]
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 120
+                  description: Text shown at the top of the popup. Leading and trailing spaces are removed.
+                  examples: [Achterdeur open]
+                deviceId:
+                  type: string
+                  format: uuid
+                  description: Homey device id of a camera with live video.
+                expiresAt:
+                  type: string
+                  format: date-time
+                  description: |
+                    Optional. When the popup closes automatically. Same rules as API notifications:
+                    ISO 8601 with a timezone, in the future, at most 24 hours ahead.
+                sound:
+                  type: string
+                  enum: [doorbell, alert, chime]
+                  description: Optional built-in sound that plays when the popup opens.
+      responses:
+        '201':
+          description: Popup shown; it replaces any popup that was active
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '400': {description: "Invalid request, unknown field, or the device has no live video"}
+        '401': {description: Valid Bearer token required}
+        '404': {description: Device not found}
+        '409': {description: The camera is currently unavailable in Homey}
+        '503': {description: Homey is unavailable}
+    delete:
+      tags: [Camera popup]
+      operationId: closeCameraPopup
+      summary: Close the active camera popup
+      security:
+        - ApiBearer: []
+      responses:
+        '200':
+          description: '`closed` is false when no popup was active'
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [closed]
+                properties:
+                  closed: {type: boolean}
+        '401': {description: Valid Bearer token required}
+  /api/camera-popup/dismiss:
+    post:
+      tags: [Camera popup (internal)]
+      operationId: dismissCameraPopup
+      summary: Close the popup on the dashboard screen
+      description: "Called when someone closes the popup on the dashboard. Closing a popup that was already replaced returns `closed: false`."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [closed]
+                properties:
+                  closed: {type: boolean}
+        '400': {description: id is required}
+  /api/camera-popup/offer:
+    post:
+      tags: [Camera popup (internal)]
+      operationId: createCameraPopupWebRtcSession
+      summary: Start the live feed of the active camera popup
+      description: |
+        Forwards the browser's WebRTC offer to Homey for the camera of the active popup
+        only. No PIN is needed because the dashboard screen shows the popup. Any other
+        camera cannot be requested through this endpoint. Media flows from Homey to the
+        browser on port 8555.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [offer]
+              properties:
+                offer: {type: string, description: 'SDP offer starting with "v=0"', maxLength: 100000}
+      responses:
+        '200':
+          description: SDP answer and stream id
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [answerSdp, streamId]
+                properties:
+                  answerSdp: {type: string}
+                  streamId: {type: string}
+        '400': {description: Invalid SDP offer}
+        '409': {description: No active camera popup}
+        '502': {description: Homey/go2rtc rejected the offer}
+  /api/camera-popup/keep-alive:
+    post:
+      tags: [Camera popup (internal)]
+      operationId: keepCameraPopupWebRtcSessionAlive
+      summary: Keep the live feed of the active camera popup alive
+      description: The dashboard sends this every 5 seconds while the popup is open.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [streamId]
+              properties:
+                streamId: {type: string, maxLength: 200}
+      responses:
+        '200':
+          description: Keep-alive accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kept: {type: boolean, const: true}
+        '400': {description: Invalid streamId}
+        '409': {description: No active camera popup}
+        '502': {description: Homey rejected the keep-alive}
   /api/v1/weather/conditions:
     get:
       tags: [Integrations]

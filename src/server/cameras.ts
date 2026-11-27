@@ -115,6 +115,17 @@ export async function getHomeyCameras(): Promise<{ retrievedAt: string; cameras:
   return { retrievedAt: new Date().toISOString(), cameras: listCamerasFromDevices(await getDevices()) };
 }
 
+/** One camera device by Homey device id. Snapshot-only devices are returned with an empty `videos` list. */
+export async function getHomeyCameraByDeviceId(deviceId: string): Promise<HomeyCamera> {
+  if (!UUID_PATTERN.test(deviceId)) throw new CameraRequestError("Invalid device id.", 400);
+  const devices = await getDevices();
+  const device = devices[deviceId];
+  if (!device) throw new CameraRequestError("Device not found.", 404);
+  const [camera] = listCamerasFromDevices({ [deviceId]: device });
+  if (!camera) throw new CameraRequestError("This device is not a camera.", 400);
+  return camera;
+}
+
 /** Only video IDs that belong to a current Homey camera device may be used. */
 async function assertKnownVideo(videoId: string): Promise<void> {
   if (!UUID_PATTERN.test(videoId)) throw new CameraRequestError("Invalid video id.", 400);

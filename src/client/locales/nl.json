@@ -490,5 +490,12 @@
   "homeyConnection.select": "Selecteren",
   "settings.homeyRequired": "Beschikbaar zodra Homey verbonden is",
   "homeyConnection.connectAfterSaveFailed": "Instellingen zijn opgeslagen, maar de daadwerkelijke Homey-verbinding is mislukt. Controleer de status hieronder.",
-  "settings.homeyNotFullyConfigured": "Niet (volledig) geconfigureerd"
+  "settings.homeyNotFullyConfigured": "Niet (volledig) geconfigureerd",
+  "cameraPopup.aria": "Cameragebeurtenis",
+  "cameraPopup.close": "Sluiten",
+  "cameraPopup.connecting": "Verbinden met de camera…",
+  "cameraPopup.reconnecting": "Verbinding verloren, opnieuw verbinden…",
+  "cameraPopup.unavailable": "Live beeld is niet beschikbaar",
+  "cameraPopup.liveAria": "Live verbinding actief",
+  "cameraPopup.closesIn": "Sluit over {seconds} s"
 }

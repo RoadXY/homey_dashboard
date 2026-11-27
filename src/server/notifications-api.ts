@@ -32,14 +32,14 @@ let expiryCallback: (() => void) | undefined;
 function isSeverity(value: unknown): value is ApiNotificationSeverity {
   return value === "critical" || value === "warning" || value === "info";
 }
-function parseExpiry(value: unknown, now = Date.now()): string | undefined {
+export function parseExpiry(value: unknown, now = Date.now()): string | undefined {
   if (value === undefined) return undefined;
   if (typeof value !== "string" || !/(?:Z|[+-]\d{2}:\d{2})$/i.test(value)) throw new ApiNotificationValidationError("expiresAt must be an ISO 8601 timestamp with a timezone.");
   const time = Date.parse(value);
   if (!Number.isFinite(time) || time <= now) throw new ApiNotificationValidationError("expiresAt must be a valid timestamp in the future.");
   return new Date(time).toISOString();
 }
-function validateText(value: unknown, field: "title" | "message", max: number): string {
+export function validateText(value: unknown, field: "title" | "message", max: number): string {
   if (typeof value !== "string") throw new ApiNotificationValidationError(field + " must be a string.");
   const clean = value.trim();
   if (!clean || clean.length > max) throw new ApiNotificationValidationError(field + " must contain 1 to " + max + " characters.");

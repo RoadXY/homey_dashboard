@@ -9,6 +9,7 @@ import * as BlocklyEn from "blockly/msg/en";
 import "@mdi/font/css/materialdesignicons.css";
 import mdiMeta from "@mdi/svg/meta.json";
 import { availableLanguages, loadTranslations, resolveLocale, translate } from "./i18n";
+import { CameraPopup, type CameraPopupState } from "./camera-popup";
 import { combineRootConditions, comparisonInputValue, comparisonValueFromBlockly, durationNodeFromBlockly, durationNodeToBlockly, normalizeScheduleTimeInput, sourceFromKey as resolveNotificationSourceFromKey, sourceKeyFromNode } from "./notification-condition-blockly";
 
 type Reading = { capabilityId: string; value: unknown };
@@ -97,6 +98,7 @@ function App() {
     };
   }, []);
   const [now, setNow] = React.useState(() => new Date());
+  const [cameraPopup, setCameraPopup] = React.useState<CameraPopupState | null>(null);
   const [homey, setHomey] = React.useState<HomeyStatus | null>(null);
   const [dashboardLanguage, setDashboardLanguage] = React.useState("automatic");
   const [notificationTimeout, setNotificationTimeout] = React.useState<NotificationTimeout>("never");
@@ -201,6 +203,12 @@ function App() {
       window.clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => void refresh(), 150);
     };
+    // Replayed on reconnect with the same id: the popup keeps its stream instead of restarting.
+    const showCameraPopup = (event: MessageEvent) => setCameraPopup(JSON.parse(event.data) as CameraPopupState);
+    const hideCameraPopup = (event: MessageEvent) => {
+      const closed = JSON.parse(event.data) as { id: string };
+      setCameraPopup(current => current?.id === closed.id ? null : current);
+    };
 
     void refresh();
     const stream = new EventSource("/api/events");
@@ -210,8 +218,12 @@ function App() {
     stream.addEventListener("homey-disconnected", scheduleRefresh);
     stream.addEventListener("settings-updated", scheduleRefresh);
     stream.addEventListener("notifications-updated", scheduleRefresh);
+    stream.addEventListener("camera-popup", showCameraPopup);
+    stream.addEventListener("camera-popup-closed", hideCameraPopup);
 
     return () => {
+      stream.removeEventListener("camera-popup", showCameraPopup);
+      stream.removeEventListener("camera-popup-closed", hideCameraPopup);
       window.clearInterval(clock);
       window.clearTimeout(refreshTimer);
       if (notificationRefreshTimer.current !== null) window.clearTimeout(notificationRefreshTimer.current);
@@ -473,6 +485,7 @@ function App() {
           </div>
         </section>
       </section>
+      <CameraPopup popup={cameraPopup} locale={locale} t={t} onClose={() => setCameraPopup(null)} />
     </main>
   );
 }

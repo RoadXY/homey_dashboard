@@ -490,5 +490,12 @@
   "homeyConnection.select": "Select",
   "settings.homeyRequired": "Available when Homey is connected",
   "homeyConnection.connectAfterSaveFailed": "Settings were saved, but the actual Homey connection failed. Check the status below.",
-  "settings.homeyNotFullyConfigured": "Not (fully) configured"
+  "settings.homeyNotFullyConfigured": "Not (fully) configured",
+  "cameraPopup.aria": "Camera event",
+  "cameraPopup.close": "Close",
+  "cameraPopup.connecting": "Connecting to the camera…",
+  "cameraPopup.reconnecting": "Connection lost, reconnecting…",
+  "cameraPopup.unavailable": "Live video is not available",
+  "cameraPopup.liveAria": "Live connection active",
+  "cameraPopup.closesIn": "Closes in {seconds} s"
 }

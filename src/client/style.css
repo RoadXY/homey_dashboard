@@ -2007,3 +2007,55 @@ body {
   outline:2px solid var(--settings-control-focus);
   outline-offset:2px;
 }
+
+/* Camera popup. Colours come from the theme tokens; fallbacks keep it readable if a token is missing. */
+.camera-popup-backdrop {
+  position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:clamp(16px,3vw,40px);
+  background:var(--camera-popup-backdrop,rgba(0,0,0,.66));
+}
+.camera-popup {
+  width:min(1120px,100%); overflow:hidden; display:flex; flex-direction:column;
+  border:1px solid var(--notification-card-border,rgba(255,255,255,.09));
+  border-radius:16px; background:var(--notification-card-background,#23272f);
+  box-shadow:0 24px 70px rgba(0,0,0,.55);
+}
+.camera-popup-header {
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:14px 20px; border-bottom:1px solid var(--notification-card-border,rgba(255,255,255,.09));
+}
+.camera-popup-header h2 {
+  margin:0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  color:var(--notification-title-color,#fff); font-size:clamp(22px,2.2vw,34px); font-weight:650; line-height:1.2;
+}
+.camera-popup-header-end { display:flex; align-items:center; gap:14px; flex:0 0 auto; color:var(--notification-label-color,#aab3bf); font-size:clamp(18px,1.6vw,24px); font-variant-numeric:tabular-nums; }
+.camera-popup-close {
+  width:40px; height:40px; border-radius:999px; cursor:pointer; font:inherit; line-height:1;
+  color:var(--nav-button-text,#fff); background:var(--nav-button-background,transparent);
+  border:1px solid var(--nav-button-border,rgba(255,255,255,.18));
+}
+.camera-popup-close:hover, .camera-popup-close:focus-visible { border-color:var(--nav-button-hover-border,var(--nav-button-border,#fff)); }
+.camera-popup-video { position:relative; aspect-ratio:16/9; background:#000; }
+.camera-popup-video video { display:block; width:100%; height:100%; object-fit:contain; background:#000; }
+.camera-popup-status {
+  position:absolute; inset:0; margin:0; display:grid; place-items:center; padding:24px; text-align:center;
+  color:#fff; background:rgba(0,0,0,.5); font-size:clamp(18px,1.6vw,24px);
+}
+.camera-popup-footer {
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:12px 20px; color:var(--notification-message-color,#d6dce4); font-size:clamp(16px,1.3vw,20px);
+}
+.camera-popup-live { display:inline-flex; align-items:center; gap:10px; min-width:0; }
+.camera-popup-dot {
+  width:12px; height:12px; flex:0 0 auto; border-radius:50%;
+  background:var(--camera-popup-idle,#6b7280);
+}
+.camera-popup-dot.is-live {
+  background:var(--camera-popup-live,var(--settings-success-text,#22c55e));
+  box-shadow:0 0 10px var(--camera-popup-live,var(--settings-success-text,#22c55e));
+  animation:camera-popup-blink 1.4s ease-in-out infinite;
+}
+.camera-popup-countdown { flex:0 0 auto; font-variant-numeric:tabular-nums; }
+@keyframes camera-popup-blink { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+@media (prefers-reduced-motion: reduce) {
+  .camera-popup-dot.is-live { animation:none; }
+}
