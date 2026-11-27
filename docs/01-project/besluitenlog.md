@@ -864,3 +864,16 @@ De Homey-app is dus geen toekomstig leeg project meer. De architectuurscheiding 
 **CI-aandachtspunt vastgesteld:** de drie Homey-workflowbestanden staan momenteel onder `homey-app/.github/workflows/`. GitHub Actions ontdekt repository-workflows uitsluitend onder de rootmap `.github/workflows/`; deze geneste workflowbestanden worden daardoor niet als workflows uitgevoerd. De huidige rootworkflow `.github/workflows/ci.yml` voert de Docker-validatie uit en bevat nog geen build-/lint-/Homey-validatiestappen voor `homey-app/`. De Homey CI-integratie moet daarom worden hersteld door de workflows naar de repository-root te verplaatsen of de relevante validatiejobs in rootworkflows te integreren, met passende path-filters en werkdirectory's. Dit is vastgesteld als openstaand werk; in deze commit zijn de workflows zelf niet verplaatst of aangepast.
 
 Het bestand `homey-app/README.md` is bijgewerkt omdat de oude tekst ten onrechte stelde dat de map slechts gereserveerd was en nog geen appcode bevatte.
+
+## Homey-app CI hersteld naar repository-root (27 november 2026)
+
+De Homey-workflows zijn verplaatst van `homey-app/.github/workflows/` naar de repository-root `.github/workflows/`, omdat GitHub Actions alleen workflows uit de rootmap uitvoert. Het openstaande CI-aandachtspunt uit de inventarisatie van dezelfde dag is daarmee opgelost.
+
+Besluiten:
+- `homey-app-validate.yml` draait bij push en pull request naar `phase_1_foundation` en alleen bij wijzigingen in `homey-app/**`. Het voert `npm ci`, lint en `homey app validate --level verified` uit in `homey-app/`.
+- `homey-app-publish.yml` is handmatig en gebruikt de secret `HOMEY_PAT`. De officiële publish-action is niet gebruikt, omdat die altijd vanuit de repository-root draait; de stappen van die action worden direct uitgevoerd in `homey-app/`.
+- `homey-app-version.yml` is handmatig, verhoogt de versie, commit alleen `homey-app/`, zet de tag `homey-app-v<versie>` en maakt een GitHub-release.
+- `ci.yml` (Docker) slaat pushes en pull requests over die alleen `homey-app/**` wijzigen, zodat de twee pipelines elkaar niet onnodig starten.
+- Het manifest en de dependencies zijn aangepast zodat de app het `verified`-niveau haalt: TypeScript `^5.9.3` (conflict met `openapi-typescript`), `support`, `brandColor`, driver-images en bestaande `.jpg`-app-images.
+
+Open punt: de secret `HOMEY_PAT` moet in GitHub worden aangemaakt voordat de publish-workflow kan slagen. De version-workflow commit rechtstreeks naar `phase_1_foundation`; als die branch beschermd wordt, moet de github-actions-bot daarvoor schrijfrechten krijgen.
