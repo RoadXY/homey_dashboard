@@ -205,7 +205,7 @@ function ActiveCameraPopup({ popup, locale, t, onClose }: ActiveProps) {
             {popup.cameraName}
           </span>
           {remaining !== null && (
-            <span className="camera-popup-countdown">{t("cameraPopup.closesIn").replace("{time}", formatCountdown(remaining, t))}</span>
+            <span className="camera-popup-countdown">{t("cameraPopup.countdown").replace("{time}", formatCountdown(remaining, t))}</span>
           )}
         </footer>
       </section>
