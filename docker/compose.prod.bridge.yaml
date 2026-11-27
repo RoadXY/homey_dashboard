@@ -1,10 +1,12 @@
+name: homey_dashboard
+
 services:
   dashboard:
     build:
       context: .
       target: runtime
     env_file:
-      - .env
+      - ../.env
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
