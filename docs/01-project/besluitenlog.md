@@ -778,3 +778,19 @@ Voor de daadwerkelijke migratie moet na wijziging eerst `docker compose -f docke
 De gebruiker heeft bevestigd dat het productie-env-bestand aanwezig is op `/opt/homey_dashboard/.env`. De server toont bestandsgrootte 268 bytes en rechten `-rw-------` (alleen eigenaar `adminrvk` kan lezen/schrijven). De inhoud is niet gedeeld en wordt niet in Git opgenomen.
 
 **Migratiebesluit:** `.env` blijft ongewijzigd in de repository-/deploymentroot. De verplaatste productie-Compose-file gebruikt `env_file: ../.env`. De bestandsrechten blijven beperkt; secrets worden niet gekopieerd naar `docker/`, niet opgenomen in commits en niet in documentatie vastgelegd.
+
+
+## Uitvoering repositoryherindeling – monorepo (27 november 2026)
+
+De eerste fysieke repositorymigratie is uitgevoerd op `phase_1_foundation` in commit `db0f42c10e4d6df9bc5670b3147a1a6972141c95`.
+
+- De bestaande dashboardapplicatie is verplaatst naar `docker/`: `src/`, `public/`, `config/`, `scripts/`, Dockerfile, drie Compose-bestanden, package manifest/lockfile, TypeScript/Vite/Vitest-configuratie en `.dockerignore`.
+- Centrale documentatie blijft onder `docs/`; GitHub-workflows blijven onder `.github/`.
+- `homey-app/README.md` reserveert de eigen projectmap voor de toekomstige Homey Pro-app. De daadwerkelijke Homey-appcode is nog niet aangemaakt.
+- Root `.env.example`, `.gitignore`, `README.md` en `LICENSE` blijven op rootniveau. Het private productie-`.env`-bestand blijft uitsluitend op de Ubuntu-server.
+- De productie-Compose-bestanden declareren expliciet `name: homey_dashboard` en verwijzen met `env_file: ../.env` naar het root-env-bestand. De bestaande volume-key `dashboard_data` blijft hierdoor gekoppeld aan de reeds geverifieerde productievolume-identiteit `homey_dashboard_dashboard_data`.
+- De development Compose-configuratie gebruikt een afzonderlijke projectnaam `homey_dashboard_dev`.
+- De dashboard-CI voert npm-installatie, typechecks, tests en build uit vanuit `docker/`; OpenAPI-validatie blijft vanuit de repositoryroot werken. De Docker-imagebuild gebruikt `docker/Dockerfile` met `docker/` als build-context. GitHub Pages blijft de centrale `docs/api/` publiceren.
+- De repositoryroot README en ontwikkelstructuurdocumentatie beschrijven de nieuwe monorepo-indeling. De runtime- en mDNS-ontwikkelaarsdocumentatie verwijst nu naar de verplaatste broncode onder `docker/src/`.
+
+**Nog niet als afgerond beschouwd:** CI-resultaat voor deze commit moet worden afgewacht/gecontroleerd. De Ubuntu-updateprocedure is nog niet aangepast of uitgevoerd. Pas na een groene CI en expliciete servercontrole van `docker compose -f docker/compose.prod.yaml config` mag het update-script worden aangepast van `compose.prod.yaml` naar `docker/compose.prod.yaml` en mag de productiecontainer met de nieuwe indeling worden bijgewerkt. De bestaande volume-inhoud mag niet worden verwijderd of opnieuw aangemaakt.
