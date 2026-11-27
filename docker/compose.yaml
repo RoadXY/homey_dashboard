@@ -1,3 +1,5 @@
+name: homey_dashboard_dev
+
 services:
   dashboard:
     build:
@@ -5,7 +7,7 @@ services:
       target: build
     command: npm run dev
     env_file:
-      - .env
+      - ../.env
     environment:
       NODE_ENV: development
       HOST: 0.0.0.0
