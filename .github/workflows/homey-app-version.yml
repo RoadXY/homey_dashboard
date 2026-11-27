@@ -1,0 +1,59 @@
+name: Update Homey app version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: choice
+        description: Version bump
+        required: true
+        default: patch
+        options:
+          - major
+          - minor
+          - patch
+      changelog:
+        type: string
+        description: Changelog (English)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    name: Update Homey app version
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: homey-app
+    env:
+      BUMP: ${{ inputs.version }}
+      CHANGELOG: ${{ inputs.changelog }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: homey-app/package-lock.json
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Bump app version
+        run: |
+          npx --yes homey app version "$BUMP" --changelog.en "$CHANGELOG"
+          echo "NEW_VERSION=$(node -p "require('./app.json').version")" >> "$GITHUB_ENV"
+      - name: Commit, tag and release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add homey-app
+          git commit -m "chore(homey-app): release v${NEW_VERSION}"
+          git tag "homey-app-v${NEW_VERSION}"
+          git push origin HEAD --tags
+          gh release create "homey-app-v${NEW_VERSION}" -t "Homey app v${NEW_VERSION}" --notes "$CHANGELOG"

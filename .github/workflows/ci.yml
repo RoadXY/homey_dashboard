@@ -3,8 +3,12 @@ name: Validate dashboard build
 on:
   push:
     branches: [phase_1_foundation, feature/weather-settings, feature/settings-design-system-v2]
+    paths-ignore:
+      - "homey-app/**"
   pull_request:
     branches: [phase_1_foundation]
+    paths-ignore:
+      - "homey-app/**"
   workflow_dispatch:
 
 permissions:
