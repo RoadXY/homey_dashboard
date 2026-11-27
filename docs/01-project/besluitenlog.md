@@ -738,3 +738,22 @@ homey_dashboard/
 ```
 
 Dit besluit legt de gewenste repositoryarchitectuur vast. De fysieke verplaatsing en aanpassing van build-/deploymentbestanden zijn afzonderlijke uitvoeringsstappen en gelden pas als afgerond na CI- en deploymentvalidatie.
+
+
+## Deploymentanalyse – impact repositoryherindeling op Ubuntu-update-script (27 november 2026)
+
+De gebruiker heeft de actuele inhoud gedeeld van `~/bin/homey-dashboard-update.sh`. Het script werkt vanuit `/opt/homey_dashboard`, vereist een schone Git-werkkopie op branch `phase_1_foundation`, voert `git pull --ff-only` uit en bouwt/start vervolgens service `dashboard` met `docker compose -f compose.prod.yaml up -d --build dashboard`. Daarna controleert het script containerstatus, `/api/health`, Swagger UI op `/api-docs/`, OpenAPI op `/api-docs/openapi.yaml` en Homey-status op `/api/homey/status`.
+
+De repositoryherindeling moet de volgende operationele eigenschappen behouden:
+
+1. `APP_DIR=/opt/homey_dashboard`, branch `phase_1_foundation`, servicenaam `dashboard`, health-/Swagger-/OpenAPI-/Homey-URL's en alle bestaande controles blijven ongewijzigd.
+2. Alleen `COMPOSE_FILE` wijzigt naar `docker/compose.prod.yaml`.
+3. De Compose build-context moet expliciet naar de Docker-projectmap verwijzen. Omdat Compose relatieve paden resolveert ten opzichte van de Compose-bestandslocatie, kan `build.context: .` in `docker/compose.prod.yaml` naar `docker/` verwijzen; de Dockerfile staat dan in die context.
+4. Het bestaande productie-env-bestand staat naar verwachting in de repositoryroot. De Compose-service moet daarom na verplaatsing expliciet `env_file: ../.env` gebruiken, zodat geen tweede env-bestand of verplaatsing van secrets nodig is. De shell/Compose-interpolatie blijft vanuit de door het update-script gebruikte projectroot werken.
+5. **Compose-projectnaam en volumecontinuïteit moeten expliciet worden geborgd.** Een gewijzigde Compose-bestandslocatie kan de automatisch afgeleide projectdirectory/-naam beïnvloeden. Leg daarom vóór de migratie de huidige effectieve projectnaam en de bestaande volume-koppeling vast; configureer vervolgens een expliciete, compatibele projectnaam of `--project-directory` zodat de bestaande named volume `dashboard_data` opnieuw wordt gebruikt. Er mag geen nieuw leeg volume ontstaan en bestaand dashboarddata mag niet worden aangeraakt.
+6. De Docker ignore-regels moeten bij de nieuwe build-context aanwezig zijn als `docker/.dockerignore`; de root-`.dockerignore` wordt niet automatisch gebruikt voor een build-context die op `docker/` staat.
+7. De bestaande API-routes en deployment-healthchecks veranderen niet door de mapverplaatsing. De Dockerfile-healthcheck op `/api/health/ready` blijft afzonderlijk van de externe update-scriptcontrole op `/api/health`.
+
+Voor uitvoering moet op de Ubuntu-server aanvullend de effectieve Compose-projectnaam, het volume en de locatie van `.env` worden gecontroleerd (bijvoorbeeld met `docker compose -f compose.prod.yaml config`, `docker compose -f compose.prod.yaml ls`/projectmetadata en `docker volume ls`/inspect). De gebruiker heeft de inhoud van het update-script gedeeld, maar niet de serverstatus of de huidige Compose-volume-identiteit; deze mogen niet worden verondersteld.
+
+De updateprocedure wordt pas aangepast en de bestanden pas verplaatst nadat bovenstaande compatibiliteit in het migratieplan is verwerkt. Na migratie moet het bestaande update-script met uitsluitend de noodzakelijke Compose-padwijziging alle bestaande controles succesvol doorlopen.
