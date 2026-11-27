@@ -844,3 +844,23 @@ De gebruiker vraagt of het wenselijk is dat de Ubuntu-server bij `git pull` ook 
 - Een sparse checkout, aparte repository of afzonderlijke code-synchronisatie wordt nu niet ingevoerd. Dat zou extra beheercomplexiteit toevoegen zonder operationeel voordeel voor de huidige opzet.
 
 Heropen dit besluit alleen wanneer de Homey-appcode, toegangsrechten of deploymentbeveiliging een aantoonbare reden geven om de servercheckout te beperken.
+
+
+## Correctie repository-inventarisatie – Homey-app bestaat al (27 november 2026)
+
+Bij hercontrole van de actuele inhoud van `phase_1_foundation` blijkt dat de Homey-app al een substantieel project is. De eerdere monorepo-migratietekst waarin `homey-app/README.md` als placeholder werd omschreven en waarin stond dat de daadwerkelijke Homey-appcode nog niet was aangemaakt, is achterhaald en wordt door deze inventarisatie gecorrigeerd.
+
+De map `homey-app/` bevat onder meer:
+- Homey SDK v3 / TypeScript-project, `package.json`, lockfile en build-/lint-/API-typegeneratiescripts.
+- Homey app-manifest en `.homeycompose/`-bronnen voor app, driver, mDNS-discovery en Flow-kaarten.
+- Dashboard-driver met pairing, configuratie van host/poort/API-token en mDNS-discovery.
+- Getypeerde Dashboard API-client op basis van `homey-app/api/openapi.yaml`.
+- Flow-kaarten voor weerconditie en uitgebreid notificatiebeheer (aanmaken, bijwerken, verwijderen en voorwaarden).
+- App HTTP API-handlers, Nederlandse en Engelse locales en app-/driver-assets.
+- Drie bedoelde Homey-workflows: validatie, publiceren en versiebeheer/release.
+
+De Homey-app is dus geen toekomstig leeg project meer. De architectuurscheiding blijft wel ongewijzigd: Docker-dashboard en Homey-app zijn twee afzonderlijke applicaties in dezelfde monorepository; Ubuntu draait alleen de Docker-app en Homey Pro draait de Homey-app.
+
+**CI-aandachtspunt vastgesteld:** de drie Homey-workflowbestanden staan momenteel onder `homey-app/.github/workflows/`. GitHub Actions ontdekt repository-workflows uitsluitend onder de rootmap `.github/workflows/`; deze geneste workflowbestanden worden daardoor niet als workflows uitgevoerd. De huidige rootworkflow `.github/workflows/ci.yml` voert de Docker-validatie uit en bevat nog geen build-/lint-/Homey-validatiestappen voor `homey-app/`. De Homey CI-integratie moet daarom worden hersteld door de workflows naar de repository-root te verplaatsen of de relevante validatiejobs in rootworkflows te integreren, met passende path-filters en werkdirectory's. Dit is vastgesteld als openstaand werk; in deze commit zijn de workflows zelf niet verplaatst of aangepast.
+
+Het bestand `homey-app/README.md` is bijgewerkt omdat de oude tekst ten onrechte stelde dat de map slechts gereserveerd was en nog geen appcode bevatte.
