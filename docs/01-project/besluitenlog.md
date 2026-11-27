@@ -803,3 +803,16 @@ De GitHub Actions-workflow voor de monorepo-migratie is volledig afgerond met co
 De gebruiker heeft bevestigd dat alle CI-controles groen zijn en dat het Ubuntu-update-script is aangepast naar de nieuwe productie-Compose-locatie `docker/compose.prod.yaml`.
 
 **Status:** repositoryherindeling is CI-gevalideerd; update-script is door de gebruiker aangepast. De daadwerkelijke productie-update en runtime-controles op Ubuntu zijn op dit moment nog niet bevestigd. Voer de update uit met het bestaande script en controleer daarna de containerstatus, health endpoint, Swagger/OpenAPI, Homey-status en behoud van het bestaande volume `homey_dashboard_dashboard_data`. Rapporteer pas na die controles dat de productie-uitrol is geslaagd.
+
+
+## Herstel Compose-paden na monorepo-migratie (27 november 2026)
+
+De eerste praktijktest van het bijgewerkte Ubuntu-update-script stopte tijdens `docker compose config -q`, vóór het opnieuw bouwen of starten van de dashboardcontainer. Compose meldde dat het env-bestand `/opt/homey_dashboard/docker/.env` niet bestond. De oorzaak was dat de drie verplaatste Compose-bestanden nog `env_file: .env` gebruikten, terwijl het private productie-env-bestand bewust in de repositoryroot staat.
+
+Herstel rechtstreeks op `phase_1_foundation`:
+- Alle drie Compose-bestanden gebruiken nu `env_file: ../.env`, relatief aan hun locatie in `docker/`.
+- De productie-Compose-bestanden declareren expliciet `name: homey_dashboard`, zodat de bestaande projectidentiteit en named volume `homey_dashboard_dashboard_data` behouden blijven.
+- De development-Compose gebruikt expliciet `name: homey_dashboard_dev`.
+- Build-context `.` blijft bewust ongewijzigd: deze is relatief aan de Compose-bestandsmap en verwijst dus naar `docker/`.
+
+De foutieve updatepoging is afgebroken bij de configuratiecontrole; er is op basis van de getoonde uitvoer geen container-update uitgevoerd. De gebruiker moet het update-script opnieuw uitvoeren. Pas na een geslaagde configuratiecontrole en runtime-healthchecks is de productie-uitrol gevalideerd. Controleer ook expliciet dat de container het bestaande volume `homey_dashboard_dashboard_data` gebruikt.
