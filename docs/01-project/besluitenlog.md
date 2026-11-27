@@ -771,3 +771,10 @@ De gebruiker heeft de actuele Docker-status op de Ubuntu-productieserver gecontr
 **Migratiebesluit:** de productie-Compose-configuratie onder `docker/compose.prod.yaml` moet expliciet de Compose-projectnaam `homey_dashboard` behouden (top-level `name: homey_dashboard`). Daarmee blijft de bestaande volume-identiteit `homey_dashboard_dashboard_data` behouden wanneer de Compose-file naar de map `docker/` verhuist. De volume-inhoud blijft op de Ubuntu-server staan en wordt niet verplaatst, verwijderd of opnieuw aangemaakt.
 
 Voor de daadwerkelijke migratie moet na wijziging eerst `docker compose -f docker/compose.prod.yaml config` worden gecontroleerd en moet worden geverifieerd dat Compose nog steeds naar het bestaande volume `homey_dashboard_dashboard_data` verwijst. Pas daarna mag de container met de nieuwe Compose-file worden bijgewerkt. De gebruiker heeft met deze controle de eerdere onzekerheid over de huidige projectnaam en volumenaam opgehelderd.
+
+
+## Serververificatie – root-env-bestand (27 november 2026)
+
+De gebruiker heeft bevestigd dat het productie-env-bestand aanwezig is op `/opt/homey_dashboard/.env`. De server toont bestandsgrootte 268 bytes en rechten `-rw-------` (alleen eigenaar `adminrvk` kan lezen/schrijven). De inhoud is niet gedeeld en wordt niet in Git opgenomen.
+
+**Migratiebesluit:** `.env` blijft ongewijzigd in de repository-/deploymentroot. De verplaatste productie-Compose-file gebruikt `env_file: ../.env`. De bestandsrechten blijven beperkt; secrets worden niet gekopieerd naar `docker/`, niet opgenomen in commits en niet in documentatie vastgelegd.
