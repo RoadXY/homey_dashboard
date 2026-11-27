@@ -1,34 +1,33 @@
 {
-    "id":  "nl.inversion.homeydashboard",
-    "version":  "1.0.0",
-    "compatibility":  ">=12.4.0",
-    "sdk":  3,
-    "runtime":  "nodejs",
-    "platforms":  [
-                      "local"
-                  ],
-    "name":  {
-                 "en":  "Homey Dashboard Controller",
-                 "nl":  "Homey Dashboard Controller"
-             },
-    "description":  {
-                        "en":  "Controls several functions of the Homey Dashboard docker container",
-                        "nl":  "Bedient functies van de Homey Dashboard docker-container"
-                    },
-    "category":  [
-                     "tools"
-                 ],
-    "permissions":  [
-
-                    ],
-    "images":  {
-                   "small":  "/assets/images/small.png",
-                   "large":  "/assets/images/large.png",
-                   "xlarge":  "/assets/images/xlarge.png"
-               },
-    "author":  {
-                   "name":  "Robin van Kekem"
-               },
+    "id": "nl.inversion.homeydashboard",
+    "version": "1.0.0",
+    "compatibility": ">=12.4.0",
+    "sdk": 3,
+    "runtime": "nodejs",
+    "platforms": [
+        "local"
+    ],
+    "name": {
+        "en": "Homey Dashboard Controller",
+        "nl": "Homey Dashboard Controller"
+    },
+    "description": {
+        "en": "Controls several functions of the Homey Dashboard docker container",
+        "nl": "Bedient functies van de Homey Dashboard docker-container"
+    },
+    "category": [
+        "tools"
+    ],
+    "brandColor": "#4da3ff",
+    "permissions": [],
+    "images": {
+        "small": "/assets/images/small.jpg",
+        "large": "/assets/images/large.jpg",
+        "xlarge": "/assets/images/xlarge.jpg"
+    },
+    "author": {
+        "name": "Robin van Kekem"
+    },
     "contributing": {
         "donate": {
             "paypal": {
@@ -36,9 +35,10 @@
             }
         }
     },
-    "bugs":    {
-                    "url": "https://github.com/RoadXY/homey_dashboard/issues"
-                },
+    "bugs": {
+        "url": "https://github.com/RoadXY/homey_dashboard/issues"
+    },
+    "support": "https://github.com/RoadXY/homey_dashboard/issues",
     "source": "https://github.com/RoadXY/homey_dashboard/",
     "homepage": "https://www.inversion.nl",
     "api": {

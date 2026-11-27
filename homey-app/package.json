@@ -1,20 +1,19 @@
 {
-    "name":  "nl.inversion.homeydashboard",
-    "version":  "1.0.0",
-    "scripts":  {
-                    "build":  "tsc",
-                    "lint":  "eslint --ext .js,.ts --ignore-path .gitignore --ignore-pattern lib/dashboard-api/schema.ts .",
-                    "generate:api":  "openapi-typescript api/openapi.yaml -o lib/dashboard-api/schema.ts"
-                },
-    "type":  "module",
-    "devDependencies":  {
-                            "@tsconfig/node16":  "^16.1.10",
-                            "@types/homey":  "npm:homey-apps-sdk-v3-types@^1.8.4",
-                            "@types/node":  "^26.6.6",
-                            "@typescript/native":  "npm:typescript@^7.0.2",
-                            "eslint":  "~8.57.1",
-                            "eslint-config-athom":  "~4.0.2",
-                            "openapi-typescript":  "^7.13.0",
-                            "typescript":  "npm:@typescript/typescript6@^6.0.2"
-                        }
+    "name": "nl.inversion.homeydashboard",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint --ext .js,.ts --ignore-path .gitignore --ignore-pattern lib/dashboard-api/schema.ts .",
+        "generate:api": "openapi-typescript api/openapi.yaml -o lib/dashboard-api/schema.ts"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@tsconfig/node16": "^16.1.10",
+        "@types/homey": "npm:homey-apps-sdk-v3-types@^1.8.4",
+        "@types/node": "^26.6.6",
+        "eslint": "~8.57.1",
+        "eslint-config-athom": "~4.0.2",
+        "openapi-typescript": "^7.13.0",
+        "typescript": "^5.9.3"
+    }
 }

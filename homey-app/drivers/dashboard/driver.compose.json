@@ -11,6 +11,11 @@
   "connectivity": [
     "lan"
   ],
+  "images": {
+    "small": "/drivers/dashboard/assets/images/small.jpg",
+    "large": "/drivers/dashboard/assets/images/large.jpg",
+    "xlarge": "/drivers/dashboard/assets/images/xlarge.jpg"
+  },
   "pair": [
     {
       "id": "start"
