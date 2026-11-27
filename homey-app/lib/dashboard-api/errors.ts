@@ -27,6 +27,7 @@ export function describeApiError(error: unknown, translate: Translate): string |
     case 401: return translate('error_unauthorized');
     case 403: return translate('error_forbidden');
     case 404: return translate('error_notFound');
+    case 409: return translate('error_cameraUnavailable');
     case 503: return translate('error_unavailable');
     default: return translate('error_generic');
   }

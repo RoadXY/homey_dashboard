@@ -5,6 +5,7 @@
   "error_notFound": "De melding bestaat niet (meer). Mogelijk is hij al verlopen of verwijderd.",
   "error_badRequest": "De ingevoerde waarde is ongeldig.",
   "error_unavailable": "Het dashboard is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
+  "error_cameraUnavailable": "De camera is op dit moment niet beschikbaar in Homey. Controleer de camera in Homey en probeer het opnieuw.",
   "error_generic": "Er ging iets mis bij het Homey Dashboard. Probeer het later opnieuw.",
   "error_missingHost": "Vul een IP-adres of hostnaam in.",
   "error_invalidPort": "De poort is ongeldig.",

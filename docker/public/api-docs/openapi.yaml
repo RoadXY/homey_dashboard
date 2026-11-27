@@ -773,6 +773,23 @@ paths:
         '502': {description: Homey rejected the keep-alive}
         '503': {description: Homey is unavailable}
   /api/v1/camera-popup:
+    get:
+      tags: [Camera popup]
+      operationId: getCameraPopupStatus
+      summary: Check whether a camera popup is active
+      security:
+        - ApiBearer: []
+      responses:
+        '200':
+          description: Whether a camera popup is currently active
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [active]
+                properties:
+                  active: {type: boolean}
+        '401': {description: Valid Bearer token required}
     post:
       tags: [Camera popup]
       operationId: showCameraPopup

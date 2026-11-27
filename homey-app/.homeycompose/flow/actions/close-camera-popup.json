@@ -1,0 +1,21 @@
+{
+  "title": {
+    "en": "Close camera popup",
+    "nl": "Sluit camerabeeld"
+  },
+  "titleFormatted": {
+    "en": "Close the camera popup",
+    "nl": "Sluit het camerabeeld"
+  },
+  "hint": {
+    "en": "Closes the camera popup that is open on the dashboard. Does nothing when no popup is open.",
+    "nl": "Sluit het camerabeeld dat op het dashboard open is. Doet niets als er geen popup open is."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    }
+  ]
+}

@@ -583,6 +583,167 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/troubleshooting/cameras": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Homey devices with camera video or camera snapshots */
+        get: operations["getTroubleshootingCameras"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/troubleshooting/cameras/{deviceId}/snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Proxy the current camera snapshot from Homey ManagerImages */
+        get: operations["getTroubleshootingCameraSnapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/troubleshooting/videos/{videoId}/offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Forward a browser WebRTC SDP offer to Homey ManagerVideos (go2rtc)
+         * @description Homey converts the camera stream to WebRTC without transcoding; the offer must
+         *     contain the camera's codec (for example H.265). Media flows directly from Homey
+         *     to the browser on port 8555. Keep the stream alive with the keep-alive endpoint.
+         */
+        post: operations["createTroubleshootingWebRtcSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/troubleshooting/videos/{videoId}/keep-alive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Keep a Homey WebRTC camera stream alive */
+        post: operations["keepTroubleshootingWebRtcSessionAlive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/camera-popup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check whether a camera popup is active */
+        get: operations["getCameraPopupStatus"];
+        put?: never;
+        /**
+         * Show a live camera popup on the dashboard
+         * @description Shows the live feed of one Homey camera with a title. Only one popup is active:
+         *     a new call replaces the current popup. The camera name comes from the Homey device
+         *     name. The device must have live video; snapshot-only devices are rejected.
+         *     Without `expiresAt` the popup stays open until it is closed, replaced or dismissed.
+         */
+        post: operations["showCameraPopup"];
+        /** Close the active camera popup */
+        delete: operations["closeCameraPopup"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/camera-popup/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close the popup on the dashboard screen
+         * @description Called when someone closes the popup on the dashboard. Closing a popup that was already replaced returns `closed: false`.
+         */
+        post: operations["dismissCameraPopup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/camera-popup/offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start the live feed of the active camera popup
+         * @description Forwards the browser's WebRTC offer to Homey for the camera of the active popup
+         *     only. No PIN is needed because the dashboard screen shows the popup. Any other
+         *     camera cannot be requested through this endpoint. Media flows from Homey to the
+         *     browser on port 8555.
+         */
+        post: operations["createCameraPopupWebRtcSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/camera-popup/keep-alive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Keep the live feed of the active camera popup alive
+         * @description The dashboard sends this every 5 seconds while the popup is open.
+         */
+        post: operations["keepCameraPopupWebRtcSessionAlive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/weather/conditions": {
         parameters: {
             query?: never;
@@ -1868,6 +2029,526 @@ export interface operations {
             };
             /** @description Homey values could not be retrieved */
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getTroubleshootingCameras: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Camera devices derived from Homey device images and videos */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        retrievedAt: string;
+                        cameras: {
+                            deviceId: string;
+                            name: string;
+                            zoneId: string | null;
+                            available: boolean;
+                            snapshot: {
+                                id: string;
+                                title: string;
+                            } | null;
+                            videos: {
+                                /**
+                                 * Format: uuid
+                                 * @description Homey ManagerVideos video id
+                                 */
+                                id: string;
+                                title: string;
+                                /**
+                                 * @example rtsp
+                                 * @example webrtc
+                                 * @example hls
+                                 */
+                                type: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            /** @description Settings session required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey is unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getTroubleshootingCameraSnapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deviceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Snapshot image (Cache-Control no-store) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/*": string;
+                };
+            };
+            /** @description Invalid device id */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Settings session required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Device has no camera snapshot */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey snapshot request failed */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey is unavailable or not configured */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createTroubleshootingWebRtcSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                videoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description SDP offer starting with "v=0" */
+                    offer: string;
+                };
+            };
+        };
+        responses: {
+            /** @description SDP answer from Homey */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        answerSdp: string;
+                        streamId: string;
+                    };
+                };
+            };
+            /** @description Invalid SDP offer or video id */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Settings session required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Video does not belong to a current Homey camera device */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey/go2rtc rejected the offer; the error contains the original message, for example "codecs not matched" */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey is unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    keepTroubleshootingWebRtcSessionAlive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                videoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    streamId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Keep-alive accepted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        kept?: true;
+                    };
+                };
+            };
+            /** @description Invalid video id or streamId */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Settings session required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey rejected the keep-alive */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey is unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getCameraPopupStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Whether a camera popup is currently active */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: boolean;
+                    };
+                };
+            };
+            /** @description Valid Bearer token required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    showCameraPopup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Text shown at the top of the popup. Leading and trailing spaces are removed.
+                     * @example Achterdeur open
+                     */
+                    title: string;
+                    /**
+                     * Format: uuid
+                     * @description Homey device id of a camera with live video.
+                     */
+                    deviceId: string;
+                    /**
+                     * Format: date-time
+                     * @description Optional. When the popup closes automatically. Same rules as API notifications:
+                     *     ISO 8601 with a timezone, in the future, at most 24 hours ahead.
+                     */
+                    expiresAt?: string;
+                    /**
+                     * @description Optional built-in sound that plays when the popup opens.
+                     * @enum {string}
+                     */
+                    sound?: "doorbell" | "alert" | "chime";
+                };
+            };
+        };
+        responses: {
+            /** @description Popup shown; it replaces any popup that was active */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenericObject"];
+                };
+            };
+            /** @description Invalid request, unknown field, or the device has no live video */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Valid Bearer token required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Device not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The camera is currently unavailable in Homey */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey is unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    closeCameraPopup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `closed` is false when no popup was active */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        closed: boolean;
+                    };
+                };
+            };
+            /** @description Valid Bearer token required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dismissCameraPopup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        closed: boolean;
+                    };
+                };
+            };
+            /** @description id is required */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createCameraPopupWebRtcSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description SDP offer starting with "v=0" */
+                    offer: string;
+                };
+            };
+        };
+        responses: {
+            /** @description SDP answer and stream id */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        answerSdp: string;
+                        streamId: string;
+                    };
+                };
+            };
+            /** @description Invalid SDP offer */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No active camera popup */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey/go2rtc rejected the offer */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    keepCameraPopupWebRtcSessionAlive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    streamId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Keep-alive accepted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        kept?: true;
+                    };
+                };
+            };
+            /** @description Invalid streamId */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No active camera popup */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Homey rejected the keep-alive */
+            502: {
                 headers: {
                     [name: string]: unknown;
                 };

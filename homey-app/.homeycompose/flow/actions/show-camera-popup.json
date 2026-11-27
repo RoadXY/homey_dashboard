@@ -1,0 +1,41 @@
+{
+  "title": {
+    "en": "Show camera popup",
+    "nl": "Toon camerabeeld"
+  },
+  "titleFormatted": {
+    "en": "Show [[camera]] with title '[[title]]' until closed",
+    "nl": "Toon [[camera]] met titel '[[title]]' tot het gesloten wordt"
+  },
+  "hint": {
+    "en": "Shows the live feed of a camera as a popup on the dashboard. The popup stays open until it is closed, replaced or dismissed on the dashboard. A new popup replaces the one that is open.",
+    "nl": "Toont het live beeld van een camera als popup op het dashboard. De popup blijft open tot hij wordt gesloten, vervangen of op het dashboard weggedrukt. Een nieuwe popup vervangt de open popup."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "device",
+      "name": "camera",
+      "title": {
+        "en": "Camera",
+        "nl": "Camera"
+      }
+    },
+    {
+      "type": "text",
+      "name": "title",
+      "title": {
+        "en": "Title",
+        "nl": "Titel"
+      },
+      "placeholder": {
+        "en": "Front door open",
+        "nl": "Voordeur open"
+      }
+    }
+  ]
+}

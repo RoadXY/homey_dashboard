@@ -730,6 +730,11 @@ app.post<{ Params: { videoId: string } }>("/api/troubleshooting/videos/:videoId/
 // Camera popup. The external trigger uses the same managed Bearer tokens as the
 // Notifications API. The dashboard display endpoints do not need the PIN, but they
 // only reach the camera of the currently active popup. See src/server/camera-popup.ts.
+app.get("/api/v1/camera-popup", async (request, reply) => {
+  if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
+  return { active: getActiveCameraPopup() !== null };
+});
+
 app.post("/api/v1/camera-popup", async (request, reply) => {
   if (!(await hasWeatherApiToken(request))) return reply.code(401).send({ error: "A valid Bearer token is required." });
   let input: CameraPopupInput;

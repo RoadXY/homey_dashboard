@@ -5,6 +5,7 @@
   "error_notFound": "The notification no longer exists. It may have expired or been deleted.",
   "error_badRequest": "The value you entered is not valid.",
   "error_unavailable": "The dashboard is temporarily unavailable. Try again shortly.",
+  "error_cameraUnavailable": "The camera is currently unavailable in Homey. Check the camera in Homey and try again.",
   "error_generic": "Something went wrong with the Homey Dashboard. Try again later.",
   "error_missingHost": "Enter an IP address or hostname.",
   "error_invalidPort": "The port is not valid.",

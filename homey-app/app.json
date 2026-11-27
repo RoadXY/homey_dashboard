@@ -233,6 +233,28 @@
     "actions": [
       {
         "title": {
+          "en": "Close camera popup",
+          "nl": "Sluit camerabeeld"
+        },
+        "titleFormatted": {
+          "en": "Close the camera popup",
+          "nl": "Sluit het camerabeeld"
+        },
+        "hint": {
+          "en": "Closes the camera popup that is open on the dashboard. Does nothing when no popup is open.",
+          "nl": "Sluit het camerabeeld dat op het dashboard open is. Doet niets als er geen popup open is."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          }
+        ],
+        "id": "close-camera-popup"
+      },
+      {
+        "title": {
           "en": "Create notification",
           "nl": "Melding aanmaken"
         },
@@ -818,6 +840,382 @@
           }
         ],
         "id": "set-weather-condition"
+      },
+      {
+        "title": {
+          "en": "Show camera popup",
+          "nl": "Toon camerabeeld"
+        },
+        "titleFormatted": {
+          "en": "Show [[camera]] with title '[[title]]' until closed",
+          "nl": "Toon [[camera]] met titel '[[title]]' tot het gesloten wordt"
+        },
+        "hint": {
+          "en": "Shows the live feed of a camera as a popup on the dashboard. The popup stays open until it is closed, replaced or dismissed on the dashboard. A new popup replaces the one that is open.",
+          "nl": "Toont het live beeld van een camera als popup op het dashboard. De popup blijft open tot hij wordt gesloten, vervangen of op het dashboard weggedrukt. Een nieuwe popup vervangt de open popup."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "device",
+            "name": "camera",
+            "title": {
+              "en": "Camera",
+              "nl": "Camera"
+            }
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title",
+              "nl": "Titel"
+            },
+            "placeholder": {
+              "en": "Front door open",
+              "nl": "Voordeur open"
+            }
+          }
+        ],
+        "id": "show-camera-popup"
+      },
+      {
+        "title": {
+          "en": "Show camera popup for a time",
+          "nl": "Toon camerabeeld voor een tijd"
+        },
+        "titleFormatted": {
+          "en": "Show [[camera]] with title '[[title]]' for [[expiresInMinutes]]",
+          "nl": "Toon [[camera]] met titel '[[title]]' voor [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Shows the live feed of a camera as a popup on the dashboard. The popup closes automatically after the chosen time, or earlier when it is closed, replaced or dismissed on the dashboard.",
+          "nl": "Toont het live beeld van een camera als popup op het dashboard. De popup sluit automatisch na de gekozen tijd, of eerder als hij wordt gesloten, vervangen of op het dashboard weggedrukt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "device",
+            "name": "camera",
+            "title": {
+              "en": "Camera",
+              "nl": "Camera"
+            }
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title",
+              "nl": "Titel"
+            },
+            "placeholder": {
+              "en": "Front door open",
+              "nl": "Voordeur open"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Close after",
+              "nl": "Sluit na"
+            },
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "1 minute",
+                  "nl": "1 minuut"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "24 hours",
+                  "nl": "24 uur"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "show-camera-popup-for-minutes"
+      },
+      {
+        "title": {
+          "en": "Show camera popup with sound",
+          "nl": "Toon camerabeeld met geluid"
+        },
+        "titleFormatted": {
+          "en": "Show [[camera]] with title '[[title]]' and sound [[sound]] until closed",
+          "nl": "Toon [[camera]] met titel '[[title]]' en geluid [[sound]] tot het gesloten wordt"
+        },
+        "hint": {
+          "en": "Shows the live feed of a camera as a popup on the dashboard and plays a sound when it opens. The popup stays open until it is closed, replaced or dismissed on the dashboard.",
+          "nl": "Toont het live beeld van een camera als popup op het dashboard en speelt een geluid af bij het openen. De popup blijft open tot hij wordt gesloten, vervangen of op het dashboard weggedrukt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "device",
+            "name": "camera",
+            "title": {
+              "en": "Camera",
+              "nl": "Camera"
+            }
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title",
+              "nl": "Titel"
+            },
+            "placeholder": {
+              "en": "Front door open",
+              "nl": "Voordeur open"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "sound",
+            "title": {
+              "en": "Sound",
+              "nl": "Geluid"
+            },
+            "values": [
+              {
+                "id": "doorbell",
+                "label": {
+                  "en": "Doorbell",
+                  "nl": "Deurbel"
+                }
+              },
+              {
+                "id": "alert",
+                "label": {
+                  "en": "Alert",
+                  "nl": "Alarm"
+                }
+              },
+              {
+                "id": "chime",
+                "label": {
+                  "en": "Chime",
+                  "nl": "Belletje"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "show-camera-popup-with-sound"
+      },
+      {
+        "title": {
+          "en": "Show camera popup with sound for a time",
+          "nl": "Toon camerabeeld met geluid voor een tijd"
+        },
+        "titleFormatted": {
+          "en": "Show [[camera]] with title '[[title]]', sound [[sound]], for [[expiresInMinutes]]",
+          "nl": "Toon [[camera]] met titel '[[title]]', geluid [[sound]], voor [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Shows the live feed of a camera as a popup on the dashboard and plays a sound when it opens. The popup closes automatically after the chosen time, or earlier when it is closed, replaced or dismissed on the dashboard.",
+          "nl": "Toont het live beeld van een camera als popup op het dashboard en speelt een geluid af bij het openen. De popup sluit automatisch na de gekozen tijd, of eerder als hij wordt gesloten, vervangen of op het dashboard weggedrukt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "device",
+            "name": "camera",
+            "title": {
+              "en": "Camera",
+              "nl": "Camera"
+            }
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title",
+              "nl": "Titel"
+            },
+            "placeholder": {
+              "en": "Front door open",
+              "nl": "Voordeur open"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "sound",
+            "title": {
+              "en": "Sound",
+              "nl": "Geluid"
+            },
+            "values": [
+              {
+                "id": "doorbell",
+                "label": {
+                  "en": "Doorbell",
+                  "nl": "Deurbel"
+                }
+              },
+              {
+                "id": "alert",
+                "label": {
+                  "en": "Alert",
+                  "nl": "Alarm"
+                }
+              },
+              {
+                "id": "chime",
+                "label": {
+                  "en": "Chime",
+                  "nl": "Belletje"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Close after",
+              "nl": "Sluit na"
+            },
+            "values": [
+              {
+                "id": "1",
+                "label": {
+                  "en": "1 minute",
+                  "nl": "1 minuut"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "24 hours",
+                  "nl": "24 uur"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "show-camera-popup-with-sound-for-minutes"
       },
       {
         "title": {

@@ -27,6 +27,19 @@ export interface CreateNotificationInput {
   expiresAt?: string;
 }
 
+export type CameraPopupSound = 'doorbell' | 'alert' | 'chime';
+
+export interface ShowCameraPopupInput {
+  /** Text at the top of the popup, 1 to 120 characters. */
+  title: string;
+  /** Homey device id of a camera with live video. */
+  deviceId: string;
+  /** ISO 8601 timestamp with timezone, in the future, at most 24 hours ahead. Omit to keep the popup open. */
+  expiresAt?: string;
+  /** Optional built-in sound that plays when the popup opens. */
+  sound?: CameraPopupSound;
+}
+
 export interface UpdateNotificationInput {
   title?: string;
   message?: string;
@@ -122,6 +135,16 @@ export class DashboardClient {
 
   async deleteNotification(id: string): Promise<void> {
     await this.request<void>('DELETE', `/api/v1/notifications/${encodeURIComponent(id)}`, { auth: true });
+  }
+
+  /** Shows a live camera popup on the dashboard. Replaces any popup that is already open. */
+  showCameraPopup(input: ShowCameraPopupInput): Promise<unknown> {
+    return this.request<unknown>('POST', '/api/v1/camera-popup', { body: input, auth: true });
+  }
+
+  /** Closes the active camera popup. `closed` is false when no popup was open. */
+  closeCameraPopup(): Promise<{ closed: boolean }> {
+    return this.request<{ closed: boolean }>('DELETE', '/api/v1/camera-popup', { auth: true });
   }
 
   private async request<T>(method: string, path: string, options: RequestOptions = {}): Promise<T> {

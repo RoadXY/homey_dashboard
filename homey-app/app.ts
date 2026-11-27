@@ -3,6 +3,7 @@ import type DashboardDevice from './drivers/dashboard/device.js';
 import DashboardApiError, { describeApiError } from './lib/dashboard-api/errors.js';
 import type {
   ApiNotification,
+  CameraPopupSound,
   NotificationSeverity,
   WeatherCondition,
 } from './lib/dashboard-api/client.js';
@@ -36,6 +37,16 @@ interface NotificationIdArgs extends DeviceArgs {
 
 interface SearchArgs extends DeviceArgs {
   searchText: string;
+}
+
+interface ShowCameraArgs extends DeviceArgs {
+  /** Homey camera device picked in the flow. Only id is used. */
+  camera: { id: string };
+  title: string;
+  /** Only present on the cards that offer a sound. */
+  sound?: CameraPopupSound;
+  /** Dropdown value: minutes as a string. Only present on the cards that offer a duration. */
+  expiresInMinutes?: string;
 }
 
 interface ExpirySearchArgs extends SearchArgs {
@@ -196,6 +207,25 @@ export default class HomeyDashboardApp extends Homey.App {
         return { updatedCount };
       }));
 
+    // Camera popups. Optional settings have their own card, so each card only shows
+    // the arguments it uses. Absent arguments are undefined and left out of the request.
+    for (const id of [
+      'show-camera-popup',
+      'show-camera-popup-with-sound',
+      'show-camera-popup-for-minutes',
+      'show-camera-popup-with-sound-for-minutes',
+    ]) {
+      flow.getActionCard(id)
+        .registerRunListener(this.guard(async (args: ShowCameraArgs) => {
+          await this.showCamera(args);
+        }));
+    }
+
+    flow.getActionCard('close-camera-popup')
+      .registerRunListener(this.guard(async (args: DeviceArgs) => {
+        await args.device.getClient().closeCameraPopup();
+      }));
+
     // Conditions
     flow.getConditionCard('weather-condition-is')
       .registerRunListener(this.guard(async (args: SetWeatherArgs) => {
@@ -260,6 +290,20 @@ export default class HomeyDashboardApp extends Homey.App {
   private expiresAtFrom(minutesValue: string | undefined): string | null {
     const minutes = Number(minutesValue ?? 0);
     return minutes > 0 ? new Date(Date.now() + minutes * 60_000).toISOString() : null;
+  }
+
+  /** Shows the camera popup. Missing optional arguments are omitted, so the API applies its defaults. */
+  private async showCamera(args: ShowCameraArgs): Promise<void> {
+    const title = this.requireText(args.title, 'error_missingTitle');
+    if (!args.camera?.id) throw new Error(this.homey.__('error_badRequest'));
+
+    const minutes = Number(args.expiresInMinutes ?? 0);
+    await args.device.getClient().showCameraPopup({
+      title,
+      deviceId: args.camera.id,
+      expiresAt: minutes > 0 ? new Date(Date.now() + minutes * 60_000).toISOString() : undefined,
+      sound: args.sound,
+    });
   }
 
   /** Trims a required text argument and rejects empty values with a translated message. */
