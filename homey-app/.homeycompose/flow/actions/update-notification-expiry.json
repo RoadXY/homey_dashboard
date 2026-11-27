@@ -1,0 +1,54 @@
+{
+  "title": {
+    "en": "Change notification expiry",
+    "nl": "Vervaltijd van melding wijzigen"
+  },
+  "titleFormatted": {
+    "en": "Change expiry of notification [[id]] to [[expiresInMinutes]]",
+    "nl": "Wijzig vervaltijd van melding [[id]] naar [[expiresInMinutes]]"
+  },
+  "hint": {
+    "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token. 'Never' keeps the notification until it is deleted.",
+    "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token. 'Nooit' laat de melding staan tot hij verwijderd wordt."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "autocomplete",
+      "name": "id",
+      "title": {
+        "en": "Notification",
+        "nl": "Melding"
+      },
+      "placeholder": {
+        "en": "Choose a notification or paste the ID from 'Create notification'",
+        "nl": "Kies een melding of plak het ID van 'Maak melding'"
+      }
+    },
+    {
+      "type": "dropdown",
+      "name": "expiresInMinutes",
+      "title": {
+        "en": "Expires after",
+        "nl": "Verloopt na"
+      },
+      "values": [
+        { "id": "0", "label": { "en": "Never", "nl": "Nooit" } },
+        { "id": "5", "label": { "en": "5 minutes", "nl": "5 minuten" } },
+        { "id": "15", "label": { "en": "15 minutes", "nl": "15 minuten" } },
+        { "id": "30", "label": { "en": "30 minutes", "nl": "30 minuten" } },
+        { "id": "60", "label": { "en": "1 hour", "nl": "1 uur" } },
+        { "id": "120", "label": { "en": "2 hours", "nl": "2 uur" } },
+        { "id": "360", "label": { "en": "6 hours", "nl": "6 uur" } },
+        { "id": "720", "label": { "en": "12 hours", "nl": "12 uur" } },
+        { "id": "1440", "label": { "en": "1 day", "nl": "1 dag" } },
+        { "id": "2880", "label": { "en": "2 days", "nl": "2 dagen" } },
+        { "id": "10080", "label": { "en": "1 week", "nl": "1 week" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "error_unreachable": "The dashboard cannot be reached. Check the IP address and whether the container is running.",
+  "error_unauthorized": "The API token is invalid. Update the token in the device settings.",
+  "error_forbidden": "This notification was not created through the API, so it cannot be changed.",
+  "error_notFound": "The notification no longer exists. It may have expired or been deleted.",
+  "error_badRequest": "The value you entered is not valid.",
+  "error_unavailable": "The dashboard is temporarily unavailable. Try again shortly.",
+  "error_generic": "Something went wrong with the Homey Dashboard. Try again later.",
+  "error_missingHost": "Enter an IP address or hostname.",
+  "error_invalidPort": "The port is not valid.",
+  "error_missingToken": "Enter the API token.",
+  "error_missingTitle": "Enter a title.",
+  "error_missingMessage": "Enter a message.",
+  "error_missingSeverity": "Choose a severity.",
+  "error_missingSearchText": "Enter the search text."
+}

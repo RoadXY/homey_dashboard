@@ -1,0 +1,991 @@
+openapi: 3.1.0
+info:
+  title: Homey Dashboard API
+  version: 1.0.0
+  description: |
+    API contract for the Homey Dashboard backend. Routes are grouped into
+    Dashboard UI (internal) and Integrations (external). Internal routes are
+    documented for completeness but are not guaranteed as third-party APIs.
+servers:
+  - url: /
+    description: Same origin as the dashboard
+security: []
+tags:
+  - name: Health
+    description: Container liveness and readiness
+  - name: Dashboard UI (internal)
+    description: Endpoints used by the dashboard frontend
+  - name: Homey (internal)
+    description: Read-only Homey Pro data access used by the dashboard
+  - name: Settings (internal)
+    description: PIN-protected dashboard settings
+  - name: Localization (internal)
+    description: Runtime language registry and translation files
+  - name: System (internal)
+    description: Dashboard host diagnostics
+  - name: Realtime (internal)
+    description: Server-Sent Events
+  - name: Weather
+    description: Weather display and canonical condition input
+  - name: Notifications (internal)
+    description: Dashboard notification state
+  - name: Integrations
+    description: Supported integration endpoints
+  - name: Notifications
+    description: External notification CRUD; API-owned items only
+paths:
+  /api/health/live:
+    get:
+      tags: [Health]
+      operationId: getLiveness
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Process is alive
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/health/ready:
+    get:
+      tags: [Health]
+      operationId: getReadiness
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Application is ready
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/health:
+    get:
+      tags: [Health]
+      operationId: getHealth
+      summary: Backwards-compatible aggregate health
+      responses:
+        '200':
+          description: Health and Homey connection summary
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Health'}
+  /api/homey/status:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyStatus
+      summary: Get Homey connection status
+      responses:
+        '200':
+          description: Homey connection status
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/homey/connect:
+    post:
+      tags: [Homey (internal)]
+      operationId: connectHomey
+      summary: Initiate Homey connection
+      responses:
+        '200':
+          description: Connection result
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/homey/readings:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyReadings
+      summary: Read configured Homey device readings
+      responses:
+        '200':
+          description: Device readings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/homey/logic:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyLogic
+      summary: Read configured Homey Logic variables
+      responses:
+        '200':
+          description: Logic variables
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/homey/inventory:
+    get:
+      tags: [Homey (internal)]
+      operationId: getHomeyInventory
+      summary: Read Homey device and zone inventory
+      responses:
+        '200':
+          description: Inventory
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/settings/unlock:
+    post:
+      tags: [Settings (internal)]
+      operationId: unlockSettings
+      summary: Unlock settings using the configured PIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pin]
+              properties:
+                pin: {type: string, format: password}
+      responses:
+        '200':
+          description: Settings session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unlocked: {type: boolean}
+        '401': {description: Invalid PIN}
+        '503': {description: SETTINGS_PIN is not configured}
+  /api/settings/session:
+    get:
+      tags: [Settings (internal)]
+      operationId: getSettingsSession
+      summary: Check whether the browser has a valid settings session
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Settings session is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated: {type: boolean, const: true}
+                  idleTimeoutSeconds: {type: integer, const: 1800}
+        '401': {description: Settings session missing or expired}
+  /api/settings/session/refresh:
+    post:
+      tags: [Settings (internal)]
+      operationId: refreshSettingsSession
+      summary: Extend the sliding settings session after user activity
+      security:
+        - SettingsCookie: []
+      parameters:
+        - name: x-settings-activity
+          in: header
+          required: true
+          schema: {type: string, const: "1"}
+      responses:
+        '200': {description: Settings session extended}
+        '401': {description: Settings session missing or expired}
+  /api/settings/logout:
+    post:
+      tags: [Settings (internal)]
+      operationId: logoutSettings
+      summary: Clear the settings session cookie
+      responses:
+        '200': {description: Settings session cookie cleared}
+  /api/settings/language:
+    get:
+      tags: [Settings (internal)]
+      operationId: getDashboardLanguage
+      summary: Get the saved dashboard language preference
+      responses:
+        '200':
+          description: Language preference
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  language: {type: string}
+  /api/settings/weather:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSettings
+      summary: Get weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Weather display configuration
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WeatherSettings'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveWeatherSettings
+      summary: Save weather source and icon pack settings
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WeatherSettings'}
+      responses:
+        '200': {description: Weather settings saved}
+        '400': {description: Invalid weather settings}
+        '401': {description: Settings session missing or expired}
+  /api/settings/weather-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getWeatherSourceCatalog
+      summary: List selectable Homey device capabilities and Logic variables for weather fields
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Searchable source catalog including numeric and text sources
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '401': {description: Settings session missing or expired}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/weather-values:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardWeatherValues
+      summary: Get values for configured weather fields and selected icon pack
+      responses:
+        '200':
+          description: Current values for enabled weather fields
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey values could not be retrieved}
+  /api/settings/weather-tokens:
+    get:
+      tags: [Settings (internal)]
+      operationId: listWeatherApiTokens
+      summary: List managed weather API tokens without revealing their secrets
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Token metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    type: array
+                    items: {$ref: '#/components/schemas/WeatherTokenInfo'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: createWeatherApiToken
+      summary: Create a named weather API Bearer token; the secret is returned once
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: {type: string, minLength: 1, maxLength: 60}
+      responses:
+        '201':
+          description: Token created; retain the secret because it cannot be retrieved later
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [token, info]
+                properties:
+                  token: {type: string, description: Full Bearer secret; shown once}
+                  info: {$ref: '#/components/schemas/WeatherTokenInfo'}
+        '400': {description: Invalid token name}
+        '401': {description: Settings session missing or expired}
+  /api/settings/weather-tokens/{id}:
+    delete:
+      tags: [Settings (internal)]
+      operationId: revokeWeatherApiToken
+      summary: Revoke a managed weather API token
+      security:
+        - SettingsCookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '204': {description: Token revoked}
+        '401': {description: Settings session missing or expired}
+        '404': {description: Token not found}
+  /api/settings/general:
+    get:
+      tags: [Settings (internal)]
+      operationId: getGeneralSettings
+      summary: Get general settings
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: General settings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '401': {description: Settings session missing or expired}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveGeneralSettings
+      summary: Save general settings
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/GenericObject'}
+      responses:
+        '200':
+          description: Saved settings
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '400': {description: Invalid settings}
+        '401': {description: Settings session missing or expired}
+  /api/locales/registry:
+    get:
+      tags: [Localization (internal)]
+      operationId: getLanguageRegistry
+      summary: Get registered dashboard languages
+      responses:
+        '200':
+          description: Language registry
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Registry unavailable}
+  /api/locales/{file}:
+    get:
+      tags: [Localization (internal)]
+      operationId: getTranslationFile
+      summary: Get a registered translation JSON file
+      parameters:
+        - name: file
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z]{2}(-[A-Z]{2})?\.json$'
+      responses:
+        '200':
+          description: Translation dictionary
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '400': {description: Invalid filename}
+        '404': {description: Translation file not found}
+  /api/system/status:
+    get:
+      tags: [System (internal)]
+      operationId: getSystemStatus
+      summary: Get dashboard and host status
+      responses:
+        '200':
+          description: System diagnostics
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/events:
+    get:
+      tags: [Realtime (internal)]
+      operationId: streamDashboardEvents
+      summary: Subscribe to dashboard and Homey realtime events
+      description: |
+        Server-Sent Events stream. Event names:
+        - ready: initial connection state, with Homey status and connectedAt.
+        - homey-update: Homey realtime update payload.
+        - homey-connected: Homey connection established.
+        - homey-disconnected: Homey connection lost.
+        - settings-updated: dashboard settings saved successfully; JSON data
+          contains section (general or quick-actions) and updatedAt (ISO 8601).
+        - notifications-updated: active dashboard notifications changed or an
+          API notification expired; JSON data contains only updatedAt (ISO 8601).
+        Each event data field is JSON. A keepalive comment is sent every
+        20 seconds. Browsers using EventSource reconnect automatically.
+      responses:
+        '200':
+          description: Event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+  /api/weather:
+    get:
+      tags: [Weather]
+      operationId: getWeather
+      summary: Get the weather condition currently displayed
+      responses:
+        '200':
+          description: Current displayed condition received through the Weather API. No Homey capability fallback is used.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/WeatherState'}
+        '500':
+          description: Weather state could not be loaded
+  /api/notifications:
+    get:
+      tags: [Notifications (internal)]
+      operationId: getNotifications
+      summary: Get dashboard notifications
+      responses:
+        '200':
+          description: Notification states
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '500':
+          description: Notification configuration could not be loaded
+  /api/dashboard/quick-actions:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardQuickActions
+      summary: Get the eight configured dashboard Quick Actions
+      responses:
+        '200':
+          description: Saved Quick Action configuration
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+  /api/dashboard/quick-action-status:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardQuickActionStatuses
+      summary: Get current Homey boolean states for configured device Quick Actions
+      responses:
+        '200':
+          description: Current status keyed by Quick Action ID; unknown and unavailable states are null
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/GenericObject'}
+        '503': {description: Homey status could not be retrieved}
+  /api/settings/dashboard-actions:
+    get:
+      tags: [Settings (internal)]
+      operationId: getQuickActionSettings
+      summary: Get Quick Action configuration
+      security:
+        - SettingsCookie: []
+      responses:
+        '200': {description: Saved configuration}
+        '401': {description: Settings session required}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveQuickActionSettings
+      summary: Save all eight Quick Actions
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/GenericObject'}
+      responses:
+        '200': {description: Configuration saved}
+        '400': {description: Invalid configuration}
+        '401': {description: Settings session required}
+  /api/settings/quick-action-catalog:
+    get:
+      tags: [Settings (internal)]
+      operationId: getQuickActionCatalog
+      summary: Get selectable Homey Flows, devices and writable capabilities
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Homey selection catalog. Individual manager failures are returned as warnings; successfully loaded sources remain available.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [retrievedAt, devices, flows]
+                properties:
+                  retrievedAt: {type: string, format: date-time}
+                  devices: {type: array, items: {type: object}}
+                  flows: {type: array, items: {type: object}}
+                  warnings:
+                    type: array
+                    description: Optional per-source errors when one Homey manager could not be read.
+                    items: {type: string}
+        '401': {description: Settings session required}
+        '503': {description: Homey is unavailable}
+  /api/homey/quick-actions/{id}/execute:
+    post:
+      tags: [Homey (internal)]
+      operationId: executeQuickAction
+      summary: Execute a saved Quick Action
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Homey action accepted}
+        '404': {description: Quick Action not found}
+        '409': {description: Quick Action is not configured}
+        '502': {description: Homey rejected the action}
+  /api/settings/measurement-tiles:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementTileSettings
+      summary: Get the four configured dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Four saved measurement tile definitions
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles]
+                properties:
+                  tiles:
+                    type: array
+                    minItems: 4
+                    maxItems: 4
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+        '401': {description: Settings session required}
+    post:
+      tags: [Settings (internal)]
+      operationId: saveMeasurementTileSettings
+      summary: Save the four dashboard measurement tiles
+      security:
+        - SettingsCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tiles]
+              properties:
+                tiles:
+                  type: array
+                  minItems: 4
+                  maxItems: 4
+                  items: {$ref: '#/components/schemas/MeasurementTile'}
+      responses:
+        '200': {description: Measurement tile configuration saved}
+        '400': {description: Invalid tile configuration}
+        '401': {description: Settings session required}
+  /api/settings/measurement-sources:
+    get:
+      tags: [Settings (internal)]
+      operationId: getMeasurementSourceCatalog
+      summary: List numeric Homey device capabilities and numeric Logic variables
+      security:
+        - SettingsCookie: []
+      responses:
+        '200':
+          description: Selectable measurement sources grouped by Homey zones and devices
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/MeasurementSourceCatalog'}
+        '401': {description: Settings session required}
+        '503': {description: Homey is unavailable}
+  /api/dashboard/measurement-tiles:
+    get:
+      tags: [Dashboard UI (internal)]
+      operationId: getDashboardMeasurementTiles
+      summary: Get saved measurement tile labels and current values
+      responses:
+        '200':
+          description: Four configured measurement tiles with their current values
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [tiles, retrievedAt, values]
+                properties:
+                  tiles:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTile'}
+                  retrievedAt: {type: string, format: date-time}
+                  values:
+                    type: array
+                    items: {$ref: '#/components/schemas/MeasurementTileValue'}
+        '503': {description: Homey values could not be retrieved}
+  /api/v1/weather/conditions:
+    get:
+      tags: [Integrations]
+      operationId: listWeatherConditions
+      summary: List supported canonical weather conditions
+      responses:
+        '200':
+          description: Canonical condition codes accepted by the write endpoint
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [conditions]
+                properties:
+                  conditions:
+                    type: array
+                    items: {$ref: '#/components/schemas/WeatherCondition'}
+    post:
+      tags: [Integrations]
+      operationId: setWeatherCondition
+      summary: Set the dashboard weather condition
+      description: |
+        Stores the latest selected condition persistently. It remains active
+        until replaced by another valid request. The dashboard does not apply
+        a TTL or automatic expiry; the calling Homey Flow owns update cadence.
+      security:
+        - ApiBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [condition]
+              properties:
+                condition:
+                  $ref: '#/components/schemas/WeatherCondition'
+            examples:
+              cloudy:
+                summary: Cloudy
+                value: {condition: cloudy}
+              thunderstorm:
+                summary: Thunderstorm
+                value: {condition: thunderstorm}
+      responses:
+        '200':
+          description: Condition stored
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [condition, receivedAt, source]
+                properties:
+                  condition: {$ref: '#/components/schemas/WeatherCondition'}
+                  receivedAt: {type: string, format: date-time}
+                  source: {type: string, const: api}
+        '400':
+          description: Invalid or missing condition
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+        '401': {description: Missing or invalid Bearer token}
+        '503': {description: WEATHER_API_TOKEN is not configured}
+        '500': {description: Condition could not be persisted}
+  /api/v1/notifications:
+    get:
+      tags: [Notifications]
+      operationId: listApiNotifications
+      summary: List active notifications owned by the external Notifications API
+      security:
+        - ApiBearer: []
+      responses:
+        '200':
+          description: Active API-owned notifications; source metadata is not exposed
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [notifications]
+                properties:
+                  notifications:
+                    type: array
+                    items: {$ref: '#/components/schemas/ApiNotification'}
+        '401': {description: Missing or invalid Bearer token}
+        '500': {description: Notifications could not be loaded}
+    post:
+      tags: [Notifications]
+      operationId: createApiNotification
+      summary: Create an API-owned dashboard notification
+      security:
+        - ApiBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [title, message, severity]
+              properties:
+                title: {type: string, minLength: 1, maxLength: 120}
+                message: {type: string, minLength: 1, maxLength: 2000}
+                severity: {$ref: '#/components/schemas/NotificationSeverity'}
+                expiresAt: {type: string, format: date-time, description: Optional future ISO 8601 timestamp including timezone}
+            examples:
+              warning:
+                summary: Water leak warning
+                value: {title: "Water alarm", message: "Water detected near the washing machine.", severity: critical}
+              temporary:
+                summary: Temporary reminder
+                value: {title: "Delivery", message: "A parcel is expected.", severity: info, expiresAt: "2026-11-14T18:00:00Z"}
+      responses:
+        '201':
+          description: Notification created; ID and timestamps are generated by the server
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ApiNotification'}
+        '400': {description: 'Invalid body, text, severity or expiry'}
+        '401': {description: Missing or invalid Bearer token}
+        '500': {description: Notification could not be saved}
+  /api/v1/notifications/{id}:
+    patch:
+      tags: [Notifications]
+      operationId: patchApiNotification
+      summary: Partially update an API-owned notification
+      security:
+        - ApiBearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              minProperties: 1
+              properties:
+                title: {type: string, minLength: 1, maxLength: 120}
+                message: {type: string, minLength: 1, maxLength: 2000}
+                severity: {$ref: '#/components/schemas/NotificationSeverity'}
+                expiresAt:
+                  oneOf:
+                    - {type: string, format: date-time, description: Future timestamp including timezone}
+                    - {type: 'null', description: Clear expiry and make the notification persistent}
+      responses:
+        '200':
+          description: Notification updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ApiNotification'}
+        '400': {description: Invalid patch body or field value}
+        '401': {description: Missing or invalid Bearer token}
+        '403': {description: Notification is not owned by the Notifications API}
+        '404': {description: Notification not found or expired}
+        '500': {description: Notification could not be saved}
+    delete:
+      tags: [Notifications]
+      operationId: deleteApiNotification
+      summary: Delete an API-owned notification
+      security:
+        - ApiBearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '204': {description: Notification deleted}
+        '401': {description: Missing or invalid Bearer token}
+        '403': {description: Notification is not owned by the Notifications API}
+        '404': {description: Notification not found or expired}
+        '500': {description: Notification could not be deleted}
+components:
+  securitySchemes:
+    SettingsCookie:
+      type: apiKey
+      in: cookie
+      name: homey_settings
+      description: HttpOnly SameSite=Strict cookie with a sliding 30-minute inactivity expiry.
+    ApiBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque token
+      description: All valid managed Bearer tokens are accepted by integration APIs. Token hashes are stored; secrets are shown once. WEATHER_API_TOKEN remains a temporary migration fallback.
+  schemas:
+    NotificationSeverity:
+      type: string
+      enum: [critical, warning, info]
+    ApiNotification:
+      type: object
+      additionalProperties: false
+      required: [id, title, message, severity, createdAt, updatedAt]
+      properties:
+        id: {type: string, format: uuid}
+        title: {type: string, minLength: 1, maxLength: 120}
+        message: {type: string, minLength: 1, maxLength: 2000}
+        severity: {$ref: '#/components/schemas/NotificationSeverity'}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        expiresAt: {type: string, format: date-time}
+    MeasurementTile:
+      type: object
+      additionalProperties: false
+      required: [id, name, source]
+      properties:
+        id:
+          type: string
+          enum: [measurement-1, measurement-2, measurement-3, measurement-4]
+        name: {type: string, minLength: 1, maxLength: 32}
+        source:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/MeasurementDeviceSource'
+            - $ref: '#/components/schemas/MeasurementLogicSource'
+    MeasurementDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    MeasurementLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
+    MeasurementSourceCatalog:
+      type: object
+      required: [retrievedAt, zones, devices, variables]
+      properties:
+        retrievedAt: {type: string, format: date-time}
+        zones:
+          type: array
+          items:
+            type: object
+            required: [id, name, parent]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              parent: {type: [string, 'null']}
+        devices:
+          type: array
+          items:
+            type: object
+            required: [id, name, zone, available, capabilities]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              zone: {type: [string, 'null']}
+              available: {type: boolean}
+              capabilities:
+                type: array
+                items:
+                  type: object
+                  required: [id, title, units, decimals]
+                  properties:
+                    id: {type: string}
+                    title: {type: string}
+                    units: {type: string}
+                    decimals: {type: [integer, 'null']}
+        variables:
+          type: array
+          items:
+            type: object
+            required: [id, name, type]
+            properties:
+              id: {type: string}
+              name: {type: string}
+              type: {type: string, const: number}
+    MeasurementTileValue:
+      type: object
+      required: [id, value, units, decimals, available]
+      properties:
+        id: {type: string}
+        value: {type: [number, 'null']}
+        units: {type: string}
+        decimals: {type: [integer, 'null']}
+        available: {type: boolean}
+    WeatherCondition:
+      type: string
+      enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy]
+    WeatherSettings:
+      type: object
+      required: [sources, iconPack]
+      properties:
+        sources:
+          type: object
+          required: [outdoorTemperature, feelsLike, humidity, pressure, windSpeed, windDirection, precipitation, sunrise, sunset]
+          properties:
+            outdoorTemperature: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            feelsLike: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            humidity: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            pressure: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windSpeed: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            windDirection: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            precipitation: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunrise: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+            sunset: {oneOf: [{$ref: '#/components/schemas/WeatherDeviceSource'}, {$ref: '#/components/schemas/WeatherLogicSource'}, {type: 'null'}]}
+        iconPack:
+          type: string
+          enum: [animated, color3d, outline, flat]
+    WeatherDeviceSource:
+      type: object
+      additionalProperties: false
+      required: [type, deviceId, capabilityId]
+      properties:
+        type: {type: string, const: device}
+        deviceId: {type: string, maxLength: 128}
+        capabilityId: {type: string, maxLength: 128}
+    WeatherLogicSource:
+      type: object
+      additionalProperties: false
+      required: [type, variableId]
+      properties:
+        type: {type: string, const: logic}
+        variableId: {type: string, maxLength: 128}
+    WeatherTokenInfo:
+      type: object
+      required: [id, name, createdAt, lastFour]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        createdAt: {type: string, format: date-time}
+        lastFour: {type: string, description: Last four characters only; no secret or hash is exposed}
+    WeatherState:
+      type: object
+      properties:
+        retrievedAt: {type: string, format: date-time}
+        category:
+          type: string
+          enum: [sunny, mostly_sunny, partly_cloudy, cloudy, overcast, fog, drizzle, rain, heavy_rain, showers, thunderstorm, hail, snow, snow_showers, sleet, windy, unknown]
+        conditionText: {type: [string, 'null']}
+        source: {type: string, const: api}
+        receivedAt: {type: string, format: date-time}
+        reason: {type: string}
+    Health:
+      type: object
+      properties:
+        status: {type: string}
+        application: {type: string}
+        uptimeSeconds: {type: integer}
+        readiness: {type: string}
+        homey: {type: string}
+    Error:
+      type: object
+      properties:
+        error: {type: string}
+        allowedValues:
+          type: array
+          items: {$ref: '#/components/schemas/WeatherCondition'}
+    GenericObject:
+      type: object
+      additionalProperties: true
+  responses:
+    ServiceUnavailable:
+      description: Homey service unavailable
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}

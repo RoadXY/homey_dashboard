@@ -1,0 +1,47 @@
+{
+  "title": {
+    "en": "Delete notification with exact message",
+    "nl": "Verwijder melding met exact bericht"
+  },
+  "titleFormatted": {
+    "en": "Delete notification with exact message [[searchText]]",
+    "nl": "Verwijder melding met exact bericht [[searchText]]"
+  },
+  "hint": {
+    "en": "Case-insensitive, the whole message must match. Deletes every matching notification created through this app. If none match, the flow shows an error.",
+    "nl": "Hoofdletterongevoelig, het hele bericht moet overeenkomen. Verwijdert elke overeenkomende melding die via deze app is aangemaakt. Komt er niets overeen, dan geeft de flow een fout."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "text",
+      "name": "searchText",
+      "title": {
+        "en": "Exact message",
+        "nl": "Exact bericht"
+      },
+      "placeholder": {
+        "en": "Water detected near the washing machine",
+        "nl": "Water gedetecteerd bij de wasmachine"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "deletedCount",
+      "type": "number",
+      "title": {
+        "en": "Deleted notifications",
+        "nl": "Aantal verwijderde meldingen"
+      },
+      "example": {
+        "en": "1",
+        "nl": "1"
+      }
+    }
+  ]
+}

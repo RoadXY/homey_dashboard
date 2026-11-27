@@ -1,0 +1,35 @@
+{
+  "title": {
+    "en": "Delete all notifications",
+    "nl": "Verwijder alle meldingen"
+  },
+  "titleFormatted": {
+    "en": "Delete all notifications",
+    "nl": "Verwijder alle meldingen"
+  },
+  "hint": {
+    "en": "Deletes every notification created through this app. Notifications from other sources are not affected.",
+    "nl": "Verwijdert alle meldingen die via deze app zijn aangemaakt. Meldingen uit andere bronnen blijven staan."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "deletedCount",
+      "type": "number",
+      "title": {
+        "en": "Deleted notifications",
+        "nl": "Aantal verwijderde meldingen"
+      },
+      "example": {
+        "en": "2",
+        "nl": "2"
+      }
+    }
+  ]
+}

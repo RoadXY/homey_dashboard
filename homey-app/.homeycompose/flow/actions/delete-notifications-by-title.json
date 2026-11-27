@@ -1,0 +1,47 @@
+{
+  "title": {
+    "en": "Delete notifications with text in title",
+    "nl": "Verwijder meldingen met tekst in de titel"
+  },
+  "titleFormatted": {
+    "en": "Delete all notifications with [[searchText]] in the title",
+    "nl": "Verwijder alle meldingen met [[searchText]] in de titel"
+  },
+  "hint": {
+    "en": "Case-insensitive. Matches notifications whose title contains the text. Only notifications created through this app are affected.",
+    "nl": "Hoofdletterongevoelig. Verwijdert meldingen waarvan de titel de tekst bevat. Alleen meldingen die via deze app zijn aangemaakt, worden geraakt."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "text",
+      "name": "searchText",
+      "title": {
+        "en": "Text in title",
+        "nl": "Tekst in titel"
+      },
+      "placeholder": {
+        "en": "Water",
+        "nl": "Water"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "deletedCount",
+      "type": "number",
+      "title": {
+        "en": "Deleted notifications",
+        "nl": "Aantal verwijderde meldingen"
+      },
+      "example": {
+        "en": "2",
+        "nl": "2"
+      }
+    }
+  ]
+}

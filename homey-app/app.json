@@ -1,0 +1,1713 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "nl.inversion.homeydashboard",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Homey Dashboard Controller",
+    "nl": "Homey Dashboard Controller"
+  },
+  "description": {
+    "en": "Controls several functions of the Homey Dashboard docker container",
+    "nl": "Bedient functies van de Homey Dashboard docker-container"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Robin van Kekem"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "RvanKekem"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/RoadXY/homey_dashboard/issues"
+  },
+  "source": "https://github.com/RoadXY/homey_dashboard/",
+  "homepage": "https://www.inversion.nl",
+  "api": {
+    "getNotifications": {
+      "method": "GET",
+      "path": "/notifications"
+    },
+    "deleteNotification": {
+      "method": "DELETE",
+      "path": "/notification/:id"
+    }
+  },
+  "esm": true,
+  "flow": {
+    "conditions": [
+      {
+        "title": {
+          "en": "Notification is active",
+          "nl": "Melding is actief"
+        },
+        "titleFormatted": {
+          "en": "Notification [[id]] is active",
+          "nl": "Melding [[id]] is actief"
+        },
+        "hint": {
+          "en": "True while the notification exists on the dashboard and has not expired. Only notifications created through this app are checked. A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+          "nl": "Waar zolang de melding op het dashboard staat en niet is verlopen. Alleen meldingen die via deze app zijn aangemaakt worden gecontroleerd. Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          }
+        ],
+        "id": "notification-is-active"
+      },
+      {
+        "title": {
+          "en": "The weather is",
+          "nl": "Het weer is"
+        },
+        "titleFormatted": {
+          "en": "The dashboard weather is [[condition]]",
+          "nl": "Het weer op het dashboard is [[condition]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "dropdown",
+            "name": "condition",
+            "title": {
+              "en": "Condition",
+              "nl": "Omstandigheid"
+            },
+            "values": [
+              {
+                "id": "sunny",
+                "label": {
+                  "en": "Sunny",
+                  "nl": "Zonnig"
+                }
+              },
+              {
+                "id": "mostly_sunny",
+                "label": {
+                  "en": "Mostly sunny",
+                  "nl": "Overwegend zonnig"
+                }
+              },
+              {
+                "id": "partly_cloudy",
+                "label": {
+                  "en": "Partly cloudy",
+                  "nl": "Half bewolkt"
+                }
+              },
+              {
+                "id": "cloudy",
+                "label": {
+                  "en": "Cloudy",
+                  "nl": "Bewolkt"
+                }
+              },
+              {
+                "id": "overcast",
+                "label": {
+                  "en": "Overcast",
+                  "nl": "Zwaar bewolkt"
+                }
+              },
+              {
+                "id": "fog",
+                "label": {
+                  "en": "Fog",
+                  "nl": "Mist"
+                }
+              },
+              {
+                "id": "drizzle",
+                "label": {
+                  "en": "Drizzle",
+                  "nl": "Motregen"
+                }
+              },
+              {
+                "id": "rain",
+                "label": {
+                  "en": "Rain",
+                  "nl": "Regen"
+                }
+              },
+              {
+                "id": "heavy_rain",
+                "label": {
+                  "en": "Heavy rain",
+                  "nl": "Zware regen"
+                }
+              },
+              {
+                "id": "showers",
+                "label": {
+                  "en": "Showers",
+                  "nl": "Buien"
+                }
+              },
+              {
+                "id": "thunderstorm",
+                "label": {
+                  "en": "Thunderstorm",
+                  "nl": "Onweer"
+                }
+              },
+              {
+                "id": "hail",
+                "label": {
+                  "en": "Hail",
+                  "nl": "Hagel"
+                }
+              },
+              {
+                "id": "snow",
+                "label": {
+                  "en": "Snow",
+                  "nl": "Sneeuw"
+                }
+              },
+              {
+                "id": "snow_showers",
+                "label": {
+                  "en": "Snow showers",
+                  "nl": "Sneeuwbuien"
+                }
+              },
+              {
+                "id": "sleet",
+                "label": {
+                  "en": "Sleet",
+                  "nl": "IJzel"
+                }
+              },
+              {
+                "id": "windy",
+                "label": {
+                  "en": "Windy",
+                  "nl": "Winderig"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "weather-condition-is"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Create notification",
+          "nl": "Melding aanmaken"
+        },
+        "titleFormatted": {
+          "en": "Create [[severity]] notification '[[title]]': [[message]] (expires: [[expiresInMinutes]])",
+          "nl": "Maak [[severity]] melding '[[title]]': [[message]] (verloopt: [[expiresInMinutes]])"
+        },
+        "hint": {
+          "en": "Creates a notification on the dashboard. The ID is returned as a token so you can update or delete it later.",
+          "nl": "Maakt een melding op het dashboard aan. Het ID wordt als token teruggegeven, zodat je de melding later kunt wijzigen of verwijderen."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "Title",
+              "nl": "Titel"
+            },
+            "placeholder": {
+              "en": "Water alarm",
+              "nl": "Wateralarm"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "Message",
+              "nl": "Bericht"
+            },
+            "placeholder": {
+              "en": "Water detected near the washing machine",
+              "nl": "Water gedetecteerd bij de wasmachine"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "severity",
+            "title": {
+              "en": "Severity",
+              "nl": "Ernst"
+            },
+            "values": [
+              {
+                "id": "critical",
+                "label": {
+                  "en": "Critical",
+                  "nl": "Kritiek"
+                }
+              },
+              {
+                "id": "warning",
+                "label": {
+                  "en": "Warning",
+                  "nl": "Waarschuwing"
+                }
+              },
+              {
+                "id": "info",
+                "label": {
+                  "en": "Info",
+                  "nl": "Info"
+                }
+              }
+            ]
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "hint": {
+              "en": "Optional. Defaults to never expiring.",
+              "nl": "Optioneel. Standaard verloopt de melding nooit."
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "id",
+            "type": "string",
+            "title": {
+              "en": "Notification ID",
+              "nl": "Melding-ID"
+            },
+            "example": {
+              "en": "3f2a9c1e-8b7d-4e2a-9c1f-0a1b2c3d4e5f",
+              "nl": "3f2a9c1e-8b7d-4e2a-9c1f-0a1b2c3d4e5f"
+            }
+          }
+        ],
+        "id": "create-notification"
+      },
+      {
+        "title": {
+          "en": "Delete all notifications",
+          "nl": "Verwijder alle meldingen"
+        },
+        "titleFormatted": {
+          "en": "Delete all notifications",
+          "nl": "Verwijder alle meldingen"
+        },
+        "hint": {
+          "en": "Deletes every notification created through this app. Notifications from other sources are not affected.",
+          "nl": "Verwijdert alle meldingen die via deze app zijn aangemaakt. Meldingen uit andere bronnen blijven staan."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "deletedCount",
+            "type": "number",
+            "title": {
+              "en": "Deleted notifications",
+              "nl": "Aantal verwijderde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "delete-all-notifications"
+      },
+      {
+        "title": {
+          "en": "Delete notification",
+          "nl": "Melding verwijderen"
+        },
+        "titleFormatted": {
+          "en": "Delete notification [[id]]",
+          "nl": "Verwijder melding [[id]]"
+        },
+        "hint": {
+          "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+          "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          }
+        ],
+        "id": "delete-notification"
+      },
+      {
+        "title": {
+          "en": "Delete notification with exact message",
+          "nl": "Verwijder melding met exact bericht"
+        },
+        "titleFormatted": {
+          "en": "Delete notification with exact message [[searchText]]",
+          "nl": "Verwijder melding met exact bericht [[searchText]]"
+        },
+        "hint": {
+          "en": "Case-insensitive, the whole message must match. Deletes every matching notification created through this app. If none match, the flow shows an error.",
+          "nl": "Hoofdletterongevoelig, het hele bericht moet overeenkomen. Verwijdert elke overeenkomende melding die via deze app is aangemaakt. Komt er niets overeen, dan geeft de flow een fout."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Exact message",
+              "nl": "Exact bericht"
+            },
+            "placeholder": {
+              "en": "Water detected near the washing machine",
+              "nl": "Water gedetecteerd bij de wasmachine"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "deletedCount",
+            "type": "number",
+            "title": {
+              "en": "Deleted notifications",
+              "nl": "Aantal verwijderde meldingen"
+            },
+            "example": {
+              "en": "1",
+              "nl": "1"
+            }
+          }
+        ],
+        "id": "delete-notification-by-exact-message"
+      },
+      {
+        "title": {
+          "en": "Delete notification with exact title",
+          "nl": "Verwijder melding met exacte titel"
+        },
+        "titleFormatted": {
+          "en": "Delete notification with exact title [[searchText]]",
+          "nl": "Verwijder melding met exacte titel [[searchText]]"
+        },
+        "hint": {
+          "en": "Case-insensitive, the whole title must match. Deletes every matching notification created through this app. If none match, the flow shows an error.",
+          "nl": "Hoofdletterongevoelig, de hele titel moet overeenkomen. Verwijdert elke overeenkomende melding die via deze app is aangemaakt. Komt er niets overeen, dan geeft de flow een fout."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Exact title",
+              "nl": "Exacte titel"
+            },
+            "placeholder": {
+              "en": "Water alarm",
+              "nl": "Wateralarm"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "deletedCount",
+            "type": "number",
+            "title": {
+              "en": "Deleted notifications",
+              "nl": "Aantal verwijderde meldingen"
+            },
+            "example": {
+              "en": "1",
+              "nl": "1"
+            }
+          }
+        ],
+        "id": "delete-notification-by-exact-title"
+      },
+      {
+        "title": {
+          "en": "Delete notifications with text in message",
+          "nl": "Verwijder meldingen met tekst in het bericht"
+        },
+        "titleFormatted": {
+          "en": "Delete all notifications with [[searchText]] in the message",
+          "nl": "Verwijder alle meldingen met [[searchText]] in het bericht"
+        },
+        "hint": {
+          "en": "Case-insensitive. Matches notifications whose message contains the text. Only notifications created through this app are affected.",
+          "nl": "Hoofdletterongevoelig. Verwijdert meldingen waarvan het bericht de tekst bevat. Alleen meldingen die via deze app zijn aangemaakt, worden geraakt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Text in message",
+              "nl": "Tekst in bericht"
+            },
+            "placeholder": {
+              "en": "washing machine",
+              "nl": "wasmachine"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "deletedCount",
+            "type": "number",
+            "title": {
+              "en": "Deleted notifications",
+              "nl": "Aantal verwijderde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "delete-notifications-by-message"
+      },
+      {
+        "title": {
+          "en": "Delete notifications with text in title",
+          "nl": "Verwijder meldingen met tekst in de titel"
+        },
+        "titleFormatted": {
+          "en": "Delete all notifications with [[searchText]] in the title",
+          "nl": "Verwijder alle meldingen met [[searchText]] in de titel"
+        },
+        "hint": {
+          "en": "Case-insensitive. Matches notifications whose title contains the text. Only notifications created through this app are affected.",
+          "nl": "Hoofdletterongevoelig. Verwijdert meldingen waarvan de titel de tekst bevat. Alleen meldingen die via deze app zijn aangemaakt, worden geraakt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Text in title",
+              "nl": "Tekst in titel"
+            },
+            "placeholder": {
+              "en": "Water",
+              "nl": "Water"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "deletedCount",
+            "type": "number",
+            "title": {
+              "en": "Deleted notifications",
+              "nl": "Aantal verwijderde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "delete-notifications-by-title"
+      },
+      {
+        "title": {
+          "en": "Set weather condition",
+          "nl": "Weersomstandigheid instellen"
+        },
+        "titleFormatted": {
+          "en": "Set the dashboard weather to [[condition]]",
+          "nl": "Zet het weer op het dashboard op [[condition]]"
+        },
+        "hint": {
+          "en": "Sets the weather condition shown on the dashboard. It stays active until another condition is set.",
+          "nl": "Stelt de weersomstandigheid in die op het dashboard getoond wordt. Die blijft staan tot er een andere wordt ingesteld."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "dropdown",
+            "name": "condition",
+            "title": {
+              "en": "Condition",
+              "nl": "Omstandigheid"
+            },
+            "values": [
+              {
+                "id": "sunny",
+                "label": {
+                  "en": "Sunny",
+                  "nl": "Zonnig"
+                }
+              },
+              {
+                "id": "mostly_sunny",
+                "label": {
+                  "en": "Mostly sunny",
+                  "nl": "Overwegend zonnig"
+                }
+              },
+              {
+                "id": "partly_cloudy",
+                "label": {
+                  "en": "Partly cloudy",
+                  "nl": "Half bewolkt"
+                }
+              },
+              {
+                "id": "cloudy",
+                "label": {
+                  "en": "Cloudy",
+                  "nl": "Bewolkt"
+                }
+              },
+              {
+                "id": "overcast",
+                "label": {
+                  "en": "Overcast",
+                  "nl": "Zwaar bewolkt"
+                }
+              },
+              {
+                "id": "fog",
+                "label": {
+                  "en": "Fog",
+                  "nl": "Mist"
+                }
+              },
+              {
+                "id": "drizzle",
+                "label": {
+                  "en": "Drizzle",
+                  "nl": "Motregen"
+                }
+              },
+              {
+                "id": "rain",
+                "label": {
+                  "en": "Rain",
+                  "nl": "Regen"
+                }
+              },
+              {
+                "id": "heavy_rain",
+                "label": {
+                  "en": "Heavy rain",
+                  "nl": "Zware regen"
+                }
+              },
+              {
+                "id": "showers",
+                "label": {
+                  "en": "Showers",
+                  "nl": "Buien"
+                }
+              },
+              {
+                "id": "thunderstorm",
+                "label": {
+                  "en": "Thunderstorm",
+                  "nl": "Onweer"
+                }
+              },
+              {
+                "id": "hail",
+                "label": {
+                  "en": "Hail",
+                  "nl": "Hagel"
+                }
+              },
+              {
+                "id": "snow",
+                "label": {
+                  "en": "Snow",
+                  "nl": "Sneeuw"
+                }
+              },
+              {
+                "id": "snow_showers",
+                "label": {
+                  "en": "Snow showers",
+                  "nl": "Sneeuwbuien"
+                }
+              },
+              {
+                "id": "sleet",
+                "label": {
+                  "en": "Sleet",
+                  "nl": "IJzel"
+                }
+              },
+              {
+                "id": "windy",
+                "label": {
+                  "en": "Windy",
+                  "nl": "Winderig"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "set-weather-condition"
+      },
+      {
+        "title": {
+          "en": "Change expiry of notification with exact message",
+          "nl": "Wijzig vervaltijd van melding met exact bericht"
+        },
+        "titleFormatted": {
+          "en": "Change expiry of notification with exact message [[searchText]] to [[expiresInMinutes]]",
+          "nl": "Wijzig vervaltijd van melding met exact bericht [[searchText]] naar [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Case-insensitive, the whole message must match. If no notification matches, the flow shows an error.",
+          "nl": "Hoofdletterongevoelig, het hele bericht moet overeenkomen. Komt er geen melding overeen, dan geeft de flow een fout."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Exact message",
+              "nl": "Exact bericht"
+            },
+            "placeholder": {
+              "en": "Water detected near the washing machine",
+              "nl": "Water gedetecteerd bij de wasmachine"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "updatedCount",
+            "type": "number",
+            "title": {
+              "en": "Updated notifications",
+              "nl": "Aantal gewijzigde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "update-expiry-by-exact-message"
+      },
+      {
+        "title": {
+          "en": "Change expiry of notification with exact title",
+          "nl": "Wijzig vervaltijd van melding met exacte titel"
+        },
+        "titleFormatted": {
+          "en": "Change expiry of notification with exact title [[searchText]] to [[expiresInMinutes]]",
+          "nl": "Wijzig vervaltijd van melding met exacte titel [[searchText]] naar [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Case-insensitive, the whole title must match. If no notification matches, the flow shows an error.",
+          "nl": "Hoofdletterongevoelig, de hele titel moet overeenkomen. Komt er geen melding overeen, dan geeft de flow een fout."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Exact title",
+              "nl": "Exacte titel"
+            },
+            "placeholder": {
+              "en": "Water alarm",
+              "nl": "Wateralarm"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "updatedCount",
+            "type": "number",
+            "title": {
+              "en": "Updated notifications",
+              "nl": "Aantal gewijzigde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "update-expiry-by-exact-title"
+      },
+      {
+        "title": {
+          "en": "Change expiry of notifications with text in message",
+          "nl": "Wijzig vervaltijd van meldingen met tekst in het bericht"
+        },
+        "titleFormatted": {
+          "en": "Change expiry of all notifications with [[searchText]] in the message to [[expiresInMinutes]]",
+          "nl": "Wijzig vervaltijd van alle meldingen met [[searchText]] in het bericht naar [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Case-insensitive. Changes the expiry of notifications whose message contains the text. 'Never' keeps them until deleted.",
+          "nl": "Hoofdletterongevoelig. Past de vervaltijd aan van meldingen waarvan het bericht de tekst bevat. 'Nooit' laat ze staan tot ze verwijderd worden."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Text in message",
+              "nl": "Tekst in bericht"
+            },
+            "placeholder": {
+              "en": "washing machine",
+              "nl": "wasmachine"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "updatedCount",
+            "type": "number",
+            "title": {
+              "en": "Updated notifications",
+              "nl": "Aantal gewijzigde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "update-expiry-by-message"
+      },
+      {
+        "title": {
+          "en": "Change expiry of notifications with text in title",
+          "nl": "Wijzig vervaltijd van meldingen met tekst in de titel"
+        },
+        "titleFormatted": {
+          "en": "Change expiry of all notifications with [[searchText]] in the title to [[expiresInMinutes]]",
+          "nl": "Wijzig vervaltijd van alle meldingen met [[searchText]] in de titel naar [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "Case-insensitive. Changes the expiry of notifications whose title contains the text. 'Never' keeps them until deleted.",
+          "nl": "Hoofdletterongevoelig. Past de vervaltijd aan van meldingen waarvan de titel de tekst bevat. 'Nooit' laat ze staan tot ze verwijderd worden."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "text",
+            "name": "searchText",
+            "title": {
+              "en": "Text in title",
+              "nl": "Tekst in titel"
+            },
+            "placeholder": {
+              "en": "Water",
+              "nl": "Water"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "updatedCount",
+            "type": "number",
+            "title": {
+              "en": "Updated notifications",
+              "nl": "Aantal gewijzigde meldingen"
+            },
+            "example": {
+              "en": "2",
+              "nl": "2"
+            }
+          }
+        ],
+        "id": "update-expiry-by-title"
+      },
+      {
+        "title": {
+          "en": "Change notification expiry",
+          "nl": "Vervaltijd van melding wijzigen"
+        },
+        "titleFormatted": {
+          "en": "Change expiry of notification [[id]] to [[expiresInMinutes]]",
+          "nl": "Wijzig vervaltijd van melding [[id]] naar [[expiresInMinutes]]"
+        },
+        "hint": {
+          "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token. 'Never' keeps the notification until it is deleted.",
+          "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token. 'Nooit' laat de melding staan tot hij verwijderd wordt."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "expiresInMinutes",
+            "title": {
+              "en": "Expires after",
+              "nl": "Verloopt na"
+            },
+            "values": [
+              {
+                "id": "0",
+                "label": {
+                  "en": "Never",
+                  "nl": "Nooit"
+                }
+              },
+              {
+                "id": "5",
+                "label": {
+                  "en": "5 minutes",
+                  "nl": "5 minuten"
+                }
+              },
+              {
+                "id": "15",
+                "label": {
+                  "en": "15 minutes",
+                  "nl": "15 minuten"
+                }
+              },
+              {
+                "id": "30",
+                "label": {
+                  "en": "30 minutes",
+                  "nl": "30 minuten"
+                }
+              },
+              {
+                "id": "60",
+                "label": {
+                  "en": "1 hour",
+                  "nl": "1 uur"
+                }
+              },
+              {
+                "id": "120",
+                "label": {
+                  "en": "2 hours",
+                  "nl": "2 uur"
+                }
+              },
+              {
+                "id": "360",
+                "label": {
+                  "en": "6 hours",
+                  "nl": "6 uur"
+                }
+              },
+              {
+                "id": "720",
+                "label": {
+                  "en": "12 hours",
+                  "nl": "12 uur"
+                }
+              },
+              {
+                "id": "1440",
+                "label": {
+                  "en": "1 day",
+                  "nl": "1 dag"
+                }
+              },
+              {
+                "id": "2880",
+                "label": {
+                  "en": "2 days",
+                  "nl": "2 dagen"
+                }
+              },
+              {
+                "id": "10080",
+                "label": {
+                  "en": "1 week",
+                  "nl": "1 week"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "update-notification-expiry"
+      },
+      {
+        "title": {
+          "en": "Change notification message",
+          "nl": "Bericht van melding wijzigen"
+        },
+        "titleFormatted": {
+          "en": "Change message of notification [[id]] to [[message]]",
+          "nl": "Wijzig bericht van melding [[id]] naar [[message]]"
+        },
+        "hint": {
+          "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+          "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          },
+          {
+            "type": "text",
+            "name": "message",
+            "title": {
+              "en": "New message",
+              "nl": "Nieuw bericht"
+            }
+          }
+        ],
+        "id": "update-notification-message"
+      },
+      {
+        "title": {
+          "en": "Change notification severity",
+          "nl": "Ernst van melding wijzigen"
+        },
+        "titleFormatted": {
+          "en": "Change severity of notification [[id]] to [[severity]]",
+          "nl": "Wijzig ernst van melding [[id]] naar [[severity]]"
+        },
+        "hint": {
+          "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+          "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "severity",
+            "title": {
+              "en": "New severity",
+              "nl": "Nieuwe ernst"
+            },
+            "values": [
+              {
+                "id": "critical",
+                "label": {
+                  "en": "Critical",
+                  "nl": "Kritiek"
+                }
+              },
+              {
+                "id": "warning",
+                "label": {
+                  "en": "Warning",
+                  "nl": "Waarschuwing"
+                }
+              },
+              {
+                "id": "info",
+                "label": {
+                  "en": "Info",
+                  "nl": "Info"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "update-notification-severity"
+      },
+      {
+        "title": {
+          "en": "Change notification title",
+          "nl": "Titel van melding wijzigen"
+        },
+        "titleFormatted": {
+          "en": "Change title of notification [[id]] to '[[title]]'",
+          "nl": "Wijzig titel van melding [[id]] naar '[[title]]'"
+        },
+        "hint": {
+          "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+          "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dashboard"
+          },
+          {
+            "type": "autocomplete",
+            "name": "id",
+            "title": {
+              "en": "Notification",
+              "nl": "Melding"
+            },
+            "placeholder": {
+              "en": "Choose a notification or paste the ID from 'Create notification'",
+              "nl": "Kies een melding of plak het ID van 'Maak melding'"
+            }
+          },
+          {
+            "type": "text",
+            "name": "title",
+            "title": {
+              "en": "New title",
+              "nl": "Nieuwe titel"
+            }
+          }
+        ],
+        "id": "update-notification-title"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Homey Dashboard",
+        "nl": "Homey Dashboard"
+      },
+      "class": "other",
+      "capabilities": [],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "host",
+          "type": "text",
+          "label": {
+            "en": "IP address or hostname",
+            "nl": "IP-adres of hostnaam"
+          },
+          "value": "",
+          "hint": {
+            "en": "IP address of the Docker host running the dashboard.",
+            "nl": "IP-adres van de Docker-host waarop het dashboard draait."
+          }
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "label": {
+            "en": "Port",
+            "nl": "Poort"
+          },
+          "value": 5173,
+          "min": 1,
+          "max": 65535
+        },
+        {
+          "id": "token",
+          "type": "password",
+          "label": {
+            "en": "API token",
+            "nl": "API-token"
+          },
+          "value": "",
+          "hint": {
+            "en": "Create a token in the dashboard Settings screen (PIN protected).",
+            "nl": "Maak een token aan in het instellingenscherm van het dashboard (met PIN)."
+          }
+        }
+      ],
+      "id": "dashboard"
+    }
+  ],
+  "discovery": {
+    "dashboard-mdns": {
+      "type": "mdns-sd",
+      "mdns-sd": {
+        "name": "homey-dashboard",
+        "protocol": "tcp"
+      }
+    }
+  }
+}

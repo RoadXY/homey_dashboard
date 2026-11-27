@@ -1,0 +1,47 @@
+{
+  "title": {
+    "en": "Delete notifications with text in message",
+    "nl": "Verwijder meldingen met tekst in het bericht"
+  },
+  "titleFormatted": {
+    "en": "Delete all notifications with [[searchText]] in the message",
+    "nl": "Verwijder alle meldingen met [[searchText]] in het bericht"
+  },
+  "hint": {
+    "en": "Case-insensitive. Matches notifications whose message contains the text. Only notifications created through this app are affected.",
+    "nl": "Hoofdletterongevoelig. Verwijdert meldingen waarvan het bericht de tekst bevat. Alleen meldingen die via deze app zijn aangemaakt, worden geraakt."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "text",
+      "name": "searchText",
+      "title": {
+        "en": "Text in message",
+        "nl": "Tekst in bericht"
+      },
+      "placeholder": {
+        "en": "washing machine",
+        "nl": "wasmachine"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "deletedCount",
+      "type": "number",
+      "title": {
+        "en": "Deleted notifications",
+        "nl": "Aantal verwijderde meldingen"
+      },
+      "example": {
+        "en": "2",
+        "nl": "2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+    "id":  "nl.inversion.homeydashboard",
+    "version":  "1.0.0",
+    "compatibility":  ">=12.4.0",
+    "sdk":  3,
+    "runtime":  "nodejs",
+    "platforms":  [
+                      "local"
+                  ],
+    "name":  {
+                 "en":  "Homey Dashboard Controller",
+                 "nl":  "Homey Dashboard Controller"
+             },
+    "description":  {
+                        "en":  "Controls several functions of the Homey Dashboard docker container",
+                        "nl":  "Bedient functies van de Homey Dashboard docker-container"
+                    },
+    "category":  [
+                     "tools"
+                 ],
+    "permissions":  [
+
+                    ],
+    "images":  {
+                   "small":  "/assets/images/small.png",
+                   "large":  "/assets/images/large.png",
+                   "xlarge":  "/assets/images/xlarge.png"
+               },
+    "author":  {
+                   "name":  "Robin van Kekem"
+               },
+    "contributing": {
+        "donate": {
+            "paypal": {
+                "username": "RvanKekem"
+            }
+        }
+    },
+    "bugs":    {
+                    "url": "https://github.com/RoadXY/homey_dashboard/issues"
+                },
+    "source": "https://github.com/RoadXY/homey_dashboard/",
+    "homepage": "https://www.inversion.nl",
+    "api": {
+        "getNotifications": {
+            "method": "GET",
+            "path": "/notifications"
+        },
+        "deleteNotification": {
+            "method": "DELETE",
+            "path": "/notification/:id"
+        }
+    }
+}

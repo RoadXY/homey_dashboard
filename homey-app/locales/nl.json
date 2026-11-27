@@ -1,0 +1,16 @@
+{
+  "error_unreachable": "Het dashboard is niet bereikbaar. Controleer het IP-adres en of de container draait.",
+  "error_unauthorized": "De API-token is ongeldig. Pas de token aan in de instellingen van het apparaat.",
+  "error_forbidden": "Deze melding is niet via de API aangemaakt, dus die kan niet gewijzigd worden.",
+  "error_notFound": "De melding bestaat niet (meer). Mogelijk is hij al verlopen of verwijderd.",
+  "error_badRequest": "De ingevoerde waarde is ongeldig.",
+  "error_unavailable": "Het dashboard is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
+  "error_generic": "Er ging iets mis bij het Homey Dashboard. Probeer het later opnieuw.",
+  "error_missingHost": "Vul een IP-adres of hostnaam in.",
+  "error_invalidPort": "De poort is ongeldig.",
+  "error_missingToken": "Vul de API-token in.",
+  "error_missingTitle": "Vul de titel in.",
+  "error_missingMessage": "Vul het bericht in.",
+  "error_missingSeverity": "Kies een ernst.",
+  "error_missingSearchText": "Vul de zoektekst in."
+}

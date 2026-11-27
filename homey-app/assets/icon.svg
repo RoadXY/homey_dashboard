@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="960" viewBox="0 0 960 960">
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#343a43"/>
+      <stop offset="0.48" stop-color="#11151b"/>
+      <stop offset="1" stop-color="#05070a"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#68717c"/>
+      <stop offset="0.5" stop-color="#252b34"/>
+      <stop offset="1" stop-color="#080a0d"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#252b34"/>
+      <stop offset="1" stop-color="#0e1218"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4cb70"/>
+      <stop offset="1" stop-color="#bd8734"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Compact tablet body, shown from a subtle right-side angle -->
+  <path d="M205 238 Q205 202 244 190 L694 137 Q731 133 744 169 L811 680 Q817 718 779 729 L314 802 Q278 808 270 771 Z"
+        fill="#05070a" opacity=".18" transform="translate(0 16)"/>
+  <path d="M190 222 Q190 187 228 178 L676 126 Q716 121 729 158 L798 667 Q804 705 766 716 L302 788 Q264 794 256 756 Z"
+        fill="url(#edge)" stroke="#77818d" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M202 226 Q202 198 232 191 L672 140 Q704 136 714 166 L780 663 Q785 691 757 699 L307 769 Q278 773 272 746 Z"
+        fill="url(#frame)" stroke="#090c10" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- Bezel and display -->
+  <path d="M232 239 L681 186 Q694 184 697 199 L758 650 Q761 666 746 669 L299 739 Q285 741 283 726 L222 255 Q220 242 232 239 Z"
+        fill="#05080c"/>
+  <path d="M246 253 L672 203 L741 648 L303 716 Z" fill="url(#screen)"/>
+
+  <!-- Screen layout -->
+  <path d="M265 273 L431 253 L449 376 L281 396 Z" fill="#1d232c" rx="12"/>
+  <path d="M460 250 L535 241 L552 358 L477 368 Z" fill="#242b35"/>
+  <path d="M548 240 L623 231 L640 348 L565 357 Z" fill="#242b35"/>
+  <path d="M636 230 L690 224 L707 340 L653 347 Z" fill="#242b35"/>
+
+  <!-- Clock -->
+  <path d="M286 314 L407 300" stroke="#f4f5f7" stroke-width="19" stroke-linecap="round"/>
+  <path d="M289 350 L382 339" stroke="#c8d0db" stroke-width="8" stroke-linecap="round"/>
+  <path d="M291 370 L360 362" stroke="#8994a2" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Control tile symbols -->
+  <path d="M499 275 L499 319 L514 306 L530 319 L530 268 Z" fill="#d5dbe4"/>
+  <path d="M585 268 L585 309 M576 277 L594 277 M576 289 L594 289" stroke="#d5dbe4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M666 260 L666 309 M654 274 L678 274 M654 290 L678 290" stroke="#d5dbe4" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Weather panel -->
+  <path d="M282 418 L450 398 L467 527 L299 548 Z" fill="#202731"/>
+  <path d="M310 453 L365 446" stroke="#f4f5f7" stroke-width="21" stroke-linecap="round"/>
+  <circle cx="414" cy="448" r="15" fill="none" stroke="url(#gold)" stroke-width="7"/>
+  <path d="M400 478 Q413 456 434 471 Q450 475 449 493 L405 499 Q390 493 400 478Z" fill="none" stroke="#b8c3d0" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M312 515 L350 510 M365 508 L397 504" stroke="#aab4c1" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Notification panel -->
+  <path d="M480 386 L709 358 L739 576 L510 606 Z" fill="#171d25"/>
+  <path d="M500 413 L625 398" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M501 445 L696 421 L704 489 L510 513 Z" fill="#443923" stroke="#80632f" stroke-width="3"/>
+  <path d="M520 466 L660 449 M522 486 L634 472" stroke="#f1d18b" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="704" cy="395" r="12" fill="none" stroke="url(#gold)" stroke-width="6"/>
+
+  <!-- Measurement tiles -->
+  <path d="M309 565 L394 554 L407 654 L322 667 Z" fill="#242b35"/>
+  <path d="M416 552 L499 542 L512 637 L429 649 Z" fill="#242b35"/>
+  <path d="M330 593 L381 587 M438 581 L487 575" stroke="#dce2ea" stroke-width="8" stroke-linecap="round"/>
+  <path d="M330 626 L375 620 M438 613 L480 608" stroke="#aab4c1" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Camera / status detail -->
+  <circle cx="220" cy="470" r="7" fill="#87919d"/>
+  <path d="M278 754 L755 679" stroke="#8b949f" stroke-width="3" opacity=".55"/>
+</svg>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    .notification { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+    .notification .body { min-width: 0; }
+    .notification .title { font-weight: 600; }
+    .notification .message { white-space: pre-wrap; margin: 4px 0; }
+    .notification .meta { font-size: 0.9em; opacity: 0.75; }
+    .notification button { flex-shrink: 0; }
+    .warning { margin: 4px 0; opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <header class="homey-header">
+    <h1 class="homey-title" id="title"></h1>
+    <p class="homey-subtitle" id="subtitle"></p>
+  </header>
+
+  <form class="homey-form" id="filter" onsubmit="return false;">
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="dashboard" id="label-dashboard"></label>
+      <select class="homey-form-select" id="dashboard"></select>
+    </div>
+    <button type="button" class="homey-button-secondary-shadow" id="refresh"></button>
+  </form>
+
+  <p class="homey-subtitle" id="status"></p>
+  <div id="warnings"></div>
+  <div id="list"></div>
+
+  <script type="text/javascript">
+    // Homey passes the real Homey object to onHomeyReady on this page.
+    // The global "Homey" here is only a loader helper, so it is not used directly.
+    function setupSettings(Homey) {
+      var nl = (navigator.language || 'en').indexOf('nl') === 0;
+      var t = nl ? {
+        title: 'Meldingen beheren',
+        subtitle: 'Meldingen die deze app naar de dashboards heeft gestuurd.',
+        dashboard: 'Dashboard',
+        all: 'Alle',
+        refresh: 'Vernieuwen',
+        loading: 'Meldingen laden…',
+        none: 'Geen meldingen gevonden.',
+        count: '{n} melding(en) getoond.',
+        delete: 'Verwijderen',
+        confirmButton: 'Bevestigen',
+        deleted: 'Melding verwijderd.',
+        expires: 'Verloopt: {d}',
+        never: 'Verloopt nooit',
+        created: 'Aangemaakt: {d}',
+        unreachable: 'Niet bereikbaar: {name} ({error})',
+        severity: { critical: 'Kritiek', warning: 'Waarschuwing', info: 'Info' }
+      } : {
+        title: 'Manage notifications',
+        subtitle: 'Notifications this app has sent to the dashboards.',
+        dashboard: 'Dashboard',
+        all: 'All',
+        refresh: 'Refresh',
+        loading: 'Loading notifications…',
+        none: 'No notifications found.',
+        count: '{n} notification(s) shown.',
+        delete: 'Delete',
+        confirmButton: 'Confirm',
+        deleted: 'Notification deleted.',
+        expires: 'Expires: {d}',
+        never: 'Never expires',
+        created: 'Created: {d}',
+        unreachable: 'Unreachable: {name} ({error})',
+        severity: { critical: 'Critical', warning: 'Warning', info: 'Info' }
+      };
+
+      var state = { notifications: [], dashboards: [] };
+
+      function fill(text, values) {
+        return Object.keys(values).reduce(function (s, k) { return s.replace('{' + k + '}', values[k]); }, text);
+      }
+
+      function formatDate(iso) {
+        return iso ? new Date(iso).toLocaleString(nl ? 'nl-NL' : 'en-GB') : '';
+      }
+
+      function setStatus(text) {
+        document.getElementById('status').textContent = text;
+      }
+
+      function renderDashboards() {
+        var select = document.getElementById('dashboard');
+        var previous = select.value;
+        select.textContent = '';
+        var all = document.createElement('option');
+        all.value = '';
+        all.textContent = t.all;
+        select.appendChild(all);
+        state.dashboards.forEach(function (d) {
+          var option = document.createElement('option');
+          option.value = d.id;
+          option.textContent = d.name;
+          select.appendChild(option);
+        });
+        select.value = previous;
+      }
+
+      function renderWarnings() {
+        var box = document.getElementById('warnings');
+        box.textContent = '';
+        state.dashboards.filter(function (d) { return !d.reachable; }).forEach(function (d) {
+          var p = document.createElement('p');
+          p.className = 'warning';
+          p.textContent = fill(t.unreachable, { name: d.name, error: d.error || '' });
+          box.appendChild(p);
+        });
+      }
+
+      function renderList() {
+        var selected = document.getElementById('dashboard').value;
+        var list = document.getElementById('list');
+        list.textContent = '';
+
+        var visible = state.notifications.filter(function (n) {
+          return !selected || n.deviceId === selected;
+        });
+
+        visible.forEach(function (n) {
+          var row = document.createElement('div');
+          row.className = 'notification';
+
+          var body = document.createElement('div');
+          body.className = 'body';
+
+          var title = document.createElement('div');
+          title.className = 'title';
+          title.textContent = n.title;
+
+          var message = document.createElement('div');
+          message.className = 'message';
+          message.textContent = n.message;
+
+          var meta = document.createElement('div');
+          meta.className = 'meta';
+          var parts = [n.dashboardName, t.severity[n.severity] || n.severity];
+          parts.push(n.expiresAt ? fill(t.expires, { d: formatDate(n.expiresAt) }) : t.never);
+          parts.push(fill(t.created, { d: formatDate(n.createdAt) }));
+          meta.textContent = parts.join(' · ');
+
+          body.appendChild(title);
+          body.appendChild(message);
+          body.appendChild(meta);
+
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'homey-button-danger-shadow';
+          button.textContent = t.delete;
+          button.addEventListener('click', function () { remove(n, button); });
+
+          row.appendChild(body);
+          row.appendChild(button);
+          list.appendChild(row);
+        });
+
+        setStatus(visible.length ? fill(t.count, { n: visible.length }) : t.none);
+      }
+
+      function load() {
+        setStatus(t.loading);
+        return Homey.api('GET', '/notifications').then(function (result) {
+          state.notifications = result.notifications || [];
+          state.dashboards = result.dashboards || [];
+          renderDashboards();
+          renderWarnings();
+          renderList();
+        }).catch(function (error) {
+          Homey.alert(error.message || String(error));
+        });
+      }
+
+      // Two-step confirmation inside the button. window.confirm() is blocked in the
+      // Homey settings frame, which made the delete button silently do nothing.
+      function remove(notification, button) {
+        if (!button.dataset.armed) {
+          button.dataset.armed = 'yes';
+          button.textContent = t.confirmButton;
+          return;
+        }
+        var id = encodeURIComponent(notification.deviceId + '|' + notification.id);
+        Homey.api('DELETE', '/notification/' + id).then(function () {
+          state.notifications = state.notifications.filter(function (n) {
+            return !(n.id === notification.id && n.deviceId === notification.deviceId);
+          });
+          renderList();
+          setStatus(t.deleted);
+        }).catch(function (error) {
+          Homey.alert(error.message || String(error));
+        });
+      }
+
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('subtitle').textContent = t.subtitle;
+      document.getElementById('label-dashboard').textContent = t.dashboard;
+      document.getElementById('refresh').textContent = t.refresh;
+      document.getElementById('refresh').addEventListener('click', load);
+      document.getElementById('dashboard').addEventListener('change', renderList);
+
+      // Tell Homey the page is ready first, so the loading spinner goes away even if a call fails.
+      if (typeof Homey.ready === 'function') Homey.ready();
+
+      load().catch(function (error) {
+        setStatus('Fout: ' + (error && error.message ? error.message : String(error)));
+      });
+    }
+
+    window.onHomeyReady = setupSettings;
+  </script>
+</body>
+</html>

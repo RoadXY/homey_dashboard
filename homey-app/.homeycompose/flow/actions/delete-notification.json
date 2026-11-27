@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Delete notification",
+    "nl": "Melding verwijderen"
+  },
+  "titleFormatted": {
+    "en": "Delete notification [[id]]",
+    "nl": "Verwijder melding [[id]]"
+  },
+  "hint": {
+    "en": "A list only appears when notifications were created through this app. If there are none, first create one with the 'Create notification' card and use the ID from its token.",
+    "nl": "Er verschijnt alleen een lijst als er meldingen via deze app zijn aangemaakt. Heb je er geen, maak dan eerst een melding met de kaart 'Maak melding' en gebruik het ID uit de token."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "autocomplete",
+      "name": "id",
+      "title": {
+        "en": "Notification",
+        "nl": "Melding"
+      },
+      "placeholder": {
+        "en": "Choose a notification or paste the ID from 'Create notification'",
+        "nl": "Kies een melding of plak het ID van 'Maak melding'"
+      }
+    }
+  ]
+}

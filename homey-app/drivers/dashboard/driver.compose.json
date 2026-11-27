@@ -1,0 +1,69 @@
+{
+  "name": {
+    "en": "Homey Dashboard",
+    "nl": "Homey Dashboard"
+  },
+  "class": "other",
+  "capabilities": [],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "pair": [
+    {
+      "id": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "host",
+      "type": "text",
+      "label": {
+        "en": "IP address or hostname",
+        "nl": "IP-adres of hostnaam"
+      },
+      "value": "",
+      "hint": {
+        "en": "IP address of the Docker host running the dashboard.",
+        "nl": "IP-adres van de Docker-host waarop het dashboard draait."
+      }
+    },
+    {
+      "id": "port",
+      "type": "number",
+      "label": {
+        "en": "Port",
+        "nl": "Poort"
+      },
+      "value": 5173,
+      "min": 1,
+      "max": 65535
+    },
+    {
+      "id": "token",
+      "type": "password",
+      "label": {
+        "en": "API token",
+        "nl": "API-token"
+      },
+      "value": "",
+      "hint": {
+        "en": "Create a token in the dashboard Settings screen (PIN protected).",
+        "nl": "Maak een token aan in het instellingenscherm van het dashboard (met PIN)."
+      }
+    }
+  ]
+}

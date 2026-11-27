@@ -1,0 +1,43 @@
+{
+  "title": {
+    "en": "The weather is",
+    "nl": "Het weer is"
+  },
+  "titleFormatted": {
+    "en": "The dashboard weather is [[condition]]",
+    "nl": "Het weer op het dashboard is [[condition]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dashboard"
+    },
+    {
+      "type": "dropdown",
+      "name": "condition",
+      "title": {
+        "en": "Condition",
+        "nl": "Omstandigheid"
+      },
+      "values": [
+        { "id": "sunny", "label": { "en": "Sunny", "nl": "Zonnig" } },
+        { "id": "mostly_sunny", "label": { "en": "Mostly sunny", "nl": "Overwegend zonnig" } },
+        { "id": "partly_cloudy", "label": { "en": "Partly cloudy", "nl": "Half bewolkt" } },
+        { "id": "cloudy", "label": { "en": "Cloudy", "nl": "Bewolkt" } },
+        { "id": "overcast", "label": { "en": "Overcast", "nl": "Zwaar bewolkt" } },
+        { "id": "fog", "label": { "en": "Fog", "nl": "Mist" } },
+        { "id": "drizzle", "label": { "en": "Drizzle", "nl": "Motregen" } },
+        { "id": "rain", "label": { "en": "Rain", "nl": "Regen" } },
+        { "id": "heavy_rain", "label": { "en": "Heavy rain", "nl": "Zware regen" } },
+        { "id": "showers", "label": { "en": "Showers", "nl": "Buien" } },
+        { "id": "thunderstorm", "label": { "en": "Thunderstorm", "nl": "Onweer" } },
+        { "id": "hail", "label": { "en": "Hail", "nl": "Hagel" } },
+        { "id": "snow", "label": { "en": "Snow", "nl": "Sneeuw" } },
+        { "id": "snow_showers", "label": { "en": "Snow showers", "nl": "Sneeuwbuien" } },
+        { "id": "sleet", "label": { "en": "Sleet", "nl": "IJzel" } },
+        { "id": "windy", "label": { "en": "Windy", "nl": "Winderig" } }
+      ]
+    }
+  ]
+}

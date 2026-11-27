@@ -1,0 +1,13 @@
+{
+  "extends": "athom/homey-app",
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "rules": {
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "node/no-missing-import": "off"
+      }
+    }
+  ]
+}

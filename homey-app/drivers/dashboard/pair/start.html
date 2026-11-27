@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .results { list-style: none; padding: 0; margin: 0; }
+    .results li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; }
+    .results .meta { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header class="homey-header">
+    <h1 class="homey-title" id="title"></h1>
+    <p class="homey-subtitle" id="subtitle"></p>
+  </header>
+
+  <form class="homey-form" id="connect">
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend" id="legend-connection"></legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="host" id="label-host"></label>
+        <input class="homey-form-input" id="host" type="text" autocomplete="off" />
+      </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="port" id="label-port"></label>
+        <input class="homey-form-input" id="port" type="number" min="1" max="65535" value="5173" />
+      </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="token" id="label-token"></label>
+        <input class="homey-form-input" id="token" type="password" autocomplete="off" />
+      </div>
+    </fieldset>
+
+    <button type="submit" id="add" class="homey-button-primary-shadow-full"></button>
+  </form>
+
+  <p class="homey-subtitle" id="status"></p>
+  <ul class="results" id="results"></ul>
+  <button type="button" id="retry" class="homey-button-secondary-shadow-full" hidden></button>
+
+  <script type="text/javascript">
+    // The Homey pair frame exposes a global Homey object; onHomeyReady is a fallback
+    // for frames that only provide the object through that callback.
+    function setupStartView(Homey) {
+      var nl = (navigator.language || 'en').indexOf('nl') === 0;
+      var t = nl ? {
+        title: 'Homey Dashboard toevoegen',
+        subtitle: 'Zoek automatisch naar een dashboard op je netwerk, of vul het IP-adres in.',
+        legend: 'Verbinding',
+        host: 'IP-adres of hostnaam',
+        port: 'Poort',
+        token: 'API-token (verplicht)',
+        add: 'Toevoegen met opgegeven IP',
+        choose: 'Kies',
+        retry: 'Opnieuw zoeken',
+        searching: 'Zoeken naar dashboards… nog {s} s',
+        foundWhileSearching: '{n} gevonden, zoeken loopt nog {s} s',
+        timedOut: 'Time-out na {t} s: geen dashboards gevonden.',
+        done: '{n} dashboard(s) gevonden.',
+        needToken: 'Vul eerst de API-token in.',
+        needHost: 'Vul een IP-adres of hostnaam in.'
+      } : {
+        title: 'Add Homey Dashboard',
+        subtitle: 'Search for a dashboard on your network automatically, or enter the IP address.',
+        legend: 'Connection',
+        host: 'IP address or hostname',
+        port: 'Port',
+        token: 'API token (required)',
+        add: 'Add with entered IP',
+        choose: 'Choose',
+        retry: 'Search again',
+        searching: 'Searching for dashboards… {s} s left',
+        foundWhileSearching: '{n} found, still searching for {s} s',
+        timedOut: 'Timed out after {t} s: no dashboards found.',
+        done: '{n} dashboard(s) found.',
+        needToken: 'Enter the API token first.',
+        needHost: 'Enter an IP address or hostname.'
+      };
+
+      var TIMEOUT_S = 15;
+      var timer = null;
+
+      function fill(text, values) {
+        return Object.keys(values).reduce(function (s, k) {
+          return s.replace('{' + k + '}', values[k]);
+        }, text);
+      }
+
+      function labelize() {
+        document.getElementById('title').textContent = t.title;
+        document.getElementById('subtitle').textContent = t.subtitle;
+        document.getElementById('legend-connection').textContent = t.legend;
+        document.getElementById('label-host').textContent = t.host;
+        document.getElementById('label-port').textContent = t.port;
+        document.getElementById('label-token').textContent = t.token;
+        document.getElementById('add').textContent = t.add;
+        document.getElementById('retry').textContent = t.retry;
+      }
+
+      function renderResults(results) {
+        var list = document.getElementById('results');
+        list.textContent = '';
+        results.forEach(function (r) {
+          var li = document.createElement('li');
+          var meta = document.createElement('span');
+          meta.className = 'meta';
+          meta.textContent = r.name + ' (' + r.host + ':' + r.port + ')';
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'homey-button-primary-shadow';
+          button.textContent = t.choose;
+          button.addEventListener('click', function () { choose(r); });
+          li.appendChild(meta);
+          li.appendChild(button);
+          list.appendChild(li);
+        });
+      }
+
+      function render(status) {
+        var text;
+        if (status.searching) {
+          var remaining = Math.ceil(status.remainingMs / 1000);
+          text = status.results.length
+            ? fill(t.foundWhileSearching, { n: status.results.length, s: remaining })
+            : fill(t.searching, { s: remaining });
+        } else if (status.timedOut && status.results.length === 0) {
+          text = fill(t.timedOut, { t: TIMEOUT_S });
+        } else {
+          text = fill(t.done, { n: status.results.length });
+        }
+        document.getElementById('status').textContent = text;
+        document.getElementById('retry').hidden = status.searching;
+        renderResults(status.results);
+      }
+
+      function stopPolling() {
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+
+      function poll() {
+        Homey.emit('discovery-status').then(function (status) {
+          render(status);
+          if (!status.searching) stopPolling();
+        }).catch(function () { stopPolling(); });
+      }
+
+      function startSearch() {
+        stopPolling();
+        Homey.emit('discovery-start').then(function (status) {
+          render(status);
+          timer = setInterval(poll, 1000);
+        }).catch(function (error) {
+          Homey.alert(error.message);
+        });
+      }
+
+      // Selects a connection (manual or discovered) and continues to the device list.
+      function selectDevice(input) {
+        return Homey.emit('select-device', input).then(function () {
+          Homey.showView('list_devices');
+        }).catch(function (error) {
+          Homey.alert(error.message);
+        });
+      }
+
+      function choose(result) {
+        var token = document.getElementById('token').value.trim();
+        if (!token) { Homey.alert(t.needToken); return; }
+        selectDevice({ id: result.id, name: result.name, host: result.host, port: result.port, token: token });
+      }
+
+      document.getElementById('connect').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var host = document.getElementById('host').value.trim();
+        var token = document.getElementById('token').value.trim();
+        if (!host) { Homey.alert(t.needHost); return; }
+        if (!token) { Homey.alert(t.needToken); return; }
+        selectDevice({
+          host: host,
+          port: document.getElementById('port').value,
+          token: token
+        });
+      });
+
+      document.getElementById('retry').addEventListener('click', startSearch);
+
+      labelize();
+      startSearch();
+
+      if (typeof Homey.ready === 'function') Homey.ready();
+    }
+
+    if (typeof Homey !== 'undefined') {
+      setupStartView(Homey);
+    } else {
+      window.onHomeyReady = setupStartView;
+    }
+  </script>
+</body>
+</html>
