@@ -1,6 +1,7 @@
 # Ontwikkelomgeving – Homey Dashboard
 
-Docker Engine en Docker Compose zijn vereist om de applicatie tijdens ontwikkeling te bouwen en uit te voeren. Installatie-instructies voor deze tools vallen buiten deze documentatie.
+Docker Engine, Docker Compose en Node.js 24 zijn vereist voor lokale ontwikkeling.
 
-Zie [structuur-ontwikkelomgeving.md](structuur-ontwikkelomgeving.md) voor de repository-indeling en [eerste-applicatiebasis.md](eerste-applicatiebasis.md) voor het starten en testen van de eerste basisapplicatie.
+De repository is een monorepository. De dashboardapplicatie staat in `docker/`, de toekomstige Homey Pro-app in `homey-app/` en de centrale documentatie in `docs/`.
 
+Zie [structuur-ontwikkelomgeving.md](structuur-ontwikkelomgeving.md) voor de repository-indeling en [eerste-applicatiebasis.md](eerste-applicatiebasis.md) voor het starten en testen van de dashboardbasis. Voer npm-commando's voor het dashboard altijd uit vanuit `docker/`.

@@ -21,10 +21,10 @@ The current project uses:
 
 Useful package scripts:
 
-- `npm run dev` — starts the API and Vite development server.
-- `npm run build` — builds the frontend and compiles the server TypeScript.
-- `npm start` — starts `dist/server/index.js`.
-- `npm run typecheck` — runs the TypeScript project checks.
+- `cd docker && npm run dev` — starts the API and Vite development server.
+- `cd docker && npm run build` — builds the frontend and compiles the server TypeScript.
+- `cd docker && npm start` — starts `dist/server/index.js`.
+- `cd docker && npm run typecheck` — runs the TypeScript project checks.
 - `npm test` — runs the Vitest suite.
 
 Run the relevant checks after code changes. A successful TypeScript build does not replace tests or a live Homey/Docker verification.
@@ -33,17 +33,17 @@ Run the relevant checks after code changes. A successful TypeScript build does n
 
 The production Dockerfile uses two stages:
 
-1. **Build stage:** installs dependencies and runs `npm run build`.
+1. **Build stage:** installs dependencies and runs `cd docker && npm run build`.
 2. **Runtime stage:** installs production dependencies only and copies the compiled output, notification configuration and default locale files.
 
 The runtime process runs as the unprivileged `node` user. The application listens on `HOST` (default `0.0.0.0`) and `PORT` (default `3000` for development; production Compose sets it to `5173`). The Docker health check follows the runtime `PORT` value.
 
 Production has two mutually exclusive Compose files:
 
-- `compose.prod.yaml` is the recommended default and uses `network_mode: host`. It listens directly on the Ubuntu host at `DASHBOARD_PORT` (default `5173`). There is no Docker port mapping in host mode.
-- `compose.prod.bridge.yaml` is the advanced alternative. It uses a dedicated bridge network, listens on container port `5173`, and publishes `${DASHBOARD_PORT:-5173}:5173`.
+- `docker/compose.prod.yaml` is the recommended default and uses `network_mode: host`. It listens directly on the Ubuntu host at `DASHBOARD_PORT` (default `5173`). There is no Docker port mapping in host mode.
+- `docker/compose.prod.bridge.yaml` is the advanced alternative. It uses a dedicated bridge network, listens on container port `5173`, and publishes `${DASHBOARD_PORT:-5173}:5173`.
 
-Both files mount the same named `dashboard_data` volume at `/app/data` and restart the service unless it is stopped. Do not combine the two production files: host mode and bridge mode are alternatives. To use bridge mode, change the Compose file used by the deployment/update command to `compose.prod.bridge.yaml`. If using an externally managed Docker network, replace the declared `dashboard_network` with the desired network and set `external: true`.
+Both files mount the same named `dashboard_data` volume at `/app/data` and restart the service unless it is stopped. Do not combine the two production files: host mode and bridge mode are alternatives. To use bridge mode, change the Compose file used by the deployment/update command to `docker/compose.prod.bridge.yaml`. If using an externally managed Docker network, replace the declared `dashboard_network` with the desired network and set `external: true`.
 
 Set `DASHBOARD_PORT` in the local `.env` file to change the host-facing port. For host mode it is also the application listen port; for bridge mode it is the published host port while the container continues listening on `5173`. Example: `DASHBOARD_PORT=5180`.
 
@@ -64,7 +64,7 @@ Use `.env.example` only as a template. Never put real credentials, tokens, sessi
 
 ## 4. Homey connection lifecycle
 
-The Homey integration is centralized in `src/server/homey.ts`.
+The Homey integration is centralized in `../../docker/src/server/homey.ts`.
 
 - The backend creates a local Homey API client with `HomeyAPI.createLocalAPI({ address, token })`.
 - The API key is used server-side; the browser does not connect directly to Homey.
@@ -151,7 +151,7 @@ Back up the persistent data volume before destructive maintenance or migration. 
 
 ## 8. Settings session security
 
-Settings routes are protected by a PIN-based session implemented in `src/server/index.ts`.
+Settings routes are protected by a PIN-based session implemented in `../../docker/src/server/index.ts`.
 
 - The PIN is read from `SETTINGS_PIN`.
 - A successful unlock creates a signed cookie named `homey_settings`.
@@ -169,7 +169,7 @@ The same settings session also protects the camera endpoints under `/api/trouble
 
 ## 9. Managed Bearer tokens
 
-Managed tokens are implemented in `src/server/weather-tokens.ts` and are used by the external API authentication helper.
+Managed tokens are implemented in `../../docker/src/server/weather-tokens.ts` and are used by the external API authentication helper.
 
 - A token is generated with 32 cryptographically random bytes and the `hdy_` prefix.
 - The raw token is returned at creation time; the stored record contains a SHA-256 digest, not the raw secret.
@@ -184,7 +184,7 @@ Treat the raw token as a secret. Do not store it in dashboard configuration, log
 
 Technical documentation in this repository is written in English. User-facing dashboard text is localized and can still be displayed in the user's selected language.
 
-The current runtime localization implementation is a small custom translation module in `src/client/i18n.ts`; it is not currently based on i18next/react-i18next.
+The current runtime localization implementation is a small custom translation module in `../../docker/src/client/i18n.ts`; it is not currently based on i18next/react-i18next.
 
 - The language registry is loaded from `/api/locales/registry`.
 - Translation dictionaries are loaded from `/api/locales/:file`.
@@ -196,7 +196,7 @@ The current runtime localization implementation is a small custom translation mo
 
 When adding or changing visible UI text:
 
-1. Add a stable translation key to both `src/client/locales/en.json` and `src/client/locales/nl.json`.
+1. Add a stable translation key to both `../../docker/src/client/locales/en.json` and `../../docker/src/client/locales/nl.json`.
 2. Keep the key and interpolation placeholders identical in both files.
 3. Use the central translation function; do not hard-code user-facing strings in React components, validation, Blockly blocks, tooltips or accessibility labels.
 4. Keep technical identifiers, JSON property names and API fields in English.
@@ -221,9 +221,9 @@ See [Central Dashboard Error Area](dashboard-error-messages.md) for the approved
 
 After changes to backend, configuration, persistence or realtime behavior:
 
-- Run `npm run typecheck`.
+- Run `cd docker && npm run typecheck`.
 - Run `npm test`.
-- Run `npm run build`.
+- Run `cd docker && npm run build`.
 - Build and start the production Docker image.
 - Verify `/api/health/ready` and `/api/homey/status` separately.
 - Verify the persistent volume retains settings after container recreation.
@@ -236,7 +236,7 @@ Record which checks were actually run. Do not report a live Homey or Docker test
 
 ## 13. mDNS-SD service discovery
 
-The backend advertises the dashboard on the local network using the DNS-SD service type `_homey-dashboard._tcp.local.`. The implementation is in `src/server/mdns.ts` and uses Node's UDP socket APIs; it does not add a runtime npm dependency.
+The backend advertises the dashboard on the local network using the DNS-SD service type `_homey-dashboard._tcp.local.`. The implementation is in `../../docker/src/server/mdns.ts` and uses Node's UDP socket APIs; it does not add a runtime npm dependency.
 
 - `DATA_DIR/installation.json` stores a stable UUID and friendly installation name.
 - On first start, the friendly name is generated from two Dutch words (adjective + animal), for example `Vrolijke Panda`.
@@ -246,7 +246,7 @@ The backend advertises the dashboard on the local network using the DNS-SD servi
 - `MDNS_ENABLED` controls publication. It defaults to enabled in the production host-network Compose file and disabled in development and bridge-mode Compose.
 - UDP multicast uses IPv4 group `224.0.0.251:5353`. If the port is unavailable or no suitable IPv4 address exists, discovery is logged as unavailable and the HTTP dashboard remains running.
 
-**Networking requirement:** use `compose.prod.yaml` (host network) for normal LAN discovery. A standard Docker bridge does not forward mDNS multicast to the physical LAN; `compose.prod.bridge.yaml` therefore disables discovery by default. Enabling the flag in bridge mode alone is not sufficient; a multicast reflector/proxy or host-network deployment would be required.
+**Networking requirement:** use `docker/compose.prod.yaml` (host network) for normal LAN discovery. A standard Docker bridge does not forward mDNS multicast to the physical LAN; `docker/compose.prod.bridge.yaml` therefore disables discovery by default. Enabling the flag in bridge mode alone is not sufficient; a multicast reflector/proxy or host-network deployment would be required.
 
 The name is configuration, not an authentication mechanism. The installation UUID is a stable identifier, not a secret. Clients must still use the dashboard's normal API security controls. mDNS discovery is limited to the local multicast network and does not provide internet discovery.
 

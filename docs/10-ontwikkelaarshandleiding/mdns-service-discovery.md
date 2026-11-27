@@ -35,9 +35,9 @@ The friendly name is validated so the complete service instance label, including
 
 ## Network deployment
 
-The default production deployment (`compose.prod.yaml`) uses host networking and enables mDNS. The dashboard advertises via UDP multicast on `224.0.0.251:5353`.
+The default production deployment (`docker/compose.prod.yaml`) uses host networking and enables mDNS. The dashboard advertises via UDP multicast on `224.0.0.251:5353`.
 
-The optional `compose.prod.bridge.yaml` deployment disables mDNS by default. A standard Docker bridge does not transparently forward link-local mDNS multicast between the container and the physical LAN. Setting `MDNS_ENABLED=true` in bridge mode alone does not solve that network boundary; use host networking or provide a separately configured multicast reflector/proxy.
+The optional `docker/compose.prod.bridge.yaml` deployment disables mDNS by default. A standard Docker bridge does not transparently forward link-local mDNS multicast between the container and the physical LAN. Setting `MDNS_ENABLED=true` in bridge mode alone does not solve that network boundary; use host networking or provide a separately configured multicast reflector/proxy.
 
 The development Compose file disables mDNS to avoid advertising development instances.
 
@@ -56,9 +56,9 @@ Discovery does not authenticate the client. API endpoints must continue to enfor
 
 ## Implementation and verification
 
-- Implementation: `src/server/mdns.ts`
-- Startup integration: `src/server/index.ts`
-- Automated tests: `src/server/mdns.test.ts`
+- Implementation: `../../docker/src/server/mdns.ts`
+- Startup integration: `../../docker/src/server/index.ts`
+- Automated tests: `../../docker/src/server/mdns.test.ts`
 - Persistent identity: `DATA_DIR/installation.json`
 
 Automated tests cover name generation, input validation, persistence across restarts and stable UUID behavior when a configured name changes. Before treating LAN discovery as fully verified, test on the target Ubuntu host:
